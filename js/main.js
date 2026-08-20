@@ -1,0 +1,290 @@
+// ============================================================
+// main.js —— 入口：goto + 场景按键表
+// ============================================================
+import { S } from './state.js';
+import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES } from './data.js';
+import { playerAction, updateBattle, retryBoss } from './battle.js';
+import { interact, move, loadMap } from './world.js';
+import { beginAdventure, saveGame, usePotion, resetRun, load, doTravel, brewNow, talkNext, initGame } from './core.js';
+import { stayInn } from './shop.js';
+import { goto } from './scene.js';
+import { render, openSkillMenu, drawTitle, drawCreate, drawWorld, PAUSE_ITEMS } from './view/index.js';
+import { renderHUD, boxMsg } from './view/hud.js';
+
+function dirVector(dir) {
+  if (dir === 'U') return [0, -1];
+  if (dir === 'D') return [0, 1];
+  if (dir === 'L') return [-1, 0];
+  return [1, 0];
+}
+function isEsc(e) { return e.key === 'Escape' || e.key === 'Esc'; }
+function backWorld() { goto('world'); }
+
+function onArrow(e, onDown, onUp) {
+  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') onDown();
+  else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') onUp();
+}
+
+const screens = {
+  shop: {
+    onKey(e) {
+      onArrow(e,
+        () => { S.shopSel = (S.shopSel + 1) % S.shopList.length; SFX.select(); },
+        () => { S.shopSel = (S.shopSel - 1 + S.shopList.length) % S.shopList.length; SFX.select(); }
+      );
+      if (e.key === 'Enter') {
+        const item = S.shopList[S.shopSel];
+        if (item && item.act) item.act();
+      } else if (isEsc(e)) {
+        backWorld();
+      }
+    },
+  },
+  inn: {
+    onKey(e) {
+      if (e.key === 'Enter') stayInn();
+      else if (isEsc(e)) backWorld();
+    },
+  },
+  brew: {
+    onKey(e) {
+      if (e.key === 'Enter') brewNow();
+      else if (isEsc(e)) backWorld();
+    },
+  },
+  status: {
+    onKey(e) {
+      if (e.key === 'i' || e.key === 'I' || isEsc(e)) backWorld();
+      else if (e.key === 'j' || e.key === 'J') goto('journal');
+    },
+  },
+  journal: {
+    onKey(e) {
+      if (e.key === 'j' || e.key === 'J' || isEsc(e)) backWorld();
+      else if (e.key === 'i' || e.key === 'I') goto('status');
+    },
+  },
+  codex: {
+    onKey(e) {
+      if (e.key === 'b' || e.key === 'B' || isEsc(e)) backWorld();
+      else onArrow(e,
+        () => { S.codexScroll++; SFX.select(); },
+        () => { S.codexScroll--; SFX.select(); }
+      );
+    },
+  },
+  ach: {
+    onKey(e) {
+      if (e.key === 'c' || e.key === 'C' || isEsc(e)) backWorld();
+      else onArrow(e,
+        () => { S.achScroll++; SFX.select(); },
+        () => { S.achScroll--; SFX.select(); }
+      );
+    },
+  },
+  help: {
+    onKey(e) {
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        S.helpPage = (S.helpPage + 1) % HELP_PAGES.length;
+        SFX.select();
+      } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        S.helpPage = (S.helpPage - 1 + HELP_PAGES.length) % HELP_PAGES.length;
+        SFX.select();
+      } else if (e.key === 'h' || e.key === 'H' || isEsc(e)) {
+        backWorld();
+      }
+    },
+  },
+  travel: {
+    onKey(e) {
+      onArrow(e,
+        () => { S.travelSel = (S.travelSel + 1) % TRAVEL_LIST.length; SFX.select(); },
+        () => { S.travelSel = (S.travelSel - 1 + TRAVEL_LIST.length) % TRAVEL_LIST.length; SFX.select(); }
+      );
+      if (e.key === 'Enter') doTravel();
+      else if (isEsc(e)) backWorld();
+    },
+  },
+  talk: {
+    onKey(e) {
+      if (e.key === 'Enter') talkNext();
+      else if (isEsc(e)) backWorld();
+    },
+  },
+  battle: {
+    onKey(e) {
+      if (S.skillMenuOpen) {
+        if (!S.battleBusy) {
+          const list = S.G.skills;
+          const idx = ['1', '2', '3', '4', '5', '6', '7'].indexOf(e.key);
+          if (idx >= 0 && idx < list.length) {
+            S.skillMenuOpen = false;
+            playerAction('skill', list[idx]);
+          } else if (isEsc(e)) {
+            S.skillMenuOpen = false;
+          }
+        }
+        return;
+      }
+      if (S.battleBusy) return;
+      if (e.key === '1') playerAction('attack');
+      else if (e.key === '2') openSkillMenu();
+      else if (e.key === '3') playerAction('item');
+      else if (e.key === '4') playerAction('flee');
+      else if (e.key === '5') playerAction('defend');
+      else if (e.key === '6') playerAction('charge');
+      else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') S.blogView++;
+      else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') S.blogView--;
+      updateBattle();
+    },
+  },
+  title: {
+    onKey(e) {
+      ac();
+      if (!S.bgmTimer && S.SND) startBgm('title');
+      if (e.key === '1') { S.curSaveSlot = 1; SFX.select(); }
+      else if (e.key === '2') { S.curSaveSlot = 2; SFX.select(); }
+      else if (e.key === '3') { S.curSaveSlot = 3; SFX.select(); }
+      else if (e.key === 'Enter') { ac(); SFX.select(); goto('create'); }
+      else if ((e.key === 'l' || e.key === 'L') && load()) {
+        SFX.select();
+        resumeBgm();
+        goto('world');
+        renderHUD();
+        boxMsg(`💾 读取了槽 ${S.curSaveSlot} 的存档`, 1600);
+      } else if (e.key === 'r' || e.key === 'R') {
+        resetRun();
+      }
+    },
+  },
+  create: {
+    onKey(e) {
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        S.createName = (S.createName + 1) % HERO_NAMES.length;
+        SFX.select();
+      } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        S.createName = (S.createName - 1 + HERO_NAMES.length) % HERO_NAMES.length;
+        SFX.select();
+      } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        S.createDiff = (S.createDiff + 1) % DIFFS.length;
+        SFX.select();
+      } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        S.createDiff = (S.createDiff - 1 + DIFFS.length) % DIFFS.length;
+        SFX.select();
+      } else if (e.key === 'Enter') {
+        beginAdventure();
+      }
+    },
+  },
+  story: {
+    onKey(e) {
+      if (e.key !== 'Enter') return;
+      SFX.select();
+      if (S.storyPage < STORY.length) {
+        S.storyPage++;
+        S.storyLineAt = Date.now();
+      } else {
+        goto('world');
+        renderHUD();
+        if (!S.G.tutDone) {
+          S.G.tutDone = true;
+          boxMsg('💡 教程：WASD移动 · Enter对话 · Esc菜单 · P存档 · I状态 · J任务 · H帮助', 3600);
+        } else {
+          boxMsg('踏上旅途！去把灯芯讨回来！', 2000);
+        }
+      }
+    },
+  },
+  ending: {
+    onKey(e) {
+      if (e.key === 'Enter') { goto('title'); startBgm('title'); }
+    },
+  },
+  dead: {
+    onKey(e) {
+      if (e.key === 'r' || e.key === 'R') resetRun();
+      else if (e.key === 't' || e.key === 'T') { goto('title'); startBgm('title'); }
+      else if (e.key === 'b' || e.key === 'B') retryBoss();
+    },
+  },
+  win: {
+    onKey(e) {
+      if (e.key === 'Enter') goto('ending');
+      else if (e.key === 'r' || e.key === 'R') resetRun();
+    },
+  },
+  world: {
+    onKey(e) {
+      if (e.key === 'Enter') { interact(); return; }
+      if (e.key === 'p' || e.key === 'P') { saveGame(); return; }
+      if (isEsc(e)) {
+        S.pauseSel = 0;
+        goto('pause');
+        SFX.select();
+        return;
+      }
+      if (e.key === 'f' || e.key === 'F') { usePotion(); return; }
+      if (e.key === 'i' || e.key === 'I') { goto('status'); return; }
+      if (e.key === 'j' || e.key === 'J') { goto('journal'); return; }
+      if (e.key === 'b' || e.key === 'B') { goto('codex'); return; }
+      if (e.key === 'c' || e.key === 'C') { goto('ach'); return; }
+      if (e.key === 'h' || e.key === 'H') { goto('help'); return; }
+      if (e.key === 't' || e.key === 'T') {
+        S.travelSel = TRAVEL_LIST.findIndex((x) => x[0] === S.curMap);
+        if (S.travelSel < 0) S.travelSel = 0;
+        goto('travel');
+        return;
+      }
+      if (KEY[e.key]) {
+        e.preventDefault();
+        move(...dirVector(KEY[e.key]));
+      }
+    },
+  },
+  pause: {
+    onKey(e) {
+      onArrow(e,
+        () => { S.pauseSel = (S.pauseSel + 1) % PAUSE_ITEMS.length; SFX.select(); },
+        () => { S.pauseSel = (S.pauseSel - 1 + PAUSE_ITEMS.length) % PAUSE_ITEMS.length; SFX.select(); }
+      );
+      if (isEsc(e)) { goto('world'); return; }
+      if (e.key !== 'Enter') return;
+      const act = PAUSE_ITEMS[S.pauseSel];
+      if (!act) return;
+      SFX.select();
+      if (act.id === 'resume') goto('world');
+      else if (act.id === 'status') goto('status');
+      else if (act.id === 'journal') goto('journal');
+      else if (act.id === 'codex') goto('codex');
+      else if (act.id === 'save') saveGame();
+      else if (act.id === 'help') goto('help');
+      else if (act.id === 'title') { goto('title'); startBgm('title'); }
+    },
+  },
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'm' || e.key === 'M') {
+      S.SND = !S.SND;
+      if (S.SND) resumeBgm();
+      else stopBgm();
+      renderHUD();
+      boxMsg(S.SND ? '🔊 音效与音乐开启' : '🔇 静音', 1200);
+      return;
+    }
+    const screen = screens[S.scene];
+    if (screen && screen.onKey) screen.onKey(e);
+  });
+}
+
+loadMap('village');
+initGame('余烬');
+goto('title');
+drawTitle();
+if (typeof document !== 'undefined' && document.getElementById && document.getElementById('game')) {
+  setInterval(render, 1000 / 30);
+}
+
+export { screens, goto };

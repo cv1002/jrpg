@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>潮灯记 · JRPG</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="any">
+<style>
+  *{box-sizing:border-box; margin:0; padding:0;}
+  :root{ --bg:#0f1820; --panel:#1b2b38; --panel2:#243b4c; --gold:#ffd24a; --blue:#62c6ff;
+    --hp:#e14b3f; --mp:#3f8fe1; --text:#e8eef1; --muted:#7d93a3; }
+  body{background:radial-gradient(circle at 50% 30%,#1a2c3b,#0d151b 70%); min-height:100vh;
+    display:flex; align-items:center; justify-content:center; font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--text); padding:16px;}
+  #wrap{display:flex; flex-direction:column; gap:10px; align-items:center; max-width:760px;}
+  h1{font-size:20px; letter-spacing:6px; color:var(--gold); text-shadow:0 0 18px rgba(255,210,74,.35);}
+  h1 small{font-size:11px; letter-spacing:0; color:var(--muted); margin-left:10px;}
+  canvas#game{background:#0a0f14; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,.6);
+    image-rendering:pixelated; width:640px; height:480px;}
+  #quest{width:100%; display:none; flex-direction:column; gap:3px; background:var(--panel); border:1px solid #2e4a5e;
+    border-radius:10px; padding:8px 14px; font-size:12.5px; line-height:1.5;}
+  #quest.show{display:flex;}
+  #s-quest-main{color:var(--gold);}
+  #s-quest-side{color:#a8ff8a; white-space:pre-line;}
+  #s-quest-side:empty{display:none;}
+  #hud{width:100%; background:var(--panel); border:1px solid #2e4a5e; border-radius:10px; padding:9px 14px;
+    display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .stat{display:flex; gap:14px; font-size:13px; flex-wrap:wrap;}
+  .stat b{color:var(--gold);}
+  .bar{width:96px; height:9px; background:#122029; border-radius:6px; overflow:hidden; display:inline-block; vertical-align:middle; margin-left:5px;}
+  .bar i{display:block; height:100%;}
+  .bar.hp i{background:linear-gradient(90deg,#a52,var(--hp));} .bar.mp i{background:linear-gradient(90deg,#14508f,var(--mp));} .bar.xp i{background:linear-gradient(90deg,#2a7a4e,#62ff8a);}
+  #hud .stat b.danger{color:#ff5b4d; animation:dangerPulse 1s infinite;}
+  .bar.hp.low i{background:linear-gradient(90deg,#ff5b4d,var(--hp)); animation:dangerPulse 1s infinite;}
+  @keyframes dangerPulse{0%,100%{opacity:1;} 50%{opacity:.45;}}
+  #help{font-size:11.5px; color:var(--muted); text-align:center; line-height:1.7;}
+  kbd{background:#243b4c; border:1px solid #3a5670; border-radius:4px; padding:1px 6px; font-size:10.5px; color:#cfe6f5;}
+  #msg{position:fixed; top:14px; left:50%; transform:translateX(-50%); background:rgba(10,18,24,.93); border:1px solid #2e4a5e;
+    color:#cfe6f5; padding:8px 20px; border-radius:30px; font-size:13px; z-index:60; opacity:0; transition:opacity .25s; pointer-events:none; max-width:82vw; text-align:center; white-space:pre-line;}
+  #msg.show{opacity:1;}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>潮灯记 <small>· 灯灭之夜</small></h1>
+  <canvas id="game" width="640" height="480"></canvas>
+  <div id="quest">
+    <span id="s-quest-main"></span>
+    <span id="s-quest-side"></span>
+  </div>
+  <div id="hud">
+    <div class="stat">
+      <span id="s-map" style="color:var(--blue)">潮灯镇</span>
+      <span>Lv<b id="s-lv">1</b></span>
+      <span>HP <b id="s-hp">0/0</b></span><div class="bar hp"><i id="s-hpbar"></i></div>
+      <span>MP <b id="s-mp">0/0</b></span><div class="bar mp"><i id="s-mpbar"></i></div>
+      <span>EXP <b id="s-xp">0/20</b></span><div class="bar xp"><i id="s-xpbar"></i></div>
+    </div>
+    <div class="stat">
+      <span>⚔️<b id="s-weapon">木剑</b></span><span>🛡️<b id="s-armor">布衣</b></span>
+      <span>💰<b id="s-gold">0</b></span><span>🍖<b id="s-potion">0</b></span><span>🧪<b id="s-potion2">0</b></span><span>🍄<b id="s-mushroom">0</b></span><span title="按 M 静音/开声" id="s-sndbox"><b id="s-snd">🔊</b></span><span title="按 P 保存到的槽位">💾<b id="s-slot">槽1</b></span><span id="s-save"> </span>
+    </div>
+  </div>
+  <div id="help">
+    <kbd>WASD</kbd>/<kbd>方向键</kbd>移动 · <kbd>Enter</kbd>对话/确认 · <kbd>Esc</kbd>菜单 · <kbd>P</kbd>存档 · <kbd>F</kbd>喝药 · <kbd>I</kbd>状态 · <kbd>J</kbd>任务 · <kbd>B</kbd>图鉴 ·
+    <kbd>M</kbd>静音 · 战斗中 <kbd>1-4</kbd> 指令。标题按 <kbd>L</kbd> 读档。讨回灯芯：击败<b style="color:var(--gold)">幽冥魔王</b>即可通关——井底还有更深的真相。
+  </div>
+</div>
+<div id="msg"></div>
+
+<script type="module" src="js/main.js?v=20260821-pause"></script>
+</body>
+</html>
