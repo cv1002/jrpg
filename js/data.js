@@ -320,6 +320,13 @@ const BURN_PCT = 0.04;
 // 数据化后 结算、角标、施毒、标注 绝无第二套口径（与 BURN_PCT / CRIT_MULT / FLEE_SUCCESS 同一体系）
 const POISON_PCT = 0.05;
 const POISON_TURNS = 3;
+// 毒蛇施毒概率（单一数据源）：enemyAI 施毒判定 Math.random()<enemy.poison 与帮助页「毒蛇有 N% 概率」
+// 标注同读此源——此前 0.35 硬编码在 data.js SPECIES['毒蛇'] 与 MON_BASE['毒蛇'] 两处，帮助页又经
+// MON_BASE.find(...) 再绕一层取同一数值，三处互不相关：想调毒蛇施毒率（如降到 30%）要改两处定义、
+// 帮助页还得记得同步，极易只改一处让实际概率与帮助页标注对不上；数据化后 施毒判定、两处定义、帮助页
+// 标注 绝无第二套口径（与 POISON_PCT / POISON_TURNS / ELITE_CHANCE 同一「概率数据化」体系）。
+// 注意：SPECIES / MON_BASE 顶层字面量 poison 会拼入此值，故必须定义在两表之前
+const POISON_CHANCE = 0.35;
 
 const SKILL_DATA={
   '火焰斩':{mp:4,mult:1.8,kind:'atk',sfx:'fire',txt:'🗡️',element:'fire',burn:2,hint:'灼烧2回合·每回合约-' + Math.round(BURN_PCT * 100) + '%最大HP',colors:['#ff3b3b','#ff8a2c','#ffd24a']},
@@ -432,7 +439,7 @@ const SPECIES={
   '野狼':    {draw:'wolf', weak:'fire'},
   '骷髅兵':  {draw:'skel', weak:'fire', resist:'ice'},
   '哥布林':  {draw:'goblin', weak:'ice'},
-  '毒蛇':    {draw:'snake', weak:'ice', poison:0.35, tag:'☠️ 会施毒 · 扣血' + POISON_TURNS + '回合'},
+  '毒蛇':    {draw:'snake', weak:'ice', poison:POISON_CHANCE, tag:'☠️ 会施毒 · 扣血' + POISON_TURNS + '回合'},
   '树精':    {draw:'tree', weak:'fire', resist:'ice'},
   '石魔像':  {draw:'stone', weak:'thunder', resist:'fire'},
   '雾灵':    {draw:'ghost', weak:'ice', resist:'fire', tag:'❄️ 雾凝成冰'},
@@ -458,7 +465,7 @@ const MON_BASE=[
   {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf',w:()=>3},
   {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,4],gold:[15,3],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
   {name:'哥布林',hp:[20,5],atk:[6,2],def:[3,1],xp:[10,3],gold:[10,2],color:'#6fae4f',weak:'ice',draw:'goblin',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
-  {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:0.35,weak:'ice',draw:'snake',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
+  {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:POISON_CHANCE,weak:'ice',draw:'snake',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
   {name:'雾灵',  hp:[24,5],atk:[9,2],def:[4,1],xp:[17,4],gold:[14,3],color:'#b48ae8',weak:'ice',resist:'fire',draw:'ghost',minLv:2,w:(lv)=>2+Math.floor(lv/3)},
   {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,4],gold:[16,3],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
   {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,4],gold:[20,3],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
@@ -722,7 +729,7 @@ const HELP_PAGES=[
     ['通关之路','讨回灯芯 → 击败洞窟领主 → 双徽记开门 → 回廊尽头面对终焉之神'],
   ],
   [
-    ['毒蛇中毒','毒蛇有 ' + Math.round(MON_BASE.find(m=>m.name==='毒蛇').poison * 100) + '% 概率使你中毒：每回合扣血（约' + Math.round(POISON_PCT * 100) + '%最大HP）持续 ' + POISON_TURNS + ' 回合'],
+    ['毒蛇中毒','毒蛇有 ' + Math.round(POISON_CHANCE * 100) + '% 概率使你中毒：每回合扣血（约' + Math.round(POISON_PCT * 100) + '%最大HP）持续 ' + POISON_TURNS + ' 回合'],
     ['中毒自救','治愈术可解毒；中毒不夺行动，也可速战或喝药'],
     ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
     ['石心魔像·石甲','血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
@@ -781,7 +788,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
   baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,

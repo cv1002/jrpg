@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v16.9 毒蛇施毒概率单一数据源——SPECIES/MON_BASE 两处定义与帮助页标注同读 POISON_CHANCE（机制·单一口径，与 POISON_PCT / POISON_TURNS / ELITE_CHANCE 同一「概率数据化」体系）
+
+- 【0.35 散落三处互不相关】毒蛇施毒成功率 = 每次毒蛇普攻 35% 概率使玩家中毒：这个 0.35 硬编码在 `data.js` `SPECIES['毒蛇'].poison`（图鉴「☠️ 会施毒」所属物种表）与 `MON_BASE['毒蛇'].poison`（遇敌生成/敌人模板）**两处定义**，帮助页「毒蛇中毒」行又绕一层 `MON_BASE.find(m=>m.name==='毒蛇').poison` 才取到同一数值——三处互不相关：想调毒蛇施毒率（如放宽到 40%）要改两处定义、帮助页还得记得同步，极易只改一处让实际概率与帮助页标注对不上，实际 40% 帮助页却还标「35%」；而它的病根同族兄弟 `POISON_PCT`（扣血比例）/ `POISON_TURNS`（持续回合）早已单一数据源化，唯独这「施毒率 0.35」还散落两处定义 + 一处 `.find` 绕层，是本体系残留在毒蛇上的最后一处裸奔数值。
+- 【修正：data.js 新增 `POISON_CHANCE = 0.35` 为唯一真源】`SPECIES['毒蛇'].poison` 与 `MON_BASE['毒蛇'].poison` 两处定义改读 `POISON_CHANCE`；帮助页「毒蛇中毒」行改拼 `毒蛇有 ' + Math.round(POISON_CHANCE * 100) + '% 概率`，不再经 `MON_BASE.find(...)`. 收益：调毒蛇施毒率只改 data.js 一处、两处定义 + 帮助页标注三端同步，绝无第二套口径；显示文案 `毒蛇有 35% 概率…` 逐字不变（0.35×100=35 原样推导），零 UI 回归。常量定义置于 SPECIES / MON_BASE 之前（两表顶层字面量 poison 会拼入此值，前向引用会触发 TDZ）。
+- 【零回归面】未动毒蛇机制本身——`enemyAI.enemyAct` 施毒判定 `Math.random() < enemy.poison` 逐字不变（monster.poison 由 `scaleEnemy` 从 MON_BASE 透传，值 0.35 原样）、`POISON_PCT` 扣血结算与 `POISON_TURNS` 回合数、毒蛇图鉴 tag（`☠️ 会施毒 · 扣血3回合`）、其余魔物两表与帮助页各行均逐字不变；未动任何掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改两个引用点（SPECIES 定义、MON_BASE 定义）+ 帮助页一处（顺带去掉了 `.find` 绕层），零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v16.9 专项冒烟（/tmp/jrpg_smoke_v169_poison.mjs）**20 项断言全过**——常量导出 0.35、SPECIES/MON_BASE 两处定义同读常量、帮助页「毒蛇有 35% 概率」由常量推导且与旧字面量逐字一致、data.js 源码裸 `poison:0.35` 已清除（定义处除外）且 `MON_BASE.find` 绕层已移除、scaleEnemy 毒蛇 poison 透传 = 0.35、毒蛇/野狼/史莱姆/雾灵图鉴 tag 与相邻帮助页行（中毒自救/技能克制/石甲/战斗掉落）原文逐字不变。
+
 ## v16.8 终焉之神额外奖励单一数据源——战胜结算/横幅、图鉴标注、战斗预览同读 TRUE_BONUS_GOLD（机制·单一口径，与 DROP_GOLD / RUSH_RECOVER / CHARGE_MULT 同体系）
 
 - 【额外 300 金币散落四处互不相关】终焉之神的额外赏金 = 战胜后 `hero.gold += 300`（基础报酬 600 金之外的追加奖励）：这个 300 硬编码在 `battle.js winBattle` 两处（第 402 行结算 `hero.gold += 300` 与第 452 行横幅文案 `额外 300 金币！`）、`data.js` 图鉴 `SPECIES['终焉之神'].tag`（`💰 击败+300金`）、`view/drawBattle.js` 战斗预览（`· 战胜另+300金`）——跨三个文件四处互不相关：想调真结局额外赏金（如放宽到 500）要改两个文件三四处，还极易只改结算漏改标注/预览，实际打赢多了 500 金图鉴却还标「+300金」、战前预览还报「另+300金」；v16.5 收口精英出没时已把「判定旁剩下裸数值」定为同款病根，终焉之神的「+300」是 Boss 奖励体系中最后一处结算/标注/预览裸奔数值——`TRUE_BOSS.gold = 600`（基础报酬）早已单一数据源化，唯独这「额外 300」还散落四处。
