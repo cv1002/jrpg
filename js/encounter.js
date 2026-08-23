@@ -4,7 +4,7 @@
 // 区域修正读 MAPS.zone——图鉴 codexStats / monReward / spawnLv 同读同一份数据
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, MON_BASE, ELITE_GOLEM, ELITE_GATE_LV, withSpecies } from './data.js';
+import { MAPS, MON_BASE, ELITE_GOLEM, ELITE_GATE_LV, ELITE_CHANCE, withSpecies } from './data.js';
 import { deep } from './rules.js';
 
 export function scaleEnemy(template, level) {
@@ -49,7 +49,8 @@ function pickWeightedIndex(weights) {
 
 export function randomEncounter() {
   const level = S.G.level;
-  if (curMap() === 'dungeon' && S.G.level >= ELITE_GATE_LV && Math.random() < 0.07) return eliteEncounter();
+  // 雾语林稀有精英（单一数据源）：出没概率读 ELITE_CHANCE——图鉴「约N%」标注同读此源
+  if (curMap() === 'dungeon' && S.G.level >= ELITE_GATE_LV && Math.random() < ELITE_CHANCE) return eliteEncounter();
   // 分图遇敌池（data.js MAPS[].pool 单一数据源）：无字回廊只出雾灵/石魔像/骷髅兵
   const poolDef = MAPS[curMap()].pool;
   const source = poolDef ? MON_BASE.filter((m) => poolDef.includes(m.name)) : MON_BASE;

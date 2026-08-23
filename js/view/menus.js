@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT } from '../data.js';
+import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -103,11 +103,16 @@ function whereFind(name){
   // - v13.7 剧情重构后终焉之神已随主线迁至无字回廊东端祭坛（原「星井矿脉·终焉水晶」为旧位置，水晶已化为开门机关）；
   // - 残焰魔像（回廊中段精英）此前缺表项，会误显「草丛随机遇敌」——补上。
   const LOC={'石心魔像':'雾语林·稀有精英','幽冥魔王':'雾语林祭坛','洞窟领主':'星井矿脉深处','终焉之神':'无字回廊东端','残焰魔像':'无字回廊中段'};
-  const loc = LOC[name]||'草丛随机遇敌';
+  let loc = LOC[name]||'草丛随机遇敌';
   // v12.3: 出没等级门槛（与 battle 遇敌分布同源 MON_BASE.minLv / ELITE_GATE_LV，纯显示）——
   // 树精/石魔像/石心魔像 都要 Lv.3 才在野外出没，图鉴一眼看清「为什么还没遇到它」
   const lv = spawnLv(name);
-  return lv > 1 ? loc + ' · Lv.' + lv + '起出没' : loc;
+  if (lv > 1) loc += ' · Lv.' + lv + '起出没';
+  // v16.5: 精英出没概率（与 encounter.randomEncounter 的 ELITE_CHANCE 判定同源，纯显示）——
+  // 石心魔像「稀有精英」此前只有定性「稀有」无定量，约 7% 的出没率只藏在源码里；
+  // 图鉴直接标出确切概率，刷图鉴/刷蘑菇时一眼算清撞不撞得到它
+  if (name === ELITE_GOLEM.name) loc += ' · 约' + Math.round(ELITE_CHANCE * 100) + '%';
+  return loc;
 }
 
 export function drawCodex(){

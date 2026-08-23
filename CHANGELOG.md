@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v16.5 精英出没概率单一数据源——雾语林随机遇敌判定与图鉴「稀有精英」标注同读 ELITE_CHANCE（机制·单一口径，与 ELITE_GATE_LV / DROP_* / CHEST_MUSHROOM 同体系）
+
+- 【0.07 只剩一处裸奔，且「稀有精英」只有定性无定量】雾语林随机遇敌有约 7% 概率撞见「石心魔像」精英：这个 0.07 硬编码在 `encounter.js randomEncounter`（判定），而图鉴已讨伐行的出没标注「雾语林·稀有精英」只有定性「稀有」、没有定量——v12.3 收口精英等级门槛 `ELITE_GATE_LV` 时，出没概率仍以裸 0.07 与「稀有」字样并存，是本作机制数值中最后一处未数据化的出没概率：想调精英出现率（如放宽到 10%）要改判定一处，图鉴却永远只能说「稀有」，刷图鉴/刷蘑菇的玩家完全无法预估「撞不撞得到它」。
+- 【修正：data.js 新增 `ELITE_CHANCE = 0.07` 为唯一真源】`randomEncounter` 精英判定改读 `Math.random() < ELITE_CHANCE`；图鉴 `whereFind` 对石心魔像（经 `ELITE_GOLEM.name` 判精英，与 monReward/codexStats 同一识别惯例）追加 `· 约N%`（N = `Math.round(ELITE_CHANCE × 100)`）。收益：调精英出现率只改 data.js 一处、判定/标注两处同步；显示文案 `雾语林·稀有精英 · Lv.3起出没 · 约7%`（7% 由常量推导），遇敌行为逐字不变（判定时机 dungeon && level≥ELITE_GATE_LV 原样、0.07 原样）。
+- 【零回归面】未动精英判定时机、精英属性（ELITE_GOLEM）、等级门槛（ELITE_GATE_LV）、图鉴其余条目、掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改两个引用点。
+- 验证：`node --check js/data.js js/encounter.js js/view/menus.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v16.5 专项冒烟（/tmp/jrpg_smoke_v165_elite.mjs）**24 项断言全过**——常量导出 0.07/3、encounter.js 裸 `Math.random() < 0.07` 已清除且读 ELITE_CHANCE 两处、真实 `randomEncounter` 蒙特卡洛（Lv.3/Lv.6 dungeon 精英率 ≈7% 与 v12.3 基线同界、Lv.1/Lv.2 dungeon 无精英、village/cave 无精英）、eliteEncounter 直达契约（名/isElite/hpMax）、drawCodex 端到端逐字 `（雾语林·稀有精英 · Lv.3起出没 · 约7%）` 且史莱姆/幽冥魔王行原文逐字不变、monReward(石心魔像,5)=xp70/金75（ELITE_GOLEM 式回归）、连续绘制零状态改动（纯显示收敛）。
+
 ## v16.4 经验曲线单一数据源——升级结算 / 技能经验预估 / 新档建档同读 XP_GROW / XP_INIT（机制·单一口径，与 CHARGE_MULT / DROP_* / POTION_* 同体系）
 
 - 【1.42 散落 hero.js 三处、初始 20 再两处】升级所需经验逐级 ×1.42 取整（20→28→40→57…）：这个 1.42 硬编码在 `hero.js grantXp`（结算，升级循环 `xpNext = round(xpNext×1.42)`）与 `hero.js skillXpHint`（预估，起档与逐级累加两处 `round(…×1.42)`）——v3.21 起预估就复刻结算的升级链，同一个 1.42 同一文件内互为镜像、却各写各的；而新档首级所需经验 20 又另写在 `core.js newGame`（`xpNext: 20`），`skillXpHint` 旧档兜底再写一句 `|| 20`——同一个 1.42 与 20 五处互不相关：想调经验曲线（如放缓到 1.35、或把首档压缩到 15 经验）要改两个文件三四处，还极易只改结算漏改预估/建档，实际升到某级所需经验变了，「距下一技能还差 N 经验」却还按旧曲线报数对不上；而写着「1.42」「20」，也无从考证这数哪儿来、两处是否早已漂移。
