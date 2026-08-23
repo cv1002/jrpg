@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v16.1 药水恢复量单一数据源——结算、战斗预览、商店文案同读 POTION_*/ELIXIR_*（机制·单一口径，与 DROP_* / POISON_PCT / DEFEND_MULT 同体系）
+
+- 【0.5/+8 与 0.8/+20 散落三处，预览与商店再各写自己的字面量】药水恢复量 = 普通药水 `round(hpMax×0.5)+8`、高级灵药 `round(hpMax×0.8)+20` HP 与 `round(mpMax×0.4)` MP：这三个比例与两个加值硬编码在 `hero.js takePotion`（结算）、`view/drawBattle.js` 战斗指令栏恢复量预览（纯显示）、`shop.js` 药水条目文案 `恢复 50%HP +8`（纯显示）三处互不相关——想调药水强度（如灵药回血放宽到 85%）要改两个文件三处，还极易只改结算漏改预览/商店，结算回 X 血界面却还标旧值；而写着「50%HP +8」，玩家也看不出这数到底从哪来、靠不靠谱。v4.1/v12.2 起药水数值散落至今，是本作机制数值中继 v16.0 战斗掉落后的最后一处结算/展示裸奔。帮助页「高级灵药」行只写「可同时恢复 HP/MP」无数字，不涉字面量。
+- 【修正：data.js 新增 `POTION_HP_PCT = 0.5 / POTION_HP_FLAT = 8 / ELIXIR_HP_PCT = 0.8 / ELIXIR_HP_FLAT = 20 / ELIXIR_MP_PCT = 0.4` 为唯一真源】三处同读一份数据：`takePotion` 结算改读 `Math.round(hero.hpMax * ELIXIR_HP_PCT) + ELIXIR_HP_FLAT` / `Math.round(hero.mpMax * ELIXIR_MP_PCT)` / `Math.round(hero.hpMax * POTION_HP_PCT) + POTION_HP_FLAT`；战斗预览改由同一表达式推导（与结算逐字同源）；商店文案改由 `Math.round(POTION_HP_PCT * 100)` + `POTION_HP_FLAT` 推导。收益：调药水平衡只改 data.js 一处、三处同步；显示文案 `🍖+48HP`、`🧪+84HP/+20MP`、商店 `恢复 50%HP +8` 逐字不变（0.5×100=50、8 原样），零 UI 回归。
+- 【零回归面】未动药水机制本身——判定顺序（`takePotion` 先耗高级灵药、普通药只在掉血时用）、满状态不浪费、消耗计数、`hp/mp` 封顶 `Math.min`、战斗 `doItem` 与大地图 `usePotion` 均只消费 `result.h/result.m`（不重算数值，改动不扩散）等 v4.1 起语义逐字不变。只新增五个常量 + 改四个引用点（data 定义/导出、hero 结算、drawBattle 预览、shop 文案）。
+- 验证：`node --check js/data.js js/hero.js js/view/drawBattle.js js/shop.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v16.1 专项冒烟（/tmp/jrpg_smoke_v161_potion.mjs）**31 项断言全过**——常量导出 0.5/8/0.8/20/0.4、真实 `takePotion` 驱动高级灵药优先（回血/回蓝与常量逐字耦合、封顶正确）与普通药分支（+48、不回蓝）、真实 `buildShopList` 药水文案与旧字面量逐字一致、hero/drawBattle/shop 三处源码旧裸数字 0.5/8/0.8/20/0.4 已清除且 import/定义/导出皆在位。
+
 ## v16.0 战斗随机掉落概率/金币数额单一数据源——档位判定与帮助页「战斗掉落」标注同读 DROP_*（机制·单一口径，与 CHEST_* / FLEE_SUCCESS / BURN_PCT 同体系）
 
 - 【0.08/0.2/0.32/0.38 与 +60 散落两处，帮助页再各写自己的字面量】战斗随机掉落 = 胜利后约 38% 触发：`roll < 0.08` 装备升级（木剑/铁剑→秘银剑、布衣/皮甲→锁子甲，已最好则 +60 金）、`< 0.2` 药水、`< 0.32` 魔法蘑菇（仅雾语林/矿脉，否则并入药水档）、`< 0.38` 高级灵药：这四个边界与金币数额 60 硬编码在 `rules.js rollDrop`，`data.js` 帮助页「战斗掉落」行又自写一句字面量「胜利后约 38% 触发随机掉落：8% 装备或+60金 · 12% 药水 · 12% 蘑菇 · 6% 高级灵药」——v12.4 只把概率**讲明**、刻意未动这些数字，两处自此互不相关：想调出货率（如装备档放宽到 10%）要改两个地方，还极易只改结算漏改标注，实际掉率变了帮助页却还标旧值；而写着「8%」「38%」，玩家也看不出这数到底从哪来、靠不靠谱。v15.3 收口宝箱开箱时已把「帮助页又各写一句字面量」定为同款病根，战斗掉落是判定旁剩下的最后一处结算/标注裸奔数值。

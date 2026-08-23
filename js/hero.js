@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
 import { unlockedAchievements } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -22,15 +22,15 @@ export function takePotion() {
   const hero = S.G;
   if (hero.potion2 > 0) {
     hero.potion2--;
-    const h = Math.round(hero.hpMax * 0.8) + 20;
-    const m = Math.round(hero.mpMax * 0.4);
+    const h = Math.round(hero.hpMax * ELIXIR_HP_PCT) + ELIXIR_HP_FLAT;
+    const m = Math.round(hero.mpMax * ELIXIR_MP_PCT);
     hero.hp = Math.min(hero.hpMax, hero.hp + h);
     hero.mp = Math.min(hero.mpMax, hero.mp + m);
     return { h, m, strong: true };
   }
   if (hero.item > 0) {
     hero.item--;
-    const h = Math.round(hero.hpMax * 0.5) + 8;
+    const h = Math.round(hero.hpMax * POTION_HP_PCT) + POTION_HP_FLAT;
     hero.hp = Math.min(hero.hpMax, hero.hp + h);
     return { h, strong: false };
   }

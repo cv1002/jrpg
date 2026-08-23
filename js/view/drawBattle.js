@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -265,10 +265,10 @@ export function drawBattle() {
       const preW = CTX.measureText(`[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑`).width;
       text('⛔', 60 + preW + 5, 441, 'bold 12px', '#ff5b5b');
     }
-    // 药水恢复量预览（信息透明）：数值与 hero.js takePotion 公式同源，纯显示不改结算
+    // 药水恢复量预览（信息透明）：数值与 hero.js takePotion 公式同源（同读 POTION_*/ELIXIR_* 单一真源），纯显示不改结算
     if (pN > 0 || p2 > 0) {
-      const weakP = `🍖+${Math.round(hero.hpMax * 0.5) + 8}HP`;
-      const strongP = p2 > 0 ? `  🧪+${Math.round(hero.hpMax * 0.8) + 20}HP/+${Math.round(hero.mpMax * 0.4)}MP` : '';
+      const weakP = `🍖+${Math.round(hero.hpMax * POTION_HP_PCT) + POTION_HP_FLAT}HP`;
+      const strongP = p2 > 0 ? `  🧪+${Math.round(hero.hpMax * ELIXIR_HP_PCT) + ELIXIR_HP_FLAT}HP/+${Math.round(hero.mpMax * ELIXIR_MP_PCT)}MP` : '';
       // v12.2 消耗顺序透明化：两种药水同时在手时 takePotion() 必先消耗高级灵药（与 hero.js/core.js 的判定同源）——
       // 此前 [3] 到底喝哪一瓶是黑盒，想省灵药留给 Boss 的玩家可能一次中盘小补就悄悄烧掉稀有灵药。
       // 纯显示注记，不改任何药水选择/消耗/恢复逻辑（只有两者皆有时出现，仅一方在手不加注）。

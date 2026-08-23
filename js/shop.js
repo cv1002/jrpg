@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_HP_PCT, POTION_HP_FLAT } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -106,7 +106,7 @@ export function stayInn() {
 export function buildShopList() {
   const hero = S.G;
   const list = [];
-  list.push({ t: `🍖 生命药水 ×1（恢复 50%HP +8）[现有${hero.item}/99]`, price: 15, kind: 'potion', act: buyPotion });
+  list.push({ t: `🍖 生命药水 ×1（恢复 ${Math.round(POTION_HP_PCT * 100)}%HP +${POTION_HP_FLAT}）[现有${hero.item}/99]`, price: 15, kind: 'potion', act: buyPotion });
   if (hero.mushrooms > 0) {
     const blocked = mushroomQuestProtects(hero) && hero.mushrooms <= 3;
     list.push({
