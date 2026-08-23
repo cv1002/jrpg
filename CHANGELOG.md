@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v15.9 Boss 重击倍率单一数据源——真身/平时两档结算与逐招受击预判同读 HEAVY_MULT / HEAVY_MULT_PHASED（机制·单一口径，与 DEFEND_MULT / CRIT_MULT / SHIELD_MULT 同体系）
+
+- 【`enemy.phased ? 2.3 : 1.9` 硬编码两处，预判与结算互不相关】敌方重击伤害 = `cmdDmg(敌攻, 我防, ×2.3 真身 / ×1.9 平时)`：这两个倍率以三元表达式裸写在 `enemyAI.js enemyAct`（结算，深渊之怒实伤）与 `view/drawBattle.js` Boss 逐招受击预判（`重击 -N血`，防御后预测）两处——同一个 2.3/1.9 两处互不相关：想调重击强度（如真身放宽到 2.5、平时收到 1.7）要改两个文件，还极易只改结算漏改预判，实际掉血变了预判却还报旧值对不上。v15.2 收口石甲时已点名防御「另一机制保持原样」，随后 v15.7/v15.8 连收中毒与防御，本作机制数值至此只剩重击倍率一处仍在结算/预判间裸奔。
+- 【修正：data.js 新增 `HEAVY_MULT = 1.9` 与 `HEAVY_MULT_PHASED = 2.3` 为唯一真源】两处同读一份数据：`enemyAct` 重击结算改读 `enemy.phased ? HEAVY_MULT_PHASED : HEAVY_MULT`；`drawBattle` Boss 非真身/真身两分支受击预判改读同一表达式（与结算同式同序）。收益：调重击平衡只改 data.js 一处、两处同步；预判数值逐字不变（真身 2.3 / 平时 1.9 原样），零 UI 回归。
+- 【零回归面】未动重击机制本身——判定时机（`pickAct` 按 `type:'heavy'` 权重选招）、`cmdDmg(atk, defMax, mult)` 公式（`mult=1` 时即普攻）、防御中再 ×DEFEND_MULT 取整、`phased` 由变身分支 `enemy.phased = true` 置位、重击震屏 `S.shake`（纯显示）等语义逐字不变。只新增两个常量 + 改两个引用点。
+- 验证：`node --check js/data.js js/enemyAI.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v15.9 专项冒烟（/tmp/jrpg_smoke_v159_heavy.mjs）**5 项断言全过**——常量导出 1.9/2.3、真实 `enemyAct` 驱动非真身重击伤害与 `cmdDmg(…, HEAVY_MULT)` 逐字耦合（且与真身档可区分）、真身重击伤害与 `cmdDmg(…, HEAVY_MULT_PHASED)` 逐字耦合；grep 确认两处可执行代码的裸 `? 2.3 : 1.9` 已清除。
+
 ## v15.8 防御架势数值单一数据源——结算、防御中横幅、受击/反击预判同读 DEFEND_MULT / DEFEND_MP / COUNTER_CHANCE / COUNTER_MULT（机制·单一口径，与 SHIELD_MULT / CRIT_MULT / POISON_PCT / FLEE_SUCCESS 同体系）
 
 - 【0.5 / 2 / 0.5 / 0.7 散落三处，横幅与预判再各写自己的字面量】防御架势 = 防御中受到的最终伤害再 ×0.5 取整（保底 1）、防御回合回 2 MP、被命中 50% 几率趁隙反击（反击伤害 = `cmdDmg(英雄攻, 敌防, ×0.7)`，未传浮动参、值精确确定）：这四个数硬编码在 `battle.js doDefend`（回 2 MP）与 `enemyAI.js enemyAct`（减伤、反击判定、反击伤害三处），`view/drawBattle.js` 又各写自己的字面量（横幅「防御中 · 减伤50% · 回2MP/回合 · 50%几率反击」、受击预判再 ×0.5 取整、反击预判 ≈N伤 再 ×0.7）——同一个 0.5/2/0.5/0.7 五处互不相关：想调防御强度（如减伤放宽到 0.45、回蓝加到 3、反击概率提到 60%）要改三个文件四处，还极易只改结算漏改横幅/预判，结算已减 50% 界面却还标旧值，对不上；而写着「减伤50%」，玩家也看不出这数到底从哪来、靠不靠谱。v15.2 收口石甲时已点名此处防御「另一机制保持原样」，本作机制数值至此全部数据化收口。

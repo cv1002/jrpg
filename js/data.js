@@ -376,6 +376,14 @@ const DEFEND_MP = 2;        // 防御回合恢复的 MP 点数
 const COUNTER_CHANCE = 0.5; // 防御中被命中触发反击的概率
 const COUNTER_MULT = 0.7;   // 反击伤害倍率（无浮动、值确定，预判可放心展示）
 
+// 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
+// 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
+// 两处互不相关：调重击强度（如真身放宽到 2.5、平时收到 1.7）要改两个地方、还极易只改结算漏改预判，
+// 实际伤害变了预判却还报旧值；数据化后 结算、预判 绝无第二套口径
+// （与 DEFEND_MULT / CRIT_MULT / SHIELD_MULT 同一体系）
+const HEAVY_MULT = 1.9;        // 重击 对平时（未变身）形态的伤害倍率
+const HEAVY_MULT_PHASED = 2.3; // 重击 对二段真身形态的伤害倍率（深渊之怒）
+
 const SPECIES={
   '史莱姆':  {draw:'slime', weak:'fire'},
   '野狼':    {draw:'wolf', weak:'fire'},
@@ -730,7 +738,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
   baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,

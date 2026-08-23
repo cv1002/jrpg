@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -93,7 +93,7 @@ export function enemyAct(deps) {
     hero.hurt = 0;
   } else {
     const heavy = act.type === 'heavy';
-    const mult = heavy ? (enemy.phased ? 2.3 : 1.9) : 1;
+    const mult = heavy ? (enemy.phased ? HEAVY_MULT_PHASED : HEAVY_MULT) : 1;
     let dmg = cmdDmg(enemy.atk, hero.defMax, mult);
     if (hero.defending) dmg = Math.max(1, Math.round(dmg * DEFEND_MULT));
     hero.hp -= dmg;

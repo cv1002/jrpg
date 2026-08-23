@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -297,7 +297,7 @@ export function drawBattle() {
       const acts = (enemy.acts && enemy.acts.length) ? enemy.acts : [{ type: 'attack' }];
       const dmgActs = acts.filter((a) => a.type === 'attack' || a.type === 'heavy');
       const parts = dmgActs.length ? dmgActs : [{ type: 'attack' }];
-      const rawHits = parts.map((a) => Math.max(1, cmdDmg(enemy.atk, hero.defMax, a.type === 'heavy' ? (enemy.phased ? 2.3 : 1.9) : 1)));
+      const rawHits = parts.map((a) => Math.max(1, cmdDmg(enemy.atk, hero.defMax, a.type === 'heavy' ? (enemy.phased ? HEAVY_MULT_PHASED : HEAVY_MULT) : 1)));
       const defHits = rawHits.map((d) => Math.max(1, Math.round(d * DEFEND_MULT)));
       const shown = hero.defending ? defHits : rawHits;
       const seg = parts.map((a, i) => `${ACT_NAME[a.type] || a.type} -${shown[i]}血`);
