@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT } from '../data.js';
+import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -56,10 +56,11 @@ export function drawBrew(){
   const hero = S.G;
   drawWorld(); panel(100,80,440,300,'🧪 药水酿造');
   text(`魔法蘑菇 ${hero.mushrooms} 株    金币 ${hero.gold}    已酿灵药 ${hero.potion2||0} 瓶`,320,140,'15px','#e8eef1','center');
-  text('配方：2 株魔法蘑菇 + 10 金币 → 高级灵药 ×1',320,180,'14px','#ffd24a','center');
-  text('高级灵药：恢复 80% HP + 40% MP',320,210,'13px','#7d93a3','center');
-  if(hero.mushrooms>=2&&hero.gold>=10) text('按 Enter 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
-  else text(`材料不足（还差 ${Math.max(0,2-hero.mushrooms)} 株蘑菇、${Math.max(0,10-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
+  text(`配方：${BREW_MUSHROOMS} 株魔法蘑菇 + ${BREW_GOLD} 金币 → 高级灵药 ×1`,320,180,'14px','#ffd24a','center');
+  // 灵药描述由 ELIXIR_* 常量推导（v16.1 收口结算/战斗预览/商店文案时漏掉的最后一处旧字面量）：与 takePotion 逐字同源
+  text(`高级灵药：恢复 ${Math.round(ELIXIR_HP_PCT * 100)}% HP + ${Math.round(ELIXIR_MP_PCT * 100)}% MP`,320,210,'13px','#7d93a3','center');
+  if(hero.mushrooms>=BREW_MUSHROOMS&&hero.gold>=BREW_GOLD) text('按 Enter 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
+  else text(`材料不足（还差 ${Math.max(0,BREW_MUSHROOMS-hero.mushrooms)} 株蘑菇、${Math.max(0,BREW_GOLD-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
 }
 
 export function drawStatus(){

@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID } from './data.js';
+import { MAPS, HERO_NAMES, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -89,13 +89,13 @@ function brewNow() {
     bind.boxMsg('🍄 任务蘑菇尚未上交，先去找灯长吧！', 2000);
     return;
   }
-  if (hero.mushrooms < 2 || hero.gold < 10) {
+  if (hero.mushrooms < BREW_MUSHROOMS || hero.gold < BREW_GOLD) {
     SFX.cancel();
     bind.boxMsg('材料不足，无法酿造！', 1600);
     return;
   }
-  hero.mushrooms -= 2;
-  hero.gold -= 10;
+  hero.mushrooms -= BREW_MUSHROOMS;
+  hero.gold -= BREW_GOLD;
   hero.potion2++;
   SFX.levelup();
   bind.renderHUD();

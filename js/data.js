@@ -162,6 +162,13 @@ const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6 };
 const CAVE_TREASURE = MAPS.cave.treasure;
 const INN_PRICE = 10;
 
+// 酿造高级灵药配方（单一数据源）：core.brewNow 结算与 view/menus.drawBrew 配方文案/可酿判定/材料差额标注同读此源——
+// 此前 2 株蘑菇 + 10 金硬编码在 brewNow（结算，< / -= 两判定两扣减）与 drawBrew（「配方：2 株蘑菇 + 10 金币」、
+// 可酿判定 hero.mushrooms>=2&&hero.gold>=10、差额 max(0,2-…)/max(0,10-…)）两文件五处互不相关：想调配方（如改 3 株
+// + 15 金）要改两个文件，还极易只改结算漏改文案，酿造成本变了界面却还标旧配方。
+const BREW_MUSHROOMS = 2;   // 酿造一剂高级灵药所需魔法蘑菇株数
+const BREW_GOLD = 10;       // 酿造一剂高级灵药所需金币
+
 const TY = {
   GRASS: 0, TREE: 1, ROCK: 2, WATER: 3, TOWN: 4, PATH: 5, CHEST: 6, BOSS: 7,
   FOUNTAIN: 8, SHOP: 9, INN: 10, GATE: 11, EXIT: 12, NPC: 13, BREW: 14,
@@ -756,7 +763,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, MAPS, INN_PRICE, ENCOUNTER, CAVE_TREASURE,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
