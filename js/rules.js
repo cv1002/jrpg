@@ -1,7 +1,7 @@
 // ============================================================
 // rules.js —— 无副作用的战斗 / 成长 / 图鉴计算
 // ============================================================
-import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT } from './data.js';
+import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD } from './data.js';
 
 export function deep(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -124,11 +124,15 @@ export function unlockedAchievements(hero) {
   return newly;
 }
 
-// 战斗随机掉落（单一数据源）：battle.winBattle 结算调用，
-// 与帮助页概率标注同源——胜利后约 38% 触发：8% 装备或+60金 · 12% 药水 · 12% 蘑菇/药水 · 6% 高级灵药
+// 战斗随机掉落（单一数据源）：随档位判定读 data.js DROP_*（装备 8% → 药水 12% → 蘑菇 12% → 灵药 6%，
+// 合计 38%），battle.winBattle 结算调用，与帮助页「战斗掉落」标注同读此源——胜利后约 38% 触发：
+// 8% 装备或+60金 · 12% 药水 · 12% 蘑菇/药水 · 6% 高级灵药，绝无第二套口径
 export function rollDrop(hero, curMap) {
   const roll = Math.random();
-  if (roll < 0.08) {
+  const edgePotion = DROP_EQUIP + DROP_POTION;             // 药水档上界（原 0.2）
+  const edgeMushroom = edgePotion + DROP_MUSHROOM;         // 蘑菇档上界（原 0.32）
+  const edgeElixir = edgeMushroom + DROP_ELIXIR;           // 灵药档上界（原 0.38）
+  if (roll < DROP_EQUIP) {
     hero.drops = (hero.drops || 0) + 1;
     if (hero.weapon === '木剑' || hero.weapon === '铁剑') {
       hero.weapon = '秘银剑';
@@ -140,15 +144,15 @@ export function rollDrop(hero, curMap) {
       applyStats(hero);
       return '🛡️ 掉落防具：锁子甲 已装备！';
     }
-    hero.gold += 60;
-    return '✨ 宝箱：金币 +60';
+    hero.gold += DROP_GOLD;
+    return '✨ 宝箱：金币 +' + DROP_GOLD;
   }
-  if (roll < 0.2) {
+  if (roll < edgePotion) {
     hero.item++;
     hero.drops = (hero.drops || 0) + 1;
     return '🍖 掉落：生命药水 ×1';
   }
-  if (roll < 0.32) {
+  if (roll < edgeMushroom) {
     if (curMap === 'dungeon' || curMap === 'cave') {
       hero.mushrooms++;
       hero.drops = (hero.drops || 0) + 1;
@@ -158,7 +162,7 @@ export function rollDrop(hero, curMap) {
     hero.drops = (hero.drops || 0) + 1;
     return '🍖 掉落：生命药水 ×1';
   }
-  if (roll < 0.38) {
+  if (roll < edgeElixir) {
     hero.potion2 = (hero.potion2 || 0) + 1;
     hero.drops = (hero.drops || 0) + 1;
     return '🧪 掉落：高级灵药 ×1！';

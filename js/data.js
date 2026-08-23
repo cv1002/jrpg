@@ -384,6 +384,18 @@ const COUNTER_MULT = 0.7;   // 反击伤害倍率（无浮动、值确定，预�
 const HEAVY_MULT = 1.9;        // 重击 对平时（未变身）形态的伤害倍率
 const HEAVY_MULT_PHASED = 2.3; // 重击 对二段真身形态的伤害倍率（深渊之怒）
 
+// 战斗随机掉落概率/金币数额（单一数据源）：rules.rollDrop 的档位判定与帮助页「战斗掉落」标注同读此源——
+// 此前 0.08/0.2/0.32/0.38 边界与 +60 金硬编码在 rules.js 的 rollDrop，data.js 帮助页又自写一句字面量
+// 「8% 装备或+60金 · 12% 药水 · 12% 蘑菇 · 6% 高级灵药」，两处互不相关：调出货率（如装备档放宽到 10%）
+// 要改两个地方、还极易只改结算漏改标注，实际掉率变了帮助页却还标旧值；数据化后 结算、标注 绝无第二套
+// 口径（与 CHEST_MUSHROOM / FLEE_SUCCESS / BURN_PCT 同一体系）。档位推导：装备档 8% → 药水档累进至
+// 20% → 蘑菇档（限雾语林/矿脉，否则并入药水档）累进至 32% → 灵药档累进至 38%，合计约 38% 有掉落
+const DROP_EQUIP = 0.08;     // 装备升级（已最好则 +DROP_GOLD 金）
+const DROP_POTION = 0.12;    // 生命药水
+const DROP_MUSHROOM = 0.12;  // 魔法蘑菇（仅雾语林/矿脉；其余地图并入药水档）
+const DROP_ELIXIR = 0.06;    // 高级灵药
+const DROP_GOLD = 60;        // 装备档已尽善时的金币兜底数额
+
 const SPECIES={
   '史莱姆':  {draw:'slime', weak:'fire'},
   '野狼':    {draw:'wolf', weak:'fire'},
@@ -684,7 +696,7 @@ const HELP_PAGES=[
     ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×1.35 · 抗性伤害×0.7'],
     ['石心魔像·石甲','血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -40%'],
     ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
-    ['战斗掉落','胜利后约 38% 触发随机掉落：8% 装备或+60金 · 12% 药水 · 12% 蘑菇 · 6% 高级灵药'],
+    ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水 · ' + Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
     ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币(' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + ')·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水；城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
     ['魔物强度','记忆图鉴（B）可查看已遇魔物兵力与弱点，战前先看威胁预警'],
   ],
@@ -738,7 +750,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
   baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,
