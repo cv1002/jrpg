@@ -1,9 +1,9 @@
 // ============================================================
 // view/drawBattle.js —— 战斗画面
 // ============================================================
-import { S } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME } from '../data.js';
-import { cmdDmg, atkEstimate, skillEstimate } from '../rules.js';
+import { S, curMap } from '../state.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT } from '../data.js';
+import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
 import { bind } from '../bind.js';
@@ -28,16 +28,15 @@ bind.burstEnemy = burstEnemy;
 bind.burstPlayer = burstPlayer;
 
 export function enemyLv(enemy) {
-  const n = enemy.name;
-  if (n === '终焉之神' || n === '终焉之神·祸乱形态' || n === '终焉之神·真身' || n === '终焉之神 ·真身') return 12;
-  if (n === '幽冥魔王' || n === '幽冥魔王·真身' || n === '幽冥魔王 ·真身') return 8;
-  if (n === '洞窟领主' || n === '洞窟领主·真身' || n === '洞窟领主 ·真身') return 7;
+  // Boss 推荐等级单一数据源：data.js SPECIES[].lv（祭坛 ⚠Lv 标签同读）
+  const sp = SPECIES[canonicalName(enemy.name)];
+  if (sp && sp.lv) return sp.lv;
   if (enemy.isElite) return (S.G ? S.G.level : 1) + 1;
   return S.G ? S.G.level : 1;
 }
 
 function drawArena() {
-  const map = S.curMap;
+  const map = curMap();
   if (map === 'village') {
     const g = CTX.createLinearGradient(0, 0, 0, CV.height);
     g.addColorStop(0, '#3a7d4a');
@@ -82,13 +81,18 @@ export function drawSkillMenu() {
     const ok = hero.mp >= skill.mp && !banned;
     const col = !ok ? '#7d93a3' : (skill.kind === 'heal' ? '#8ff0a0' : '#e8eef1');
     let prev = '';
-    if (skill.kind === 'heal') prev = ' +' + Math.round(hero.hpMax * skill.heal) + 'HP' + (skill.cleanse ? ' ·解毒' : '');
+    // v14.0 蓄力状态下治疗不消耗蓄力（纯显示注释，与 battle.doSkill 同源）：储备清晰的「蓄力保留」标注
+    if (skill.kind === 'heal') prev = ' +' + Math.round(hero.hpMax * skill.heal) + 'HP' + (skill.cleanse ? ' ·解毒' : '') + (hero.charge ? ' ·蓄力保留' : '');
     else prev = ' ≈' + skillEstimate(hero, enemy, skill) + '伤';
     const hint = skill.hint ? (' · ' + skill.hint) : '';
     text(`[${i + 1}] ${s}${prev}${banned ? '  ⛔封印' : (ok ? '' : '  ⛔')}`, 170, 160 + i * 36, '14px', col);
     // MP 消耗标注（信息透明）：蓝=够用 红=不足 灰=被封印；右对齐独立列，不挤占技能名/伤害预览
     text(`MP ${skill.mp}`, 474, 160 + i * 36, 'bold 12px', banned ? '#7d93a3' : (hero.mp >= skill.mp ? '#62c6ff' : '#e14b3f'), 'right');
     text(hint, 188, 176 + i * 36, '11px', '#7d93a3');
+    // v14.2 技能 MP 不足「还差 N」口径（信息透明·纯显示）：红色 MP 行下方再补短缺口数，
+    // 一眼看清差几点 MP 才能放这招、不必心算——与 MP 行 / skill.mp 判定同源；封印与够用时均不显示，
+    // 右对齐 474 与 hint 左起 188 各行最长 hint（≈165px→至353）无重叠，只展示不参与结算
+    if (!banned && hero.mp < skill.mp) text(`⛔ 还差 ${skill.mp - hero.mp} MP`, 474, 176 + i * 36, 'bold 11px', '#e14b3f', 'right');
   });
   text(`当前 MP：${hero.mp}/${hero.mpMax}${hero.charge ? `  · 蓄力×${CHARGE_MULT}` : ''}`, 320, 368, '13px', '#7d93a3', 'center');
   text('[数字键] 选择   [Esc] 取消', 320, 394, '13px', '#7d93a3', 'center');
@@ -102,13 +106,31 @@ export function openSkillMenu() {
 export function drawBattle() {
   CTX.imageSmoothingEnabled = false;
   CTX.clearRect(0, 0, CV.width, CV.height);
+  // 震屏（纯显示）：暴击/重击/大伤害由 battle.attackMove 与 enemyAI 设 S.shake，220ms 衰减；技能菜单不随震
+  let shx = 0, shy = 0;
+  if (S.shake) {
+    const t = (Date.now() - S.shake.t0) / 220;
+    if (t >= 1) S.shake = null;
+    else {
+      const k = (1 - t) * S.shake.pow;
+      shx = Math.round(Math.sin(Date.now() / 18) * k);
+      shy = Math.round(Math.cos(Date.now() / 23) * k * 0.7);
+    }
+  }
+  CTX.save();
+  CTX.translate(shx, shy);
   drawArena();
   const hero = S.G;
   const enemy = S.enemy;
   text(`⚔️ 回合 ${S.battleTurn || 1}`, 60, 26, 'bold 14px', '#ffd24a');
   if (enemy && enemy.isRush) {
     const st = Math.min(RUSH_BOSSES.length, Math.max(1, hero.rushStage || 1));
-    text(`🧭 试炼三连战 第 ${st}/${RUSH_BOSSES.length} 关`, 60, 48, 'bold 13px', '#a8ff8a');
+    // v12.9 试炼每关自动回血透明化（纯显示·与结算同源）：每胜一关悄然回血 35%HP/50%MP，此数值 v3.15 只标
+    // 「第 N/3 关」、v11.0 只标通关金币，从未在界面告示——不会算「该不该省灵药」的玩家可能白白浪费两瓶药。
+    // 数据源直接读 RUSH_RECOVER（与 battle.winBattle 连胜分支逐字同源），仅在前方还有关卡时显示，纯显示不改结算
+    let rushNote = '';
+    if (st < RUSH_BOSSES.length) rushNote = ` · 通关恢复${Math.round(RUSH_RECOVER.hp * 100)}%HP/${Math.round(RUSH_RECOVER.mp * 100)}%MP`;
+    text(`🧭 试炼三连战 第 ${st}/${RUSH_BOSSES.length} 关${rushNote}`, 60, 48, 'bold 13px', '#a8ff8a');
   }
   const ex0 = CV.width / 2;
   const ey0 = 248;
@@ -136,23 +158,46 @@ export function drawBattle() {
       if (!enemy.phased) {
         const thr = Math.ceil(enemy.hpMax * (enemy.phase2.at || 0.5));
         text(`二段变身线 · HP<${thr}`, ex0 + 6, 76, 'bold 9px', '#ffd24a');
+        // v12.7 变身「增益数值」透明化（纯显示·承接 v1.34 变身线）：血量阈值早已标注，但变身瞬间的
+        // 攻/防 暴涨、回血比例与「封治愈」从 v1.x 起就只藏在 data.js 的 phase2 里——blog 只报回血数值，
+        // 攻防加成无从知晓，玩家常在真身那一下被新数值打崩还不知原因。现直接读 enemy.phase2 同源数据
+        // （与 battle.enemyAct 逐字同源：atk/def 加算、heal 按 maxHP 比例回血、forbid 封印），
+        // 在右缘角标列常驻列出变身后果；phased 后随之消失，纯显示不改任何结算。
+        const p2 = enemy.phase2;
+        const boostBits = [];
+        if (p2.atk) boostBits.push(`攻+${p2.atk}`);
+        if (p2.def) boostBits.push(`防+${p2.def}`);
+        if (p2.heal) boostBits.push(`回${Math.round(p2.heal * 100)}%`);
+        if (p2.forbid && p2.forbid.includes('heal')) boostBits.push('⛔封治愈');
+        if (boostBits.length) text(`变身：${boostBits.join(' ')}`, 620, 76, 'bold 10px', '#ffd24a', 'right');
       }
     }
     text(`我方 攻${hero.atkMax} 防${hero.defMax}   ⚔  敌方 攻${enemy.atk} 防${enemy.def}`, ex0, 92, 'bold 13px', '#8fa8b8', 'center');
     const wk = enemy.weak ? (' · 弱点' + ELEM_NAME[enemy.weak]) : '';
-    // 补齐确定性奖励（与 winBattle 同源，纯显示）：精英必掉蘑菇；终焉之神战胜另有 +300 金币
-    const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+300金' : '');
-    text(`战利品预览：经验 +${enemy.xp} 金币 +${enemy.gold}${wk}${bonus}${enemy.isRush ? '（试炼通关另有奖励）' : ''}`, ex0, 112, 'bold 13px', '#a8ff8a', 'center');
+    // 敌方抗性（信息透明·纯显示）：与 wk 对称——技能期望伤害已默默按 elemMult ×0.7 计入抗性，
+    // 图鉴 codexTag 也已标注「抗性·X」，但战斗画面只标弱点不标抗性会让「同一招打它为什么低一截」成黑盒；
+    // 这里直接读取 enemy.resist 同源数据补上（如 石魔像/骷髅兵/树精/魔王真身 的 抗火/抗冰），不影响任何结算
+    const res = enemy.resist ? (' · 抗' + ELEM_NAME[enemy.resist]) : '';
+    // 补齐确定性奖励（与 winBattle 同源，纯显示）：精英必掉蘑菇；终焉之神战胜另有 +300 金币；
+    // 幽冥魔王（isBoss）首次击败必掉圣光之剑（winBattle 的 isBoss 掉落分支 / 图鉴 codexTag「⚔️ 必掉圣光之剑」逐字同源）——
+    // 这把攻+24 的传说剑是通关关键收益，预览行若不写，打赢之前它始终是黑盒；
+    // 试炼战的通关奖励不再是黑盒——确切数额直接读 rushReward(S.G.level)（与 winBattle 结算逐字同源，随当前等级实时显示）
+    const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+300金' : '') + (enemy.isBoss ? ' · ⚔️ 必掉圣光之剑' : '');
+    const rushBonus = enemy.isRush ? `（试炼通关另奖 ${rushReward(S.G ? S.G.level : 1)} 金币，随等级提升）` : '';
+    text(`战利品预览：经验 +${enemy.xp} 金币 +${enemy.gold}${wk}${res}${bonus}${rushBonus}`, ex0, 112, 'bold 13px', '#a8ff8a', 'center');
     if ((enemy.shield || 0) > 0) text(`🪨 石甲×${enemy.shield}（受击-40%）`, 620, 112, 'bold 12px', '#c0b397', 'right');
     if ((enemy.burn || 0) > 0) {
-      // 灼烧每回合扣血数值（信息透明·纯显示）：与 enemyAct 同源 max(2, round(hpMax×0.04))，一眼看清烧多少
-      text(`🔥 灼烧 ${enemy.burn} · 每回合 -${Math.max(2, Math.round(enemy.hpMax * 0.04))}血`, 620, 128, 'bold 12px', '#ff8a2c', 'right');
+      // 灼烧每回合扣血数值（信息透明·纯显示）：与 enemyAct 同源 max(2, round(hpMax×BURN_PCT))，一眼看清烧多少
+      text(`🔥 灼烧 ${enemy.burn} · 每回合 -${Math.max(2, Math.round(enemy.hpMax * BURN_PCT))}血`, 620, 128, 'bold 12px', '#ff8a2c', 'right');
     }
     // 敌方格斗状态角标（信息透明）：冰霜击冻结后与石甲/灼烧同列常驻，下回合敌方行动时自动解除
     if (enemy.skipNext) text('❄️ 冻结 · 下回合无法行动', 620, 144, 'bold 12px', '#8fd8ff', 'right');
     if (enemy.forbid && enemy.forbid.includes('heal')) text('⛔ 治愈封印', 620, 48, 'bold 12px', '#ff5b5b', 'right');
     // 敌方招数一览（信息透明·纯显示）：与 battle.enemyAct/pickAct 读取同一份 enemy.acts 数据源，
-    // 提前列清「它可能怎么做」——重击/回血/石甲，含血量触发线、层数上限与变身后强化/封印；
+    // 提前列清「它可能怎么做」——重击/回血/石甲，含血量触发线、回血数额(与结算同源 act.pct)、层数上限与变身后强化/封印；
+    // v12.8：【回血数额透明化】此前只标「血<40%时」不标回多少——回血 = maxHP×act.pct（与 enemyAct
+    // 回血分支 Math.round(enemy.hpMax * (act.pct || 0.12)) 逐字同源，默认 0.12 同款兜底），
+    // 三 Boss 一栏看清 10%/12% 的暗影回血量，与 v12.7 变身回血比例同一「信息透明」体系。
     // 只读不改，不影响任何敌方行动判定；无 acts 的普通魔物（只会普攻）不显示，避免噪音。
     // 位置：右缘状态角标列纵向下延（y=162），不出血条下方精灵区，纯显示不改结算
     if (enemy.acts && enemy.acts.length) {
@@ -161,7 +206,8 @@ export function drawBattle() {
         let s = ACT_NAME[a.type] || a.type;
         if (a.hpBelow != null) s += `·血<${Math.round((a.hpBelow || 0) * 100)}%时`;
         if (a.type === 'shield' && a.maxShield != null) s += `·至多${a.maxShield}层`;
-        if (a.type === 'heal' && enemy.forbid && enemy.forbid.includes('heal')) s += '·⛔封印';
+        // 回血数额（信息透明·纯显示）：与 battle.enemyAct 回血分支同源读 act.pct，默认 0.12 兜底同款
+        if (a.type === 'heal') s += `·恢复${Math.round((a.pct || 0.12) * 100)}%HP` + (enemy.forbid && enemy.forbid.includes('heal') ? '·⛔封印' : '');
         if (a.w2 != null && enemy.phased) s += '·真身后强';
         return s;
       });
@@ -197,20 +243,23 @@ export function drawBattle() {
     CTX.textBaseline = 'middle';
     CTX.fillText('盾', 0, 0);
     CTX.restore();
-    text('防御中 · 减伤50% · 回2MP/回合 · 50%几率反击', 448, 352, 'bold 12px', '#5fc8ff');
+    text('防御中 · 减伤' + Math.round((1 - DEFEND_MULT) * 100) + '% · 回' + DEFEND_MP + 'MP/回合 · ' + Math.round(COUNTER_CHANCE * 100) + '%几率反击', 448, 352, 'bold 12px', '#5fc8ff');
   }
   if (hero.charge) text(`蓄力中 · 下击/技能×${CHARGE_MULT}`, 356, 322, 'bold 12px', '#ffd24a');
   if ((hero.poison || 0) > 0) {
-    // 中毒每回合扣血数值（信息透明·纯显示）：与 applyPoisonTick 同源 max(2, round(hpMax×0.05))，看清该不该净化/速战
+    // 中毒每回合扣血数值（信息透明·纯显示）：与 applyPoisonTick 同源 max(2, round(hpMax×POISON_PCT))，看清该不该净化/速战
     const pulse = (Math.floor(Date.now() / 400) % 2 === 0);
-    text(`☠️ 中毒 ${hero.poison} 回合 · 每回合 -${Math.max(2, Math.round(hero.hpMax * 0.05))}血`, 200, 370, 'bold 12px', pulse ? '#7fe08a' : '#c0ffce');
+    text(`☠️ 中毒 ${hero.poison} 回合 · 每回合 -${Math.max(2, Math.round(hero.hpMax * POISON_PCT))}血`, 200, 370, 'bold 12px', pulse ? '#7fe08a' : '#c0ffce');
   }
   if (!S.battleBusy) {
     const pN = hero.item || 0;
     const p2 = hero.potion2 || 0;
     const atkPrev = enemy ? `≈${atkEstimate(hero, enemy)}伤` : '';
     const isBossFlee = !!(enemy && (enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush));
-    const bar = `[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑${isBossFlee ? '' : '·成功率约60%'}  [5]防御  [6]蓄力`;
+    // 逃跑成功率标注（单一数据源·纯显示）：读 data.js FLEE_SUCCESS（与 battle.doFlee 的随机判定同源）——
+    // 此前指令栏与 help 各写一处「约60%」字面量、判定又是 battle.js 里的裸 0.6，调平衡要改三个地方；
+    // 数据化后调一处三处同步，显示文案与结算绝无第二套口径
+    const bar = `[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑${isBossFlee ? '' : '·成功率约' + Math.round(FLEE_SUCCESS * 100) + '%'}  [5]防御  [6]蓄力`;
     text(bar, 60, 440, '13px', '#8fa8b8');
     if (isBossFlee) {
       const preW = CTX.measureText(`[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑`).width;
@@ -220,7 +269,11 @@ export function drawBattle() {
     if (pN > 0 || p2 > 0) {
       const weakP = `🍖+${Math.round(hero.hpMax * 0.5) + 8}HP`;
       const strongP = p2 > 0 ? `  🧪+${Math.round(hero.hpMax * 0.8) + 20}HP/+${Math.round(hero.mpMax * 0.4)}MP` : '';
-      text(`[3]恢复：${weakP}${strongP}`, 60, 424, 'bold 12px', '#8ff0a0');
+      // v12.2 消耗顺序透明化：两种药水同时在手时 takePotion() 必先消耗高级灵药（与 hero.js/core.js 的判定同源）——
+      // 此前 [3] 到底喝哪一瓶是黑盒，想省灵药留给 Boss 的玩家可能一次中盘小补就悄悄烧掉稀有灵药。
+      // 纯显示注记，不改任何药水选择/消耗/恢复逻辑（只有两者皆有时出现，仅一方在手不加注）。
+      const orderNote = pN > 0 && p2 > 0 ? '（自动先喝🧪）' : '';
+      text(`[3]恢复：${weakP}${strongP}${orderNote}`, 60, 424, 'bold 12px', '#8ff0a0');
     }
   }
   const maxV = Math.max(0, S.blog.length - 3);
@@ -238,31 +291,37 @@ export function drawBattle() {
     if (enemy && isBossFlee) {
       // Boss 战敌方攻击预判（信息透明·纯显示，承接 v6.3 敌招一览）：多招强敌逐一列出「普攻/重击」的期望伤害，
       // 数据源与 battle.pickAct/enemyAct 同一份 enemy.acts——重击倍率逐字同源（真身 2.3 / 平时 1.9）、
-      // 受击公式 cmdDmg(atk, defMax, mult) 与结算同式同序、防御中再 ×0.5 取整；只列会出伤害的招，
+      // 受击公式 cmdDmg(atk, defMax, mult) 与结算同式同序、防御中再 ×DEFEND_MULT 取整；只列会出伤害的招，
       // 回血/石甲不算受击。致命判定取「最重一击」为上限（任一招可能致命即警示 ⚠️）。
       const ACT_NAME = { attack: '普攻', heavy: '重击' };
       const acts = (enemy.acts && enemy.acts.length) ? enemy.acts : [{ type: 'attack' }];
       const dmgActs = acts.filter((a) => a.type === 'attack' || a.type === 'heavy');
       const parts = dmgActs.length ? dmgActs : [{ type: 'attack' }];
       const rawHits = parts.map((a) => Math.max(1, cmdDmg(enemy.atk, hero.defMax, a.type === 'heavy' ? (enemy.phased ? 2.3 : 1.9) : 1)));
-      const defHits = rawHits.map((d) => Math.max(1, Math.round(d * 0.5)));
+      const defHits = rawHits.map((d) => Math.max(1, Math.round(d * DEFEND_MULT)));
       const shown = hero.defending ? defHits : rawHits;
       const seg = parts.map((a, i) => `${ACT_NAME[a.type] || a.type} -${shown[i]}血`);
       const worst = Math.max(...shown);
       const lethal = worst >= hero.hp;
       const entCol = lethal ? '#ff9d6b' : '#8fa8b8';
+      // 防御反击伤害预估（信息透明·纯显示）：与 battle.js enemyAct 反击分支逐字同源
+      // cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT) —— 反击倍率读 COUNTER_MULT、无浮动、值确定，可放心展示
+      const counterDmg = Math.max(1, cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT));
       const preTxt = hero.defending
-        ? `格挡中 · ${seg.join(' · ')}`
+        ? `格挡中 · ${seg.join(' · ')} · 反击≈${counterDmg}伤`
         : `敌方攻击预判：${seg.join(' · ')}（防御后-${defHits.join('/')}血）`;
       text(`${preTxt}${lethal ? ' ⚠️致命' : ''}  我方HP ${hero.hp}/${hero.hpMax}`, 320, 395, 'bold 11px', entCol, 'center');
     } else if (enemy && !isBossFlee) {
-      // 预判与 battle.enemyAct 结算逐字同源：受击 = max(1, cmdDmg(atk, defMax, 1))，防御中再 ×0.5 取整
+      // 预判与 battle.enemyAct 结算逐字同源：受击 = max(1, cmdDmg(atk, defMax, 1))，防御中再 ×DEFEND_MULT 取整
       const heroDefDmg = Math.max(1, cmdDmg(enemy.atk, hero.defMax, 1));
-      const heroGuardDmg = Math.max(1, Math.round(heroDefDmg * 0.5));
+      const heroGuardDmg = Math.max(1, Math.round(heroDefDmg * DEFEND_MULT));
+      // 防御反击伤害预估（信息透明·纯显示）：与 battle.js enemyAct 反击分支逐字同源
+      // cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT) —— 反击倍率读 COUNTER_MULT、无浮动、值确定
+      const counterDmg = Math.max(1, cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT));
       const lethal = (hero.defending ? heroGuardDmg : heroDefDmg) >= hero.hp;
       const entCol = lethal ? '#ff9d6b' : '#8fa8b8';
       const preTxt = hero.defending
-        ? `敌方攻击预判：格挡中 · 本回合只受 -${heroGuardDmg}血`
+        ? `敌方攻击预判：格挡中 · 本回合只受 -${heroGuardDmg}血 · 反击≈${counterDmg}伤`
         : `敌方攻击预判：-${heroDefDmg}血（防御后-${heroGuardDmg}血）`;
       text(`${preTxt}${lethal ? ' ⚠️致命' : ''}  我方HP ${hero.hp}/${hero.hpMax}`, 320, 395, 'bold 12px', entCol, 'center');
     }
@@ -286,6 +345,16 @@ export function drawBattle() {
     p.vy += 0.16;
     p.life--;
     if (p.life <= 0) S.parr.splice(i, 1);
+  }
+  CTX.restore();
+  // 变身闪光（纯显示）：enemyAI 变身分支设 S.flash，400ms 白金衰减全屏覆盖
+  if (S.flash) {
+    const t = (Date.now() - S.flash.t0) / 400;
+    if (t >= 1) S.flash = null;
+    else {
+      CTX.fillStyle = `rgba(255,246,220,${0.55 * (1 - t)})`;
+      CTX.fillRect(0, 0, CV.width, CV.height);
+    }
   }
   if (S.skillMenuOpen) drawSkillMenu();
 }

@@ -181,6 +181,16 @@ TILE[TY.TRIAL]=tileCanvas(c=>{
   c.fillStyle='#ffd24a'; c.font='bold 9px sans-serif'; c.textAlign='center'; c.fillText('试',16,18);
   c.fillStyle='#c06fef'; c.font='bold 6px sans-serif'; c.fillText('B',16,28);
 });
+TILE[TY.STELE]=tileCanvas(c=>{
+  c.fillStyle='#141a24'; c.fillRect(0,0,T,T);
+  c.fillStyle='rgba(158,180,200,.10)'; c.beginPath(); c.arc(16,20,13,0,7); c.fill();
+  c.fillStyle='#3f4a58'; c.fillRect(9,8,14,20);            // 碑身
+  c.fillStyle='#525e6e'; c.fillRect(9,8,14,3);             // 碑沿
+  c.fillStyle='#525e6e'; c.beginPath(); c.arc(16,9,7,Math.PI,0); c.fill(); // 圆顶
+  c.fillStyle='rgba(158,180,200,.5)'; c.fillRect(12,14,8,1); c.fillRect(12,18,8,1); c.fillRect(12,22,6,1); // 无名刻痕
+  c.fillStyle='#2a3440'; c.fillRect(7,26,18,3);            // 基座
+  c.fillStyle='rgba(255,220,140,.35)'; c.fillRect(15,15,2,2); // 温的一点
+});
 TILE[TY.CAVE]=tileCanvas(c=>{
   c.fillStyle='#2a2f38'; c.fillRect(0,0,T,T);
   c.fillStyle='#333a45'; c.fillRect(3,3,6,4); c.fillRect(20,14,7,5); c.fillRect(9,24,8,5);   // 岩块肌理
@@ -249,13 +259,16 @@ function applyPunyTiles() {
   TILE[TY.TRIAL] = bake(d(19, 17));
   TILE[TY.CAVE] = bake(d(1, 1));
   TILE[TY.CAVEWALL] = bake(d(3, 11));
+  // 名字石碑（MiniWorld Tombstones，CC0）：无字回廊 STELE 瓦片
+  const TB = sheets.mwTomb;
+  if (TB) TILE[TY.STELE] = bake((ctx) => blit16(ctx, TB, 0, 0));
 }
 
 atlasReady.then((ok) => { if (ok) applyPunyTiles(); });
 
 const TILE_PROP = new Set([
   TY.CHEST, TY.EXIT, TY.GATE, TY.ROCK, TY.BOSS, TY.BREW,
-  TY.FOUNTAIN, TY.SHOP, TY.INN, TY.MB, TY.SB, TY.TRIAL,
+  TY.FOUNTAIN, TY.SHOP, TY.INN, TY.MB, TY.SB, TY.TRIAL, TY.STELE,
 ]);
 
 export { TILE, TILE_PROP, TILE_GRASS_VAR, TILE_CHEST_OPEN };

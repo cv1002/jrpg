@@ -4,17 +4,24 @@
 import { S } from '../state.js';
 import { SPECIES, T } from '../data.js';
 import { CTX, rr } from './canvas.js';
-import { sheets, blitFrame } from './atlas.js';
+import { sheets, blitFrame, SHEET_CELL16 } from './atlas.js';
 
 const DIR_ROW = { D: 0, R: 2, U: 4, L: 6 };
+// NPC 造型（MiniWorld CC0 16×16 帧；贴图缺失时退回程序化 mark）
 const NPC_SHEET = {
-  chief: 'mage', villager: 'worker', adventurer: 'soldier',
-  sage: 'mageRed', hunter: 'archer', cartman: 'workerCyan',
+  chief: 'mwChief', villager: 'mwVillager', adventurer: 'mwAdventurer',
+  sage: 'mwSage', hunter: 'mwHunter', cartman: 'mwCartman',
 };
 const MON_SHEET = {
-  slime: 'slime', wolf: 'orc', skel: 'soldierYellow', goblin: 'peon',
+  slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
   stone: 'orcSoldierCyan', golem: 'orcSoldierCyan',
   boss: 'orcSoldier', caveboss: 'knight', true: 'mageRed',
+  ghost: 'trash', fire: 'fireGolem',
+};
+// 定制帧位（非标准布局图集）：trash=雾灵（紫幽灵），fireGolem=残焰魔像（2 帧横排）
+const CUSTOM_FRAMES = {
+  trash: { cell: 16, frames: [[13, 7], [14, 7]] },
+  fireGolem: { cell: 32, frames: [[0, 0], [1, 0]] },
 };
 
 function frameCol(hurt, moving) {
@@ -24,9 +31,9 @@ function frameCol(hurt, moving) {
 }
 
 // Puny 角色帧 32×32，实绘大约 14×15，世界 2× 才能站上 32px 格。
-// 战斗场地空，若仍用 1.x 会缩成点，按脚底对齐放大。
+// 战斗场地空，放大后按脚底对齐；3× 在 480 高画布上不会顶满。
 const WORLD_SCALE = 2;
-export const BATTLE_SCALE = 6;
+export const BATTLE_SCALE = 3;
 const TILE_GROUND = T / 2;
 const CHAR_FOOT = 22 / 32;
 const SLIME_FOOT = 19 / 32;
@@ -53,12 +60,37 @@ function plantDy(dest, footFrac, ground) {
 
 function drawSheetChar(img, px, py, dir, opts) {
   const dest = Math.round(32 * ((opts && opts.scale) || 1));
-  const { dx, dy, ground } = plantDy(dest, CHAR_FOOT, opts && opts.ground);
+  const cell = (opts && opts.cell) || 32;
+  let { dx, dy, ground } = plantDy(dest, (opts && opts.foot) || CHAR_FOOT, opts && opts.ground);
+  // 待机呼吸（纯显示）：±1px 相位浮动，相位随坐标错开防全场同步
+  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / 500 + (px + py) * 0.13));
+  // 32px 图集有专用 hurt 帧（col 20）；16px 图集帧少，受击走红闪罩（下方统一处理）
+  const col = cell === 32 ? frameCol(opts && opts.hurt, opts && opts.moving)
+    : Math.floor(Date.now() / 300) % 2;
   CTX.save();
   CTX.translate(Math.round(px), Math.round(py));
   CTX.imageSmoothingEnabled = false;
   drawShadowAt(ground, dest);
-  blitFrame(CTX, img, frameCol(opts && opts.hurt, opts && opts.moving), DIR_ROW[dir] || 0, 32, dx, dy, dest, dest);
+  blitFrame(CTX, img, col, DIR_ROW[dir] || 0, cell, dx, dy, dest, dest);
+  if (opts && opts.hurt) {
+    CTX.fillStyle = 'rgba(255,80,80,.35)';
+    CTX.fillRect(dx, dy, dest, dest);
+  }
+  CTX.restore();
+}
+
+// 定制帧位图集（CUSTOM_FRAMES 表）：非标准布局的小图集按显式帧列表播放
+function drawSheetCustom(img, px, py, opts) {
+  const spec = CUSTOM_FRAMES[opts.key];
+  const dest = Math.round(32 * ((opts && opts.scale) || 1));
+  let { dx, dy, ground } = plantDy(dest, (opts && opts.foot) || 15 / 16, opts && opts.ground);
+  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / 500 + (px + py) * 0.13));
+  const [fc, fr] = spec.frames[Math.floor(Date.now() / 300) % spec.frames.length];
+  CTX.save();
+  CTX.translate(Math.round(px), Math.round(py));
+  CTX.imageSmoothingEnabled = false;
+  drawShadowAt(ground, dest);
+  blitFrame(CTX, img, fc, fr, spec.cell, dx, dy, dest, dest);
   if (opts && opts.hurt) {
     CTX.fillStyle = 'rgba(255,80,80,.35)';
     CTX.fillRect(dx, dy, dest, dest);
@@ -68,7 +100,9 @@ function drawSheetChar(img, px, py, dir, opts) {
 
 function drawSheetStrip(img, px, py, opts) {
   const dest = Math.round(32 * ((opts && opts.scale) || 1));
-  const { dx, dy, ground } = plantDy(dest, SLIME_FOOT, opts && opts.ground);
+  const foot = (opts && opts.foot) || SLIME_FOOT;
+  let { dx, dy, ground } = plantDy(dest, foot, opts && opts.ground);
+  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / 500 + (px + py) * 0.13));
   const n = Math.max(1, Math.floor(img.width / 32));
   const live = Math.min(8, n);
   const col = (opts && opts.hurt) ? Math.min(n - 1, 8) : (Math.floor(Date.now() / 140) % live);
@@ -172,11 +206,18 @@ const DRAWS={
     CTX.strokeStyle='#200'; CTX.lineWidth=1; CTX.beginPath(); CTX.moveTo(-4,10); CTX.lineTo(4,10); CTX.stroke();
   },
   skel(){
-    CTX.fillStyle='#1a1a1a'; CTX.fillRect(-9,-9,7,7); CTX.fillRect(2,-9,7,7);
-    CTX.beginPath(); CTX.moveTo(-1,2); CTX.lineTo(1,0); CTX.lineTo(3,2); CTX.closePath(); CTX.fill();
-    CTX.strokeStyle='#222'; CTX.lineWidth=1; CTX.beginPath(); CTX.moveTo(-8,5); CTX.lineTo(8,5); CTX.stroke();
-    for(let z=-6; z<=5; z+=4){ CTX.fillStyle='#e8e8e0'; CTX.fillRect(z,5,3,3); }
-    CTX.strokeStyle='#aab2ba'; CTX.lineWidth=1; CTX.beginPath(); CTX.moveTo(-6,12); CTX.lineTo(-6,16); CTX.moveTo(0,11); CTX.lineTo(0,16); CTX.moveTo(6,12); CTX.lineTo(6,16); CTX.stroke();
+    CTX.fillStyle='#1a1a1a';
+    CTX.beginPath(); CTX.arc(-6,-6,4.2,0,7); CTX.arc(6,-6,4.2,0,7); CTX.fill();
+    CTX.beginPath(); CTX.moveTo(0,-2); CTX.lineTo(-2.5,2.5); CTX.lineTo(2.5,2.5); CTX.closePath(); CTX.fill();
+    CTX.strokeStyle='#1a1a1a'; CTX.lineWidth=1.5;
+    CTX.beginPath(); CTX.arc(0,5,7.5,0.2,Math.PI-0.2); CTX.stroke();
+    CTX.fillStyle='#e8e8e0';
+    for (let z = -6; z <= 4; z += 3) CTX.fillRect(z, 4, 2, 3);
+    CTX.strokeStyle='#8a8490'; CTX.lineWidth=1.2;
+    CTX.beginPath();
+    CTX.moveTo(-8,11); CTX.lineTo(8,11);
+    CTX.moveTo(-7,14); CTX.lineTo(7,14);
+    CTX.stroke();
   },
   goblin(col){
     CTX.fillStyle=col; CTX.beginPath(); CTX.moveTo(-15,-8); CTX.lineTo(-20,-18); CTX.lineTo(-11,-12); CTX.closePath(); CTX.fill();
@@ -229,12 +270,18 @@ export function drawMonster(x,y,m){
   const sheetKey=NO_SHEET.has(key)?null:MON_SHEET[key];
   const img=sheetKey&&sheets[sheetKey];
   if(img){
-    if(sheetKey==='slime') drawSheetStrip(img,x,y,{scale:s,ground:0,hurt:m.hurt});
-    else drawSheetChar(img,x,y,'D',{scale:s,ground:0,hurt:m.hurt,moving:true});
+    if(CUSTOM_FRAMES[sheetKey]){
+      const cs = sheetKey==='fireGolem' ? s*0.62 : s*0.55;
+      drawSheetCustom(img,x,y,{key:sheetKey,scale:cs,ground:0,hurt:m.hurt,idle:true});
+      return;
+    }
+    if(sheetKey==='slime') drawSheetStrip(img,x,y,{scale:s,ground:0,hurt:m.hurt,idle:true});
+    else if(sheetKey==='skeleton') drawSheetStrip(img,x,y,{scale:s,ground:0,hurt:m.hurt,foot:30/32,idle:true});
+    else drawSheetChar(img,x,y,'D',{scale:s,ground:0,hurt:m.hurt,moving:true,idle:true});
     return;
   }
   CTX.save();
-  CTX.translate(x, y);
+  CTX.translate(x, y + Math.round(Math.sin(Date.now() / 500 + (x + y) * 0.13)));
   CTX.scale(s, s);
   CTX.translate(0, -17);
   const col=m.color||'#8892a0';
@@ -246,9 +293,14 @@ export function drawMonster(x,y,m){
 }
 
 export function drawNpcSprite(cx, cy, nid, mark) {
-  const img = sheets[NPC_SHEET[nid] || 'mage'];
+  const key = NPC_SHEET[nid] || 'mwVillager';
+  const img = sheets[key];
   if (img) {
-    drawSheetChar(img, cx, cy, 'D', { scale: WORLD_SCALE, ground: TILE_GROUND });
+    const c16 = SHEET_CELL16.has(key);
+    // 16×16 全帧素材按 1×（32px 格）绘制，与 Puny 主角的视觉体量一致
+    drawSheetChar(img, cx, cy, 'D', c16
+      ? { scale: WORLD_SCALE / 2, ground: TILE_GROUND, idle: true, cell: 16, foot: 15 / 16 }
+      : { scale: WORLD_SCALE, ground: TILE_GROUND, idle: true });
     return;
   }
   drawNpcMark(cx - 16, cy - 16, mark);

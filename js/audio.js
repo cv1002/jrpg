@@ -1,7 +1,7 @@
 // ============================================================
 // audio.js —— Web Audio 音效 / BGM
 // ============================================================
-import { S } from './state.js';
+import { S, curMap } from './state.js';
 
 function ac() {
   if (!S.AC) {
@@ -45,6 +45,7 @@ const SFX = {
   ice() { tone(1200, 0.25, 'sine', 0.1, 0, -600); },
   thunder() { tone(90, 0.3, 'sawtooth', 0.16, 0); tone(800, 0.1, 'square', 0.08, 0, 300); },
   select() { tone(660, 0.05, 'square', 0.08); },
+  tick() { tone(1150 + Math.random() * 150, 0.015, 'square', 0.018); },
   cancel() { tone(330, 0.07, 'square', 0.08); },
   block() { tone(320, 0.06, 'triangle', 0.1); tone(480, 0.08, 'triangle', 0.08, 0.05); },
   door() { tone(440, 0.1, 'triangle', 0.1, 0, 200); },
@@ -71,6 +72,12 @@ const MUSIC = {
     step: 0.32, wave: 'sine',
     seq: [220, 0, 0, 0, 196, 0, 208, 0, 220, 0, 0, 0, 233, 0, 196, 0],
     bass: [110, 0, 110, 0, 98, 0, 110, 0],
+  },
+  // 无字回廊：更慢更稀的正弦长音，近乎耳语
+  gallery: {
+    step: 0.45, wave: 'sine',
+    seq: [196, 0, 0, 0, 0, 0, 175, 0, 0, 0, 208, 0, 0, 0, 0, 0],
+    bass: [98, 0, 0, 0, 87, 0, 0, 0],
   },
   battle: {
     step: 0.13, wave: 'square',
@@ -108,8 +115,9 @@ function bgmTick() {
 function bgmFromScene() {
   if (S.scene === 'battle') return 'battle';
   if (S.scene === 'title' || S.scene === 'create') return 'title';
-  if (S.curMap === 'village') return 'village';
-  if (S.curMap === 'cave') return 'cave';
+  if (curMap() === 'village') return 'village';
+  if (curMap() === 'cave') return 'cave';
+  if (curMap() === 'gallery') return 'gallery';
   return 'dungeon';
 }
 

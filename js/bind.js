@@ -1,19 +1,16 @@
 // ============================================================
-// bind.js —— 系统层 ↔ 绘制层 的晚绑定钩子（打破环依赖）
-// systems（world / battle / core）只 import bind，不 import view。
-// view 启动时把真实实现填进来。
-//   boxMsg / renderHUD  ← view/hud.js
-//   drawWorld           ← view/drawWorld.js
-//   drawBattle / burst* ← view/drawBattle.js
-//   drawDead / drawWin / drawStory ← view/menus.js
-//   applyVictoryWorld / loadMap ← world.js
-//   openTalk            ← core.js
+// bind.js —— 系统层 → 绘制层 的晚绑定钩子（systems 不 import view）
+// view 启动时把真实实现填进来，每个键仅一处注册：
+//   boxMsg / renderHUD        ← view/hud.js
+//   drawBattle / burstEnemy / burstPlayer ← view/drawBattle.js
+//   drawStory / drawDead / drawWin / drawEnding ← view/menus.js
+//   CV                        ← view/canvas.js
+// system 间的晚绑定（applyVictoryWorld / loadMap / openTalk）在 hooks.js。
 // ============================================================
 
 export const bind = {
   boxMsg() {},
   renderHUD() {},
-  drawWorld() {},
   drawBattle() {},
   drawDead() {},
   drawWin() {},
@@ -21,8 +18,5 @@ export const bind = {
   drawStory() {},
   burstEnemy() {},
   burstPlayer() {},
-  applyVictoryWorld() {},
-  loadMap() {},
-  openTalk() {},
   CV: { width: 640, height: 480 },
 };

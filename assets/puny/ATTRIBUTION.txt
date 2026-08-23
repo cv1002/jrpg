@@ -6,3 +6,9 @@ https://opengameart.org/content/puny-world-overworld-tileset
 https://opengameart.org/content/puny-dungeon
 https://opengameart.org/content/puny-characters
 https://opengameart.org/content/puny-characters-updated-orcs-included
+
+Skeleton warrior (skeleton.png) — 24×32 walk cycle, south frames padded to 32×32
+Original: artisticdude
+Rework: Jordan Irwin (AntumDeluge); shield: LordNeo
+License: CC0 1.0 Universal
+https://opengameart.org/content/skeletons-rework

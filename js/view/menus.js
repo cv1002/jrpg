@@ -1,14 +1,16 @@
 // ============================================================
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
-import { S } from '../state.js';
-import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag } from '../data.js';
-import { monReward, skillEstimate, codexStats } from '../rules.js';
+import { S, curMap } from '../state.js';
+import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT } from '../data.js';
+import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
 import { CV, CTX, rr, panel, text, hpbar, fmtTime } from './canvas.js';
 import { drawWorld } from './drawWorld.js';
-import { drawMonster } from './sprites.js';
+import { drawMonster, drawNpcSprite } from './sprites.js';
+import { TILE } from './tiles.js';
+import { SFX } from '../audio.js';
 import { bind } from '../bind.js';
 import { boxMsg } from './hud.js';
 
@@ -25,7 +27,14 @@ export function drawShop(){
     if(sel){ CTX.fillStyle='rgba(255,210,74,.15)'; rr(70,96+i*38,500,32,6); CTX.fill(); }
     const col=sel?'#ffd24a':(!afford?'#7d93a3':(it.up?'#8ff0a0':'#e8eef1'));
     text((sel?'▶':' ')+' '+it.t,86,118+i*38,'15px',col);
-    if(it.price>0) text(it.price+'💰'+(afford?'':'（不足）'),560,118+i*38,'13px',afford?'#62c6ff':'#e14b3f','right');
+    if(it.price>0){
+      // 购买差价提示（信息透明·纯显示）：延续 v3.13 旅馆「还差 N 金」/ v3.14 酿造差额 / v14.2 技能
+      // MP「还差 N」同一短缺口径——此前买不起只笼统写「（不足）」，差 5 金还是差 500 金要自己心算；
+      // 直接报出差额（gold<price 时），背包满（药水 99 上限）则如实标注「背包满」，零结算变化
+      const lack = (!afford && hero.gold < it.price) ? `（还差 ${it.price-hero.gold} 金）`
+        : (!afford && it.t.startsWith('🍖')) ? '（背包满）' : '';
+      text(it.price+'💰'+lack,560,118+i*38,'13px',afford?'#62c6ff':'#e14b3f','right');
+    }
   });
   text('绿色▲=更强升级 灰色=买不起 · ↑↓选择  Enter购买  Esc离开',320,470,'12px','#7d93a3','center');
 }
@@ -34,11 +43,11 @@ export function drawInn(){
   const hero = S.G;
   drawWorld(); panel(120,70,400,280,'🏨 旅店');
   text('住一晚可恢复全部 HP/MP',320,130,'15px','#e8eef1','center');
-  text(`价格：${S.innPrice} 金币  (💰${hero.gold})`,320,168,'14px','#ffd24a','center');
+  text(`价格：${INN_PRICE} 金币  (💰${hero.gold})`,320,168,'14px','#ffd24a','center');
   text(`当前   HP ${hero.hp}/${hero.hpMax}   MP ${hero.mp}/${hero.mpMax}`,320,202,'14px','#e8eef1','center');
   if(hero.hp<hero.hpMax||hero.mp<hero.mpMax){
     text(`今晚将恢复   HP +${Math.max(0,hero.hpMax-hero.hp)}   MP +${Math.max(0,hero.mpMax-hero.mp)}`,320,228,'14px','#62c6ff','center');
-    if(hero.gold<S.innPrice) text(`💰 金币不足（还差 ${S.innPrice-hero.gold} 金），无法入住！`,320,254,'14px','#e14b3f','center');
+    if(hero.gold<INN_PRICE) text(`💰 金币不足（还差 ${INN_PRICE-hero.gold} 金），无法入住！`,320,254,'14px','#e14b3f','center');
   } else text('你现在精神饱满，不需要休息。',320,228,'14px','#7d93a3','center');
   text('[Enter] 住宿休息   [Esc] 离开',320,275,'13px','#7d93a3','center');
 }
@@ -57,23 +66,30 @@ export function drawStatus(){
   const hero = S.G;
   drawWorld(); panel(70,28,500,424,'— 状态 —');
   const b=baseStats(hero.level);
-  text(`${hero.name}  Lv.${hero.level}  ${hero.diff?'[困难]':''}`,320,72,'bold 20px','#ffd24a','center');
+  text(`${hero.name}  Lv.${hero.level}  ${hero.diff?`[困难 · 魔物HP×${DIFF_SCALE.hp} 攻×${DIFF_SCALE.atk} 防×${DIFF_SCALE.def}]`:''}`,320,72,'bold 18px','#ffd24a','center');
   text(`经验 ${hero.xp} / ${hero.xpNext} · 距升级还差 ${Math.max(0,(hero.xpNext||0)-(hero.xp||0))} 经验`,320,98,'13px','#e8eef1','center');
   CTX.fillStyle='#122029'; rr(180,106,280,10,5); CTX.fill();
   CTX.fillStyle='#62c6ff'; rr(180,106,Math.max(0,280*(hero.xp/hero.xpNext)),10,5); CTX.fill();
   text('HP',110,140,'bold 15px','#e14b3f'); hpbar(140,132,150,hero.hp,hero.hpMax,'#e14b3f');
   text('MP',110,164,'bold 15px','#3f8fe1'); hpbar(140,156,150,hero.mp,hero.mpMax,'#3f8fe1');
   text('攻击',110,196,'14px'); text(`${b.atk} +${WEAPONS[hero.weapon].atk} = ${hero.atkMax}`,150,196,'bold 14px','#e8eef1');
+  // 暴击率透明度（信息透明·纯显示）：与 battle.js doAttack 的 crit 判定、attackMove 的 ×N 加成
+  // 同读 data.js CRIT_RATE/CRIT_MULT（单一数据源，文案由常量推导，绝无第二套口径）——
+  // README 早已写明「蓄力与暴击可叠加」，但游戏内从没提过普攻会暴击——状态页一眼看清这 12% 的隐藏加成
+  text('· 普攻' + Math.round(CRIT_RATE * 100) + '%暴击 ×' + CRIT_MULT, 288, 196, '11px', '#e8a858');
   text('防御',110,218,'14px'); text(`${b.def} +${ARMORS[hero.armor].def} = ${hero.defMax}`,150,218,'bold 14px','#e8eef1');
   text(`武器：${hero.weapon}    防具：${hero.armor}`,110,242,'14px');
   text(`金币：${hero.gold}    药水🍖:${hero.item}  灵药🧪:${hero.potion2||0}   ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   hero.skills.forEach((s,i)=>{
     const sd=SKILL_DATA[s];
-    text(`· ${s}${sd&&sd.hint?'（'+sd.hint+'）':''}`,120,308+i*16,'12px','#e8eef1');
+    // v7.4: 技能行补齐 MP 消耗（与战斗技能菜单同源 SKILL_DATA.mp，信息透明·状态页可规划消费）
+    text(`· ${s}${sd&&sd.hint?'（'+sd.hint+'）':''}${sd&&sd.mp?` · ${sd.mp} MP`:''}`,120,308+i*16,'12px','#e8eef1');
   });
   const sx=skillXpHint(hero);
-  text(sx?`📖 下一技能：${sx.name}（Lv.${sx.lv} · 还差 ${sx.remain} 经验）`:'✨ 已习得全部技能',110,396,'12px',sx?'#62c6ff':'#7d93a3');
+  const sxd=sx?SKILL_DATA[sx.name]:null;
+  // v7.4: 下一技能提示同步补 MP（与已学技能行同一来源）
+  text(sx?`📖 下一技能：${sx.name}（Lv.${sx.lv} · 还差 ${sx.remain} 经验${sxd&&sxd.mp?` · ${sxd.mp} MP`:''}）`:'✨ 已习得全部技能',110,396,'12px',sx?'#62c6ff':'#7d93a3');
   text('冒险进度：',110,412,'bold 13px','#ffd24a');
   adventureProgress(hero).forEach(([nm,dn],i)=>text((dn?'✓':'✗')+' '+nm,190+i*88,412,'12px',dn?'#4cd964':'#5a6a78'));
   const {main,sides}=questLines(hero);
@@ -82,13 +98,20 @@ export function drawStatus(){
 }
 
 function whereFind(name){
-  const LOC={'石心魔像':'雾语林·稀有精英','幽冥魔王':'雾语林祭坛','洞窟领主':'星井矿脉深处','终焉之神':'星井矿脉·终焉水晶'};
-  return LOC[name]||'草丛随机遇敌';
+  // v14.5 图鉴位置标注与地图数据同源（data.js MAPS 的 extras）：
+  // - v13.7 剧情重构后终焉之神已随主线迁至无字回廊东端祭坛（原「星井矿脉·终焉水晶」为旧位置，水晶已化为开门机关）；
+  // - 残焰魔像（回廊中段精英）此前缺表项，会误显「草丛随机遇敌」——补上。
+  const LOC={'石心魔像':'雾语林·稀有精英','幽冥魔王':'雾语林祭坛','洞窟领主':'星井矿脉深处','终焉之神':'无字回廊东端','残焰魔像':'无字回廊中段'};
+  const loc = LOC[name]||'草丛随机遇敌';
+  // v12.3: 出没等级门槛（与 battle 遇敌分布同源 MON_BASE.minLv / ELITE_GATE_LV，纯显示）——
+  // 树精/石魔像/石心魔像 都要 Lv.3 才在野外出没，图鉴一眼看清「为什么还没遇到它」
+  const lv = spawnLv(name);
+  return lv > 1 ? loc + ' · Lv.' + lv + '起出没' : loc;
 }
 
 export function drawCodex(){
   const hero = S.G;
-  drawWorld(); panel(80,40,480,410,'— 敌人图鉴 —');
+  drawWorld(); panel(80,40,480,410,'— 记忆图鉴 —');
   const PAGE=10;
   const names=Object.keys(hero.bestiary||{});
   const rows=BESTIARY_TARGET.map(n=>({n,got:!!(hero.bestiary||{})[n]}));
@@ -117,7 +140,7 @@ export function drawCodex(){
   }
   const total=names.reduce((a,n)=>a+hero.bestiary[n],0);
   const have=BESTIARY_TARGET.filter(n=>(hero.bestiary||{})[n]>=1).length;
-  text(`图鉴收集：${have}/${BESTIARY_TARGET.length}`,320,404,'14px','#62c6ff','center');
+  text(`记忆收录：${have}/${BESTIARY_TARGET.length}`,320,404,'14px','#62c6ff','center');
   text(`累计讨伐：${total}   ·   额外掉落：${hero.drops||0}`,320,426,'14px','#ffd24a','center');
   const remain=names.length>0?(rows.length-(S.codexScroll+PAGE)):0;
   text(`按 B / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览（还有 ${remain} 种）`:''}`,320,448,'12px','#7d93a3','center');
@@ -156,6 +179,7 @@ function rewardHint(hero, entry) {
   const bits = [];
   if (r.gold) bits.push(r.gold + ' 金币');
   if (r.item) bits.push('药水 ×' + r.item);
+  if (r.potion2) bits.push('灵药 ×' + r.potion2);
   return bits.join(' · ');
 }
 
@@ -272,6 +296,23 @@ export function drawJournal(){
     y += 12;
     sides.forEach((e) => { y += drawQuestCard(e, hero, cx, y, cw, yMax); });
   }
+  // 记忆碎片（data.js FRAGMENTS 单一数据源）：强敌首胜掉落，未收集灰占位不剧透
+  if (y + 24 < yMax) {
+    y += 6;
+    drawSectionHead('记忆碎片', cx, y, '#8fd0ff');
+    y += 16;
+    for (const f of FRAGMENTS) {
+      if (y + 15 > yMax) break;
+      const got = (hero.fragments || []).includes(f.id);
+      if (got) {
+        text('🕯️ ' + f.name, cx + 6, y, 'bold 12px', '#cfe8ff');
+        text(ellipsize(f.text, '11px', cw - 150), cx + 150, y, '11px', '#8aa0b0');
+      } else {
+        text('🕯️ ？？？', cx + 6, y, '12px', '#4a5a66');
+      }
+      y += 16;
+    }
+  }
   CTX.restore();
   text('按 J / Esc 关闭', 320, 432, '12px', '#7d93a3', 'center');
 }
@@ -289,7 +330,7 @@ export function drawTravel(){
   TRAVEL_LIST.forEach(([k,nm,desc,hint],i)=>{
     const on=i===S.travelSel, unlocked=hero.visited.includes(k);
     // 当前所在地标注（信息透明·纯显示）：绿色 📍 一眼看出自己在哪，避免误传送
-    const here=k===S.curMap;
+    const here=k===curMap();
     text((on?'▶ ':'  ')+(unlocked?nm:'？？？ · 未探索')+(here?' 📍':''),180,110+i*52,'16px',on?'#ffd24a':(unlocked?'#e8eef1':'#7d93a3'));
     if(unlocked&&desc) text(desc,180,110+i*52+19,'11px','#7d93a3');
     if(unlocked&&hint) text(hint,478,110+i*52,'bold 11px','#ffd24a','right');
@@ -301,7 +342,9 @@ const PAUSE_ITEMS = [
   { id: 'resume', name: '继续冒险', hint: '返回地图' },
   { id: 'status', name: '状态', hint: 'I' },
   { id: 'journal', name: '任务日志', hint: 'J' },
-  { id: 'codex', name: '敌人图鉴', hint: 'B' },
+  { id: 'codex', name: '记忆图鉴', hint: 'B' },
+  { id: 'ach', name: '成就', hint: 'C' },
+  { id: 'travel', name: '快速旅行', hint: 'T' },
   { id: 'save', name: '存档', hint: 'P' },
   { id: 'help', name: '操作说明', hint: 'H' },
   { id: 'title', name: '返回标题', hint: '不会自动存档' },
@@ -316,23 +359,105 @@ export function drawPause() {
     const sel = i === S.pauseSel;
     if (sel) {
       CTX.fillStyle = 'rgba(255,210,74,.15)';
-      rr(160, 108 + i * 36, 320, 32, 6);
+      rr(160, 108 + i * 32, 320, 28, 6);
       CTX.fill();
     }
     const saveHint = it.id === 'save' ? ('P · 写入槽 ' + S.curSaveSlot) : it.hint;
-    text((sel ? '▶ ' : '  ') + it.name, 180, 130 + i * 36, '15px', sel ? '#ffd24a' : '#e8eef1');
-    text(saveHint, 460, 130 + i * 36, '12px', '#7d93a3', 'right');
+    text((sel ? '▶ ' : '  ') + it.name, 180, 124 + i * 32, '15px', sel ? '#ffd24a' : '#e8eef1');
+    text(saveHint, 460, 124 + i * 32, '12px', '#7d93a3', 'right');
   });
   text('↑↓ 选择  ·  Enter 确定  ·  Esc 关闭', 320, 412, '12px', '#7d93a3', 'center');
 }
 export { PAUSE_ITEMS };
 
+// 对话逐字音效的模块级游标（页/时间锚变化时重置）
+let _talkSig = '';
+let _talkN = 0;
+
+// 富文本行（纯显示）：【…】金色强调；maxChars 为打字机已显字数
+function drawRichLine(x, y, line, maxChars, font) {
+  CTX.font = font + ' sans-serif';
+  CTX.textAlign = 'left';
+  let cx = x;
+  let budget = maxChars;
+  for (const part of line.split(/(【[^】]*】)/)) {
+    if (budget <= 0) break;
+    const show = part.slice(0, budget);
+    budget -= show.length;
+    if (!show) continue;
+    CTX.fillStyle = 'rgba(0,0,0,.55)';
+    CTX.fillText(show, cx + 1, y + 1);
+    CTX.fillStyle = part.startsWith('【') ? '#ffd24a' : '#e8eef1';
+    CTX.fillText(show, cx, y);
+    cx += CTX.measureText(show).width;
+  }
+}
+
 export function drawTalk(){
   drawWorld();
-  const name=NPCS[S.curNpc]?NPCS[S.curNpc].name:'???';
-  panel(40,300,560,140,name); boxMsg('',0);
+  // 对话聚焦：世界压暗一层
+  CTX.fillStyle='rgba(5,8,14,.35)'; CTX.fillRect(0,0,CV.width,CV.height);
+  boxMsg('',0);
+  const npc=NPCS[S.curNpc];
+  const name=npc?npc.name:'???';
+  const bx=40,by=300,bw=560,BH=140;
   const p=S.talkPages[S.talkPage]||[];
-  p.forEach((l,i)=>text(l,60,342+i*26,'15px','#e8eef1'));
+  const {lines,done}=pageShownAt(p,Date.now()-(S.talkLineAt||0));
+  // v15.5 像素感知折行：每个逻辑行折成 ≤可用宽 的视觉片段，打字机预算 lines[i] 沿片段顺序消耗；
+  // 视觉行数决定面板高度（向下扩，by+bh 封顶 470 不越画布）。修复长行右缘截断（灯长任务 offer 等）。
+  const TX_X=bx+96, TX_Y=342, LINE_H=27, MAX_W=bx+bw-24-TX_X;
+  const measure=(s)=>CTX.measureText(s).width;
+  const visual=[];
+  for (let i=0;i<p.length;i++){
+    let budget=lines[i]||0;
+    for (const seg of wrapTalkLine(p[i],MAX_W,measure)){
+      const show=Math.min(budget,seg.length);
+      budget-=show;
+      visual.push({text:seg,show});
+    }
+  }
+  const vh=visual.length;
+  const bh=Math.min(170,BH+Math.max(0,vh-4)*LINE_H);
+  // 面板弹出（纯显示）：开场 140ms 淡入上浮；talkStartAt 只在 openTalk 时设置，翻页不重放
+  const popT=Math.min(1,(Date.now()-(S.talkStartAt||0))/140);
+  const ease=1-(1-popT)*(1-popT);
+  CTX.save();
+  CTX.globalAlpha=0.3+0.7*ease;
+  CTX.translate(0,(1-ease)*10);
+  // 主面板：深底 + 外框 + 内高光边
+  CTX.fillStyle='rgba(8,12,20,.93)'; rr(bx,by,bw,bh,12); CTX.fill();
+  CTX.strokeStyle='#3a5670'; CTX.lineWidth=2; rr(bx,by,bw,bh,12); CTX.stroke();
+  CTX.strokeStyle='rgba(158,200,235,.22)'; CTX.lineWidth=1; rr(bx+3,by+3,bw-6,bh-6,9); CTX.stroke();
+  // 名牌 chip（压在面板左上角框线上）
+  CTX.font='bold 13px sans-serif';
+  const nw=Math.ceil(CTX.measureText(name).width)+24;
+  CTX.fillStyle='rgba(20,30,44,.98)'; rr(bx+18,by-13,nw,26,8); CTX.fill();
+  CTX.strokeStyle='#5a86b0'; CTX.lineWidth=1.5; rr(bx+18,by-13,nw,26,8); CTX.stroke();
+  text(name,bx+18+nw/2,by+5,'bold 13px','#ffd24a','center');
+  // 说话人肖像框（面板左侧）：普通 NPC 画 MiniWorld 造型；石碑画碑体
+  CTX.fillStyle='rgba(20,30,44,.9)'; rr(bx+16,by+22,64,64,8); CTX.fill();
+  CTX.strokeStyle='rgba(90,134,176,.6)'; CTX.lineWidth=1; rr(bx+16,by+22,64,64,8); CTX.stroke();
+  if (S.curNpc && S.curNpc.startsWith('stele')) {
+    const st=TILE[20]; // TY.STELE
+    if (st) { CTX.imageSmoothingEnabled=false; CTX.drawImage(st,bx+32,by+30,48,48); }
+  } else {
+    drawNpcSprite(bx+48,by+54,S.curNpc,npc&&npc.mark);
+  }
+  // 打字机正文（节奏与 core.talkNext 同读 rules.pageShownAt）：标点停 4 拍 + 逐字音效 +【】金色强调
+  // 逐字音效：每 3 字一声轻响（页/锚变化时游标重置）
+  const shownTotal=visual.reduce((a,b)=>a+b.show,0);
+  const sig=S.curNpc+'|'+S.talkPage+'|'+S.talkLineAt;
+  if (sig!==_talkSig){ _talkSig=sig; _talkN=0; }
+  if (shownTotal>_talkN){
+    if (Math.floor(shownTotal/3)>Math.floor(_talkN/3)) SFX.tick();
+    _talkN=shownTotal;
+  }
+  visual.forEach((v,i)=>drawRichLine(TX_X,TX_Y+i*LINE_H,v.text,v.show,'15px'));
+  // 翻页指示：本页打完且还有后续页时闪烁 ▼
+  if (done && S.talkPage<S.talkPages.length-1 && Math.floor(Date.now()/400)%2===0) {
+    text('▼',bx+bw-28,by+bh-14,'bold 14px','#8fd0ff','center');
+  }
+  CTX.restore();
 }
 
 export function drawCreate(){
@@ -344,7 +469,12 @@ export function drawCreate(){
   CTX.fillStyle='#62c6ff'; CTX.font='bold 42px sans-serif'; CTX.fillText('◀  '+HERO_NAMES[S.createName]+'  ▶',CV.width/2,230);
   CTX.fillStyle='#e8eef1'; CTX.font='15px sans-serif'; CTX.fillText('难度',CV.width/2,300);
   CTX.fillStyle='#ffd24a'; CTX.font='bold 30px sans-serif'; CTX.fillText('▲  '+DIFFS[S.createDiff]+'  ▼',CV.width/2,352);
-  CTX.fillStyle='#7d93a3'; CTX.font='13px sans-serif'; CTX.fillText('（困难：魔物更强、血更高，挑战性提升）',CV.width/2,382);
+  CTX.fillStyle='#7d93a3'; CTX.font='13px sans-serif';
+  // 困难倍率（信息透明·纯显示）：与 battle.startBattle 结算同源于 DIFF_SCALE，选档前一眼看清确切代价
+  CTX.fillText(`（困难：魔物 HP×${DIFF_SCALE.hp} / 攻×${DIFF_SCALE.atk} / 防×${DIFF_SCALE.def}，挑战性提升）`,CV.width/2,382);
+  // 每级成长（信息透明·纯显示）：与 hero.grantXp 升级结算同源于 baseStats 推导的 LEVEL_GROWTH——
+  // 此前成长数值只在胜利横幅一闪而过，创建页一眼看清「每升一级得到什么」
+  CTX.fillText(`每级成长：HP+${LEVEL_GROWTH.hp} · MP+${LEVEL_GROWTH.mp} · 攻+${LEVEL_GROWTH.atk} · 防+${LEVEL_GROWTH.def}`,CV.width/2,408);
   CTX.fillText('← → 选择姓名     ↑ ↓ 选择难度    Enter 出发！',CV.width/2,432);
 }
 
@@ -377,7 +507,12 @@ export function drawTitle(){
   if(pv){ CTX.fillStyle='#7dd47f'; CTX.font='13px sans-serif'; CTX.fillText(pv,CV.width/2,360); }
   if(hasSave()){ CTX.fillStyle='#62c6ff'; CTX.fillText('按 L 读取当前槽存档',CV.width/2,378); }
   CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
-  CTX.fillText('按 1 / 2 / 3 选择存档槽 · WASD移动 · Esc菜单 · P存档 · M静音 · H操作说明',CV.width/2,420);
+  CTX.fillText('按 1 / 2 / 3 选择存档槽 · L 读档 · WASD 移动 · Esc 菜单 · P 存档 · M 静音',CV.width/2,420);
+  // v10.0 可发现性（承接 v9.0 暂停菜单补全）：常驻面板/操作快捷键此前只写在 H 帮助与 README 里，
+  // 标题页从未提示——新玩家不开 H 就不知道 I/J/B/C/T/F 这些界面存在。这里补全第二行快捷一览，
+  // 与 main.js 世界画面按键分派逐字同源（I状态 J日志 B图鉴 C成就 T旅行 F喝药 H帮助），纯显示不改任何逻辑
+  CTX.fillStyle='#5a6a78'; CTX.font='11px sans-serif';
+  CTX.fillText('I 状态 · J 日志 · B 记忆图鉴 · C 成就 · T 旅行 · F 喝药 · H 帮助',CV.width/2,442);
 }
 
 export function drawStory(){
@@ -405,7 +540,7 @@ export function drawDead(){
     if(killName) text('败于 '+killName,CV.width/2,206,'bold 15px','#ff8a5b','center');
     text(`当前 Lv.${hero.level} · 金币 ${hero.gold} · 累计讨伐 ${kills} 只 · ⏱️${fmtTime(hero.time)}`,CV.width/2,236,'13px','#7d93a3','center');
     const bossDeath=!!(hero._bossRetry && hero._bossRetry.bossId && hero._bossRetry.bossId!=='rush');
-    text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，用图鉴(B)查看魔物强度后再战。',CV.width/2,264,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
+    text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，用记忆图鉴(B)查看魔物强度后再战。',CV.width/2,264,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
   }
   text('按 R 重新开始本次冒险',CV.width/2,304,'15px','#7d93a3','center');
   text('按 T 返回标题画面',CV.width/2,334,'15px','#7d93a3','center');
@@ -429,11 +564,13 @@ export function drawEnding(){
   const hero = S.G;
   drawWorld(); CTX.fillStyle='rgba(5,8,12,.92)'; CTX.fillRect(0,0,CV.width,CV.height);
   panel(40,110,560,300,'');
-  const lines = hero.trueBoss ? ENDING_TRUE : ENDING;
-  lines.forEach((l,i)=>text(l,320,166+i*30,'bold 16px','#e8eef1','center'));
-  text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}`,320,346,'13px','#7d93a3','center');
+  // 真结局差分：记忆碎片集齐则追加「全记忆」页（行距收窄以容下 8 行，不溢面板）
+  const allFrag = FRAGMENTS.every((f) => (hero.fragments || []).includes(f.id));
+  const lines = hero.trueBoss ? (allFrag ? ENDING_TRUE.concat(ENDING_TRUE_FRAG) : ENDING_TRUE) : ENDING;
+  const step = lines.length > 5 ? 25 : 30;
+  const y0 = lines.length > 5 ? 146 : 166;
+  lines.forEach((l,i)=>text(l,320,y0+i*step,'bold 16px','#e8eef1','center'));
+  text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 记忆 ${(hero.fragments||[]).length}/${FRAGMENTS.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}`,320,346,'13px','#7d93a3','center');
   text('按 Enter 返回标题',320,376,'13px','#7d93a3','center');
 }
 bind.drawEnding=drawEnding;
-
-export function openShop(){ /* 逻辑在 shop.buildShopList */ }

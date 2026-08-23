@@ -1,13 +1,13 @@
 // ESM 冒烟：架构 S 对象、任务迁移、技能分化、洞窟胜利流、绘制层
-import { S } from '../js/state.js';
-import { ACH_LIST, SKILL_DATA, CAVE_BOSS, TRUE_BOSS, TY, CHARGE_MULT, SPECIES, BOSS } from '../js/data.js';
-import { cmdDmg, elemMult, skillEstimate, atkEstimate, applyStats, deep, unlockedAchievements, codexStats } from '../js/rules.js';
-import { migrateQuests, mushroomQuestProtects, questLines, setSideQuest, questJournal, questStatus, applyQuestReward, npcQuestMark, resolveNpcTalk, questRewardPreview } from '../js/quests.js';
-import { initGame, saveGame, load, newGame } from '../js/core.js';
-import { loadMap, applyVictoryWorld, CAVE_TREASURE, at } from '../js/world.js';
+import { S, curMap } from '../js/state.js';
+import { ACH_LIST, SKILL_DATA, CAVE_BOSS, TRUE_BOSS, TY, CHARGE_MULT, SPECIES, BOSS, MAPS, ENCOUNTER, FRAGMENTS } from '../js/data.js';
+import { cmdDmg, elemMult, skillEstimate, atkEstimate, applyStats, deep, unlockedAchievements, codexStats, pageTotalMs, pageShownAt } from '../js/rules.js';
+import { migrateQuests, mushroomQuestProtects, questLines, setSideQuest, questJournal, questStatus, applyQuestReward, npcQuestMark, resolveNpcTalk, questRewardPreview, npcQuestPages } from '../js/quests.js';
+import { initGame, saveGame, load, newGame, openTalk, talkNext } from '../js/core.js';
+import { loadMap, applyVictoryWorld, CAVE_TREASURE, at, portalDest, dangerAt, move, holdStep, setHeldDir, clearHeld, STEP_HANDLERS } from '../js/world.js';
 import { startBattle, winBattle, playerAction } from '../js/battle.js';
 import { canSellMushroom, sellMushroom, buildShopList } from '../js/shop.js';
-import { drawWorld, drawBattle, drawStatus, drawJournal, render, renderHUD } from '../js/view/index.js';
+import { drawWorld, drawBattle, drawStatus, drawJournal, render, renderHUD, drawEnding } from '../js/view/index.js';
 import { goto } from '../js/scene.js';
 
 const mem={};
@@ -54,9 +54,9 @@ ok('奖励预览不改金币', prev&&prev.gold===50 && prev.item===2);
 initGame('冒烟');
 ok('initGame 有 G', !!(S.G&&S.G.name==='冒烟'));
 loadMap('village');
-ok('村庄酿造锅在 extras 坐标', at(12,6)===TY.BREW);
+ok('村庄酿造锅在 extras 坐标', at(10,12)===TY.BREW);
 loadMap('dungeon');
-ok('森林喷泉/猎人在 extras 坐标', at(14,8)===TY.FOUNTAIN && at(13,8)===TY.NPC);
+ok('森林喷泉/猎人在 extras 坐标', at(12,9)===TY.FOUNTAIN && at(13,9)===TY.NPC);
 S.G.quests={side_mushroom:'active'}; S.G.mushrooms=3; S.G.quest=1;
 ok('集齐前不可卖', canSellMushroom()===false);
 S.G.mushrooms=4;
@@ -146,7 +146,7 @@ const forestSave=JSON.parse(localStorage.getItem('jrpg_save2'));
 ok('存档写入当前地图', forestSave.G.map==='dungeon' && Array.isArray(forestSave.chests));
 loadMap('village');
 S.G.x=0; S.G.y=0;
-ok('读档回到雾语林坐标', load() && S.curMap==='dungeon' && S.G.map==='dungeon' && S.G.x===4 && S.G.y===7);
+ok('读档回到雾语林坐标', load() && curMap()==='dungeon' && S.G.map==='dungeon' && S.G.x===4 && S.G.y===7);
 
 // v6.4 静音指示：renderHUD 在 S.SND 开关下输出 🔊/🔇
 const sndHook={ textContent:'', style:{}, classList:{toggle(){},add(){},remove(){}}, parentElement:{classList:{toggle(){}}} };
@@ -156,6 +156,116 @@ S.SND = true; renderHUD(); const sndOn = String(sndHook.textContent);
 S.SND = false; renderHUD(); const sndOff = String(sndHook.textContent);
 if (prevDoc === undefined) delete globalThis.document; else globalThis.document = prevDoc;
 ok('静音指示 开=🔊 关=🔇', sndOn.includes('🔊') && sndOff.includes('🔇') && sndOn!==sndOff);
+
+// v6.x 架构冒烟：场景切换收口 + 按键表分发（main.js 动态 import，boot 在本段才执行）
+S.battleBusy = true; S.skillMenuOpen = true; goto('battle'); goto('world');
+ok('goto(world) 清 battleBusy 与技能菜单', S.battleBusy===false && S.skillMenuOpen===false);
+ok('curMap() 与 G.map 同源', curMap()===S.G.map);
+const { screens } = await import('../js/main.js');
+ok('screens 每项都有 onKey', Object.values(screens).every(s=>s && typeof s.onKey==='function'));
+ok('screens 覆盖关键场景', ['title','create','world','battle','shop','pause','dead','win','ending'].every(k=>screens[k]));
+let dispatchOk = true;
+for (const key of Object.keys(screens)) {
+  S.scene = key;
+  try { screens[key].onKey({ key: ' ' }); }
+  catch (e) { dispatchOk = false; console.log('   分发异常:', key, e.message); }
+}
+ok('各场景 onKey 未映射键分发不抛错', dispatchOk);
+S.scene = 'world';
+
+// v13.1 地图机制冒烟：传送数据化 / 危险格单轨 / 按住连走预输入 / 踩格处理表
+ok('传送链读 portals 表', portalDest('village',TY.GATE)==='dungeon' && portalDest('dungeon',TY.GATE)==='cave'
+  && portalDest('dungeon',TY.EXIT)==='village' && portalDest('cave',TY.EXIT)==='dungeon');
+ok('村庄 GATE 锁读表', MAPS.village.portals.GATE.locked({bossDefeated:true})===true
+  && MAPS.village.portals.GATE.locked({bossDefeated:false})===false);
+ok('遇敌增减数据化', ENCOUNTER.dangerMin===10 && ENCOUNTER.dangerVar===9 && ENCOUNTER.fountain===-25 && ENCOUNTER.calm===-6);
+loadMap('village');
+ok('村庄仅高草危险', dangerAt(17,3)===true && dangerAt(8,2)===false);
+loadMap('dungeon');
+ok('森林全草地危险', dangerAt(2,1)===true);
+loadMap('cave');
+ok('矿脉全岩地危险', dangerAt(2,2)===true);
+ok('踩格处理表覆盖关键瓦片', [TY.CHEST,TY.FOUNTAIN,TY.BOSS,TY.MB,TY.SB,TY.TRIAL].every(t=>typeof STEP_HANDLERS[t]==='function'));
+
+loadMap('village');
+S.scene='world'; S.G.x=10; S.G.y=15; S.walk=null; clearHeld();
+move(-1,0);
+ok('连走第一步立即生效', S.G.x===9 && !!S.walk);
+move(-1,0);
+ok('行走中按键进预输入不瞬移', S.G.x===9);
+await new Promise(r=>setTimeout(r,210));
+holdStep();
+ok('行走结束预输入补走一格', S.G.x===8);
+await new Promise(r=>setTimeout(r,210));
+setHeldDir('R', true);
+holdStep();
+ok('按住方向键节拍连走', S.G.x===9);
+setHeldDir('R', false);
+
+// v13.x 剧情重构：记忆碎片掉落 / 井巫分段揭示 / 真结局差分
+const gOld=migrateQuests({quest:0,chests:[]});
+ok('旧档迁移补 fragments', Array.isArray(gOld.fragments));
+ok('井巫默认段只点到「锁」', npcQuestPages({bossDefeated:false,caveBoss:false},'sage').flat().join('').includes('锁着更深的东西'));
+ok('井巫二段（魔王后）讲星砂矿史', npcQuestPages({bossDefeated:true,caveBoss:false},'sage').flat().join('').includes('星砂'));
+ok('井巫三段（领主后）才揭终焉之神', npcQuestPages({bossDefeated:true,caveBoss:true},'sage').flat().join('').includes('终焉之神'));
+
+initGame('碎片测试');
+startBattle(deep(BOSS)); winBattle();
+ok('首胜幽冥魔王掉记忆碎片', (S.G.fragments||[]).includes('demon'));
+startBattle(deep(BOSS)); winBattle();
+ok('重复击败不重复收集碎片', S.G.fragments.filter(f=>f==='demon').length===1);
+let endOk=true;
+try {
+  S.scene='ending'; drawEnding();
+  S.G.trueBoss=true; S.G.fragments=FRAGMENTS.map(f=>f.id); drawEnding();
+} catch(e){ endOk=false; }
+ok('真结局（含碎片加页）绘制不抛错', endOk);
+let jourOk=true;
+try { S.scene='journal'; drawJournal(); } catch(e){ jourOk=false; }
+ok('日志「记忆碎片」节绘制不抛错', jourOk);
+
+// v13.x 对话框打字机：Enter 先补全本页，补全后才翻页
+initGame('对话测试');
+openTalk('villager');
+ok('对话打开在第 0 页', S.scene==='talk' && S.talkPage===0);
+talkNext();
+ok('打字中 Enter 只补全不翻页', S.talkPage===0 && S.scene==='talk');
+talkNext();
+ok('补全后 Enter 翻到下一页', S.talkPage===1);
+
+// v13.8 对话框增强：标点停顿 / 逐字音效游标 / 富文本 / 肖像
+ok('标点停 4 拍', pageTotalMs(['灯，灯。'])===pageTotalMs(['灯灯灯灯'])+2*3*28);
+ok('pageShownAt 渐进显字', (()=>{ const r=pageShownAt(['一二三四'], pageTotalMs(['一二三四'])/2); return r.done===false && r.lines[0]>0 && r.lines[0]<4; })());
+ok('pageShownAt 超时全显', (()=>{ const r=pageShownAt(['你好','世界'], 99999); return r.done && r.lines[0]===2 && r.lines[1]===2; })());
+let talkOk=true;
+try {
+  openTalk('stele1'); render();  // 石碑肖像路径
+  openTalk('chief'); render();   // NPC 肖像路径
+} catch(e){ talkOk=false; }
+ok('对话（含石碑/肖像/富文本）绘制不抛错', talkOk);
+goto('world');
+
+// v13.6 剧情四幕链 + 条件式支线
+const gGal = migrateQuests({ quest:0, chests:[], bossDefeated:true, caveBoss:true, fragments:[], bestiary:{} });
+ok('双徽记解锁无字回廊主线', questStatus(gGal,'main_gallery')==='active');
+gGal.galleryOpen = true;
+ok('进回廊后主线转向终焉之神', questStatus(gGal,'main_gallery')==='done' && questStatus(gGal,'main_true')==='active');
+const gName = migrateQuests({ quest:0, chests:[], bossDefeated:true, fragments:[], bestiary:{} });
+ok('巡灯人支线魔王后可接', questStatus(gName,'side_name')==='offer' || questStatus(gName,'side_name')==='active');
+gName.quests.side_name='active';
+ok('碎片未满 4 枚不可交付', questStatus(gName,'side_name')==='active');
+gName.fragments=['golem','demon','cave','true'];
+ok('集齐 4 枚碎片可交付', questStatus(gName,'side_name')==='turnin');
+const gMist = migrateQuests({ quest:0, chests:[], bestiary:{}, fragments:[] });
+gMist.quests.side_mist='active';
+gMist.bestiary['雾灵']=3;
+ok('讨伐 3 只雾灵可交付', questStatus(gMist,'side_mist')==='turnin');
+const payN=applyQuestReward({level:5,gold:0,item:0,potion2:0},'side_name');
+ok('巡灯人支线奖励含灵药', payN.gold===120 && payN.potion2===1);
+const pg1=npcQuestPages({bossDefeated:true,caveBoss:true,galleryOpen:true},'adventurer');
+ok('巡灯人回廊阶段台词', pg1.flat().join('').includes('回廊'));
+const pgS1=npcQuestPages({},'stele1');
+ok('石碑碑文与碎片同源', pgS1.flat().join('').includes('守门人'));
 
 console.log(`\n${n-failed}/${n} 通过`+(failed?`，失败 ${failed}`:''));
 if(failed) process.exit(1);

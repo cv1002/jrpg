@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -88,8 +88,8 @@ export function buyArmor(name) {
 export function stayInn() {
   const hero = S.G;
   if (hero.hp < hero.hpMax || hero.mp < hero.mpMax) {
-    if (hero.gold >= S.innPrice) {
-      hero.gold -= S.innPrice;
+    if (hero.gold >= INN_PRICE) {
+      hero.gold -= INN_PRICE;
       hero.hp = hero.hpMax;
       hero.mp = hero.mpMax;
       SFX.heal();

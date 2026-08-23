@@ -3,10 +3,20 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats } from './data.js';
 import { unlockedAchievements } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
+
+// 药水可用性判定（单一数据源）：core.usePotion 与 battle.doItem 同源——
+// 高级灵药优先（可同时补 MP）、普通药水只在掉血时用；满状态不浪费
+export function potionAvailability(hero) {
+  const hpFull = hero.hp >= hero.hpMax;
+  const mpFull = hero.mp >= hero.mpMax;
+  const strongOk = hero.potion2 > 0 && (!hpFull || !mpFull);
+  const weakOk = hero.item > 0 && !hpFull;
+  return { hpFull, mpFull, any: strongOk || weakOk };
+}
 
 export function takePotion() {
   const hero = S.G;
@@ -37,13 +47,32 @@ export function checkSkills() {
   }
 }
 
-export function nextSkillHint() {
-  const hero = S.G;
-  for (let lv = hero.level + 1; lv <= 8; lv++) {
-    const skill = learnsAt(lv);
-    if (skill && !hero.skills.includes(skill)) return { name: skill, lv };
+// 经验结算与升级循环（从 battle.winBattle 拆出，单一数据源）：
+// 返回本段经验带来的累计成长，供胜利横幅展示
+export function grantXp(hero, xp) {
+  hero.xp += xp;
+  const g = { leveled: false, hp: 0, mp: 0, atk: 0, def: 0 };
+  while (hero.xp >= hero.xpNext) {
+    hero.xp -= hero.xpNext;
+    hero.xpNext = Math.round(hero.xpNext * 1.42);
+    hero.level++;
+    const base = baseStats(hero.level);
+    const dh = base.hpMax - hero.hpMax;
+    const dm = base.mpMax - hero.mpMax;
+    const da = base.atk + WEAPONS[hero.weapon].atk - hero.atkMax;
+    const dd = base.def + ARMORS[hero.armor].def - hero.defMax;
+    hero.atkMax = base.atk + WEAPONS[hero.weapon].atk;
+    hero.defMax = base.def + ARMORS[hero.armor].def;
+    hero.hpMax = base.hpMax;
+    hero.mpMax = base.mpMax;
+    hero.hp = Math.min(hero.hpMax, hero.hp + dh);
+    hero.mp = Math.min(hero.mpMax, hero.mp + dm);
+    g.hp += dh; g.mp += dm; g.atk += da; g.def += dd;
+    g.leveled = true;
+    SFX.levelup();
+    checkSkills();
   }
-  return null;
+  return g;
 }
 
 export function skillXpHint(hero) {

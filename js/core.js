@@ -1,15 +1,17 @@
 // ============================================================
-// core.js —— 存档 / 对话 / 补给 / 开局
+// core.js —— 存档 / 对话 / 补给 / 开局 / Boss 重试
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, TRAVEL_LIST } from './data.js';
-import { applyStats } from './rules.js';
+import { MAPS, HERO_NAMES, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID } from './data.js';
+import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
+import { hooks } from './hooks.js';
 import { goto } from './scene.js';
-import { loadMap, transition } from './world.js';
-import { takePotion, checkSkills, skillXpHint, applyAchievements } from './hero.js';
+import { loadMap, transition, at } from './world.js';
+import { startBattle } from './battle.js';
+import { takePotion, potionAvailability, checkSkills, skillXpHint, applyAchievements } from './hero.js';
 import { migrateQuests, questObjective, questLines, adventureProgress, mushroomQuestProtects, npcQuestPages, resolveNpcTalk } from './quests.js';
 
 function newGame(name) {
@@ -39,14 +41,16 @@ function newGame(name) {
     mushrooms: 0,
     quest: 0,
     quests: {},
+    fragments: [],
     story: 0,
     time: 0,
   });
 }
 
-function initGame(name, continueSave) {
-  if (continueSave && load()) return;
+// 开局三段（initGame / beginAdventure / resetRun）共用的「建档+摆位」流程
+function startRun(name, diff) {
   S.G = newGame(name);
+  S.G.diff = diff || 0;
   applyStats(S.G);
   S.G.hp = S.G.hpMax;
   S.G.mp = S.G.mpMax;
@@ -55,14 +59,16 @@ function initGame(name, continueSave) {
   S.G.y = MAPS[S.G.map].playerStart.y;
 }
 
+function initGame(name, continueSave) {
+  if (continueSave && load()) return;
+  startRun(name);
+}
+
 function usePotion() {
   if (S.scene !== 'world') return;
   const hero = S.G;
-  const hpFull = hero.hp >= hero.hpMax;
-  const mpFull = hero.mp >= hero.mpMax;
-  const strongOk = hero.potion2 > 0 && (!hpFull || !mpFull);
-  const weakOk = hero.item > 0 && !hpFull;
-  if (!strongOk && !weakOk) {
+  const { hpFull, mpFull, any } = potionAvailability(hero);
+  if (!any) {
     bind.boxMsg(hpFull && mpFull ? '✅ 状态满满，无需喝药！' : '🍖 没有可用的药水了！');
     return;
   }
@@ -115,12 +121,22 @@ function chiefPages() {
 function openTalk(id) {
   S.curNpc = id;
   S.talkPage = 0;
+  S.talkLineAt = Date.now();
+  S.talkStartAt = S.talkLineAt;
   S.talkPages = npcQuestPages(S.G, id);
   goto('talk');
 }
-bind.openTalk = openTalk;
+hooks.openTalk = openTalk;
 
 function talkNext() {
+  // 打字机（与 drawTalk 同读 rules.pageTotalMs/pageShownAt）：本页未打完时 Enter 先补全本页，不翻页
+  const page = S.talkPages[S.talkPage] || [];
+  const total = pageTotalMs(page);
+  if (Date.now() - (S.talkLineAt || 0) < total) {
+    S.talkLineAt = Date.now() - total - 1;
+    SFX.select();
+    return;
+  }
   SFX.select();
   const hero = S.G;
   const act = resolveNpcTalk(hero, S.curNpc);
@@ -134,25 +150,19 @@ function talkNext() {
     else SFX.coin();
     bind.renderHUD();
     applyAchievements();
-    const extra = act.item ? ` +${act.item} 药水` : '';
+    const extra = (act.item ? ` +${act.item} 药水` : '') + (act.potion2 ? ` +${act.potion2} 灵药` : '');
     bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}`, 2600);
     goto('world');
     return;
   }
   S.talkPage++;
+  S.talkLineAt = Date.now();
   if (S.talkPage >= S.talkPages.length) goto('world');
 }
 
 function beginAdventure() {
   SFX.select();
-  S.G = newGame(HERO_NAMES[S.createName]);
-  S.G.diff = S.createDiff;
-  applyStats(S.G);
-  S.G.hp = S.G.hpMax;
-  S.G.mp = S.G.mpMax;
-  loadMap('village');
-  S.G.x = MAPS.village.playerStart.x;
-  S.G.y = MAPS.village.playerStart.y;
+  startRun(HERO_NAMES[S.createName], S.createDiff);
   S.storyPage = 1;
   S.storyLineAt = Date.now();
   bind.renderHUD();
@@ -194,7 +204,7 @@ function hasSave() {
 function snapshotHero(hero) {
   const snap = {
     ...hero,
-    map: S.curMap || hero.map || 'village',
+    map: hero.map || 'village',
     chests: Array.from(hero.chests || []),
   };
   delete snap._bossRetry;
@@ -205,7 +215,6 @@ function saveGame() {
   try {
     const hero = S.G;
     if (!hero) return;
-    hero.map = S.curMap || hero.map || 'village';
     const snap = snapshotHero(hero);
     localStorage.setItem(saveKey(S.curSaveSlot), JSON.stringify({ G: snap, chests: snap.chests }));
     S.saveMsg = `💾 已存档到槽 ${S.curSaveSlot}`;
@@ -239,6 +248,11 @@ function load() {
     const bounds = { w: S.maze[0].length, h: S.maze.length };
     S.G.x = Math.max(0, Math.min(bounds.w - 1, S.G.x | 0));
     S.G.y = Math.max(0, Math.min(bounds.h - 1, S.G.y | 0));
+    // 地图重排兼容（v13.5）：旧档坐标若落在墙里，退回该图出生点
+    if (SOLID.has(at(S.G.x, S.G.y))) {
+      S.G.x = MAPS[map].playerStart.x;
+      S.G.y = MAPS[map].playerStart.y;
+    }
     applyStats(S.G);
     S.walk = null;
     bind.renderHUD();
@@ -251,14 +265,7 @@ function load() {
 function resetRun() {
   const name = S.G ? S.G.name : '余烬';
   const diff = S.G ? S.G.diff : 0;
-  S.G = newGame(name);
-  S.G.diff = diff;
-  applyStats(S.G);
-  S.G.hp = S.G.hpMax;
-  S.G.mp = S.G.mpMax;
-  loadMap('village');
-  S.G.x = MAPS.village.playerStart.x;
-  S.G.y = MAPS.village.playerStart.y;
+  startRun(name, diff);
   S.storyPage = 1;
   S.storyLineAt = Date.now();
   bind.renderHUD();
@@ -267,9 +274,39 @@ function resetRun() {
   bind.boxMsg('🔄 新的冒险开始！', 1600);
 }
 
+// Boss 战败重试（从 battle.js 迁出，存档/开局语义）：
+// 快照由 battle.startBattle 在强敌开战时写入 G._bossRetry，此处负责恢复现场并重新开战
+function retryBoss() {
+  const retry = S.G._bossRetry;
+  if (!retry || retry.bossId === 'rush') return false;
+  let def = BOSS;
+  if (retry.bossId === 'true') def = TRUE_BOSS;
+  else if (retry.bossId === 'cave') def = CAVE_BOSS;
+  const hero = S.G;
+  hero.level = retry.level;
+  hero.xp = retry.xp;
+  hero.weapon = retry.weapon;
+  hero.armor = retry.armor;
+  hero.gold = retry.gold;
+  hero.item = retry.item;
+  hero.potion2 = retry.potion2;
+  hero.chests = new Set(retry.chests || []);
+  applyStats(hero);
+  hero.hp = Math.min(hero.hpMax, retry.hp);
+  hero.mp = Math.min(hero.mpMax, retry.mp);
+  hooks.loadMap(retry.curMap || 'village');
+  hero.x = retry.x;
+  hero.y = retry.y;
+  bind.renderHUD();
+  SFX.select();
+  bind.boxMsg('🔄 重整旗鼓，再战强敌！', 1600);
+  startBattle(deep(def));
+  return true;
+}
+
 export {
   newGame, applyStats, initGame, checkSkills, skillXpHint,
-  saveKey, hasSlot, hasSave, slotPreview, saveGame, load, resetRun,
+  saveKey, hasSlot, hasSave, slotPreview, saveGame, load, resetRun, retryBoss,
   takePotion, usePotion, questObjective, questLines, adventureProgress,
   brewNow, chiefPages, openTalk, talkNext, doTravel, beginAdventure,
   applyAchievements,

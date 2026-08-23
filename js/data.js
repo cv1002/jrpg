@@ -5,106 +5,167 @@
 const T=32;
 
 const MAPS={
+  // 潮灯镇（v13.5 重排）：广场大灯地标居中，商店/旅馆/酿造环广场，井在广场北，东门出镇
   village:{
     name:'潮灯镇',
+    // 区域修正：镇内及其周边魔物偏弱（battle.randomEncounter 与 HUD 同读此源）
+    zone:{ label:'安宁之地', hp:0.9, atk:0.9 },
+    // 传送门（单一数据源）：world.usePortal 与视图「踩上通行 → XX」提示同读此表
+    // locked(g) 返回真则拒绝通行并显示 lockedMsg（击败魔王后村门只提示不传送）
+    portals:{
+      GATE:{ to:'dungeon', locked:(g)=>!!g.bossDefeated,
+             lockedMsg:'雾退了。祭坛上的锁已经开了。可井还在响。' },
+    },
     rows:[
       "111111111111111111111111",
-      "100000000000000000000001",
-      "1C00000000000G0000000001",
-      "1..00000000000GGD0000001",
-      "1..0000G000000GG00000001",
-      "1....0000000000000000001",
-      "1.....00000...........C1",
-      "1......000......00000001",
-      "1S4444100000....00000001",
-      "1S4444100000100000000001",
-      "1SFFF410000010C000000001",
-      "1S4444100000100000000001",
-      "1S4444100000100000000001",
-      "1S4444111111100000000001",
-      "1IIIII......000000000001",
-      "1IIIII......000000000001",
-      "1IIIII....0000GG00000001",
+      "1444441000000000000000C1",
+      "144444100000000000000001",
+      "14444410000000000G000001",
+      "1000001000000000GGG00001",
+      "10000010000000000G000001",
+      "100000100000F00033300001",
+      "1000001000..003330000001",
+      "10000014440.000000000001",
+      "10000014S4..........D001",
+      "10000014440.000000000001",
+      "1000000000.0000000000001",
+      "1000001000.000000GGG0001",
+      "1IIIII1000.00000GGGGG001",
+      "1IIIII1.....00GGGGG00001",
+      "1IIIII1000.0000GGG000001",
+      "1000001000.00000000000C1",
       "111111111111111111111111",
     ],
-    playerStart: { x: 8, y: 15 },
+    playerStart: { x: 10, y: 15 },
     extras: [
-      { x: 16, y: 7, ty: 'NPC' },
-      { x: 13, y: 7, ty: 'NPC' },
-      { x: 10, y: 7, ty: 'NPC' },
-      { x: 12, y: 6, ty: 'BREW' },
+      { x: 13, y: 6, ty: 'NPC' },   // 灯长（井边）
+      { x: 10, y: 13, ty: 'NPC' },  // 镇民（酿造旁）
+      { x: 19, y: 8, ty: 'NPC' },   // 巡灯人（城门动线）
+      { x: 2, y: 4, ty: 'NPC' },    // 井巫（民宅区南）
+      { x: 10, y: 12, ty: 'BREW' }, // 酿造锅（广场南）
     ],
   },
+  // 雾语林（v13.5 重排）：西入口 → 蛇形主路 → 中段营地（泉水+猎手）→ 北环路蘑菇宝箱 → 东祭坛，裂洞在祭坛南
   dungeon:{
     name:'雾语林',
+    portals:{
+      GATE:{ to:'cave' },
+      EXIT:{ to:'village' },
+    },
+    // 全图草地均为危险格（world.dangerAt 同读；'G' 高草在全图通用危险）
+    dangerTiles:[0],
     rows:[
       "111111111111111111111111",
-      "1E00C0000000000000000001",
-      "1.0000000000000000000001",
-      "1.00000000000GGGGGG00001",
-      "1.00000000000....GG00001",
-      "1..0000000000......00001",
-      "1...00000000CC......0001",
-      "1....0000000........0001",
-      "1.....000000........GG01",
-      "1......00000000000..GG01",
-      "1.......0000000000C..GG1",
-      "1........0000000000..GG1",
-      "1.........00000000H....1",
-      "1..........0000000000001",
-      "1...........000000000001",
-      "100000000000000000000C01",
-      "100000000000000000000001",
+      "1E0000111110000000000001",
+      "1..0000111100000GGGGG001",
+      "100.000111100000GGGGGG01",
+      "1000.0011100000GGGGGGGC1",
+      "10000.011000000GGGGGG001",
+      "100000.00000000GGGGG0001",
+      "1000000.0000000.GGG00001",
+      "10000000.00000..00000001",
+      "100000000.0000.000000001",
+      "1100000000.00...00000001",
+      "1110000000.0C.0000000001",
+      "11110000000...0000000001",
+      "111110000000.00000000001",
+      "111111000000.00000000H01",
+      "111111100000.00000000001",
+      "1C0000000000.00000000001",
       "111111111111111111111111",
     ],
-    playerStart: { x: 1, y: 1 },
+    playerStart: { x: 1, y: 2 },
     extras: [
-      { x: 14, y: 8, ty: 'FOUNTAIN' },
-      { x: 13, y: 8, ty: 'NPC' },
-      { x: 20, y: 13, ty: 'BOSS' },
+      { x: 12, y: 9, ty: 'FOUNTAIN' }, // 营地泉水
+      { x: 13, y: 9, ty: 'NPC' },      // 雾径猎手
+      { x: 20, y: 13, ty: 'BOSS' },    // 幽冥魔王祭坛 2×1
       { x: 20, y: 14, ty: 'BOSS' },
     ],
   },
+  // 星井矿脉（v13.5 重排）：轨道引导线贯穿——入口（井巫）→ 矿车区（车夫/试炼碑）→ 深处祭坛 → 中央水晶
   cave:{
     name:'星井矿脉',
+    // 区域修正：高难区魔物更强，经验/金币同步上浮（battle.randomEncounter 与 HUD 同读此源）
+    zone:{ label:'凶险之地', hp:1.2, atk:1.15, def:1.1, xp:1.15, gold:1.15 },
+    portals:{
+      EXIT:{ to:'dungeon' },
+    },
+    // 全图岩地均为危险格（world.dangerAt 同读；15 = TY.CAVE）
+    dangerTiles:[15],
     rows:[
       "111111111111111111111111",
-      "1E0000000000000000000001",
-      "100000000000000000C00001",
-      "100000000000000000000001",
-      "1000000GGGGGG00000000001",
-      "1000000.......0000000001",
-      "1000000.......0000000001",
-      "1000000.......0000000001",
-      "100000000000000000C00001",
-      "100000000000000000000001",
-      "100000000000000000000001",
-      "100000000000000000000001",
-      "1000000000000000000MMMM1",
-      "1000000000000000000MMMM1",
-      "1C000000000000C000000001",
+      "1E0000111100000000000001",
+      "1....01111000000C0000001",
+      "1.00.0111100000000000001",
+      "1.000.111100000011111001",
+      "1.0000.11100000011110001",
+      "1.00000.1100000111100001",
+      "1.000000.100001111000001",
+      "1.0000000.0001111000M001",
+      "1.00000000.001111000M001",
+      "1.000000000..01100000001",
+      "1............01100000001",
+      "1C000000000.0110000T0001",
+      "10000000000.000000000001",
       "111111111111111111111111",
     ],
-    playerStart: { x: 1, y: 1 },
+    playerStart: { x: 1, y: 2 },
     extras: [
-      { x: 12, y: 10, ty: 'SB' },
-      { x: 16, y: 11, ty: 'TRIAL' },
-      { x: 18, y: 11, ty: 'NPC' },
-      { x: 4, y: 1, ty: 'NPC' },
+      { x: 3, y: 1, ty: 'NPC' },    // 井巫（入口点破）
+      { x: 17, y: 11, ty: 'NPC' },  // 星砂车夫（矿车区）
+      { x: 12, y: 11, ty: 'SB' },   // 终焉水晶（双徽记开门 → 无字回廊）
+      { x: 18, y: 12, ty: 'TRIAL' },
     ],
     // 草地/树在洞窟里改成岩地/岩壁（ASCII 仍用 0 / 1 便于共用编辑）
     replaceTiles: { GRASS: 'CAVE', TREE: 'CAVEWALL', PATH: 'CAVE' },
-    treasure: [[17, 12], [18, 12], [17, 13], [18, 13]],
+    treasure: [[17, 8], [18, 8], [17, 9], [18, 9]],
+  },
+  // 无字回廊（v13.5 新图）：被忘掉的名字存放处——线性回廊 + 北壁 4 名字石碑 + 中段残焰魔像 + 东端终焉祭坛
+  gallery:{
+    name:'无字回廊',
+    // 区域修正：终焉之地，魔物最凶（battle.randomEncounter 与 HUD 同读此源）
+    zone:{ label:'忘却之地', hp:1.3, atk:1.2, def:1.15, xp:1.3, gold:1.3 },
+    portals:{
+      EXIT:{ to:'cave' },
+    },
+    // 全图暗岩地均为危险格；遇敌池限定（encounter.randomEncounter 同读）
+    dangerTiles:[15],
+    pool:['雾灵','石魔像','骷髅兵'],
+    rows:[
+      "111111111111111111111111",
+      "100000000000000000000001",
+      "101010101010101010101001",
+      "100000000000000000000001",
+      "1E.....................1",
+      "100000000000000000000001",
+      "101010101010101010101001",
+      "100000000000000000000001",
+      "111111111111111111111111",
+    ],
+    playerStart: { x: 2, y: 4 },
+    extras: [
+      { x: 5, y: 1, ty: 'STELE' },   // 名字石碑 ×4（北壁，内容与 FRAGMENTS 同源）
+      { x: 10, y: 1, ty: 'STELE' },
+      { x: 15, y: 1, ty: 'STELE' },
+      { x: 20, y: 1, ty: 'STELE' },
+      { x: 12, y: 4, ty: 'MB' },     // 残焰魔像（中段精英）
+      { x: 21, y: 4, ty: 'SB' },     // 终焉之神祭坛（东端）
+    ],
+    replaceTiles: { GRASS: 'CAVE', TREE: 'CAVEWALL', PATH: 'CAVE' },
   },
 };
 
+// 遇敌槽增减（单一数据源）：world.tickEncounter 结算与小地图标注文案同读此源
+// 危险格 +10~18（dangerMin + [0,dangerVar) 随机）、喷泉 -25、其它可行走格 -6，满 100 必遇敌
+const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6 };
+
 const CAVE_TREASURE = MAPS.cave.treasure;
-const CAVE_HOLE = { x: 18, y: 12 };
+const INN_PRICE = 10;
 
 const TY = {
   GRASS: 0, TREE: 1, ROCK: 2, WATER: 3, TOWN: 4, PATH: 5, CHEST: 6, BOSS: 7,
   FOUNTAIN: 8, SHOP: 9, INN: 10, GATE: 11, EXIT: 12, NPC: 13, BREW: 14,
-  CAVE: 15, MB: 16, SB: 17, TRIAL: 18, CAVEWALL: 19,
+  CAVE: 15, MB: 16, SB: 17, TRIAL: 18, CAVEWALL: 19, STELE: 20,
 };
 
 const CH_TO_TY = {
@@ -115,16 +176,21 @@ const CH_TO_TY = {
 };
 function chToTy(c) { return CH_TO_TY[c] ?? TY.GRASS; }
 
-const SOLID = new Set([TY.TREE, TY.ROCK, TY.WATER, TY.NPC, TY.BREW, TY.CAVEWALL]);
-const INTERACT = new Set([TY.SHOP, TY.INN, TY.FOUNTAIN, TY.BOSS, TY.GATE, TY.EXIT]);
+const SOLID = new Set([TY.TREE, TY.ROCK, TY.WATER, TY.NPC, TY.BREW, TY.CAVEWALL, TY.STELE]);
 
 const NPC_SPOTS = {
-  '16,7': 'chief',
-  '13,7': 'villager',
-  '10,7': 'adventurer',
-  '4,1': 'sage',
-  '13,8': 'hunter',
-  '18,11': 'cartman',
+  '13,6': 'chief',
+  '10,13': 'villager',
+  '19,8': 'adventurer',
+  '2,4': 'sage',
+  '13,9': 'hunter',
+  '3,1': 'sage',
+  '17,11': 'cartman',
+  // 无字回廊名字石碑（STELE 瓦片，interact 读碑；内容与 FRAGMENTS 同源）
+  '5,1': 'stele1',
+  '10,1': 'stele2',
+  '15,1': 'stele3',
+  '20,1': 'stele4',
 };
 
 const NPCS={
@@ -132,25 +198,63 @@ const NPCS={
   villager:{name:'镇民', mark:'basket', lines:[
     ['镇民：雾语林深处那口泉水，能把忘了的名字烫回来。','灯灭之后，大家连回家的路都要数着走。','[Enter] 继续'],
     ['镇民：魔物是从雾里长出来的——像被丢掉的记忆。','出门前去杂货铺补药水。别在雾里睡着。','[Enter] 结束'],
+  ], after:[
+    ['镇民：雾散了。镇里的灯一盏盏亮回来，','连最旧的路灯都在认路。灯灭那阵子的事，','大家居然全都记得了。 [Enter] 继续'],
+    ['镇民：魔物回雾里去了——像被丢掉的记忆','被人捡了回来。谢谢你，守灯人。','天还是半亮，可够把路看清了。 [Enter] 结束'],
   ]},
-  adventurer:{name:'巡灯人', mark:'sword', lines:[
-    ['巡灯人：我见过祭坛上的影子。那不是深渊爬出来的。','它穿着旧灯卫的袍子，手里握着一截还在烧的灯芯。','[Enter] 继续'],
-    ['巡灯人：传说打败它能夺回【圣光之剑】——','那不是神器，是被它装进剑里的黎明。','[Enter] 结束'],
+  adventurer:{name:'巡灯人', mark:'sword', linesByStage:[
+    { gate:null, lines:[
+      ['巡灯人：我见过祭坛上的影子。那不是深渊爬出来的。','它穿着旧灯卫的袍子，手里握着一截还在烧的灯芯。','[Enter] 继续'],
+      ['巡灯人：传说打败它能夺回【圣光之剑】——','那不是神器，是被它装进剑里的黎明。','[Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['巡灯人：剑里的黎明放出来了。可他连名字都没留下。','祭坛底下……井的方向，还有声音。','[Enter] 继续'],
+      ['巡灯人：如果你捡到发着微光的碎片，别丢。','那是他被忘掉的部分。','[Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['巡灯人：回廊开了？！镇上的老人说过——','名字被忘掉的人，都在那里躺着。','[Enter] 继续'],
+      ['巡灯人：替我们跟他们问个好。','也替他自己。','[Enter] 结束'],
+    ]},
+  ], after:[
+    ['巡灯人：剑还立在祭坛上，可里头的黎明放出来了。','他确是旧灯卫——把黎明封进剑里，','才保着这盏灯一路走到今天。 [Enter] 继续'],
+    ['巡灯人：没人记得他的名字了。那名字，','如今归你替他记着。走夜路的时候，','灯提亮些。 [Enter] 结束'],
   ]},
-  sage:{name:'井巫', mark:'hood', lines:[
-    ['井巫：孩子，雾里的魔王只是一把锁。','矿脉曾往镇上运星砂。洞窟领主守着最后一车，','水晶里睡着的，才是灯自己——终焉之神。','[Enter] 继续'],
-    ['井巫：试炼碑要两枚徽记：幽冥魔王与洞窟领主。','它不是在考你的剑，是在问：还愿不愿意记得。','[Enter] 结束'],
+  sage:{name:'井巫', mark:'hood', linesByStage:[
+    // 揭示节奏（v13.x 剧情重构）：真相按主线进度分段，不再一次性剧透
+    { gate:null, lines:[
+      ['井巫：孩子，雾里那位不是从深渊爬出来的。','它是一把锁——锁着更深的东西。','[Enter] 继续'],
+      ['井巫：等锁开了，再来找我。','到那时，井底的声音会比现在更近。','[Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['井巫：锁开了。你听见了么——井底在响。','矿脉曾往镇上运星砂，喂那些记忆之灯。','[Enter] 继续'],
+      ['井巫：洞窟领主霸着矿脉深处，','守着最后一车没运走的星砂。','去把它了结。 [Enter] 结束'],
+    ]},
+    { gate:'caveBoss', lines:[
+      ['井巫：锁与守门的都断了，现在跟你说实话：','水晶里睡着的，才是灯自己——终焉之神。','[Enter] 继续'],
+      ['井巫：祭坛后的水晶醒了。试炼碑要两枚徽记——','幽冥魔王与洞窟领主，你都有了。它不是考你的剑，','是在问：还愿不愿意记得。 [Enter] 结束'],
+    ]},
   ], after:[
     ['井巫：水晶空了。星砂落回矿脉深处，像什么都没发生过。','可那粒亮着的芯子，是你从雾里一路带回来的。','[Enter] 继续'],
     ['井巫：你不知道自己守住了什么，这就对了。','记得的灯，从此由你掌着。 [Enter] 结束'],
   ]},
-  hunter:{name:'雾径猎手', mark:'hat', lines:[
-    ['雾径猎手：守这片林子大半辈子。泉水还在，','喝一口，忘了的力气会回来。歇够再往祭坛走。','[Enter] 继续'],
-    ['雾径猎手：草丛毒蛇牙上带毒，被咬就一路失血。','腹地石心魔像会凝石甲——旧矿的守门人走丢了。','备好药水再走！ [Enter] 结束'],
+  hunter:{name:'雾径猎手', mark:'hat', linesByStage:[
+    { gate:null, lines:[
+      ['雾径猎手：守这片林子大半辈子。泉水还在，','喝一口，忘了的力气会回来。歇够再往祭坛走。','[Enter] 继续'],
+      ['雾径猎手：草丛毒蛇牙上带毒，被咬就一路失血。','腹地石心魔像会凝石甲——旧矿的守门人走丢了。','备好药水再走！ [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['雾径猎手：林子里的雾灵忽然安静了，像被什么唤走了。','你把回廊的门打开了？','[Enter] 继续'],
+      ['雾径猎手：去吧。守林人守林，守灯人——','守名字。','[Enter] 结束'],
+    ]},
+  ], after:[
+    ['雾径猎手：雾退了，林子亮了，泉水还是那口泉水。','毒蛇回了草丛，石心魔像重新变回石头。','守了大半辈子，头回见它这么安静。 [Enter] 继续'],
+    ['雾径猎手：魔物是雾里长出来的。雾一散，','它们便像被领回家的记忆，各归各位。','看灯的人多了你一个，守林人心里亮堂。 [Enter] 结束'],
   ]},
   cartman:{name:'星砂车夫', mark:'lamp', lines:[
     ['星砂车夫：这洞从前往镇上拉星砂，喂那些记忆之灯。','洞窟领主霸了矿脉后，没运走的一车星砂和金银，','被碎石埋在矿车边上。 [Enter] 继续'],
     ['星砂车夫：你若击败洞窟领主，碎石坍落，','那车货会在祭坛左边显形。打完别急着走，','记得回头把箱子开了。 [Enter] 结束'],
+  ], after:[
+    ['星砂车夫：矿脉安静了。星砂不再发亮——','不是灭了，是被记起来了。','[Enter] 结束'],
   ]},
 };
 
@@ -173,11 +277,38 @@ function baseStats(lv) {
   return { hpMax: 38 + lv * 7, mpMax: 12 + lv * 4, atk: 7 + lv * 2, def: 3 + lv * 2 };
 }
 
+// 每级基础成长（单一数据源）：由 baseStats 一阶差分得出（等级恒为 HP+7 / MP+4 / 攻+2 / 防+2）。
+// 升级结算（hero.grantXp 的 dh/dm/da/dd）与创建页标注同源于 baseStats——改成长曲线只需改 baseStats 一处，
+// 结算、胜利横幅、创建页绝无第二套口径。此前成长数值只在胜利横幅一闪而过，创建页看不到任何基础成长信息。
+const LEVEL_GROWTH = {
+  hp: baseStats(2).hpMax - baseStats(1).hpMax,
+  mp: baseStats(2).mpMax - baseStats(1).mpMax,
+  atk: baseStats(2).atk - baseStats(1).atk,
+  def: baseStats(2).def - baseStats(1).def,
+};
+
 const LEARN_AT = { 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术' };
 function learnsAt(lv) { return LEARN_AT[lv] || null; }
 
+// 灼烧每回合扣血比例（单一数据源）：enemyAct 的灼烧结算 max(2, round(hpMax×此值)) 与
+// 战斗画面角标「每回合 -N血」、火焰斩技能提示「约N%最大HP」同读此源——
+// 此前 0.04 硬编码在 enemyAI.js / view/drawBattle.js 两处，data.js 提示再各写一句「约4%」，
+// 想调灼烧强度要改三处且容易改漏改出对不上的文案；数据化后 结算、角标、提示 绝无第二套口径
+// （与 CHARGE_MULT / DIFF_SCALE / FLEE_SUCCESS 同一体系）
+const BURN_PCT = 0.04;
+
+// 中毒每回合扣血比例 / 持续时间（单一数据源）：battle.applyPoisonTick 的毒素结算
+// max(2, round(hpMax×此值)) 与 view/drawBattle.js 战斗角标「每回合 -N血」、
+// enemyAI 施毒时的回合数、帮助页与图鉴「约N%最大HP…持续N回合」标注同读此源——
+// 此前 0.05（扣血比例）硬编码在 battle.js / view/drawBattle.js 两处、3（持续回合）硬编码在
+// enemyAI.js 一处，data.js 帮助页与毒蛇图鉴tag再各写一句字面量「约5%最大HP」「3回合」，
+// 四处互不相关：想调中毒强度（如放宽到 6%）要改四个地方、还极易改漏让角标/帮助页对不上结算；
+// 数据化后 结算、角标、施毒、标注 绝无第二套口径（与 BURN_PCT / CRIT_MULT / FLEE_SUCCESS 同一体系）
+const POISON_PCT = 0.05;
+const POISON_TURNS = 3;
+
 const SKILL_DATA={
-  '火焰斩':{mp:4,mult:1.8,kind:'atk',sfx:'fire',txt:'🗡️',element:'fire',burn:2,hint:'灼烧2回合',colors:['#ff3b3b','#ff8a2c','#ffd24a']},
+  '火焰斩':{mp:4,mult:1.8,kind:'atk',sfx:'fire',txt:'🗡️',element:'fire',burn:2,hint:'灼烧2回合·每回合约-' + Math.round(BURN_PCT * 100) + '%最大HP',colors:['#ff3b3b','#ff8a2c','#ffd24a']},
   '冰霜击':{mp:5,mult:2.2,kind:'atk',sfx:'ice',txt:'❄️',element:'ice',skip:0.30,hint:'30%冻结（跳过敌回合）',colors:['#5fd8ff','#9ff0ff','#3f8fe1']},
   '雷鸣':  {mp:8,mult:2.8,kind:'atk',sfx:'thunder',txt:'⚡',element:'thunder',pierce:0.5,hint:'穿透一半防御',colors:['#ffe94a','#ffffff','#ffb84a']},
   '陨石术':{mp:14,mult:4.2,kind:'atk',sfx:'thunder',txt:'☄️',element:'meteor',breakShield:1,trueBonus:1.25,hint:'击碎石甲 · 克真身',colors:['#b06ff0','#ff5b8a','#ffd24a']},
@@ -185,38 +316,105 @@ const SKILL_DATA={
 };
 
 const ELEM_NAME={fire:'火',ice:'冰',thunder:'雷',meteor:'陨石'};
+// 元素克制倍率（单一数据源）：rules.elemMult 的 弱点×1.35 / 抗性×0.7 与此同源——
+// 此前倍率只写在 rules.elemMult 一处，图鉴/帮助页只标「弱点·X / 抗性·X」却不带确切数值，
+// 「同一招打弱点击穿的到底多打多少」始终是黑盒；数据化后 结算、图鉴标注、帮助页 绝无第二套口径
+const ELEM_MULT={ weak:1.35, resist:0.7 };
 const CHARGE_MULT=1.5;
+// 困难模式倍率（单一数据源）：battle.startBattle 的敌方缩放与状态页/创建页标注同读此源——
+// 此前 1.35/1.15/1.12 硬编码在 battle.js，界面只显示「⚡/困难」标签而从不告示确切倍率；
+// 与 MAPS.zone 区域倍率同一「信息透明」体系，数值、结算、标注三处绝无第二套口径
+const DIFF_SCALE={ hp:1.35, atk:1.15, def:1.12 };
+// 精英出没等级门槛（单一数据源）：石心魔像只在 Lv.3 起的雾语林随机出现——
+// battle.randomEncounter 精英分支与图鉴「Lv.3起出没」标注同读此源，绝无第二套口径
+const ELITE_GATE_LV = 3;
+// 试炼三连战「每胜一关自动回血」比例（单一数据源）：battle.winBattle 的连战换关恢复与战斗横幅/帮助页标注同读此源——
+// 此前 0.35/0.5 只硬编码在 battle.winBattle，连战中悄然回血玩家却从未被告知（v3.15 只标「第 N/3 关」、v11.0 只标通关金币）；
+// 数据化后 结算、横幅、帮助页三处绝无第二套口径
+const RUSH_RECOVER={ hp:0.35, mp:0.5 };
+// 普通怪逃跑成功率（单一数据源）：battle.doFlee 的随机判定与指令栏「成功率约N%」、
+// 帮助页「约N%」标注同读此源——此前 0.6 硬编码在 battle.js，指令栏与帮助页又各写一处
+// 字面量「约60%」，三处互不相关：调逃跑平衡要改三个地方、还容易改漏改出对不上的文案；
+// 数据化后 结算、指令栏、帮助页绝无第二套口径（与 CHARGE_MULT / DIFF_SCALE / RUSH_RECOVER 同体系）
+const FLEE_SUCCESS = 0.6;
+// 普攻暴击率/暴击倍率（单一数据源）：battle.doAttack 的暴击判定、attackMove 的 ×N 加成与
+// 状态页「普攻N%暴击 ×N」标注同读此源——此前 0.12/1.8 硬编码在 battle.js 两处（判定、结算），
+// menus.js 状态页又另写一句字面量「12%」「×1.8」，三处互不相关：调暴击平衡要改三个地方、
+// 还容易只改判定漏改标注，结算暴击率变了界面却还标旧值；数据化后 判定、结算、标注 绝无第二套口径
+// （与 CHARGE_MULT / DIFF_SCALE / FLEE_SUCCESS / BURN_PCT 同一体系）
+const CRIT_RATE = 0.12;
+const CRIT_MULT = 1.8;
+// 石甲减伤倍率（单一数据源）：battle.attackMove 命中石甲怪的最终伤害 ×N 取整（保底 1）、
+// rules.withShield 的伤害预览还原、enemyAI 凝甲博客「所受伤害降低 N%」提示同读此源——
+// 此前 0.6 硬编码在 battle.js（结算）与 rules.js（预览）两处，enemyAI 的「降低 40%」又自写一个
+// 派生值，三处互不相关：调石甲强度（如放宽到 0.5）要改三个地方、还极易改漏让预览/提示对不上结算；
+// 数据化后 结算、预览、提示 绝无第二套口径（与 CRIT_MULT / FLEE_SUCCESS / BURN_PCT 同一体系，即 v14.9 声明「保持原样」的最后一处裸奔数值）
+const SHIELD_MULT = 0.6;
+
+// 宝箱掉落概率/金币公式（单一数据源）：world.onChestStep 的判定与帮助页「宝箱掉落」标注同读此源——
+// 此前 0.6（雾语林先判蘑菇）/0.45（再判金币）/12、5（金币=12+级×5）只硬编码在 world.js 一处，
+// data.js 帮助页又各写一句字面量「60%蘑菇·18%金币(12+级×5)·22%药水；45%金币·55%药水」，
+// 两处互不相关：调开箱平衡（如放宽蘑菇到 70%）要改两个地方、还极易只改判定漏改标注，
+// 实际掉率变了帮助页却还标旧值；数据化后 判定、帮助页标注 绝无第二套口径
+// （与 CRIT_MULT / FLEE_SUCCESS / BURN_PCT 同一体系，即 v14.9 声明「另一处独立概率，本次不碰」的宝箱开箱裸奔数值）
+// 掉率推导：雾语林先判 60% 蘑菇，剩下 40% 里再判 45% 金币 → 全局 18%、余下 55% → 全局 22% 药水；
+// 城镇/矿脉跳过蘑菇，直接 45% 金币 / 55% 药水
+const CHEST_MUSHROOM = 0.6;
+const CHEST_GOLD = 0.45;
+const CHEST_GOLD_BASE = 12;
+const CHEST_GOLD_PER_LV = 5;
+
+// 防御架势数值（单一数据源）：battle.doDefend 回蓝、enemyAI.enemyAct 减伤/反击判定/反击伤害、
+// view/drawBattle 防御中横幅与受击/反击预判同读此源——此前 0.5/2/0.5/0.7 硬编码在 battle.js
+// （回 2 MP）与 enemyAI.js（减伤/反击两处）三处、drawBattle.js 又各写自己的字面量
+// （横幅「减伤50% · 回2MP/回合 · 50%几率反击」、受击预判再 ×0.5 取整、反击≈N 伤再 ×0.7），
+// 五处互不相关：调防御强度（如减伤放宽到 0.45、回蓝加到 3、反击概率提到 60%）要改四个地方、
+// 还极易改漏让横幅/预判对不上结算；数据化后 结算、横幅、预判 绝无第二套口径
+// （与 SHIELD_MULT / CRIT_MULT / FLEE_SUCCESS / BURN_PCT 同一体系）
+const DEFEND_MULT = 0.5;    // 防御中受到的最终伤害 ×N（保底 1）
+const DEFEND_MP = 2;        // 防御回合恢复的 MP 点数
+const COUNTER_CHANCE = 0.5; // 防御中被命中触发反击的概率
+const COUNTER_MULT = 0.7;   // 反击伤害倍率（无浮动、值确定，预判可放心展示）
 
 const SPECIES={
   '史莱姆':  {draw:'slime', weak:'fire'},
   '野狼':    {draw:'wolf', weak:'fire'},
   '骷髅兵':  {draw:'skel', weak:'fire', resist:'ice'},
   '哥布林':  {draw:'goblin', weak:'ice'},
-  '毒蛇':    {draw:'snake', weak:'ice', poison:0.35, tag:'☠️ 会施毒 · 扣血3回合'},
+  '毒蛇':    {draw:'snake', weak:'ice', poison:0.35, tag:'☠️ 会施毒 · 扣血' + POISON_TURNS + '回合'},
   '树精':    {draw:'tree', weak:'fire', resist:'ice'},
   '石魔像':  {draw:'stone', weak:'thunder', resist:'fire'},
+  '雾灵':    {draw:'ghost', weak:'ice', resist:'fire', tag:'❄️ 雾凝成冰'},
+  '残焰魔像':{draw:'fire', weak:'ice', resist:'fire', isElite:true, lv:11, tag:'🔥 回廊精英',
+    acts:[{type:'attack',w:60},{type:'heavy',w:40,w2:50}]},
   '石心魔像':{draw:'golem', weak:'thunder', isElite:true, tag:'🍄 必掉魔法蘑菇',
     acts:[{type:'attack',w:55},{type:'shield',w:45,maxShield:3,hpBelow:0.5}]},
-  '幽冥魔王':{draw:'boss', resist:'ice', tag:'⚔️ 必掉圣光之剑',
+  '幽冥魔王':{draw:'boss', resist:'ice', lv:8, tag:'⚔️ 必掉圣光之剑',
     acts:[{type:'attack',w:50},{type:'heavy',w:30,w2:45},{type:'heal',w:20,hpBelow:0.4,pct:0.12}],
     phase2:{at:0.5,name:'幽冥魔王·真身',color:'#6a2ad9',atk:7,def:3,heal:0.15}},
-  '洞窟领主':{draw:'caveboss', weak:'thunder', tag:'💠 击败清除祭坛',
+  '洞窟领主':{draw:'caveboss', weak:'thunder', lv:7, tag:'💠 击败清除祭坛',
     acts:[{type:'attack',w:35},{type:'shield',w:30,maxShield:2},{type:'heavy',w:20},{type:'heal',w:15,hpBelow:0.4,pct:0.10}],
     phase2:{at:0.5,name:'洞窟领主·真身',color:'#5aa0d0',atk:5,def:2,heal:0.10}},
-  '终焉之神':{draw:'true', resist:'fire', tag:'💰 击败+300金',
+  '终焉之神':{draw:'true', resist:'fire', lv:12, tag:'💰 击败+300金',
     acts:[{type:'attack',w:40},{type:'heavy',w:35,w2:50},{type:'heal',w:25,hpBelow:0.4,pct:0.12}],
     phase2:{at:0.5,name:'终焉之神·祸乱形态',color:'#ff5b8a',atk:7,def:3,heal:0.15,forbid:['heal']}},
 };
 
 const MON_BASE=[
-  {name:'史莱姆',hp:[16,5],atk:[5,2],def:[2,1],xp:[8,3],gold:[8,2],color:'#7fd84f',weak:'fire',draw:'slime'},
-  {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf'},
-  {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,4],gold:[15,3],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel'},
-  {name:'哥布林',hp:[20,5],atk:[6,2],def:[3,1],xp:[10,3],gold:[10,2],color:'#6fae4f',weak:'ice',draw:'goblin'},
-  {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:0.35,weak:'ice',draw:'snake'},
-  {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,4],gold:[16,3],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree'},
-  {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,4],gold:[20,3],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone'},
+  // w(lv) 遇敌权重（单一数据源）：encounter.encounterWeight 与历史公式逐字一致；
+  // minLv 出没等级门槛：仅 树精/石魔像 为 3，其余缺省 1——battle.encounterWeight 与图鉴「Lv.3起出没」标注同读此源
+  {name:'史莱姆',hp:[16,5],atk:[5,2],def:[2,1],xp:[8,3],gold:[8,2],color:'#7fd84f',weak:'fire',draw:'slime',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
+  {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf',w:()=>3},
+  {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,4],gold:[15,3],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
+  {name:'哥布林',hp:[20,5],atk:[6,2],def:[3,1],xp:[10,3],gold:[10,2],color:'#6fae4f',weak:'ice',draw:'goblin',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
+  {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:0.35,weak:'ice',draw:'snake',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
+  {name:'雾灵',  hp:[24,5],atk:[9,2],def:[4,1],xp:[17,4],gold:[14,3],color:'#b48ae8',weak:'ice',resist:'fire',draw:'ghost',minLv:2,w:(lv)=>2+Math.floor(lv/3)},
+  {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,4],gold:[16,3],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
+  {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,4],gold:[20,3],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
 ];
+
+// 精英「石心魔像」成长基准（单一数据源）：battle.eliteEncounter 生成、rules.codexStats/monReward 图鉴参考同读此表
+const ELITE_GOLEM = {name:'石心魔像',hp:[58,10],atk:[12,3],def:[15,2],xp:[40,6],gold:[45,6],color:'#6b8cb0'};
 
 function withSpecies(enemy) {
   const species = SPECIES[enemy.name] || {};
@@ -233,6 +431,8 @@ function withSpecies(enemy) {
 const BOSS=withSpecies({name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,xp:150,gold:300,color:'#a03fd9',isBoss:true,bossHpMax:140});
 const CAVE_BOSS=withSpecies({name:'洞窟领主',hp:110,hpMax:110,atk:16,def:10,xp:120,gold:200,color:'#3f6b9f',isElite:true,isCaveBoss:true});
 const TRUE_BOSS=withSpecies({name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,xp:400,gold:600,color:'#f0c040',isTrue:true,isElite:true});
+// 无字回廊中段精英（Fire Golem CC0 素材）：双徽记开门后的守门考验
+const EMBER_GOLEM=withSpecies({name:'残焰魔像',hp:170,hpMax:170,atk:19,def:12,xp:130,gold:260,color:'#e07a3f',isElite:true});
 
 const RUSH_BOSSES=[
   withSpecies({name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,xp:60,gold:0,color:'#a03fd9',isRush:true}),
@@ -240,7 +440,28 @@ const RUSH_BOSSES=[
   withSpecies({name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,xp:90,gold:0,color:'#f0c040',isRush:true}),
 ];
 
-const BESTIARY_TARGET=['史莱姆','野狼','骷髅兵','哥布林','毒蛇','树精','石魔像','石心魔像','幽冥魔王','洞窟领主','终焉之神'];
+const BESTIARY_TARGET=['史莱姆','野狼','骷髅兵','哥布林','毒蛇','雾灵','树精','石魔像','石心魔像','幽冥魔王','洞窟领主','终焉之神','残焰魔像'];
+
+// 记忆碎片（单一数据源）：强敌战败掉落（battle.winBattle 按 enemy 名归一查找），
+// 任务日志「记忆碎片」节与真结局加页（ENDING_TRUE_FRAG）同读此表
+const FRAGMENTS=[
+  { id:'golem', name:'碎片·守门人的脚印', enemy:'石心魔像',
+    text:'旧矿的守门人走丢那天，把最后一句「看好矿车」说给了石头听。' },
+  { id:'demon', name:'碎片·灯卫的誓', enemy:'幽冥魔王',
+    text:'他吞下灯芯那晚立下誓：镇子若忘了他，他就替镇子记着镇子。' },
+  { id:'cave',  name:'碎片·最后一车星砂', enemy:'洞窟领主',
+    text:'星砂没落灰。每一年都有人把它擦一遍——用的是自己的影子。' },
+  { id:'true',  name:'碎片·初灯的名字', enemy:'终焉之神',
+    text:'初灯记得所有人的名字，唯独没人记得它的。于是它把自己点着了。' },
+];
+
+// 名字石碑（无字回廊）：碑文与 FRAGMENTS 逐字同源，只读展示不涉任务/掉落
+FRAGMENTS.forEach((f, i) => {
+  NPCS['stele' + (i + 1)] = {
+    name: '名字石碑', mark: 'staff',
+    lines: [[f.text, '——碑上没有名字，摸上去是温的。 [Enter] 结束']],
+  };
+});
 
 const QUESTS={
   main_demon:{
@@ -256,11 +477,18 @@ const QUESTS={
     obj:'深入星井矿脉，击败洞窟领主！',
     done:'已击败洞窟领主。最后一车星砂露了出来。',
   },
+  main_gallery:{
+    id:'main_gallery', kind:'main', flag:'galleryOpen', unlockOn:['bossDefeated','caveBoss'],
+    hiddenUntilUnlock:true,
+    name:'无字回廊', where:'星井矿脉·终焉水晶',
+    obj:'✨ 隐藏目标：穿过终焉水晶开启的门，走进无字回廊！',
+    done:'回廊的门已开。被忘掉的名字们，在碑上等你。',
+  },
   main_true:{
     id:'main_true', kind:'main', flag:'trueBoss', unlockOn:['bossDefeated','caveBoss'],
     hiddenUntilUnlock:true,
-    name:'初灯的审判', where:'星井矿脉·终焉水晶',
-    obj:'✨ 隐藏目标：寻得星井矿脉中的终焉水晶，讨伐终焉之神！',
+    name:'初灯的审判', where:'无字回廊尽头',
+    obj:'✨ 隐藏目标：到无字回廊尽头，讨伐终焉之神！',
     done:'终焉之神已散。记忆回到镇上——你守住了记得的权利。',
   },
   side_mushroom:{
@@ -273,8 +501,8 @@ const QUESTS={
     reward:{ gold:(lv)=>40+lv*10, item:2 },
     talk:{
       offer:[[
-        '灯芯灭了，井口的泉水也跟着黯了。',
-        '林子里的【魔法蘑菇】带着残灯的荧光。帮我找回 3 株，好吗？',
+        '灯芯灭了，井口的泉水也跟着黯了，灯油眼看要见底。',
+        '林子里的【魔法蘑菇】带着残灯的荧光——是灯油最后的原料。帮我找回 3 株，好吗？',
         '[Enter] 接下委托   [Esc] 离开',
       ]],
       active:(hero)=>[[
@@ -287,7 +515,7 @@ const QUESTS={
         '[Enter] 领取奖励',
       ]],
       done:[[
-        '谢谢你。泉水亮了一点。可广场那盏大灯，还在等灯芯。',
+        '谢谢你。井泉的灯油续上了，泉水亮了一点。可广场那盏大灯，还在等灯芯。',
         '（支线任务·已完成）',
         '[Enter] 继续',
       ]],
@@ -313,6 +541,76 @@ const QUESTS={
       ]],
     },
   },
+  // 巡灯人·旧灯卫的名字：集齐 4 枚记忆碎片（cond 单一数据源 FRAGMENTS.length）
+  side_name:{
+    id:'side_name', kind:'side', store:true, npc:'adventurer', giver:'adventurer',
+    unlockOn:'bossDefeated',
+    cond:(g)=>((g.fragments||[]).length >= 4),
+    condProg:(g)=>`${(g.fragments||[]).length}/4 枚`,
+    name:'旧灯卫的名字', where:'收集记忆碎片 → 回镇找巡灯人',
+    unlockHint:'击败幽冥魔王后',
+    obj:'集齐 4 枚记忆碎片，替旧灯卫把名字找回来',
+    turnin:'碎片集齐了！回镇找巡灯人',
+    done:'旧灯卫的名字重新被记起。巡灯人的灯，更亮了。',
+    reward:{ gold:120, potion2:1 },
+    talk:{
+      offer:[[
+        '巡灯人：他吞下灯芯，是为了替镇子记住镇子。',
+        '可没人记得他了。把散落的记忆碎片找回来——',
+        '凑齐 4 枚，我带你把他的名字念给灯听。',
+        '[Enter] 接下   [Esc] 离开',
+      ]],
+      active:[[
+        '巡灯人：碎片在强敌身上——魔像、魔王、领主，',
+        '还有回廊尽头的那位。每一枚都是他被忘掉的一部分。',
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '巡灯人：四段都在这了。守门人、灯卫、星砂、初灯……',
+        '听好了，灯。他叫——',
+        '……名字回来了。这份谢礼你拿着。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:[[
+        '巡灯人：走夜路的时候，灯提亮些。',
+        '现在有人替他们记着了——是你。',
+        '[Enter] 结束',
+      ]],
+    },
+  },
+  // 雾径猎手·雾里的新住客：讨伐 3 只雾灵（bestiary 计数）
+  side_mist:{
+    id:'side_mist', kind:'side', store:true, npc:'hunter', giver:'hunter',
+    cond:(g)=>(((g.bestiary||{})['雾灵'])||0) >= 3,
+    condProg:(g)=>`${((g.bestiary||{})['雾灵'])||0}/3 只`,
+    name:'雾里的新住客', where:'雾语林',
+    obj:'讨伐 3 只雾里新长出来的【雾灵】',
+    turnin:'雾灵查清了！回营地找雾径猎手',
+    done:'雾灵的底细记进了图鉴。猎手的陷阱重新布好了。',
+    reward:{ gold:60, item:1 },
+    talk:{
+      offer:[[
+        '雾径猎手：最近雾里多了些飘着的影子，不怕火，',
+        '倒怕冰。帮我打 3 只回来——记下它们的底细。',
+        '[Enter] 接下   [Esc] 离开',
+      ]],
+      active:[[
+        '雾径猎手：雾灵嘛，草深的地方多。',
+        '冰霜击打它们最管用。',
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '雾径猎手：3 只，干净利落。图鉴上那页我瞄了一眼——',
+        '写得清楚。这点东西拿去，路上用。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:[[
+        '雾径猎手：雾里的东西，认得清就不怕。',
+        '林子交给我，你往前去。',
+        '[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -322,15 +620,17 @@ const ACH_LIST=[
   {id:'lvl5',       name:'独当一面', d:'等级达到 5 级', ok:g=>g.level>=5, prog:g=>`${g.level||1}/5`},
   {id:'lvl10',      name:'守灯者',   d:'等级达到 10 级', ok:g=>g.level>=10, prog:g=>`${g.level||1}/10`},
   {id:'rich',       name:'小富翁',   d:'持有 500 金币', ok:g=>g.gold>=500, prog:g=>`${Math.floor(g.gold||0)}/500`},
-  {id:'scholar',    name:'图鉴学家', d:'图鉴收录 5 种魔物', ok:g=>Object.keys(g.bestiary||{}).length>=5, prog:g=>`${Object.keys(g.bestiary||{}).length}/5`},
+  {id:'scholar',    name:'记忆收藏家', d:'记忆图鉴收录 5 种魔物', ok:g=>Object.keys(g.bestiary||{}).length>=5, prog:g=>`${Object.keys(g.bestiary||{}).length}/5`},
   {id:'quest',      name:'三株荧光', d:'完成灯长的支线任务', ok:g=>(g.quests&&g.quests.side_mushroom==='done')||g.quest>=3},
   {id:'boss',       name:'讨回灯芯', d:'击倒幽冥魔王', ok:g=>!!g.bossDefeated},
   {id:'cave',       name:'井之守望', d:'击败洞窟领主', ok:g=>!!g.caveBoss},
   {id:'trueboss',   name:'记得一切', d:'击败隐藏的终焉之神', ok:g=>!!g.trueBoss},
   {id:'rush',       name:'百炼成钢', d:'通过试炼场三连战', ok:g=>!!g.rushDone},
-  {id:'perfection', name:'图鉴征服', d:'图鉴收录全部 11 种魔物', ok:g=>BESTIARY_TARGET.every(n=>(g.bestiary||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.bestiary||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
+  {id:'perfection', name:'记忆守护者', d:'记忆图鉴收录全部 13 种魔物', ok:g=>BESTIARY_TARGET.every(n=>(g.bestiary||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.bestiary||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
   {id:'legend',     name:'黎明归剑', d:'装备传说圣光之剑', ok:g=>g.weapon==='圣光之剑'},
   {id:'cartman',    name:'星砂之约', d:'把星砂消息告诉星砂车夫', ok:g=>g.quests&&g.quests.side_cart==='done'},
+  {id:'names',      name:'名字归还', d:'替旧灯卫找回名字（巡灯人支线）', ok:g=>g.quests&&g.quests.side_name==='done'},
+  {id:'mist',       name:'雾中辨形', d:'完成雾径猎手的雾灵委托', ok:g=>g.quests&&g.quests.side_mist==='done'},
 ];
 
 function codexTag(name) {
@@ -338,8 +638,11 @@ function codexTag(name) {
   if (!species) return '';
   const bits = [];
   if (species.tag) bits.push(species.tag);
-  if (species.weak) bits.push('弱点·' + ELEM_NAME[species.weak]);
-  if (species.resist) bits.push('抗性·' + ELEM_NAME[species.resist]);
+  // 元素克制倍率（信息透明·与结算同源）：图鉴标注把确切倍率一并写出——此前只标「弱点·火/抗性·冰」
+  // 不标数值，玩家看不出「这招打它到底多打/少打多少」；现直接读 ELEM_MULT（与 rules.elemMult 同一数据源），
+  // 结算、图鉴、帮助页三处绝无第二套口径，纯显示不改任何伤害判定
+  if (species.weak) bits.push('弱点·' + ELEM_NAME[species.weak] + '×' + ELEM_MULT.weak);
+  if (species.resist) bits.push('抗性·' + ELEM_NAME[species.resist] + '×' + ELEM_MULT.resist);
   return bits.join(' · ');
 }
 
@@ -352,39 +655,42 @@ const HELP_PAGES=[
     ['喝药（普通/灵药）','F'],
     ['状态','I'],
     ['任务日志','J'],
-    ['敌人图鉴','B'],
+    ['记忆图鉴','B'],
     ['成就一览','C'],
     ['快速旅行','T'],
     ['操作说明','H'],
     ['静音','M'],
-    ['战斗','1攻击 2技能 3药水 4逃跑(约60%) 5防御 6蓄力(下击/技能×1.5) · Boss无法逃跑'],
+    ['战斗','1攻击 2技能 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力(下击/技能×1.5) · Boss无法逃跑'],
     ['存档槽','标题按 1/2/3 选择 · L 读档'],
   ],
   [
     ['潮灯镇','商店·旅馆·酿造锅·灯长(支线)·喷泉回血'],
     ['雾语林','强魔物·精英·魔王祭坛 · 右下裂洞进矿脉'],
-    ['星井矿脉','更强魔物·迷宫 · 中央终焉水晶(隐藏真Boss)'],
-    ['通关之路','讨回灯芯 → 击败洞窟领主 → 面对终焉之神'],
+    ['星井矿脉','更强魔物·迷宫 · 中央终焉水晶集齐双徽记后化为门'],
+    ['无字回廊','名字石碑·残焰魔像·东端祭坛藏终焉之神（极高难）'],
+    ['通关之路','讨回灯芯 → 击败洞窟领主 → 双徽记开门 → 回廊尽头面对终焉之神'],
   ],
   [
-    ['毒蛇中毒','毒蛇有 35% 概率使你中毒：每回合扣血（约5%最大HP）持续 3 回合'],
+    ['毒蛇中毒','毒蛇有 ' + Math.round(MON_BASE.find(m=>m.name==='毒蛇').poison * 100) + '% 概率使你中毒：每回合扣血（约' + Math.round(POISON_PCT * 100) + '%最大HP）持续 ' + POISON_TURNS + ' 回合'],
     ['中毒自救','治愈术可解毒；中毒不夺行动，也可速战或喝药'],
-    ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；图鉴显示弱点'],
+    ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×1.35 · 抗性伤害×0.7'],
     ['石心魔像·石甲','血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -40%'],
     ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
-    ['魔物强度','图鉴（B）可查看已遇魔物兵力与弱点，战前先看威胁预警'],
+    ['战斗掉落','胜利后约 38% 触发随机掉落：8% 装备或+60金 · 12% 药水 · 12% 蘑菇 · 6% 高级灵药'],
+    ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币(' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + ')·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水；城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
+    ['魔物强度','记忆图鉴（B）可查看已遇魔物兵力与弱点，战前先看威胁预警'],
   ],
   [
     ['试炼碑位置','星井矿脉中央的蓝色石碑 —— 先凑齐两枚胜利徽记'],
     ['双徽记条件','击败 幽冥魔王 + 洞窟领主 后，试炼碑才会点亮 ⚔️'],
-    ['试炼三连战','一次连战三名最强 Boss，全胜获「百炼成钢」成就与丰厚经验'],
+    ['试炼三连战','连战三名最强 Boss，全胜获「百炼成钢」；每胜一关回血35%HP/50%MP'],
     ['重整旗鼓','被强敌击败后按 B 原地再战；R 重开 · T 回标题'],
     ['快速旅行','已到访地图可在菜单 T 中瞬移，省去往返跑图'],
     ['蘑菇宝箱','灯长支线进行中，未开的宝箱会在小地图上金光脉动'],
   ],
 ];
 
-const TRAVEL_LIST=[['village','潮灯镇','记忆之镇：商店·旅馆·灯长委托（补给与任务）','安全区 · Lv.1 即可'],['dungeon','雾语林','雾语林：魔物·宝箱·祭坛·矿脉入口','推荐 Lv.3 起 · 当心精英'],['cave','星井矿脉','星井矿脉：强敌·试炼碑·终焉水晶（高难区域）','推荐 Lv.6 起 · 高难']];
+const TRAVEL_LIST=[['village','潮灯镇','记忆之镇：商店·旅馆·灯长委托（补给与任务）','安全区 · Lv.1 即可'],['dungeon','雾语林','雾语林：魔物·宝箱·祭坛·矿脉入口','推荐 Lv.3 起 · 当心精英'],['cave','星井矿脉','星井矿脉：强敌·试炼碑·终焉水晶（高难区域）','推荐 Lv.6 起 · 高难'],['gallery','无字回廊','被遗忘者的回廊：名字石碑·残焰魔像·终焉之神','推荐 Lv.10 起 · 极高难']];
 
 const HERO_NAMES=['余烬','灯见','潮'];
 const DIFFS=['普通','困难'];
@@ -413,12 +719,19 @@ const ENDING_TRUE=[
   '— 灯还在。路还在。你也还在 —',
 ];
 
+// 记忆碎片集齐后的真结局加页（menus.drawEnding 拼接，行数受面板行距限制，勿超 3 行）
+const ENDING_TRUE_FRAG=[
+  '你把四段记忆一一交还：守门人、灯卫、星砂、初灯。',
+  '这一回，没有人会被忘掉——包括你自己。',
+  '— 真 · 结局：全记忆 —',
+];
+
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, INTERACT, MAPS, CAVE_HOLE, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME,
-  SPECIES, MON_BASE, BOSS, CAVE_BOSS, TRUE_BOSS, RUSH_BOSSES, BESTIARY_TARGET,
-  QUESTS, ACH_LIST, STORY, ENDING, ENDING_TRUE, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
-  baseStats, learnsAt, withSpecies, codexTag,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, ENCOUNTER, CAVE_TREASURE,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT,
+  SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
+  QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
+  baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,
 };

@@ -1,12 +1,12 @@
 // ============================================================
 // main.js —— 入口：goto + 场景按键表
 // ============================================================
-import { S } from './state.js';
+import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
 import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES } from './data.js';
-import { playerAction, updateBattle, retryBoss } from './battle.js';
-import { interact, move, loadMap } from './world.js';
-import { beginAdventure, saveGame, usePotion, resetRun, load, doTravel, brewNow, talkNext, initGame } from './core.js';
+import { playerAction, updateBattle } from './battle.js';
+import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
+import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
 import { stayInn } from './shop.js';
 import { goto } from './scene.js';
 import { render, openSkillMenu, drawTitle, drawCreate, drawWorld, PAUSE_ITEMS } from './view/index.js';
@@ -231,13 +231,14 @@ const screens = {
       if (e.key === 'c' || e.key === 'C') { goto('ach'); return; }
       if (e.key === 'h' || e.key === 'H') { goto('help'); return; }
       if (e.key === 't' || e.key === 'T') {
-        S.travelSel = TRAVEL_LIST.findIndex((x) => x[0] === S.curMap);
+        S.travelSel = TRAVEL_LIST.findIndex((x) => x[0] === curMap());
         if (S.travelSel < 0) S.travelSel = 0;
         goto('travel');
         return;
       }
       if (KEY[e.key]) {
         e.preventDefault();
+        setHeldDir(KEY[e.key], true);
         move(...dirVector(KEY[e.key]));
       }
     },
@@ -257,6 +258,12 @@ const screens = {
       else if (act.id === 'status') goto('status');
       else if (act.id === 'journal') goto('journal');
       else if (act.id === 'codex') goto('codex');
+      else if (act.id === 'ach') goto('ach');
+      else if (act.id === 'travel') {
+        S.travelSel = TRAVEL_LIST.findIndex((x) => x[0] === curMap());
+        if (S.travelSel < 0) S.travelSel = 0;
+        goto('travel');
+      }
       else if (act.id === 'save') saveGame();
       else if (act.id === 'help') goto('help');
       else if (act.id === 'title') { goto('title'); startBgm('title'); }
@@ -277,14 +284,30 @@ if (typeof window !== 'undefined') {
     const screen = screens[S.scene];
     if (screen && screen.onKey) screen.onKey(e);
   });
+  // 按住连走：松开方向键时从按住集合移除（world.holdStep 按节拍消费）
+  window.addEventListener('keyup', (e) => {
+    if (KEY[e.key]) setHeldDir(KEY[e.key], false);
+  });
 }
 
 loadMap('village');
 initGame('余烬');
 goto('title');
 drawTitle();
+// 游戏时钟（冒险时长/昼夜）由固定节拍推进，与渲染解耦
+let _tickPrev = 0;
+function tick() {
+  if (!S.G) return;
+  const now = Date.now();
+  if (_tickPrev) S.G.time = (S.G.time || 0) + Math.min(60, (now - _tickPrev) / 1000);
+  _tickPrev = now;
+}
 if (typeof document !== 'undefined' && document.getElementById && document.getElementById('game')) {
   setInterval(render, 1000 / 30);
+  setInterval(tick, 250);
+  // 按住连走节拍（world.holdStep 内部判断场景，非 world 自动清空按住状态）
+  setInterval(holdStep, 40);
 }
 
-export { screens, goto };
+// 供 tests/ 冒烟验证按键表结构（浏览器内无消费方）
+export { screens };

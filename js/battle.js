@@ -1,85 +1,17 @@
 // ============================================================
-// battle.js —— 遇敌 / 回合队列 / 技能 / 结算（不 import world / ui）
-// boxMsg / drawBattle / burst* / applyVictoryWorld / loadMap ← bind.js
+// battle.js —— 回合队列 / 玩家指令 / 战斗编排与结算（不 import world / view）
+// 遇敌生成 → encounter.js；敌方行动 → enemyAI.js；Boss 重试 → core.js
+// boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
-import { S } from './state.js';
-import { MON_BASE, BOSS, CAVE_BOSS, TRUE_BOSS, RUSH_BOSSES, SKILL_DATA, WEAPONS, ARMORS, CHARGE_MULT, withSpecies, baseStats } from './data.js';
-import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, monReward as monRewardAt, atkEstimate, skillEstimate } from './rules.js';
+import { S, curMap } from './state.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, POISON_PCT, DEFEND_MP } from './data.js';
+import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
+import { hooks } from './hooks.js';
 import { goto } from './scene.js';
-import { takePotion, checkSkills, applyAchievements } from './hero.js';
-
-function scaleEnemy(template, level) {
-  return {
-    name: template.name,
-    hp: template.hp[0] + level * template.hp[1],
-    hpMax: 0,
-    atk: template.atk[0] + level * template.atk[1],
-    def: template.def[0] + level * template.def[1],
-    xp: template.xp[0] + level * template.xp[1],
-    gold: template.gold[0] + level * template.gold[1],
-    color: template.color,
-    poison: template.poison,
-    weak: template.weak,
-    resist: template.resist,
-    draw: template.draw,
-  };
-}
-
-function eliteEncounter() {
-  const level = S.G.level;
-  const enemy = withSpecies({
-    name: '石心魔像',
-    hp: 58 + level * 10, hpMax: 0,
-    atk: 12 + level * 3, def: 15 + level * 2,
-    xp: 40 + level * 6, gold: 45 + level * 6,
-    color: '#6b8cb0', isElite: true,
-  });
-  enemy.hpMax = enemy.hp;
-  return enemy;
-}
-
-function encounterWeight(name, level) {
-  if (name === '史莱姆' || name === '哥布林') return Math.max(1, 4 - Math.floor(level / 2));
-  if (name === '野狼') return 3;
-  if (name === '骷髅兵' || name === '毒蛇') return level >= 2 ? 2 + Math.floor(level / 3) : 1;
-  return level >= 3 ? 2 + Math.floor(level / 2) : 0;
-}
-
-function pickWeightedIndex(weights) {
-  const total = weights.reduce((sum, w) => sum + w, 0);
-  let roll = Math.random() * total;
-  for (let i = 0; i < weights.length; i++) {
-    roll -= weights[i];
-    if (roll <= 0) return i;
-  }
-  return 0;
-}
-
-function randomEncounter() {
-  const level = S.G.level;
-  if (S.curMap === 'dungeon' && S.G.level >= 3 && Math.random() < 0.07) return eliteEncounter();
-  const pool = MON_BASE.map((m) => scaleEnemy(m, level));
-  const weights = MON_BASE.map((m) => encounterWeight(m.name, level));
-  const enemy = deep(pool[pickWeightedIndex(weights)]);
-  if (S.curMap === 'cave') {
-    enemy.hp = Math.round(enemy.hp * 1.2);
-    enemy.atk = Math.round(enemy.atk * 1.15);
-    enemy.def = Math.round(enemy.def * 1.1);
-    enemy.xp = Math.round(enemy.xp * 1.15);
-    enemy.gold = Math.round(enemy.gold * 1.15);
-  } else if (S.curMap === 'village') {
-    enemy.hp = Math.round(enemy.hp * 0.9);
-    enemy.atk = Math.round(enemy.atk * 0.9);
-  }
-  enemy.hpMax = enemy.hp;
-  return enemy;
-}
-
-function monReward(name) {
-  return monRewardAt(name, (S.G && S.G.level) || 1);
-}
+import { takePotion, potionAvailability, applyAchievements, grantXp } from './hero.js';
+import { enemyAct } from './enemyAI.js';
 
 function startRush() {
   S.G.rushStage = 1;
@@ -164,9 +96,10 @@ function startBattle(enemyDef) {
   S.enemy.phased = false;
   S.enemy.forbid = null;
   if (S.G.diff) {
-    S.enemy.hpMax = Math.round(S.enemy.hpMax * 1.35);
-    S.enemy.atk = Math.round(S.enemy.atk * 1.15);
-    S.enemy.def = Math.round(S.enemy.def * 1.12);
+    // 困难倍率（data.js DIFF_SCALE 单一数据源）：与状态页/创建页标注同源，数值结算逐字不变
+    S.enemy.hpMax = Math.round(S.enemy.hpMax * DIFF_SCALE.hp);
+    S.enemy.atk = Math.round(S.enemy.atk * DIFF_SCALE.atk);
+    S.enemy.def = Math.round(S.enemy.def * DIFF_SCALE.def);
   }
   S.enemy.hp = S.enemy.hpMax;
   goto('battle');
@@ -183,7 +116,7 @@ function startBattle(enemyDef) {
       hp: S.G.hp, mp: S.G.mp, item: S.G.item, potion2: S.G.potion2,
       gold: S.G.gold, level: S.G.level, xp: S.G.xp,
       weapon: S.G.weapon, armor: S.G.armor, name: S.enemy.name,
-      x: S.G.x, y: S.G.y, curMap: S.curMap,
+      x: S.G.x, y: S.G.y, curMap: curMap(),
       chests: Array.from(S.G.chests), bossId,
     };
   }
@@ -199,7 +132,7 @@ function abortAction(message) {
 
 function applyPoisonTick(hero) {
   if ((hero.poison || 0) <= 0) return false;
-  const damage = Math.max(2, Math.round(hero.hpMax * 0.05));
+  const damage = Math.max(2, Math.round(hero.hpMax * POISON_PCT));
   hero.hp -= damage;
   hero.poison--;
   SFX.hurt();
@@ -219,7 +152,7 @@ function applyPoisonTick(hero) {
 function doAttack() {
   const hero = S.G;
   const enemy = S.enemy;
-  const crit = Math.random() < 0.12;
+  const crit = Math.random() < CRIT_RATE;
   const charged = !!hero.charge;
   if (charged) hero.charge = false;
   bind.burstEnemy(['#fff', '#e8d8c0', '#ffd24a'], crit ? 22 : 10);
@@ -253,7 +186,10 @@ function doSkill(skillName) {
   hero.mp -= skill.mp;
   bind.renderHUD();
   const charged = !!hero.charge;
-  if (charged) hero.charge = false;
+  // v14.0 蓄力语义收敛：蓄力只加成「威力」（攻击/伤害技能 ×CHARGE_MULT），
+  // 治疗不属于威力——此前治疗会把蓄力白白吃掉还谎称「蓄力加持」；现在治疗保留蓄力，
+  // 治愈后下一次攻击/伤害技能仍按 ×CHARGE_MULT 结算（与 doCharge 文案「攻击或技能威力」一致）。
+  if (charged && skill.kind !== 'heal') hero.charge = false;
   if (skill.kind === 'heal') {
     bind.burstPlayer(skill.colors, 16);
     const heal = Math.round(hero.hpMax * skill.heal);
@@ -264,7 +200,7 @@ function doSkill(skillName) {
       extra = '，毒素被净化了';
     }
     SFX.heal();
-    S.blog.push(`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力加持）' : ''}`);
+    S.blog.push(`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力保留）' : ''}`);
     bind.renderHUD();
     afterPlayer();
     return;
@@ -293,11 +229,8 @@ function doSkill(skillName) {
 
 function doItem() {
   const hero = S.G;
-  const hpFull = hero.hp >= hero.hpMax;
-  const mpFull = hero.mp >= hero.mpMax;
-  const strongOk = hero.potion2 > 0 && (!hpFull || !mpFull);
-  const weakOk = hero.item > 0 && !hpFull;
-  if (!strongOk && !weakOk) {
+  const { hpFull, mpFull, any } = potionAvailability(hero);
+  if (!any) {
     return abortAction(hpFull && mpFull ? '✅ 你气满神足，无需用药！' : '❌ 没有可用的药水了！');
   }
   const result = takePotion();
@@ -315,7 +248,7 @@ function doDefend() {
   const hero = S.G;
   hero.defending = true;
   SFX.block();
-  const mp = Math.min(hero.mpMax, hero.mp + 2);
+  const mp = Math.min(hero.mpMax, hero.mp + DEFEND_MP);
   const gained = mp - hero.mp;
   hero.mp = mp;
   bind.renderHUD();
@@ -348,7 +281,7 @@ function doFlee() {
     bind.drawBattle();
     return true;
   }
-  if (Math.random() < 0.6) {
+  if (Math.random() < FLEE_SUCCESS) {
     S.blog.push('🏃 成功逃脱了！');
     SFX.select();
     hero.charge = false;
@@ -378,7 +311,6 @@ function playerAction(type, arg) {
   if (S.scene !== 'battle' || S.battleBusy) return;
   S.battleBusy = true;
   S.G.defending = false;
-  S.battleTurn++;
   if (applyPoisonTick(S.G)) return;
   const fn = PLAYER_ACTIONS[type];
   const skipDraw = fn ? fn(arg) : false;
@@ -391,13 +323,15 @@ function attackMove(fin, sfx, crit, mult) {
   const enemy = S.enemy;
   const hero = S.G;
   const isCrit = !!crit;
-  let dmg = Math.round(cmdDmg(hero.atkMax, enemy.def, 1, true) * (isCrit ? 1.8 : 1) * (mult || 1));
+  let dmg = Math.round(cmdDmg(hero.atkMax, enemy.def, 1, true) * (isCrit ? CRIT_MULT : 1) * (mult || 1));
   if ((enemy.shield || 0) > 0) {
     enemy.shield--;
-    dmg = Math.max(1, Math.round(dmg * 0.6));
+    dmg = Math.max(1, Math.round(dmg * SHIELD_MULT));
     S.blog.push(`🪨 ${enemy.name} 的石甲挡下了部分伤害！${enemy.shield > 0 ? `（剩余 ${enemy.shield} 层）` : ''}`);
   }
   addFx(bind.CV.width / 2, 188, '-' + dmg, enemy.isBoss ? '#ff7b7b' : '#ffd24a', dmg >= 25 || isCrit);
+  // 震屏触发（纯显示）：暴击或大额伤害（≥25，与浮字加粗同阈值）
+  if (isCrit || dmg >= 25) S.shake = { t0: Date.now(), pow: isCrit ? 4 : 3 };
   enemy.hp -= dmg;
   enemy.hurt = 1;
   S.anim = { hurt: 1, crit: isCrit };
@@ -417,172 +351,18 @@ function finishPlayer(fmt, dmg) {
   bind.drawBattle();
 }
 
+// 敌方行动的编排回调（enemyAI.js 不反向 import battle.js，经 deps 传入）
+const BATTLE_DEPS = { addFx, winBattle, loseBattle };
+
 function afterPlayer() {
-  enqueue(600, () => { if (S.scene === 'battle') enemyAct(); });
-}
-
-function pickAct(enemy) {
-  const acts = enemy.acts || [{ type: 'attack', w: 100 }];
-  const hpRatio = enemy.hp / Math.max(1, enemy.hpMax);
-  const avail = acts.filter((a) => {
-    if (a.hpBelow != null && hpRatio > a.hpBelow) return false;
-    if (a.maxShield != null && (enemy.shield || 0) >= a.maxShield) return false;
-    return true;
-  });
-  const weightOf = (a) => (enemy.phased && a.w2 != null) ? a.w2 : a.w;
-  let roll = Math.random() * (avail.reduce((sum, a) => sum + weightOf(a), 0) || 1);
-  for (const a of avail) {
-    roll -= weightOf(a);
-    if (roll <= 0) return a;
-  }
-  return avail[0] || { type: 'attack' };
-}
-
-function enemyAct() {
-  const hero = S.G;
-  const enemy = S.enemy;
-  if (!enemy || S.scene !== 'battle') return;
-  hero.hurt = 1;
-
-  if ((enemy.burn || 0) > 0) {
-    const burnDmg = Math.max(2, Math.round(enemy.hpMax * 0.04));
-    enemy.hp -= burnDmg;
-    enemy.burn--;
-    addFx(bind.CV.width / 2, 188, '-' + burnDmg, '#ff8a2c', true);
-    S.blog.push(`🔥 灼烧令 ${enemy.name} 受到 ${burnDmg} 点伤害！`);
-    if (enemy.hp <= 0) {
-      enemy.hp = 0;
-      S.blog.push(`💀 ${enemy.name} 被击败了！`);
-      hero.hurt = 0;
-      winBattle();
-      return;
-    }
-  }
-
-  if (enemy.skipNext) {
-    enemy.skipNext = false;
-    hero.hurt = 0;
-    S.blog.push(`❄️ ${enemy.name} 被冻结，无法行动！`);
-    S.battleBusy = false;
-    bind.drawBattle();
-    return;
-  }
-
-  const phase = enemy.phase2;
-  if (phase && !enemy.phased && enemy.hp < enemy.hpMax * (phase.at || 0.5)) {
-    enemy.phased = true;
-    enemy.name = phase.name || (enemy.name + '·真身');
-    if (phase.color) enemy.color = phase.color;
-    enemy.atk += (phase.atk || 0);
-    enemy.def += (phase.def || 0);
-    if (phase.forbid) enemy.forbid = phase.forbid;
-    const heal = Math.round(enemy.hpMax * (phase.heal || 0.15));
-    enemy.hp = Math.min(enemy.hpMax, enemy.hp + heal);
-    SFX.thunder();
-    S.blog.push(`🌀 ${enemy.name} 现出真身！力量暴涨，HP 恢复 ${heal}！${phase.forbid && phase.forbid.includes('heal') ? ' 治愈被封印！' : ''}`);
-    hero.hurt = 0;
-    S.battleBusy = false;
-    bind.drawBattle();
-    return;
-  }
-
-  const act = pickAct(enemy);
-  if (act.type === 'shield') {
-    enemy.shield = (enemy.shield || 0) + 1;
-    SFX.block();
-    hero.hurt = 0;
-    S.blog.push(`🪨 ${enemy.name} 凝结【石甲】！（累计 ${enemy.shield} 层，所受伤害降低 40%）`);
-    S.battleBusy = false;
-    bind.drawBattle();
-    return;
-  }
-  if (act.type === 'heal') {
-    const heal = Math.round(enemy.hpMax * (act.pct || 0.12));
-    enemy.hp += heal;
-    SFX.heal();
-    S.blog.push(`🟣 ${enemy.name} 使出【暗影回血】，恢复 ${heal} HP`);
-    hero.hurt = 0;
-  } else {
-    const heavy = act.type === 'heavy';
-    const mult = heavy ? (enemy.phased ? 2.3 : 1.9) : 1;
-    let dmg = cmdDmg(enemy.atk, hero.defMax, mult);
-    if (hero.defending) dmg = Math.max(1, Math.round(dmg * 0.5));
-    hero.hp -= dmg;
-    bind.renderHUD();
-    SFX.hurt();
-    addFx(96, 340, '-' + dmg, '#ff6b6b', true);
-    S.blog.push(`${heavy ? '💥' : '👹'} ${enemy.name} 攻击你，造成 ${dmg} 伤害！${hero.defending ? '（被防御格挡！）' : ''}${heavy && enemy.phased ? '（深渊之怒！）' : ''}`);
-    if (hero.defending && Math.random() < 0.5) {
-      const counter = Math.max(1, cmdDmg(hero.atkMax, enemy.def, 0.7));
-      enemy.hp = Math.max(0, enemy.hp - counter);
-      SFX.hit();
-      bind.renderHUD();
-      addFx(bind.CV.width / 2, 188, '-' + counter, '#ffd24a', true);
-      S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！`);
-    }
-    if (enemy.poison && Math.random() < enemy.poison) {
-      hero.poison = 3;
-      S.blog.push(`☠️ ${hero.name} 中了【毒】！每回合扣血，持续 ${hero.poison} 回合`);
-    }
-    setTimeout(() => { hero.hurt = 0; }, 220);
-  }
-  bind.drawBattle();
-  if (hero.hp <= 0) {
-    hero.hp = 0;
-    bind.renderHUD();
-    bind.boxMsg('💀', 0);
-    loseBattle();
-    return;
-  }
-  if (enemy.hp <= 0) {
-    enemy.hp = 0;
-    S.blog.push(`💀 ${enemy.name} 被反杀倒地！`);
-    winBattle();
-    return;
-  }
-  S.battleBusy = false;
-  bind.drawBattle();
-}
-
-function rollDrop() {
-  const hero = S.G;
-  const roll = Math.random();
-  if (roll < 0.08) {
-    hero.drops = (hero.drops || 0) + 1;
-    if (hero.weapon === '木剑' || hero.weapon === '铁剑') {
-      hero.weapon = '秘银剑';
-      applyStats(hero);
-      return '⚔️ 掉落武器：秘银剑 已装备！';
-    }
-    if (hero.armor === '布衣' || hero.armor === '皮甲') {
-      hero.armor = '锁子甲';
-      applyStats(hero);
-      return '🛡️ 掉落防具：锁子甲 已装备！';
-    }
-    hero.gold += 60;
-    return '✨ 宝箱：金币 +60';
-  }
-  if (roll < 0.2) {
-    hero.item++;
-    hero.drops = (hero.drops || 0) + 1;
-    return '🍖 掉落：生命药水 ×1';
-  }
-  if (roll < 0.32) {
-    if (S.curMap === 'dungeon' || S.curMap === 'cave') {
-      hero.mushrooms++;
-      hero.drops = (hero.drops || 0) + 1;
-      return '🍄 掉落：魔法蘑菇 ×1';
-    }
-    hero.item++;
-    hero.drops = (hero.drops || 0) + 1;
-    return '🍖 掉落：生命药水 ×1';
-  }
-  if (roll < 0.38) {
-    hero.potion2 = (hero.potion2 || 0) + 1;
-    hero.drops = (hero.drops || 0) + 1;
-    return '🧪 掉落：高级灵药 ×1！';
-  }
-  return null;
+  // v14.1 回合计数只在行动被「实际消耗」时推进：此前 battle.js 在 playerAction 起手无条件 battleTurn++，
+  // 被拒绝的指令（MP 不足 / 无药 / 技能未学 / 气场封印）与 Boss 战逃跑（日志明说「本回合行动保留」）
+  // 也都会白白虚涨「⚔️ 回合 N」——按几下废键计数就虚高一截，与「不耗回合」的文案自相矛盾。
+  // 移到 afterPlayer 后，只有真正调度了敌方回合的指令才 +1：计数如实反映「实际走了几回合」。
+  // 普通攻击/技能/药水/防御/蓄力/逃跑失败：照旧每行动一次 +1（进入敌方回合前）；逃跑成功与
+  // Boss 逃（不调度敌方回合）以及各类被拒指令：不再虚涨。展示层 drawBattle 只读数，无第二口径。
+  S.battleTurn++;
+  enqueue(600, () => { if (S.scene === 'battle') enemyAct(BATTLE_DEPS); });
 }
 
 function winBattle() {
@@ -599,37 +379,15 @@ function winBattle() {
     bind.boxMsg('💎 从魔像残骸中捡到 1 株魔法蘑菇！', 1800);
   }
   hero.gold += enemy.gold;
-  hero.xp += enemy.xp;
-  let leveled = false;
-  let gainedAtk = 0, gainedDef = 0, gainedHp = 0, gainedMp = 0;
-  while (hero.xp >= hero.xpNext) {
-    hero.xp -= hero.xpNext;
-    hero.xpNext = Math.round(hero.xpNext * 1.42);
-    hero.level++;
-    const base = baseStats(hero.level);
-    const dh = base.hpMax - hero.hpMax;
-    const dm = base.mpMax - hero.mpMax;
-    const da = base.atk + WEAPONS[hero.weapon].atk - hero.atkMax;
-    const dd = base.def + ARMORS[hero.armor].def - hero.defMax;
-    hero.atkMax = base.atk + WEAPONS[hero.weapon].atk;
-    hero.defMax = base.def + ARMORS[hero.armor].def;
-    hero.hpMax = base.hpMax;
-    hero.mpMax = base.mpMax;
-    hero.hp = Math.min(hero.hpMax, hero.hp + dh);
-    hero.mp = Math.min(hero.mpMax, hero.mp + dm);
-    gainedHp += dh; gainedMp += dm; gainedAtk += da; gainedDef += dd;
-    leveled = true;
-    SFX.levelup();
-    checkSkills();
-  }
-  if (leveled) {
-    bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${gainedHp} MP+${gainedMp} 攻+${gainedAtk} 防+${gainedDef}${enemy.isBoss ? '，你终于可以……' : ''}`, 2400);
+  const g = grantXp(hero, enemy.xp);
+  if (g.leveled) {
+    bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}${enemy.isBoss ? '，你终于可以……' : ''}`, 2400);
   } else if (!enemy.isRush && hero.xpNext > hero.xp) {
     bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验`, 2600);
   }
   bind.renderHUD();
   applyAchievements();
-  const drop = rollDrop();
+  const drop = rollDrop(hero, curMap());
   if (drop) {
     bind.renderHUD();
     applyAchievements();
@@ -643,25 +401,32 @@ function winBattle() {
   if (enemy.isCaveBoss) hero.caveBoss = true;
   if (enemy.isTrue) { hero.trueBoss = true; hero.gold += 300; }
   if (enemy.isBoss) hero.bossDefeated = true;
-  bind.applyVictoryWorld(result);
+  // 记忆碎片（data.js FRAGMENTS 单一数据源）：强敌首胜掉落一段旧灯卫记忆，J 日志可回看
+  const frag = FRAGMENTS.find((f) => f.enemy === bookName);
+  if (frag && !(hero.fragments || []).includes(frag.id)) {
+    hero.fragments.push(frag.id);
+    bind.boxMsg(`🕯️ 拾起一段记忆：【${frag.name}】（按 J 日志回看）`, 2800);
+  }
+  hooks.applyVictoryWorld(result);
 
   if (enemy.isRush) {
     const stage = hero.rushStage;
     if (stage >= RUSH_BOSSES.length) {
       hero.rushStage = 0;
       hero.rushDone = true;
-      const reward = 150 + hero.level * 20;
+      const reward = rushReward(hero.level);
       hero.gold += reward;
       applyAchievements();
       SFX.victory();
       bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！`, 3200);
       setTimeout(() => { goto('world'); S.enemy = null; S.battleBusy = false; resumeBgm(); }, 1800);
     } else {
-      hero.hp = Math.min(hero.hpMax, hero.hp + Math.round(hero.hpMax * 0.35));
-      hero.mp = Math.min(hero.mpMax, hero.mp + Math.round(hero.mpMax * 0.5));
+      // 连胜换关自动回血（data.js RUSH_RECOVER 单一数据源）：与战斗横幅/帮助页标注同读此源，数值结算逐字不变
+      hero.hp = Math.min(hero.hpMax, hero.hp + Math.round(hero.hpMax * RUSH_RECOVER.hp));
+      hero.mp = Math.min(hero.mpMax, hero.mp + Math.round(hero.mpMax * RUSH_RECOVER.mp));
       bind.renderHUD();
       hero.rushStage = stage + 1;
-      bind.boxMsg(`🚩 试炼第 ${stage + 1} 关：${RUSH_BOSSES[stage].name} 现身！`, 2200);
+      bind.boxMsg(`🚩 试炼第 ${stage + 1} 关：${RUSH_BOSSES[stage].name} 现身！（已自动恢复${Math.round(RUSH_RECOVER.hp * 100)}%HP / ${Math.round(RUSH_RECOVER.mp * 100)}%MP）`, 2200);
       setTimeout(() => { startBattle(deep(RUSH_BOSSES[stage])); }, 1400);
     }
     return result;
@@ -705,41 +470,10 @@ function loseBattle() {
   bind.drawDead();
 }
 
-function retryBoss() {
-  const retry = S.G._bossRetry;
-  if (!retry || retry.bossId === 'rush') return false;
-  let def = BOSS;
-  if (retry.bossId === 'true') def = TRUE_BOSS;
-  else if (retry.bossId === 'cave') def = CAVE_BOSS;
-  const hero = S.G;
-  hero.level = retry.level;
-  hero.xp = retry.xp;
-  hero.weapon = retry.weapon;
-  hero.armor = retry.armor;
-  hero.gold = retry.gold;
-  hero.item = retry.item;
-  hero.potion2 = retry.potion2;
-  hero.chests = new Set(retry.chests || []);
-  applyStats(hero);
-  hero.hp = Math.min(hero.hpMax, retry.hp);
-  hero.mp = Math.min(hero.mpMax, retry.mp);
-  bind.loadMap(retry.curMap || 'village');
-  hero.x = retry.x;
-  hero.y = retry.y;
-  bind.renderHUD();
-  SFX.select();
-  bind.boxMsg('🔄 重整旗鼓，再战强敌！', 1600);
-  startBattle(deep(def));
-  return true;
-}
-
 function updateBattle() {
   if (S.scene === 'battle') bind.drawBattle();
 }
 
 export {
-  deep, eliteEncounter, randomEncounter, monReward, canonicalName, startRush,
-  applyAchievements as achCheck, addFx, threatWarn, startBattle, cmdDmg, atkEstimate,
-  playerAction, attackMove, finishPlayer, enemyAct, rollDrop, winBattle, loseBattle,
-  retryBoss, updateBattle, skillEstimate,
+  startBattle, startRush, playerAction, updateBattle, winBattle, loseBattle,
 };

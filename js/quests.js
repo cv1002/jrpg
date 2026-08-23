@@ -16,6 +16,7 @@ function stored(hero, id) {
 export function migrateQuests(hero) {
   if (!hero) return hero;
   if (!hero.quests) hero.quests = {};
+  if (!hero.fragments) hero.fragments = [];
   const quests = hero.quests;
   if (quests.side_mushroom == null) {
     if (hero.quest === 1) quests.side_mushroom = 'active';
@@ -54,6 +55,8 @@ export function questStatus(hero, id) {
   }
   if (!flagsOn(hero, def.unlockOn)) return def.hiddenUntilUnlock ? 'hidden' : 'locked';
   const st = stored(hero, id);
+  // 条件式交付（单一数据源 QUESTS[].cond）：进行中且条件达成 → 可交付
+  if (st === 'active' && def.cond && def.cond(hero)) return 'turnin';
   if (st === 'active' || st === 'turnin' || st === 'done') return st;
   if (def.unlockOn) return 'active';
   return 'offer';
@@ -67,6 +70,8 @@ function objectiveText(hero, def, status) {
   if (def.item && def.n && status === 'active') {
     return `${def.obj} ${hero[def.item] || 0}/${def.n} 株`;
   }
+  // 条件式任务实时进度（如 碎片 2/4 枚、雾灵 1/3 只）
+  if (def.condProg && status === 'active') return `${def.obj} ${def.condProg(hero)}`;
   return def.obj;
 }
 
@@ -125,8 +130,9 @@ export function questRewardPreview(hero, id) {
   if (!reward) return null;
   const gold = typeof reward.gold === 'function' ? reward.gold((hero && hero.level) || 1) : (reward.gold || 0);
   const item = reward.item || 0;
-  if (!gold && !item) return null;
-  return { gold, item };
+  const potion2 = reward.potion2 || 0;
+  if (!gold && !item && !potion2) return null;
+  return { gold, item, potion2 };
 }
 
 function locSuffix(objective, where, status) {
@@ -167,8 +173,8 @@ export function resolveNpcTalk(hero, npcId) {
     }
     if (st === 'turnin' || (st === 'active' && def.completeOnTalk)) {
       setSideQuest(hero, def.id, 'done');
-      const { gold, item } = applyQuestReward(hero, def.id);
-      return { kind: 'reward', id: def.id, name: def.name, gold, item };
+      const { gold, item, potion2 } = applyQuestReward(hero, def.id);
+      return { kind: 'reward', id: def.id, name: def.name, gold, item, potion2 };
     }
   }
   return null;
@@ -184,6 +190,7 @@ export function adventureProgress(hero) {
   return [
     ['灯芯', !!hero.bossDefeated],
     ['星井', !!hero.caveBoss],
+    ['回廊', !!hero.galleryOpen],
     ['初灯', !!hero.trueBoss],
     ['试炼场', !!hero.rushDone],
   ];
@@ -197,7 +204,8 @@ export function applyQuestReward(hero, id) {
   const item = reward.item || 0;
   hero.gold += gold;
   if (item) hero.item = (hero.item || 0) + item;
-  return { gold, item };
+  if (reward.potion2) hero.potion2 = (hero.potion2 || 0) + reward.potion2;
+  return { gold, item, potion2: reward.potion2 || 0 };
 }
 
 function talkPagesOf(def, status, hero) {
@@ -229,5 +237,14 @@ export function npcQuestPages(hero, npcId) {
   // 无待办任务时回退到 NPC 静态台词；通关后（trueBoss）若定义 after 彩蛋则优先展示
   const ent = NPCS[npcId];
   if (!ent) return [['……']];
-  return (hero && hero.trueBoss && ent.after) ? ent.after : ent.lines;
+  if (hero && hero.trueBoss && ent.after) return ent.after;
+  // linesByStage（井巫）：按主线旗标选段，揭示随进度推进（数据在 data.js，选段在此）
+  if (ent.linesByStage) {
+    let pick = ent.linesByStage[0].lines;
+    for (const st of ent.linesByStage) {
+      if (!st.gate || (hero && hero[st.gate])) pick = st.lines;
+    }
+    return pick;
+  }
+  return ent.lines;
 }

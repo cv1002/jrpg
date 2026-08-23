@@ -11,7 +11,6 @@ export const S = {
   bgmStep: 0,
   bgmTrack: null,
   maze: null,
-  curMap: 'village',
   G: null,
   scene: 'title',
   storyPage: 0,
@@ -28,7 +27,6 @@ export const S = {
   shopSel: 0,
   pauseSel: 0,
   shopList: [],
-  innPrice: 10,
   helpPage: 0,
   codexScroll: 0,
   achScroll: 0,
@@ -36,16 +34,25 @@ export const S = {
   curNpc: null,
   talkPages: [],
   talkPage: 0,
+  talkLineAt: 0,
+  talkStartAt: 0,
   createName: 0,
   createDiff: 0,
-  titleFlash: 0,
   skillMenuOpen: false,
   enemy: null,
   fx: [],
   parr: [],
+  shake: null,
+  flash: null,
   walk: null,
   encGauge: 0,
   battleQ: [],
   battleAdvancing: false,
   battleTimer: null,
 };
+
+// 当前地图唯一真相是 G.map（loadMap 负责同步）；curMap() 供全层读取——
+// 标题期 G 为 null 时回退 'village'（与启动时 loadMap('village') 一致）
+export function curMap() {
+  return S.G ? S.G.map : 'village';
+}
