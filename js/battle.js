@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, POISON_PCT, DEFEND_MP } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, POISON_PCT, DEFEND_MP, TRUE_BONUS_GOLD } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -399,7 +399,7 @@ function winBattle() {
     gold: enemy.gold, xp: enemy.xp, name: bookName,
   };
   if (enemy.isCaveBoss) hero.caveBoss = true;
-  if (enemy.isTrue) { hero.trueBoss = true; hero.gold += 300; }
+  if (enemy.isTrue) { hero.trueBoss = true; hero.gold += TRUE_BONUS_GOLD; }
   if (enemy.isBoss) hero.bossDefeated = true;
   // 记忆碎片（data.js FRAGMENTS 单一数据源）：强敌首胜掉落一段旧灯卫记忆，J 日志可回看
   const frag = FRAGMENTS.find((f) => f.enemy === bookName);
@@ -449,7 +449,7 @@ function winBattle() {
     applyAchievements();
   }
   if (enemy.isTrue) {
-    bind.boxMsg('✨ 初灯的意志散了。记忆回到镇上。额外 300 金币！', 3200);
+    bind.boxMsg(`✨ 初灯的意志散了。记忆回到镇上。额外 ${TRUE_BONUS_GOLD} 金币！`, 3200);
     applyAchievements();
     stopBgm();
     goto('ending');

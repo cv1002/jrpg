@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v16.8 终焉之神额外奖励单一数据源——战胜结算/横幅、图鉴标注、战斗预览同读 TRUE_BONUS_GOLD（机制·单一口径，与 DROP_GOLD / RUSH_RECOVER / CHARGE_MULT 同体系）
+
+- 【额外 300 金币散落四处互不相关】终焉之神的额外赏金 = 战胜后 `hero.gold += 300`（基础报酬 600 金之外的追加奖励）：这个 300 硬编码在 `battle.js winBattle` 两处（第 402 行结算 `hero.gold += 300` 与第 452 行横幅文案 `额外 300 金币！`）、`data.js` 图鉴 `SPECIES['终焉之神'].tag`（`💰 击败+300金`）、`view/drawBattle.js` 战斗预览（`· 战胜另+300金`）——跨三个文件四处互不相关：想调真结局额外赏金（如放宽到 500）要改两个文件三四处，还极易只改结算漏改标注/预览，实际打赢多了 500 金图鉴却还标「+300金」、战前预览还报「另+300金」；v16.5 收口精英出没时已把「判定旁剩下裸数值」定为同款病根，终焉之神的「+300」是 Boss 奖励体系中最后一处结算/标注/预览裸奔数值——`TRUE_BOSS.gold = 600`（基础报酬）早已单一数据源化，唯独这「额外 300」还散落四处。
+- 【修正：data.js 新增 `TRUE_BONUS_GOLD = 300` 为唯一真源】`SPECIES['终焉之神'].tag` 改拼 `'💰 击败+' + TRUE_BONUS_GOLD + '金'`；`battle.winBattle` 结算改读 `hero.gold += TRUE_BONUS_GOLD`、横幅改读模板插值 `额外 ${TRUE_BONUS_GOLD} 金币！`；`drawBattle` 预览改拼 `'· 战胜另+' + TRUE_BONUS_GOLD + '金'`。收益：调真结局额外赏金只改 data.js 一处、结算/横幅/标注/预览四处同步，绝无第二套口径；显示文案 `额外 300 金币！`、`💰 击败+300金`、`· 战胜另+300金` 逐字不变（300 原样拼入），零 UI 回归。常量定义置于 SPECIES 之前（SPECIES 顶层字面量 tag 会拼入此值，前向引用会触发 TDZ）。
+- 【零回归面】未动终焉之神机制本身——`TRUE_BOSS` 基础报酬（xp400 / gold600）、`isTrue` 判定、真结局流程（stopBgm/goto ending/drawEnding）、记忆碎片、成就、其余 Boss（幽冥魔王/洞窟领主/残焰魔像）tag 逐字不变；未动任何掉落/经验/难度/存档。只新增一个常量 + 改四个引用点（data 定义/导出与 tag 一处、battle 结算/横幅两处、drawBattle 预览一处），零新增依赖。
+- 验证：`node --check js/data.js js/battle.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v16.8 专项冒烟（/tmp/jrpg_smoke_v168_truegold.mjs）**16 项断言全过**——常量导出 300、图鉴 tag 由常量拼出且与旧字面量逐字一致（`💰 击败+300金`）、TRUE_BOSS 基础报酬 gold=600 不受影响（额外奖与基础奖独立两档）、battle.js 裸结算 `hero.gold += 300` 与裸横幅 `额外 300 金币`、drawBattle.js 裸预览 `另+300金`、data.js 可执行字符串字面量 `💰 击败+300金` 均已清除且四处同读 TRUE_BONUS_GOLD、相邻 Boss tag（幽冥魔王/石心魔像/洞窟领主）与拼接产物文案逐字不变。
+
 ## v16.7 帮助页元素克制/石甲减伤标注单一数据源——HELP_PAGES 第 3 页最后两处裸字面量同读 ELEM_MULT / SHIELD_MULT（机制·单一口径，与 CHARGE_MULT / RUSH_RECOVER / DROP_* 同体系）
 
 - 【1.35/0.7 与 -40% 只剩帮助页两行裸奔，结算/日志/图鉴早已同源】元素克制倍率 `弱点×1.35 / 抗性×0.7` 自 v12.x 起就是 `ELEM_MULT={weak:1.35, resist:0.7}`（data.js），`rules.elemMult`（结算）与图鉴 `codexTag` 弱点/抗性标注早已同读此源；石甲减伤 `×0.6 / 每层降 40%` 自 v12.4 起就是 `SHIELD_MULT=0.6`，`battle.attackMove`（结算）、`rules.shieldScale`（预览）、`enemyAI` 凝甲日志（`敌所受伤害降低 ${Math.round((1-SHIELD_MULT)*100)}%`）三处同读此源——唯独帮助页第 3 页还硬编码着两句字面量：操作说明「技能克制」行的 `弱点伤害×1.35 · 抗性伤害×0.7` 与「石心魔像·石甲」行的 `每层使下一次攻击伤害 -40%`。想调克制/石甲强度（如弱点放宽到 1.4、石甲减到 -50%）要改结算/显示之外**还要记得改帮助页**，极易只改结算漏改标注；v16.6 收口试炼恢复时把帮助页「最后一处裸奔」定为同款病根，元素克制与石甲减伤是本体系残留在帮助页的最后两处字面量。

@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -178,11 +178,11 @@ export function drawBattle() {
     // 图鉴 codexTag 也已标注「抗性·X」，但战斗画面只标弱点不标抗性会让「同一招打它为什么低一截」成黑盒；
     // 这里直接读取 enemy.resist 同源数据补上（如 石魔像/骷髅兵/树精/魔王真身 的 抗火/抗冰），不影响任何结算
     const res = enemy.resist ? (' · 抗' + ELEM_NAME[enemy.resist]) : '';
-    // 补齐确定性奖励（与 winBattle 同源，纯显示）：精英必掉蘑菇；终焉之神战胜另有 +300 金币；
+    // 补齐确定性奖励（与 winBattle 同源，纯显示）：精英必掉蘑菇；终焉之神战胜另有 +TRUE_BONUS_GOLD 金币（data.js 单一数据源，与结算/横幅/图鉴标注同读）；
     // 幽冥魔王（isBoss）首次击败必掉圣光之剑（winBattle 的 isBoss 掉落分支 / 图鉴 codexTag「⚔️ 必掉圣光之剑」逐字同源）——
     // 这把攻+24 的传说剑是通关关键收益，预览行若不写，打赢之前它始终是黑盒；
     // 试炼战的通关奖励不再是黑盒——确切数额直接读 rushReward(S.G.level)（与 winBattle 结算逐字同源，随当前等级实时显示）
-    const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+300金' : '') + (enemy.isBoss ? ' · ⚔️ 必掉圣光之剑' : '');
+    const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+' + TRUE_BONUS_GOLD + '金' : '') + (enemy.isBoss ? ' · ⚔️ 必掉圣光之剑' : '');
     const rushBonus = enemy.isRush ? `（试炼通关另奖 ${rushReward(S.G ? S.G.level : 1)} 金币，随等级提升）` : '';
     text(`战利品预览：经验 +${enemy.xp} 金币 +${enemy.gold}${wk}${res}${bonus}${rushBonus}`, ex0, 112, 'bold 13px', '#a8ff8a', 'center');
     if ((enemy.shield || 0) > 0) text(`🪨 石甲×${enemy.shield}（受击-40%）`, 620, 112, 'bold 12px', '#c0b397', 'right');

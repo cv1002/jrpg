@@ -414,6 +414,12 @@ const DROP_MUSHROOM = 0.12;  // 魔法蘑菇（仅雾语林/矿脉；其余地�
 const DROP_ELIXIR = 0.06;    // 高级灵药
 const DROP_GOLD = 60;        // 装备档已尽善时的金币兜底数额
 
+// 终焉之神额外奖励（单一数据源）：battle.winBattle 战胜结算/横幅文案、图鉴「击败+300金」标注、
+// 战斗预览「战胜另+300金」三处同读此源——调真结局额外赏金（如改成 500）只改 data.js 一处，
+// 结算/横幅/标注/预览多端同步，绝无第二套口径（与 DROP_GOLD / RUSH_RECOVER 同一体系）
+// 注意：SPECIES 顶层字面量 tag 会拼入此值，故必须定义在 SPECIES 之前
+const TRUE_BONUS_GOLD = 300;
+
 // —— 药水恢复量（POTION_ 生命药水 / ELIXIR_ 高级灵药）—— 结算·战斗预览·商店文案三处唯一真源
 const POTION_HP_PCT = 0.5;   // 生命药水：恢复 最大HP ×N（向下取整）再 +FLAT
 const POTION_HP_FLAT = 8;
@@ -440,7 +446,7 @@ const SPECIES={
   '洞窟领主':{draw:'caveboss', weak:'thunder', lv:7, tag:'💠 击败清除祭坛',
     acts:[{type:'attack',w:35},{type:'shield',w:30,maxShield:2},{type:'heavy',w:20},{type:'heal',w:15,hpBelow:0.4,pct:0.10}],
     phase2:{at:0.5,name:'洞窟领主·真身',color:'#5aa0d0',atk:5,def:2,heal:0.10}},
-  '终焉之神':{draw:'true', resist:'fire', lv:12, tag:'💰 击败+300金',
+  '终焉之神':{draw:'true', resist:'fire', lv:12, tag:'💰 击败+' + TRUE_BONUS_GOLD + '金',
     acts:[{type:'attack',w:40},{type:'heavy',w:35,w2:50},{type:'heal',w:25,hpBelow:0.4,pct:0.12}],
     phase2:{at:0.5,name:'终焉之神·祸乱形态',color:'#ff5b8a',atk:7,def:3,heal:0.15,forbid:['heal']}},
 };
@@ -776,7 +782,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
-  SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
+  SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
   baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,
 };
