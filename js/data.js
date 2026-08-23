@@ -718,8 +718,8 @@ const HELP_PAGES=[
   [
     ['毒蛇中毒','毒蛇有 ' + Math.round(MON_BASE.find(m=>m.name==='毒蛇').poison * 100) + '% 概率使你中毒：每回合扣血（约' + Math.round(POISON_PCT * 100) + '%最大HP）持续 ' + POISON_TURNS + ' 回合'],
     ['中毒自救','治愈术可解毒；中毒不夺行动，也可速战或喝药'],
-    ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×1.35 · 抗性伤害×0.7'],
-    ['石心魔像·石甲','血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -40%'],
+    ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
+    ['石心魔像·石甲','血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
     ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
     ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水 · ' + Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
     ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币(' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + ')·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水；城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
