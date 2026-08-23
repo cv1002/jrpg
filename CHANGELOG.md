@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v16.4 经验曲线单一数据源——升级结算 / 技能经验预估 / 新档建档同读 XP_GROW / XP_INIT（机制·单一口径，与 CHARGE_MULT / DROP_* / POTION_* 同体系）
+
+- 【1.42 散落 hero.js 三处、初始 20 再两处】升级所需经验逐级 ×1.42 取整（20→28→40→57…）：这个 1.42 硬编码在 `hero.js grantXp`（结算，升级循环 `xpNext = round(xpNext×1.42)`）与 `hero.js skillXpHint`（预估，起档与逐级累加两处 `round(…×1.42)`）——v3.21 起预估就复刻结算的升级链，同一个 1.42 同一文件内互为镜像、却各写各的；而新档首级所需经验 20 又另写在 `core.js newGame`（`xpNext: 20`），`skillXpHint` 旧档兜底再写一句 `|| 20`——同一个 1.42 与 20 五处互不相关：想调经验曲线（如放缓到 1.35、或把首档压缩到 15 经验）要改两个文件三四处，还极易只改结算漏改预估/建档，实际升到某级所需经验变了，「距下一技能还差 N 经验」却还按旧曲线报数对不上；而写着「1.42」「20」，也无从考证这数哪儿来、两处是否早已漂移。
+- 【修正：data.js 新增 `XP_GROW = 1.42` 与 `XP_INIT = 20` 为唯一真源】`grantXp` 升级结算改读 `Math.round(hero.xpNext * XP_GROW)`；`skillXpHint` 起档/逐级两处改读同一表达式、旧档兜底改读 `XP_INIT`；`core.newGame` 建档 `xpNext: XP_INIT`。收益：调经验曲线只改 data.js 一处、结算/预估/建档三处同步，绝无第二套口径；行为逐字不变（升级链 20→28→40→57→81→115→163→231→328 与历史公式完全一致，`L1xp5 冰霜击还差 43` 等既有预估数值逐字不变），零 UI 回归。
+- 【零回归面】未动升级机制本身——判定 `xp >= xpNext`、xp 结转下一档、`level++`、属性成长（baseStats/WEAPONS/ARMORS）、胜利横幅经验显示、技能领悟时机等 v1.x 起语义逐字不变；未动任何战斗/掉落/金币/难度/成就/存档。只新增两个常量 + 改五个引用点（data 定义/导出、hero 结算与预估三处、core 建档一处）。
+- 验证：`node --check js/data.js js/hero.js js/core.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v16.4 专项冒烟（/tmp/jrpg_smoke_v164_xpgrow.mjs）**15 项断言全过**——常量导出 1.42/20、真实 `grantXp` 驱动跨档升级 xpNext 与 `round(20×XP_GROW)=28` 逐字耦合、升级链基准 L1→L8（20/28/40/57/81/115/163/231/328）与历史公式全一致、真实 `skillXpHint` 预估（L1xp5 还差 43 / L2xp10 还差 18 / 旧档缺 xpNext 兜底 XP_INIT 还差 48 / 已学满 null）与既有数值逐字一致、`newGame` 建档 `xpNext = XP_INIT = 20`、hero/core 旧裸字面量（`×1.42` / `xpNext: 20` / `|| 20`）已从源码清除且 import/定义/导出皆在位。
+
 ## v16.3 蓄力倍率单一数据源——帮助页「战斗」行标注同读 CHARGE_MULT（机制·单一口径，与 FLEE_SUCCESS / CRIT_MULT / DROP_* 同体系）
 
 - 【`×1.5` 只在帮助页「战斗」行一处裸奔】蓄力倍率 = 下击/技能威力 ×1.5：`CHARGE_MULT = 1.5`（data.js）自 v14.0 蓄力语义收敛起就是结算（battle.js `attackMove` 的 `×CHARGE_MULT`、`doCharge` 日志 `威力 ×${CHARGE_MULT}`）与战斗显示（drawBattle.js 状态栏/横幅 `×${CHARGE_MULT}`）两面的唯一真源——唯独帮助页操作说明「战斗」行还写着硬编码字面量 `6蓄力(下击/技能×1.5)`：同一行「逃跑约60%」早已由 FLEE_SUCCESS 推导，蓄力倍率却是本行漏网的最后一处裸数值。想调蓄力强度（如放宽到 1.6）要改结算/显示之外**还要记得改帮助页**，极易只改结算漏改标注，实际威力变了帮助页却还标旧倍率；而写着「×1.5」，玩家也不知这数从哪来、靠不靠谱。v15.8 收口防御时已把帮助页漏网定为同类病根，蓄力是机制数值数据化后残留在帮助页操作行的最后一处字面量。

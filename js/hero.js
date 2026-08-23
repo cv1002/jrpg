@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT } from './data.js';
 import { unlockedAchievements } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -54,7 +54,7 @@ export function grantXp(hero, xp) {
   const g = { leveled: false, hp: 0, mp: 0, atk: 0, def: 0 };
   while (hero.xp >= hero.xpNext) {
     hero.xp -= hero.xpNext;
-    hero.xpNext = Math.round(hero.xpNext * 1.42);
+    hero.xpNext = Math.round(hero.xpNext * XP_GROW);
     hero.level++;
     const base = baseStats(hero.level);
     const dh = base.hpMax - hero.hpMax;
@@ -86,13 +86,13 @@ export function skillXpHint(hero) {
     }
   }
   if (!next) return null;
-  const base = Math.max(1, hero.xpNext || 20);
+  const base = Math.max(1, hero.xpNext || XP_INIT);
   const xp = Math.max(0, hero.xp || 0);
   let need = base - xp;
-  let nxt = Math.round(base * 1.42);
+  let nxt = Math.round(base * XP_GROW);
   for (let lv = (hero.level || 1) + 2; lv <= next.lv; lv++) {
     need += nxt;
-    nxt = Math.round(nxt * 1.42);
+    nxt = Math.round(nxt * XP_GROW);
   }
   return { name: next.name, lv: next.lv, remain: Math.max(0, need) };
 }
