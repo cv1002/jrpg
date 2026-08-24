@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.9 三强敌基础数值单一数据源——主线 BOSS/CAVE_BOSS/TRUE_BOSS 与试炼场 RUSH_BOSSES 的兵力六项同读 BOSS_BASE / CAVE_BOSS_BASE / TRUE_BOSS_BASE（机制·单一口径，与 RICH_GOLD / SAVE_SLOTS / POTION_CAP 同一「数值数据化」家族——v18.8 存档槽收口后，三强敌「主线一份 + 试炼一份」的两处兵力是当前最显眼的同值重复）
+
+- 【`3` × 两处互不相关】三强敌（幽冥魔王 hp:140·atk:15·def:6、洞窟领主 hp:110·atk:16·def:10、终焉之神 hp:260·atk:22·def:13）的兵力数值各硬编码在两处：主线常量 `BOSS` / `CAVE_BOSS` / `TRUE_BOSS` 与试炼场复刻 `RUSH_BOSSES` 数组（试炼三连战的第 1/2/3 关就是这三强敌的原样兵力，仅 xp/gold 另计、加 isRush）——同一数值两处互不引用：想调强敌兵力（如把幽冥魔王 atk 提到 17）要改两处，还极易只改主线漏改试炼，两处强度悄然脱钩；且全库无任何现成源可借鉴（`SPECIES` 只存形态/弱点/动作等形态数据、`ELITE_GOLEM` 是独立的精英基准，均不含三强敌兵力），故必须单设基准表。
+- 【修正：data.js 新增 `BOSS_BASE` / `CAVE_BOSS_BASE` / `TRUE_BOSS_BASE` 为唯一真源（置于 withSpecies 之后、`BOSS` 之前，独立注释块），各含 name/hp/hpMax/atk/def/color 六项】主线三常量改为 `withSpecies({...BASE, xp/gold/专属旗标})` 同源构建（`BOSS` 补 xp:150·gold:300·isBoss·bossHpMax、`CAVE_BOSS` 补 xp:120·gold:200·isElite·isCaveBoss、`TRUE_BOSS` 补 xp:400·gold:600·isTrue·isElite）；`RUSH_BOSSES` 三条改为 `withSpecies({...同源BASE, xp:60/60/90·gold:0·isRush})`。收益：调三强敌兵力只改 data.js 对应 BASE 一处、主线与试炼同步，绝无第二套口径；行为逐字不变（合并后对象与旧字面量逐键逐值一致——专项冒烟 17 项断言逐键比对通过，`isBoss`/`bossHpMax`/`isCaveBoss`/`isTrue` 等专属旗标仅存在于主线版、试炼版不带，不触发 bossDefeated/红字伤害/必掉剑 等主线专属判定），零 UI/战斗回归。
+- 【零回归面】未动战斗机制本身——`SPECIES` 三强敌的形态/弱点/抗性/动作/相位二仍经 withSpecies 原样并入（`phase2`/`resist`/`acts`/`tag` 均不变）、`rules.js` `BOSS_DEFS` 直读 BOSS/CAVE_BOSS/TRUE_BOSS 照旧、`battle.js` 试炼流程（isRush 判定/RUSH_RECOVER 恢复/经验另计）、`drawBattle.js` 试炼进度与 Boss 栏、`sprites.js` 体型缩放全部原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增三个基准常量 + 改 6 行构建表达式 + 删 3 行冗余字面量，零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.9 专项冒烟（/tmp/jrpg_smoke_v189_bossbase.mjs）**17 项断言全过**——三个主线 Boss 与三条试炼复刻合并后对象逐键逐值等于旧字面量（含 SPECIES 并入的 phase2/resist/acts/tag）、主线与试炼 hp/atk/def 同源、试炼版不带 isBoss/bossHpMax/isCaveBoss/isTrue（不触发暴毙/必掉剑等主线专属判定）、试炼 xp/gold 减值逐字、主线 xp/gold 原值、`BOSS` 总键数与旧字面量一致（无多无少）。
+
 ## v18.8 存档槽数量 3 单一数据源——SAVE_SLOTS 收口「标题选槽主键 / 选槽条 / 快捷键一览 / 帮助文案」四处（机制·单一口径，与 SAVE_SLOTS 同名的隔壁常量无关，属 POTION_CAP / MUSHROOM_GOAL / INN_PRICE 同一「数值数据化」家族）
 
 - 【`4` 四处互不相关】存档槽数量 3 硬编码在：`main.js` 标题页选槽主键（`e.key==='1'/'2'/'3'` 三条分支各设 `S.curSaveSlot`，想加档要加分支 + 还极易只加一处漏另几处）；`view/menus.js` 标题页选槽条（`[1,2,3].map(...)` 循环索引）；`view/menus.js` 标题页快捷键一览（字符串字面量「按 1 / 2 / 3 选择存档槽」）；`data.js` `HELP_PAGES`（「标题按 1/2/3 选择 · L 读档」）。四处互不引用：把档数加到 4 要改四处，且文案极易只改一半（界面选槽条多了 4 号槽、帮助/快捷键却还写 1/2/3）；且全库无任何现成源可借鉴（`core.js` 的 `saveKey/hasSlot/slotPreview/saveGame/load` 全部按「传入槽号」（`SAVE_SLOTS` 前的裸槽号参数）记账，从不迭代 1..3——纯 UI/分派层的重复），故必须单设常量。

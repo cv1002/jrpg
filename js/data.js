@@ -608,16 +608,24 @@ function withSpecies(enemy) {
   });
 }
 
-const BOSS=withSpecies({name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,xp:150,gold:300,color:'#a03fd9',isBoss:true,bossHpMax:140});
-const CAVE_BOSS=withSpecies({name:'洞窟领主',hp:110,hpMax:110,atk:16,def:10,xp:120,gold:200,color:'#3f6b9f',isElite:true,isCaveBoss:true});
-const TRUE_BOSS=withSpecies({name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,xp:400,gold:600,color:'#f0c040',isTrue:true,isElite:true});
+// 三强敌基础数值（单一数据源）：主线 BOSS / CAVE_BOSS / TRUE_BOSS 与其试炼场复刻版（RUSH_BOSSES）
+// 的 name/hp/hpMax/atk/def/color 六项同读此源——此前 hp:140·atk:15·def:6 这类数值在主线 Boss 定义与
+// RUSH_BOSSES 各写一份互不相关：想调强敌兵力（如把幽冥魔王 atk 提到 17）要改两处，还极易只改主线漏改试炼，
+// 两处强度悄然脱钩。试炼版仅覆盖 xp/gold/isRush（试炼不给金币、经验另计少给），兵力数值与主线逐字同源、永不漂移。
+const BOSS_BASE={name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,color:'#a03fd9'};
+const CAVE_BOSS_BASE={name:'洞窟领主',hp:110,hpMax:110,atk:16,def:10,color:'#3f6b9f'};
+const TRUE_BOSS_BASE={name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,color:'#f0c040'};
+
+const BOSS=withSpecies({...BOSS_BASE,xp:150,gold:300,isBoss:true,bossHpMax:140});
+const CAVE_BOSS=withSpecies({...CAVE_BOSS_BASE,xp:120,gold:200,isElite:true,isCaveBoss:true});
+const TRUE_BOSS=withSpecies({...TRUE_BOSS_BASE,xp:400,gold:600,isTrue:true,isElite:true});
 // 无字回廊中段精英（Fire Golem CC0 素材）：双徽记开门后的守门考验
 const EMBER_GOLEM=withSpecies({name:'残焰魔像',hp:170,hpMax:170,atk:19,def:12,xp:130,gold:260,color:'#e07a3f',isElite:true});
 
 const RUSH_BOSSES=[
-  withSpecies({name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,xp:60,gold:0,color:'#a03fd9',isRush:true}),
-  withSpecies({name:'洞窟领主',hp:110,hpMax:110,atk:16,def:10,xp:60,gold:0,color:'#3f6b9f',isRush:true}),
-  withSpecies({name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,xp:90,gold:0,color:'#f0c040',isRush:true}),
+  withSpecies({...BOSS_BASE,xp:60,gold:0,isRush:true}),
+  withSpecies({...CAVE_BOSS_BASE,xp:60,gold:0,isRush:true}),
+  withSpecies({...TRUE_BOSS_BASE,xp:90,gold:0,isRush:true}),
 ];
 
 const BESTIARY_TARGET=['史莱姆','野狼','骷髅兵','哥布林','毒蛇','雾灵','树精','石魔像','石心魔像','幽冥魔王','洞窟领主','终焉之神','残焰魔像'];
