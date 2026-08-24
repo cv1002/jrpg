@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.3 成就阈值单一数据源——「记忆收藏家」5 种判定/描述/进度三处同读 SCHOLAR_GOAL（机制·单一口径，与 RICH_GOLD 同一「成就阈值数据化」家族——v18.2 收口「小富翁」后同类里残存的裸奔数值之一）
+
+- 【`1` 同一条目内三处互不相关】「记忆收藏家」成就：记忆图鉴收录 5 种魔物。这个 5 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 5`）、描述（`d` 的「收录 5 种魔物」）、进度（`prog` 的 `X/5`）三处——同对象内互不引用：想调门槛（如放宽到 6 种）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/5」；且全库无任何现成源可借鉴（`bestiary` 仅有 `BESTIARY_TARGET` 全量 13 种表，是「全收集」口径而非「收录 5 种」的入门门槛，`perfection` 早已读前者、与 scholar 不是一回事），故必须单设常量——正是 v18.2 注释里预留的下一个收口对象（当时「各取其旧字面量不动，未纳入本次收口以控制改动面」）。
+- 【修正：data.js 新增 `SCHOLAR_GOAL = 5` 为唯一真源（置于 RICH_GOLD 之后、药水恢复量块之前，紧邻「成就阈值」注释块）】`ACH_LIST` 的 scholar 条 `ok`（`>= SCHOLAR_GOAL`）、`d`（模板串「收录 ${SCHOLAR_GOAL} 种魔物」）、`prog`（`/${SCHOLAR_GOAL}`）三处同读此源，并加入 export。收益：调「记忆收藏家」门槛只改 data.js 一处、判定/描述/进度同步，绝无第二套口径；行为逐字不变（`SCHOLAR_GOAL` 仍为 5，文案原样），零 UI 回归。
+- 【零回归面】未动成就机制本身——`ACH_LIST` 其余 16 条逐字不变（`firstblood`/`hunt10`/`lucky`/`lvl5`/`lvl10`/`rich` 等数值型条目各取其旧字面量不动，与 v18.2 同一「分批收口」策略、未纳入本次以控制改动面）、`view/menus.js` 成就页只读 `ok/name/d`（`解锁 X/${ACH_LIST.length}` 照旧）、`rules.unlockedAchievements` 判定流程、存档/进度字段原样。未动任何掉落/经验/金币曲线/难度/支线/存档。只新增一个常量 + 改一个条目（1 行）+ export 1 处，零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.3 专项冒烟（/tmp/jrpg_smoke_v183_scholar.mjs）**24 项断言全过**——`SCHOLAR_GOAL` 导出且为 5、scholar 判定逐字（收录 4 种未达标 / 5·6 种达标 / 无 bestiary 兜底 false）、`prog` 0/5·2/5·5/5·6/5 逐字、`d` 与旧字面量「记忆图鉴收录 5 种魔物」逐字一致、`ok/prog.toString()` 均含且各恰 1 处 `SCHOLAR_GOAL` 标识符、抽验 `firstblood/hunt10/lucky/lvl5/lvl10/rich/perfection` 判定不受影响；源码 grep 确认 scholar 条目可执行代码裸 `>=5` / `/5` / `收录 5 种` 已清零（仅注释保留旧值说明），lucky/lvl5 的裸 5 属分批收口的下批对象刻意保留。
+
 ## v18.2 成就阈值单一数据源——「小富翁」500 判定/描述/进度三处同读 RICH_GOLD、「记忆守护者」描述改读 BESTIARY_TARGET.length（机制·单一口径，与 MIST_GOAL / MUSHROOM_GOAL / POTION_PRICE 同一「数值数据化」家族）
 
 - 【`2` 两条成就各自内部多处互不相关】①「小富翁」持有 500 金币：500 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 500`）、描述（`d` 的「持有 500 金币」）、进度（`prog` 的 `X/500`）三处——同对象内互不引用：想调门槛（如放宽到 800）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/500」；且全库无任何现成源（gold 相关常量仅 `DROP_GOLD=60` / `TRUE_BONUS_GOLD=300`，都不是成就门槛）。②「记忆守护者」收录全部魔物：`prog` 分母早已读 `BESTIARY_TARGET.length`、状态/图鉴页也读同源，唯独 `d` 描述「全部 13 种魔物」是裸 13——想给 `BESTIARY_TARGET` 增删一种（如新增精英残焰魔像已 13 种），判定与进度自动跟随，描述却还标旧数，正是 v18.1 同款「判定收口、文案裸奔」的漂移隐患。
