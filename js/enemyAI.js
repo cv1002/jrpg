@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -64,7 +64,7 @@ export function enemyAct(deps) {
     enemy.atk += (phase.atk || 0);
     enemy.def += (phase.def || 0);
     if (phase.forbid) enemy.forbid = phase.forbid;
-    const heal = Math.round(enemy.hpMax * (phase.heal || 0.15));
+    const heal = Math.round(enemy.hpMax * (phase.heal || PHASE2_HEAL_PCT));
     enemy.hp = Math.min(enemy.hpMax, enemy.hp + heal);
     SFX.thunder();
     S.flash = { t0: Date.now() }; // 变身全屏闪光（纯显示）

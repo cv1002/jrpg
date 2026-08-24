@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.5 二段变身回血比例兜底单一数据源——enemyAI 变身回血结算与 drawBattle 变身角标同读 PHASE2_HEAL_PCT（机制·单一口径，与 PHASE2_AT 同一「变身模板兜底」体系）
+
+- 【`0.15` 兜底散落两处且显示对不上结算】Boss 二段变身的回血量 = `maxHP × phase.heal`（数据表显式写 heal），但变身模板**漏写 heal 时**的安全默认「恢复 15%」= `phase.heal || 0.15`：这个兜底字面量只硬编码在 `enemyAI.js enemyAct` 结算一处（`Math.round(enemy.hpMax * (phase.heal || 0.15))`），而 `view/drawBattle.js` 变身「增益数值」角标用的是 `if (p2.heal)` 直判——恰好漏写 heal 的模板（目前不存在，纯防未来）结算仍回 15%、角标却不显示「回15%」，显示对不上结算；且「2×2」两处互不引用，想调默认回血比例（如改 12%）要改结算、角标还得记得同步，极易改漏。v17.2 收口变身触发阈值（PHASE2_AT）时留下了这个同族的姊妹兜底——血量线已收口、回血比例还裸奔在结算/角标两处。
+- 【修正：data.js 新增 `PHASE2_HEAL_PCT = 0.15` 为唯一真源（置于 PHASE2_AT 之后，同属「变身模板兜底」块）】`enemyAI.js` 变身回血结算改读 `phase.heal || PHASE2_HEAL_PCT`；`view/drawBattle.js` 变身角标改读 `p2.heal || PHASE2_HEAL_PCT`（判定与显示同源，漏写 heal 的模板角标同样标注「回15%」，显示与结算逐字对上）。收益：调默认变身回血比例只改 data.js 一处、结算/角标两处同步，绝无第二套口径；行为逐字不变（三 Boss 变身模板均显式带 heal——幽冥魔王/终焉之神 0.15、洞窟领主 0.10，此兜底仅守护变身模板漏写 heal 时的安全默认，当前游戏内敌人无一触发），零 UI 回归。
+- 【零回归面】未动变身机制本身——显式 `heal`（幽冥魔王/终焉之神 0.15、洞窟领主 0.10）优先、变身流程（phased 标记/改名/攻防加算/回血/封印/闪光/blog）、变身触发阈值（PHASE2_AT 0.5）均逐字不变；drawBattle 角标对三 Boss 的显示文本原样（均显式 heal，`p2.heal || PHASE2_HEAL_PCT` 取值不变）；未动任何掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改两个引用点（enemyAI 结算、drawBattle 角标判定/显示），零新增依赖。
+- 验证：`node --check js/data.js js/enemyAI.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.5 专项冒烟（/tmp/jrpg_smoke_v175_phase2heal.mjs）**24 项断言全过**——常量导出 0.15、data/enemyAI/drawBattle 定义·导入·导出在位、源码裸字面量（`phase.heal || 0.15)` / `if (p2.heal)`）已从可执行代码清除且两处同读 PHASE2_HEAL_PCT、真实 `enemyAct` 端到端（no-heal 模板兜底 0.15 → 100×0.15=15 回至 64 且博客报「HP 恢复 15」、显式 heal:0.10 仍优先回 10、幽冥魔王实盘 140×0.15=21 → 90 回归不变）、角标显示公式与结算公式逐字同源（漏写 15% / 显式 10%）、相邻机制 PHASE2_AT/HEAL_PCT 回归不变。
+
 ## v17.4 药水背包上限单一数据源——商店拦截判定/提示文案/列表「现有X/99」/购买置灰同读 POTION_CAP（机制·单一口径，与 MUSHROOM_GOAL / INN_PRICE / BREW_MUSHROOMS 同一「数值数据化」体系）
 
 - 【`99` 散落两文件四处互不相关】药水背包上限 = 99 瓶：这个 99 硬编码在 `shop.js` `buyPotion` 购买拦截判定（`hero.item >= 99`）、背包已满提示文案（`药水上限 99 瓶`）、`buildShopList` 商店列表药水行（`[现有X/99]`）与 `view/menus.js` 购买栏 置灰判定（`hero.item<99`）四处——两文件互不引用：想调上限（如放宽到 120）要改四个地方，还极易只改判定漏改文案，实际拦截线变了列表/置灰/提示却还报旧值；且写着「99」，也无从考证这数从哪来（掉落/宝箱/任务奖励增量处不设上限，上限只在商店侧强制——四处 99 全是同一「商店侧上限」口径）。v17.0 收口支线目标株数时把「任务/保护/文案」接上同一常数，药水上限是经济循环里残存的裸奔数值。

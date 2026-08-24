@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -167,7 +167,9 @@ export function drawBattle() {
         const boostBits = [];
         if (p2.atk) boostBits.push(`攻+${p2.atk}`);
         if (p2.def) boostBits.push(`防+${p2.def}`);
-        if (p2.heal) boostBits.push(`回${Math.round(p2.heal * 100)}%`);
+        // 变身回血比例（信息透明·纯显示·单一数据源）：与 enemyAct 变身回血结算同源读 phase.heal，
+        // 默认 PHASE2_HEAL_PCT 同款兜底（漏写 heal 的模板结算回 15%、角标同样标注，显示对得上结算）
+        if (p2.heal || PHASE2_HEAL_PCT) boostBits.push(`回${Math.round((p2.heal || PHASE2_HEAL_PCT) * 100)}%`);
         if (p2.forbid && p2.forbid.includes('heal')) boostBits.push('⛔封治愈');
         if (boostBits.length) text(`变身：${boostBits.join(' ')}`, 620, 76, 'bold 10px', '#ffd24a', 'right');
       }
