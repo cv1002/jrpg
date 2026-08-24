@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.2 成就阈值单一数据源——「小富翁」500 判定/描述/进度三处同读 RICH_GOLD、「记忆守护者」描述改读 BESTIARY_TARGET.length（机制·单一口径，与 MIST_GOAL / MUSHROOM_GOAL / POTION_PRICE 同一「数值数据化」家族）
+
+- 【`2` 两条成就各自内部多处互不相关】①「小富翁」持有 500 金币：500 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 500`）、描述（`d` 的「持有 500 金币」）、进度（`prog` 的 `X/500`）三处——同对象内互不引用：想调门槛（如放宽到 800）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/500」；且全库无任何现成源（gold 相关常量仅 `DROP_GOLD=60` / `TRUE_BONUS_GOLD=300`，都不是成就门槛）。②「记忆守护者」收录全部魔物：`prog` 分母早已读 `BESTIARY_TARGET.length`、状态/图鉴页也读同源，唯独 `d` 描述「全部 13 种魔物」是裸 13——想给 `BESTIARY_TARGET` 增删一种（如新增精英残焰魔像已 13 种），判定与进度自动跟随，描述却还标旧数，正是 v18.1 同款「判定收口、文案裸奔」的漂移隐患。
+- 【修正：data.js 新增 `RICH_GOLD = 500` 为唯一真源（置于 TRUE_BONUS_GOLD 之后、药水恢复量块之前）】`ACH_LIST` 的 rich 条 `ok`（`gold>=RICH_GOLD`）、`d`（模板串「持有 ${RICH_GOLD} 金币」）、`prog`（`/${RICH_GOLD}`）三处同读此源，并加入 export；`perfection` 条 `d` 改读 `BESTIARY_TARGET.length`（与同条 `ok`/`prog`、`view/menus.js` 图鉴页「记忆收录 X/N」同一真源，无需另设常量）。收益：调成就门槛只改 data.js 一处、判定/描述/进度同步，给图鉴增删魔物描述自动跟随，绝无第二套口径；行为逐字不变（`RICH_GOLD` 仍为 500、`BESTIARY_TARGET.length` 现为 13，两处文案原样），零 UI 回归。
+- 【零回归面】未动成就机制本身——`ACH_LIST` 结构与其余 15 条逐字不变（`firstblood`/`hunt10`/`lvl5`/`lvl10`/`lucky`/`scholar` 等门槛不同值、各取其旧字面量不动，未纳入本次收口以控制改动面）、`view/menus.js` 成就页只读 `ok/name/d`（`解锁 X/${ACH_LIST.length}` 照旧）、`rules.unlockedAchievements` 判定流程、存档/进度字段原样。未动任何掉落/经验/金币曲线/难度/支线/存档。只新增一个常量 + 改两个条目（各 1 行）+ export 1 处，零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.2 专项冒烟（/tmp/jrpg_smoke_v182_richgold.mjs）**21 项断言全过**——`RICH_GOLD` 导出且为 500、rich 判定逐字（499 未达标 / 500·501 达标 / 无 gold 字段兜底 false）、`prog` 0/500·123/500·500/500·800/500 逐字、`d` 与旧字面量「持有 500 金币」逐字一致、`perfection.d` 与「全部 13 种魔物」逐字一致且分母同源 13、`rich.ok/prog.toString()` 均含 `RICH_GOLD` 标识符、抽验 `firstblood/hunt10/legend` 判定不受影响；源码 grep 确认两条目均已是模板串（`${RICH_GOLD}` / `${BESTIARY_TARGET.length}`）且可执行代码裸 `>=500` / `/500` / `持有 500 金币` / `全部 13 种` 已清零（仅注释保留旧值说明）。
+
 ## v18.1 旧灯卫名字支线目标枚数单一数据源——「旧灯卫的名字」收集条件/实时进度/目标文案/接取对话同读 FRAGMENTS.length（机制·单一口径，与 MIST_GOAL / MUSHROOM_GOAL 同一「支线目标单一数据源」家族，并修正一处虚标注释）
 
 - 【`4` 同一支线定义内四处互不相关，且注释虚标单一数据源】巡灯人支线「旧灯卫的名字」目标 = 集齐 4 枚记忆碎片：这个 4 硬编码在 `data.js` `QUESTS.side_name` 的收集条件（`cond` 的 `>= 4`）、实时进度（`condProg` 的 `X/4 枚`）、任务条目标文案（`obj` 的「集齐 4 枚…」）、接取对话（`offer` 的「凑齐 4 枚…」）四处——四处互不引用：想增减记忆碎片（`FRAGMENTS` 增删一段，如加一枚龙王碎片改成 5 枚）要改四个字符串，还极易只改判定漏改文案，集齐 5 枚界面却还标「/4 枚」；且该定义上方注释自称「cond 单一数据源 FRAGMENTS.length」实为**虚标**——代码里其实全是裸 4，从未真正读 `FRAGMENTS.length`；而状态页「记忆 X/4」（`view/menus.js`）却早已是 `FRAGMENTS.length` 真源，一处已收口、一处裸奔，两套口径并存。

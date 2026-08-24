@@ -484,6 +484,14 @@ const DROP_GOLD = 60;        // 装备档已尽善时的金币兜底数额
 // 注意：SPECIES 顶层字面量 tag 会拼入此值，故必须定义在 SPECIES 之前
 const TRUE_BONUS_GOLD = 300;
 
+// 成就「小富翁」金币阈值（单一数据源）：ACH_LIST 该条的判定（ok: gold>=RICH_GOLD）、描述文案
+// （d「持有 N 金币」）、进度条（prog「X/N」）三处同读此源——此前 500 硬编码在同一条目内三处
+// 互不相关（ok 判定、d 描述、prog 分母）：想调门槛（如放宽到 800）要改三处，还极易只改判定
+// 漏改文案，实际达标线变了界面却还标「/500」；且全库无任何现成源可借鉴（gold 相关常量仅
+// DROP_GOLD=60 / TRUE_BONUS_GOLD=300，都不是成就门槛），故单设此常量（与 MUSHROOM_GOAL /
+// MIST_GOAL / POTION_PRICE 同一「数值数据化」家族；同族 perfection 描述已改读 BESTIARY_TARGET.length）
+const RICH_GOLD = 500;
+
 // —— 药水恢复量（POTION_ 生命药水 / ELIXIR_ 高级灵药）—— 结算·战斗预览·商店文案三处唯一真源
 // 药水背包上限（POTION_CAP = 99）：商店购买拦截判定（shop.js）、背包已满提示文案、商店列表「现有X/99」、
 // 购买栏 置灰判定（view/menus.js）四处同读此源——调上限（如放宽到 120）只改 data.js 一处，四端同步，
@@ -744,14 +752,14 @@ const ACH_LIST=[
   {id:'lucky',      name:'幸运眷顾', d:'累计获得 5 次额外掉落', ok:g=>(g.drops||0)>=5, prog:g=>`${g.drops||0}/5`},
   {id:'lvl5',       name:'独当一面', d:'等级达到 5 级', ok:g=>g.level>=5, prog:g=>`${g.level||1}/5`},
   {id:'lvl10',      name:'守灯者',   d:'等级达到 10 级', ok:g=>g.level>=10, prog:g=>`${g.level||1}/10`},
-  {id:'rich',       name:'小富翁',   d:'持有 500 金币', ok:g=>g.gold>=500, prog:g=>`${Math.floor(g.gold||0)}/500`},
+  {id:'rich',       name:'小富翁',   d:`持有 ${RICH_GOLD} 金币`, ok:g=>g.gold>=RICH_GOLD, prog:g=>`${Math.floor(g.gold||0)}/${RICH_GOLD}`},
   {id:'scholar',    name:'记忆收藏家', d:'记忆图鉴收录 5 种魔物', ok:g=>Object.keys(g.bestiary||{}).length>=5, prog:g=>`${Object.keys(g.bestiary||{}).length}/5`},
   {id:'quest',      name:'三株荧光', d:'完成灯长的支线任务', ok:g=>(g.quests&&g.quests.side_mushroom==='done')||g.quest>=3},
   {id:'boss',       name:'讨回灯芯', d:'击倒幽冥魔王', ok:g=>!!g.bossDefeated},
   {id:'cave',       name:'井之守望', d:'击败洞窟领主', ok:g=>!!g.caveBoss},
   {id:'trueboss',   name:'记得一切', d:'击败隐藏的终焉之神', ok:g=>!!g.trueBoss},
   {id:'rush',       name:'百炼成钢', d:'通过试炼场三连战', ok:g=>!!g.rushDone},
-  {id:'perfection', name:'记忆守护者', d:'记忆图鉴收录全部 13 种魔物', ok:g=>BESTIARY_TARGET.every(n=>(g.bestiary||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.bestiary||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
+  {id:'perfection', name:'记忆守护者', d:`记忆图鉴收录全部 ${BESTIARY_TARGET.length} 种魔物`, ok:g=>BESTIARY_TARGET.every(n=>(g.bestiary||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.bestiary||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
   {id:'legend',     name:'黎明归剑', d:'装备传说圣光之剑', ok:g=>g.weapon==='圣光之剑'},
   {id:'cartman',    name:'星砂之约', d:'把星砂消息告诉星砂车夫', ok:g=>g.quests&&g.quests.side_cart==='done'},
   {id:'names',      name:'名字归还', d:'替旧灯卫找回名字（巡灯人支线）', ok:g=>g.quests&&g.quests.side_name==='done'},
@@ -855,7 +863,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, ENCOUNTER, CAVE_TREASURE,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
