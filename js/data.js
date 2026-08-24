@@ -175,6 +175,13 @@ const BREW_GOLD = 10;       // 酿造一剂高级灵药所需金币
 // 四文件七处互不相关：想调支线目标（如放宽到 4 株）要改四处，还极易只改判定漏改文案，集齐 4 株界面却还标「/3 株」。
 const MUSHROOM_GOAL = 3;    // 灯长支线需找回的魔法蘑菇株数（集齐后转可交付）
 
+// 雾径猎手「雾里的新住客」支线目标只数（单一数据源）：QUESTS.side_mist 的讨伐条件（cond）、
+// 实时进度（condProg「X/3 只」）、任务条目标文案（obj）、接取/交付对话（offer「帮我打 3 只回来」/
+// turnin「3 只，干净利落」）同读此源——此前这个 3 硬编码在同一支线定义内五处互不相关：
+// 想调支线目标（如改成 4 只）要改五个字符串，还极易只改判定漏改文案，集齐 4 只界面却还标「/3 只」
+// （与 MUSHROOM_GOAL 同一「支线目标单一数据源」家族，雾灵/蘑菇两条收集型支线同口径）。
+const MIST_GOAL = 3;        // 雾径猎手支线需讨伐的雾灵只数（bestiary 计数，集齐后转可交付）
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -691,20 +698,20 @@ const QUESTS={
       ]],
     },
   },
-  // 雾径猎手·雾里的新住客：讨伐 3 只雾灵（bestiary 计数）
+  // 雾径猎手·雾里的新住客：讨伐 MIST_GOAL 只雾灵（bestiary 计数）
   side_mist:{
     id:'side_mist', kind:'side', store:true, npc:'hunter', giver:'hunter',
-    cond:(g)=>(((g.bestiary||{})['雾灵'])||0) >= 3,
-    condProg:(g)=>`${((g.bestiary||{})['雾灵'])||0}/3 只`,
+    cond:(g)=>(((g.bestiary||{})['雾灵'])||0) >= MIST_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['雾灵'])||0}/${MIST_GOAL} 只`,
     name:'雾里的新住客', where:'雾语林',
-    obj:'讨伐 3 只雾里新长出来的【雾灵】',
+    obj:`讨伐 ${MIST_GOAL} 只雾里新长出来的【雾灵】`,
     turnin:'雾灵查清了！回营地找雾径猎手',
     done:'雾灵的底细记进了图鉴。猎手的陷阱重新布好了。',
     reward:{ gold:60, item:1 },
     talk:{
       offer:[[
         '雾径猎手：最近雾里多了些飘着的影子，不怕火，',
-        '倒怕冰。帮我打 3 只回来——记下它们的底细。',
+        `倒怕冰。帮我打 ${MIST_GOAL} 只回来——记下它们的底细。`,
         '[Enter] 接下   [Esc] 离开',
       ]],
       active:[[
@@ -713,7 +720,7 @@ const QUESTS={
         '[Enter] 继续',
       ]],
       turnin:[[
-        '雾径猎手：3 只，干净利落。图鉴上那页我瞄了一眼——',
+        `雾径猎手：${MIST_GOAL} 只，干净利落。图鉴上那页我瞄了一眼——`,
         '写得清楚。这点东西拿去，路上用。',
         '[Enter] 领取谢礼',
       ]],
@@ -843,7 +850,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSHROOM_PRICE, ENCOUNTER, CAVE_TREASURE,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,

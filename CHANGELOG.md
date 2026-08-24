@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.0 雾灵委托目标只数单一数据源——「雾里的新住客」讨伐条件/实时进度/目标文案/接取与交付对话同读 MIST_GOAL（机制·单一口径，与 MUSHROOM_GOAL 同一「支线目标单一数据源」家族）
+
+- 【`3` 同一支线定义内五处互不相关】雾径猎手支线「雾里的新住客」目标 = 讨伐 3 只雾灵：这个 3 硬编码在 `data.js` `QUESTS.side_mist` 的讨伐条件（`cond` 的 `>= 3`）、实时进度（`condProg` 的 `X/3 只`）、任务条目标文案（`obj` 的「讨伐 3 只…」）、接取对话（`offer` 的「帮我打 3 只回来」）、交付对话（`turnin` 的「3 只，干净利落」）五处——同对象内互不引用：想调支线目标（如改成 4 只）要改五个字符串，还极易只改判定漏改文案，集齐 4 只界面却还标「/3 只」；且写着「3」，也无从考证这数从哪来——同族的灯长蘑菇支线目标早已收口（`MUSHROOM_GOAL=3`），唯独自家支线目标是支线数据里残存的裸奔数值。
+- 【修正：data.js 新增 `MIST_GOAL = 3` 为唯一真源（紧邻 MUSHROOM_GOAL，同属「支线目标」常量块）】`QUESTS.side_mist` 的 `cond`（`>= MIST_GOAL`）、`condProg`（`${MIST_GOAL} 只`）、`obj`（模板串「讨伐 ${MIST_GOAL} 只…」）、`offer`（模板串「帮我打 ${MIST_GOAL} 只回来」）、`turnin`（模板串「${MIST_GOAL} 只，干净利落」）五处同读此源，并加入 export。收益：调雾灵支线目标只改 data.js 一处、判定/进度/文案五处同步，绝无第二套口径；行为逐字不变（`MIST_GOAL` 仍为 3，全部文案原样），零 UI 回归。
+- 【零回归面】未动支线机制本身——任务状态机（`offer→active→turnin→done`）、`quests.js` 的 `questStatus/questJournal/resolveNpcTalk/applyQuestReward` 只读 `QUESTS` 字段、bestiary 雾灵计数（`scaleEnemy`/`winBattle` 收录）、奖励（60 金 + 1 药水）、接取/交付流程（`npcQuestPages` 选页）逐字不变；`MUSHROOM_GOAL` 及蘑菇支线、其余三条支线、掉落/经验/金币曲线/难度/成就/存档原样。只新增一个常量 + 改同文件 5 个引用点 + export 1 处，零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.0 专项冒烟（/tmp/jrpg_smoke_v180_mistgoal.mjs）**23 项断言全过**——常量导出 3、`cond` 恰好 MIST_GOAL 只达成（2 只 false / 3 只 true / 无 bestiary 兜底 false）、`condProg` 2/3·3/3·0/3 只逐字、`obj/offer/turnin` 三处文案与旧字面量逐字一致、真实任务流端到端（接取写 active → 2 只仍 active 且日志「2/3 只」→ 3 只转 turnin → 对话交付发 60 金+1 药水 → done）、grep 确认 data.js 可执行代码裸 `>= 3` / `/3 只` / `讨伐 3 只` / `帮我打 3 只` / `雾径猎手：3 只` 已清零且五处同读 MIST_GOAL、全文件 8 处引用（1 定义 + 1 export + 5 支线 + 1 注释）。
+
 ## v17.9 蘑菇出售单价单一数据源——shop.sellMushroom 卖菇结账/得金提示、列表卖出价签三处同读 MUSHROOM_PRICE（机制·单一口径，与 INN_PRICE / BREW_GOLD / POTION_PRICE 同一「价格数据化」体系）
 
 - 【`10` 同一文件三处互不相关】卖 1 株魔法蘑菇得 10 金：这个 10 硬编码在 `shop.js` `sellMushroom` 卖菇结账（`hero.gold += 10`）与成功提示（`'售出 1 株魔法蘑菇，得 10 金'`）、`buildShopList` 商店列表卖菇行价签（`'卖出魔法蘑菇 ×1 → 10金'`）三处——三处互不引用：想调卖菇价（如涨到 15）要改三行，还极易只改结账漏改价签/提示，实际卖价改了列表价签却还标旧值、扣钱账目也对不上光标；且写着「10」，也无从考证这数从哪来——同族的价格早已收口（旅馆 `INN_PRICE=10`、酿造 `BREW_GOLD=10`、药水 `POTION_PRICE=15`），唯独卖菇价是经济循环里残存的裸奔数值。
