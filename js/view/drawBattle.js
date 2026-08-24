@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -156,7 +156,7 @@ export function drawBattle() {
       // 二段变身精确阈值（信息透明·纯显示）：与 battle.enemyAct 的 hp < hpMax×at 判定逐字同源，
       // 一眼看清还剩多少血会触发变身回血；变身（phased）后标签随之消失，不影响任何结算
       if (!enemy.phased) {
-        const thr = Math.ceil(enemy.hpMax * (enemy.phase2.at || 0.5));
+        const thr = Math.ceil(enemy.hpMax * (enemy.phase2.at || PHASE2_AT));
         text(`二段变身线 · HP<${thr}`, ex0 + 6, 76, 'bold 9px', '#ffd24a');
         // v12.7 变身「增益数值」透明化（纯显示·承接 v1.34 变身线）：血量阈值早已标注，但变身瞬间的
         // 攻/防 暴涨、回血比例与「封治愈」从 v1.x 起就只藏在 data.js 的 phase2 里——blog 只报回血数值，

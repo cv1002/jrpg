@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -57,7 +57,7 @@ export function enemyAct(deps) {
   }
 
   const phase = enemy.phase2;
-  if (phase && !enemy.phased && enemy.hp < enemy.hpMax * (phase.at || 0.5)) {
+  if (phase && !enemy.phased && enemy.hp < enemy.hpMax * (phase.at || PHASE2_AT)) {
     enemy.phased = true;
     enemy.name = phase.name || (enemy.name + '·真身');
     if (phase.color) enemy.color = phase.color;

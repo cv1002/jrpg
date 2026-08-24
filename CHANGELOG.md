@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.2 二段变身触发阈值兜底单一数据源——enemyAI 变身触发与战斗「二段变身线」标注同读 PHASE2_AT（机制·单一口径，与 HEAL_PCT / HEAVY_MULT / SHIELD_MULT 同一体系）
+
+- 【0.5 散落两文件互不相关】Boss 二段变身触发血量线 = `hp < hpMax × at`（数据表显式写 at），但变身模板**漏写 at 时**的安全默认「血量过半才变身」= `phase.at || 0.5`：这个兜底字面量硬编码在 `enemyAI.js enemyAct`（变身触发判定 `enemy.hp < enemy.hpMax * (phase.at || 0.5)`）与 `view/drawBattle.js` 二段变身线标注（`Math.ceil(enemy.hpMax * (phase2.at || 0.5))`）**两处**互不相关——想调「未显式写 at 的变身默认血量线」要改两个文件，还极易只改结算漏改标注，实际触发阈值变了变身线却还报旧值；且写着「0.5」，也无从考证这数从哪来、两处是否早已漂移。v17.1 收口回血招默认比例时已把「结算/标注两处各自硬编码兜底」定为同款病根，二段变身触发阈值是本体系残留在变身流程上的兜底数值。
+- 【修正：data.js 新增 `PHASE2_AT = 0.5` 为唯一真源（置于 HEAL_PCT 之后）】`enemyAI.js` 变身触发判定改读 `phase.at || PHASE2_AT`；`view/drawBattle.js` 变身线标注改读 `phase2.at || PHASE2_AT`。收益：调默认变身血量线只改 data.js 一处、触发/标注两处同步，绝无第二套口径；行为逐字不变（三 Boss 变身模板均显式带 at:0.5——幽冥魔王/洞窟领主/终焉之神，此兜底仅守护变身模板漏写 at 时的安全默认，当前游戏内敌人无一触发），零 UI 回归。
+- 【零回归面】未动变身机制本身——显式 `at:0.5` 优先（三 Boss 数据表原样）、触发判定 `hp < hpMax×at`、变身流程（phased 标记/改名/攻防加算/回血/封印/闪光/blog）、变身线精确阈值 `Math.ceil(hpMax×at)`（幽冥魔王 70 / 洞窟领主 55 / 终焉之神 130）均逐字不变；未动任何掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改两个引用点（enemyAI 触发判定、drawBattle 变身线标注），零新增依赖。
+- 验证：`node --check js/data.js js/enemyAI.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.2 专项冒烟（/tmp/jrpg_smoke_v172_phase2at.mjs）**20 项断言全过**——常量导出 0.5、enemyAI/drawBattle 定义·导入·导出在位、源码裸字面量（`phase.at || 0.5)` / `phase2.at || 0.5`）已从可执行代码清除且两处同读 PHASE2_AT、真实 `enemyAct` 端到端（无 at 变身模板 hp51 未过 0.5 线不触发 → hp49 过线触发真身并回血 15 → 64、幽冥魔王 hp70 恰在显式 0.5 线不触发 → hp69 触发且真身回血 15% 回归不变）、变身线阈值推导（140×PHASE2_AT=70 / 260×PHASE2_AT=130）与触发判定同源。
+
 ## v17.1 敌方回血默认比例单一数据源——enemyAI 结算与战斗招数一览标注同读 HEAL_PCT（机制·单一口径，与 HEAVY_MULT / SHIELD_MULT / CRIT_MULT 同一体系）
 
 - 【`0.12` 兜底散落两文件互不相关】敌方「回血」招的恢复量 = `maxHP × act.pct`（数据表显式写 pct），但招数表**漏写 pct 时**的安全默认「恢复 12%」= `act.pct || 0.12`：这个兜底字面量硬编码在 `enemyAI.js enemyAct`（结算 `Math.round(enemy.hpMax * (act.pct || 0.12))`）与 `view/drawBattle.js` 敌方招数一览（标注 `(a.pct || 0.12) * 100`）**两处**，两处注释还都各写一句「0.12 同款兜底」互为镜像却各写各的——想调「未显式写 pct 的回血招默认恢复多少」要改两个文件，还极易只改结算漏改标注，实际回血量变了招数一览却还报旧百分比；而写着「0.12」，也无从考证这数从哪来、两处是否早已漂移。
