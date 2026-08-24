@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM } from '../data.js';
+import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -21,7 +21,7 @@ export function drawShop(){
   S.shopList.forEach((it,i)=>{
     const sel=i===S.shopSel;
     let afford=true;
-    if(it.kind==='potion'||it.t.startsWith('🍖')) afford=(hero.gold>=it.price&&hero.item<99);
+    if(it.kind==='potion'||it.t.startsWith('🍖')) afford=(hero.gold>=it.price&&hero.item<POTION_CAP);
     else if(it.price>0) afford=hero.gold>=it.price;
     if(it.blocked) afford=false;
     if(sel){ CTX.fillStyle='rgba(255,210,74,.15)'; rr(70,96+i*38,500,32,6); CTX.fill(); }
@@ -30,7 +30,7 @@ export function drawShop(){
     if(it.price>0){
       // 购买差价提示（信息透明·纯显示）：延续 v3.13 旅馆「还差 N 金」/ v3.14 酿造差额 / v14.2 技能
       // MP「还差 N」同一短缺口径——此前买不起只笼统写「（不足）」，差 5 金还是差 500 金要自己心算；
-      // 直接报出差额（gold<price 时），背包满（药水 99 上限）则如实标注「背包满」，零结算变化
+      // 直接报出差额（gold<price 时），背包满（药水背包上限 POTION_CAP=99）则如实标注「背包满」，零结算变化
       const lack = (!afford && hero.gold < it.price) ? `（还差 ${it.price-hero.gold} 金）`
         : (!afford && it.t.startsWith('🍖')) ? '（背包满）' : '';
       text(it.price+'💰'+lack,560,118+i*38,'13px',afford?'#62c6ff':'#e14b3f','right');
