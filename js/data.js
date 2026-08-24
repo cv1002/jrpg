@@ -519,6 +519,16 @@ const LUCKY_GOAL = 5;    // 成就「幸运眷顾」需累计获得的额外掉�
 // 当时刻意保留其裸 10；同计数源 firstblood 的裸 1 属再下批对象刻意保留）
 const HUNT_GOAL = 10;    // 成就「驱雾十战」需累计讨伐的魔物只数
 
+// 成就「独当一面」/「守灯者」等级阈值（单一数据源）：ACH_LIST 这两条的判定
+// （ok: level >= LVL5_GOAL / LVL10_GOAL）、描述文案（d「等级达到 N 级」）、进度条（prog「X/N」）
+// 三处各同读其源——此前 5/10 硬编码在各自条目内三处互不相关（ok 判定、d 描述、prog 分母）：想调门槛
+// （如守灯者放宽到 12 级）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/10」；且全库无任何
+// 现成源可借鉴（等级上限仅由 baseStats/XP_GROW 曲线隐含，无成就门槛常量），故单设此两常量（与 RICH_GOLD /
+// SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL 同一「成就阈值数据化」家族——v18.4 收口「幸运眷顾」时注释
+// 已预告 lvl5 的裸 5 与 lvl10 的裸 10 属下批对象、当时刻意保留；同为等级口径的两条一并收口，行为逐字不变）
+const LVL5_GOAL = 5;     // 成就「独当一面」需达到的等级
+const LVL10_GOAL = 10;   // 成就「守灯者」需达到的等级
+
 // —— 药水恢复量（POTION_ 生命药水 / ELIXIR_ 高级灵药）—— 结算·战斗预览·商店文案三处唯一真源
 // 药水背包上限（POTION_CAP = 99）：商店购买拦截判定（shop.js）、背包已满提示文案、商店列表「现有X/99」、
 // 购买栏 置灰判定（view/menus.js）四处同读此源——调上限（如放宽到 120）只改 data.js 一处，四端同步，
@@ -777,8 +787,8 @@ const ACH_LIST=[
   {id:'firstblood', name:'初露锋芒', d:'赢得第一场战斗', ok:g=>g.totalWins>=1, prog:g=>`${g.totalWins||0}/1`},
   {id:'hunt10',     name:'驱雾十战', d:`累计讨伐 ${HUNT_GOAL} 只魔物`, ok:g=>g.totalWins>=HUNT_GOAL, prog:g=>`${g.totalWins||0}/${HUNT_GOAL}`},
   {id:'lucky',      name:'幸运眷顾', d:`累计获得 ${LUCKY_GOAL} 次额外掉落`, ok:g=>(g.drops||0)>=LUCKY_GOAL, prog:g=>`${g.drops||0}/${LUCKY_GOAL}`},
-  {id:'lvl5',       name:'独当一面', d:'等级达到 5 级', ok:g=>g.level>=5, prog:g=>`${g.level||1}/5`},
-  {id:'lvl10',      name:'守灯者',   d:'等级达到 10 级', ok:g=>g.level>=10, prog:g=>`${g.level||1}/10`},
+  {id:'lvl5',       name:'独当一面', d:`等级达到 ${LVL5_GOAL} 级`, ok:g=>g.level>=LVL5_GOAL, prog:g=>`${g.level||1}/${LVL5_GOAL}`},
+  {id:'lvl10',      name:'守灯者',   d:`等级达到 ${LVL10_GOAL} 级`, ok:g=>g.level>=LVL10_GOAL, prog:g=>`${g.level||1}/${LVL10_GOAL}`},
   {id:'rich',       name:'小富翁',   d:`持有 ${RICH_GOLD} 金币`, ok:g=>g.gold>=RICH_GOLD, prog:g=>`${Math.floor(g.gold||0)}/${RICH_GOLD}`},
   {id:'scholar',    name:'记忆收藏家', d:`记忆图鉴收录 ${SCHOLAR_GOAL} 种魔物`, ok:g=>Object.keys(g.bestiary||{}).length>=SCHOLAR_GOAL, prog:g=>`${Object.keys(g.bestiary||{}).length}/${SCHOLAR_GOAL}`},
   {id:'quest',      name:'三株荧光', d:'完成灯长的支线任务', ok:g=>(g.quests&&g.quests.side_mushroom==='done')||g.quest>=3},
@@ -890,7 +900,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, ENCOUNTER, CAVE_TREASURE,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
