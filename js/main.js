@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
-import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME } from './data.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
@@ -143,9 +143,8 @@ const screens = {
     onKey(e) {
       ac();
       if (!S.bgmTimer && S.SND) startBgm('title');
-      if (e.key === '1') { S.curSaveSlot = 1; SFX.select(); }
-      else if (e.key === '2') { S.curSaveSlot = 2; SFX.select(); }
-      else if (e.key === '3') { S.curSaveSlot = 3; SFX.select(); }
+      // 标题按 1..SAVE_SLOTS 选择存档槽（读 data.js SAVE_SLOTS，加档位只改常量一处）
+      if (/^[1-9]$/.test(e.key) && Number(e.key) <= SAVE_SLOTS) { S.curSaveSlot = Number(e.key); SFX.select(); }
       else if (e.key === 'Enter') { ac(); SFX.select(); goto('create'); }
       else if ((e.key === 'l' || e.key === 'L') && load()) {
         SFX.select();

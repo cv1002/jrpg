@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM } from '../data.js';
+import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -507,13 +507,14 @@ export function drawTitle(){
   CTX.fillStyle=(Math.floor(Date.now()/500)%2)?'#e8eef1':'#7d93a3';
   CTX.font='bold 18px sans-serif'; CTX.fillText('按 Enter 开始新的冒险',CV.width/2,300);
   CTX.font='bold 14px sans-serif'; CTX.fillStyle='#ffd24a';
-  const slots=[1,2,3].map(s=>{ const on=S.curSaveSlot===s; return (on?'▶ ':'')+`槽${s}`+(hasSlot(s)?' ✓':'')+(on?' ◀':''); });
+  const slotNums=Array.from({length:SAVE_SLOTS},(_,i)=>i+1);
+  const slots=slotNums.map(s=>{ const on=S.curSaveSlot===s; return (on?'▶ ':'')+`槽${s}`+(hasSlot(s)?' ✓':'')+(on?' ◀':''); });
   CTX.fillText(slots.join('   '),CV.width/2,340);
   const pv=slotPreview(S.curSaveSlot);
   if(pv){ CTX.fillStyle='#7dd47f'; CTX.font='13px sans-serif'; CTX.fillText(pv,CV.width/2,360); }
   if(hasSave()){ CTX.fillStyle='#62c6ff'; CTX.fillText('按 L 读取当前槽存档',CV.width/2,378); }
   CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
-  CTX.fillText('按 1 / 2 / 3 选择存档槽 · L 读档 · WASD 移动 · Esc 菜单 · P 存档 · M 静音',CV.width/2,420);
+  CTX.fillText(`按 ${slotNums.join(' / ')} 选择存档槽 · L 读档 · WASD 移动 · Esc 菜单 · P 存档 · M 静音`,CV.width/2,420);
   // v10.0 可发现性（承接 v9.0 暂停菜单补全）：常驻面板/操作快捷键此前只写在 H 帮助与 README 里，
   // 标题页从未提示——新玩家不开 H 就不知道 I/J/B/C/T/F 这些界面存在。这里补全第二行快捷一览，
   // 与 main.js 世界画面按键分派逐字同源（I状态 J日志 B图鉴 C成就 T旅行 F喝药 H帮助），纯显示不改任何逻辑

@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.8 存档槽数量 3 单一数据源——SAVE_SLOTS 收口「标题选槽主键 / 选槽条 / 快捷键一览 / 帮助文案」四处（机制·单一口径，与 SAVE_SLOTS 同名的隔壁常量无关，属 POTION_CAP / MUSHROOM_GOAL / INN_PRICE 同一「数值数据化」家族）
+
+- 【`4` 四处互不相关】存档槽数量 3 硬编码在：`main.js` 标题页选槽主键（`e.key==='1'/'2'/'3'` 三条分支各设 `S.curSaveSlot`，想加档要加分支 + 还极易只加一处漏另几处）；`view/menus.js` 标题页选槽条（`[1,2,3].map(...)` 循环索引）；`view/menus.js` 标题页快捷键一览（字符串字面量「按 1 / 2 / 3 选择存档槽」）；`data.js` `HELP_PAGES`（「标题按 1/2/3 选择 · L 读档」）。四处互不引用：把档数加到 4 要改四处，且文案极易只改一半（界面选槽条多了 4 号槽、帮助/快捷键却还写 1/2/3）；且全库无任何现成源可借鉴（`core.js` 的 `saveKey/hasSlot/slotPreview/saveGame/load` 全部按「传入槽号」（`SAVE_SLOTS` 前的裸槽号参数）记账，从不迭代 1..3——纯 UI/分派层的重复），故必须单设常量。
+- 【修正：data.js 新增 `SAVE_SLOTS = 3` 为唯一真源（置于药水恢复量块之后、`SPECIES` 之前，独立注释块）】四处同读：`main.js` 标题选槽键改为 `/^[1-9]$/` + `Number(e.key) <= SAVE_SLOTS` 数据驱动分派；`view/menus.js` 选槽条改为 `Array.from({length:SAVE_SLOTS},(_,i)=>i+1)` 生成、快捷键一览改为模板串 `按 ${slotNums.join(' / ')}`；`data.js` `HELP_PAGES` 存档槽条改为 `'标题按 1/2/' + SAVE_SLOTS + ' 选择 · L 读档'`，并加入 export。收益：调档数只改 data.js 一处、四处同步，绝无第二套口径；行为逐字不变（`SAVE_SLOTS` 仍为 3，选槽条「槽1 ▶槽2◀ 槽3」、快捷键「按 1 / 2 / 3 选择存档槽」、帮助「标题按 1/2/3 选择」三处文案原样），零 UI 回归。
+- 【零回归面】未动存档机制本身——`core.js` 的 `saveKey/hasSlot/slotPreview/saveGame/load/resetRun` 逐字不变（本就按槽号参数化、无 1..3 迭代）、`view/hud.js` 「槽N」展示原样、`view/menus.js` 读档/续档流程（`hasSave/slotPreview/curSaveSlot`）原样、`state.js` `curSaveSlot` 字段原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就。只新增一个常量 + 改两处 UI 生成逻辑 + 改一处键分派 + 改一处帮助文案 + export 1 处，零新增依赖。
+- 验证：`node --check js/data.js js/view/menus.js js/main.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.8 专项冒烟（/tmp/jrpg_smoke_v188_saveslots.mjs）**29 项断言全过**——`SAVE_SLOTS` 导出且为 3、帮助文案逐字、选槽键谓词 1/2/3 命中而 4/5/9/0/字母/Enter 不命中（原有行为不变）、`slotNums` 生成 [1,2,3] 且 join 「1 / 2 / 3」、选槽条格式逐字、源码 grep 确认可执行代码裸 `curSaveSlot = 1/2/3` 三分支 / `[1,2,3]` / 「按 1 / 2 / 3 选择存档槽」/「标题按 1/2/3 选择」已清零（仅注释保留旧值说明）、export 含常量、同族常量（POTION_CAP/MUSHROOM_GOAL）未动。
+
 ## v18.7 成就阈值单一数据源——「初露锋芒」1 判定/进度两处同读 FIRSTBLOOD_GOAL（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL / LVL5_GOAL / LVL10_GOAL 同一「成就阈值数据化」家族——v18.5 收口 hunt10 时注释已预告同计数源的 firstblood 属再下批对象、当时刻意保留其裸 1，本次收口后 ACH_LIST 全部数值型门槛一律单源化）
 
 - 【`2` 同一条目内两处互不相关】「初露锋芒」成就：累计赢得 1 场战斗。这个 1 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 1`）、进度（`prog` 的 `X/1`）两处——同对象内互不引用：想调门槛（如放宽到 3 场）要改两处，还极易只改判定漏改进度，实际达标线变了界面却还标「/1」；且全库无任何现成源可借鉴（陪跑同计数源的 hunt10 已有 `HUNT_GOAL`，但那是 10 场的独立门槛，无 1 场常量），故必须单设常量——正是 v18.5 注释里预告的下一个收口对象（「同计数源 firstblood 的裸 1 属再下批对象刻意保留」）。注：该条描述 d「赢得第一场战斗」无数字、无需读数，故只收口判定/进度两处，与其余各条「三处同读」的结构略有不同（事件型 9 条则本无 prog）。
