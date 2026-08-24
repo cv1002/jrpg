@@ -2,6 +2,14 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.5 成就阈值单一数据源——「驱雾十战」10 判定/描述/进度三处同读 HUNT_GOAL（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL 同一「成就阈值数据化」家族——v18.4 注释已预告的 hunt10 属下批对象，当时刻意保留其裸 10）
+
+- 【`3` 同一条目内三处互不相关】「驱雾十战」成就：累计讨伐 10 只魔物。这个 10 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 10`）、描述（`d` 的「累计讨伐 10 只魔物」）、进度（`prog` 的 `X/10`）三处——同对象内互不引用：想调门槛（如放宽到 15 只）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/10」；且全库无任何现成源可借鉴（累计讨伐仅 `totalWins` 计数、`view/menus.js` 只展示当前值，无成就门槛常量），故必须单设常量——正是 v18.4 注释里预告的下一个收口对象（「lvl5/lvl10/hunt10/firstblood 的裸 5/10/1 属分批收口的下批对象刻意保留」）。
+- 【修正：data.js 新增 `HUNT_GOAL = 10` 为唯一真源（置于 LUCKY_GOAL 之后、药水恢复量块之前，紧邻「成就阈值」注释块）】`ACH_LIST` 的 hunt10 条 `ok`（`>= HUNT_GOAL`）、`d`（模板串「累计讨伐 ${HUNT_GOAL} 只魔物」）、`prog`（`/${HUNT_GOAL}`）三处同读此源，并加入 export。收益：调「驱雾十战」门槛只改 data.js 一处、判定/描述/进度同步，绝无第二套口径；行为逐字不变（`HUNT_GOAL` 仍为 10，文案原样），零 UI 回归。
+- 【零回归面】未动成就机制本身——`ACH_LIST` 其余 16 条逐字不变（`firstblood` 的裸 1 与 `lvl5`/`lvl10` 的裸 5/10 同属下批对象、刻意保留未纳入本次以控制改动面，`lucky`/`rich`/`scholar`/`perfection` 已是模板串继续原样）、`view/menus.js` 成就页只读 `ok/name/d/prog`（`解锁 X/${ACH_LIST.length}` 照旧）、`rules.unlockedAchievements` 判定流程、胜负计数 `totalWins` 原样。未动任何掉落/经验/金币曲线/难度/支线/存档。只新增一个常量 + 改一个条目（1 行）+ export 1 处，零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.5 专项冒烟（/tmp/jrpg_smoke_v185_huntgoal.mjs）**28 项断言全过**——`HUNT_GOAL` 导出且为 10、hunt10 判定逐字（9 只未达标 / 10·11 只达标 / 无 totalWins 兜底 false / totalWins=0 明确未达标）、`prog` 0/10·3/10·10/10·15/10 逐字、`d` 与旧字面量「累计讨伐 10 只魔物」逐字一致、`ok/prog.toString()` 各含且各恰 1 处 `HUNT_GOAL` 标识符、源码 hunt10 行为 `${HUNT_GOAL}` 模板串且无裸「累计讨伐 10 只魔物」、抽验 `firstblood/lucky/lvl5/lvl10/rich/scholar/perfection` 判定不受影响、`ACH_LIST` 17 条结构不变、同族常量（RICH_GOLD/SCHOLAR_GOAL/LUCKY_GOAL）未动。
+
+
 ## v18.4 成就阈值单一数据源——「幸运眷顾」5 判定/描述/进度三处同读 LUCKY_GOAL（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL 同一「成就阈值数据化」家族——v18.3 注释已预告同族的 lucky 是下批对象，当时刻意保留其裸 5）
 
 - 【`3` 同一条目内三处互不相关】「幸运眷顾」成就：累计获得 5 次额外掉落。这个 5 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 5`）、描述（`d` 的「累计获得 5 次额外掉落」）、进度（`prog` 的 `X/5`）三处——同对象内互不引用：想调门槛（如放宽到 8 次）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/5」；且全库无任何现成源可借鉴（`drops` 仅 `rules.js` 掉落时 `+1` 计数、`view/menus.js` 状态页展示，无成就门槛常量），故必须单设常量——正是 v18.3 注释里预告的下一个收口对象（「lucky 的裸 5 属分批收口的下批对象刻意保留」）。
