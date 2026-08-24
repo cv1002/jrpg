@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.8 生命药水购买价单一数据源——buyPotion 购买判定/扣款、商店列表价签三处同读 POTION_PRICE（机制·单一口径，与 INN_PRICE / BREW_GOLD / POTION_CAP 同一「价格数据化」体系）
+
+- 【`15` 同一文件三处互不相关】生命药水购买价 = 15 金币：这个 15 硬编码在 `shop.js` `buyPotion` 购买判定（`hero.gold >= 15`）与扣款（`hero.gold -= 15`）两行、`buildShopList` 商店列表药水行价签（`price: 15`）一处——三处互不引用：想调药水价（如涨到 20）要改三行，还极易只改判定漏改扣款/价签，实际价改了列表价签却还标旧值，或扣错钱；且写着「15」，也无从考证这数从哪来——同族的价格早已收口（旅馆 `INN_PRICE=10`、酿造 `BREW_GOLD=10`、支线奖励 `+40+级×10 金`），唯独生命药水售价是经济循环里残存的裸奔数值。
+- 【修正：data.js 新增 `POTION_PRICE = 15` 为唯一真源（置于 POTION_CAP 之后、POTION_HP_PCT 之前，同属药水常量块）】`shop.js` `buyPotion` 判定改读 `hero.gold >= POTION_PRICE`、扣款改读 `hero.gold -= POTION_PRICE`；`buildShopList` 价签改读 `price: POTION_PRICE`。收益：调药水售价只改 data.js 一处、判定/扣款/价签三处同步，绝无第二套口径；行为逐字不变（15 原样），零 UI 回归。
+- 【零回归面】未动购买机制本身——背包满拦截（`item >= POTION_CAP` 优先、不扣钱、提示）、购买成功（扣 15 金、item++、`购买成功` 提示）、金币不足（`金币不足` 提示不进货不扣钱）流程逐字不变；`POTION_CAP/POTION_HP_PCT/POTION_HP_FLAT` 药水其余常量、商店其余行（蘑菇/武器/防具/离开）与 `WEAPONS/ARMORS` 价格原样。未动任何掉落/经验/金币曲线/难度/成就/存档。只新增一个常量 + 改三个引用点（shop 一处 import + 三行引用），零新增依赖。
+- 验证：`node --check js/data.js js/shop.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.8 专项冒烟（/tmp/jrpg_smoke_v178_potionprice.mjs）**11 项断言全过**——常量导出 15、商店列表药水行 `price` ===POTION_PRICE 且文案仍拼恢复量/POTION_CAP、真实 `buyPotion` 端到端（gold=15 恰好可购扣 15→0 且 item 5→6、gold=14 不足不扣不进货报「金币不足」、满员拦截优先不扣钱报「药水上限 99 瓶」）；grep 确认 shop.js 可执行代码裸 `gold >= 15` / `gold -= 15` / `price: 15` 已清零且三处同读 POTION_PRICE。
+
 ## v17.7 起始技能单一数据源——newGame 建档起始技能与升级领悟表同读 LEARN_AT 1 级条目（机制·单一口径，与 DEFAULT_NAME / SKIP_CHANCE / PHASE2_AT 同一「单一数据源收口」体系）
 
 - 【`'火焰斩'` 游离在领悟表之外，与其余四招的等级归属分居两文件】新档起始技能 = 『火焰斩』：这个名字只硬编码在 `core.js` `newGame` 建档一处（`skills: ['火焰斩']`），而其余四招（冰霜击 Lv.3 / 治愈术 Lv.4 / 雷鸣 Lv.5 / 陨石术 Lv.7）的等级归属全在 `data.js` `LEARN_AT` 学习表——起始技能名与技能领悟表互不引用：想换起始技能（如让新档开局就会冰霜击）或重命名初招，只改学习表会漏掉建档、只改建档又让领悟表对不上，新档极易带一个 `SKILL_DATA` 里查无此招的技能（技能菜单/状态页渲染空行、战斗点选报「尚未领悟该技能」）；且写着「火焰斩」，也无从考证它与技能表的关系——它本质上就是「Lv.1 领悟的技能」，却没进 `LEARN_AT`。

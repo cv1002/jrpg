@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -25,8 +25,8 @@ export function buyPotion() {
     bind.boxMsg(`🎒 背包已满（药水上限 ${POTION_CAP} 瓶），先去用掉一些吧！`, 1800);
     return;
   }
-  if (hero.gold >= 15) {
-    hero.gold -= 15;
+  if (hero.gold >= POTION_PRICE) {
+    hero.gold -= POTION_PRICE;
     hero.item++;
     SFX.shop();
     bind.boxMsg('购买成功');
@@ -106,7 +106,7 @@ export function stayInn() {
 export function buildShopList() {
   const hero = S.G;
   const list = [];
-  list.push({ t: `🍖 生命药水 ×1（恢复 ${Math.round(POTION_HP_PCT * 100)}%HP +${POTION_HP_FLAT}）[现有${hero.item}/${POTION_CAP}]`, price: 15, kind: 'potion', act: buyPotion });
+  list.push({ t: `🍖 生命药水 ×1（恢复 ${Math.round(POTION_HP_PCT * 100)}%HP +${POTION_HP_FLAT}）[现有${hero.item}/${POTION_CAP}]`, price: POTION_PRICE, kind: 'potion', act: buyPotion });
   if (hero.mushrooms > 0) {
     const blocked = mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL;
     list.push({
