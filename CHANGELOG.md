@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.7 成就阈值单一数据源——「初露锋芒」1 判定/进度两处同读 FIRSTBLOOD_GOAL（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL / LVL5_GOAL / LVL10_GOAL 同一「成就阈值数据化」家族——v18.5 收口 hunt10 时注释已预告同计数源的 firstblood 属再下批对象、当时刻意保留其裸 1，本次收口后 ACH_LIST 全部数值型门槛一律单源化）
+
+- 【`2` 同一条目内两处互不相关】「初露锋芒」成就：累计赢得 1 场战斗。这个 1 硬编码在 `data.js` `ACH_LIST` 该条的判定（`ok` 的 `>= 1`）、进度（`prog` 的 `X/1`）两处——同对象内互不引用：想调门槛（如放宽到 3 场）要改两处，还极易只改判定漏改进度，实际达标线变了界面却还标「/1」；且全库无任何现成源可借鉴（陪跑同计数源的 hunt10 已有 `HUNT_GOAL`，但那是 10 场的独立门槛，无 1 场常量），故必须单设常量——正是 v18.5 注释里预告的下一个收口对象（「同计数源 firstblood 的裸 1 属再下批对象刻意保留」）。注：该条描述 d「赢得第一场战斗」无数字、无需读数，故只收口判定/进度两处，与其余各条「三处同读」的结构略有不同（事件型 9 条则本无 prog）。
+- 【修正：data.js 新增 `FIRSTBLOOD_GOAL = 1` 为唯一真源（置于 LVL10_GOAL 之后、药水恢复量块之前，紧邻「成就阈值」注释块）】`ACH_LIST` 的 firstblood 条 `ok`（`>= FIRSTBLOOD_GOAL`）、`prog`（`/${FIRSTBLOOD_GOAL}`）两处同读此源，并加入 export。收益：调「初露锋芒」门槛只改 data.js 一处、判定/进度同步，绝无第二套口径；行为逐字不变（`FIRSTBLOOD_GOAL` 仍为 1，文案原样），零 UI 回归。
+- 【零回归面】未动成就机制本身——`ACH_LIST` 其余 16 条逐字不变（事件型 9 条本无 prog、数值型余 7 条各自取已有常量）、`view/menus.js` 成就页只读 `ok/name/d/prog`（`解锁 X/${ACH_LIST.length}` 照旧）、`rules.unlockedAchievements` 判定流程、胜负计数 `totalWins` 原样。未动任何掉落/经验/金币曲线/难度/技能/支线/存档。只新增一个常量 + 改一个条目（1 行）+ export 1 处，零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.7 专项冒烟（/tmp/jrpg_smoke_v187_firstblood.mjs）**36 项断言全过**——`FIRSTBLOOD_GOAL` 导出且为 1、firstblood 判定逐字（0 胜未达标 / 1·2 胜达标 / 无 totalWins 兜底 false / null 明确未达标）、`prog` 0/1·1/1·5/1·12/1 逐字、`d` 与旧字面量「赢得第一场战斗」逐字一致、`ok/prog.toString()` 各含且各恰 1 处 `FIRSTBLOOD_GOAL` 标识符、源码 firstblood 行恰含 2 处常量且可执行代码裸 `>=1` / `/1` 已清零（仅注释保留旧值说明）、export 含常量、同族常量（RICH_GOLD/SCHOLAR_GOAL/LUCKY_GOAL/HUNT_GOAL/LVL5_GOAL/LVL10_GOAL）未动、抽验 `hunt10/lucky/lvl5/lvl10/rich/scholar` 判定不受影响、`ACH_LIST` 17 条结构不变（数值型 8 条含 prog、事件型 9 条无 prog）。
+
 ## v18.6 成就阈值单一数据源——「独当一面」5 与「守灯者」10 的双等级阈值同族收口（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL 同一「成就阈值数据化」家族——v18.4 注释已预告 lvl5/lvl10 的裸 5/10 属下批对象、当时刻意保留，本次一并收口同属等级口径的两条）
 
 - 【`6` 两条目各自内部三处互不相关】「独当一面」成就：等级达到 5 级；「守灯者」成就：等级达到 10 级。这两个门槛分别硬编码在 `data.js` `ACH_LIST` 各自条目的判定（`ok` 的 `level>=5` / `level>=10`）、描述（`d` 的「等级达到 5 级」/「等级达到 10 级」）、进度（`prog` 的 `X/5` / `X/10`）三处——同对象内互不引用：想调门槛（如守灯者放宽到 12 级）要改三处，还极易只改判定漏改文案，实际达标线变了界面却还标「/10」；且全库无任何现成源可借鉴（等级上限仅由 `baseStats` / `XP_GROW` 曲线隐含，无成就门槛常量），故必须单设常量。两条同为等级口径、结构逐字同形，故一并收口为同一批次。

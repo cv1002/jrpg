@@ -529,6 +529,15 @@ const HUNT_GOAL = 10;    // 成就「驱雾十战」需累计讨伐的魔物只�
 const LVL5_GOAL = 5;     // 成就「独当一面」需达到的等级
 const LVL10_GOAL = 10;   // 成就「守灯者」需达到的等级
 
+// 成就「初露锋芒」累计胜场阈值（单一数据源）：ACH_LIST 该条的判定（ok: totalWins >= FIRSTBLOOD_GOAL）、
+// 进度条（prog「X/N」）两处同读此源（描述 d「赢得第一场战斗」无数字，无需读数）——此前 1 硬编码在
+// 同一条目内两处互不相关（ok 判定、prog 分母）：想调门槛（如放宽到 3 场）要改两处，还极易只改判定
+// 漏改进度，实际达标线变了界面却还标「/1」；且全库无任何现成源可借鉴（陪跑同计数源的 hunt10 已有
+// HUNT_GOAL），故单设此常量（与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL 同一
+// 「成就阈值数据化」家族——v18.5 收口 hunt10 时注释已预告同计数源的 firstblood 属再下批对象、
+// 当时刻意保留其裸 1，本次收口「初露锋芒」后全库 ACH_LIST 数值型门槛收口完毕）
+const FIRSTBLOOD_GOAL = 1;   // 成就「初露锋芒」需累计赢得的战斗场数
+
 // —— 药水恢复量（POTION_ 生命药水 / ELIXIR_ 高级灵药）—— 结算·战斗预览·商店文案三处唯一真源
 // 药水背包上限（POTION_CAP = 99）：商店购买拦截判定（shop.js）、背包已满提示文案、商店列表「现有X/99」、
 // 购买栏 置灰判定（view/menus.js）四处同读此源——调上限（如放宽到 120）只改 data.js 一处，四端同步，
@@ -784,7 +793,7 @@ const QUESTS={
 };
 
 const ACH_LIST=[
-  {id:'firstblood', name:'初露锋芒', d:'赢得第一场战斗', ok:g=>g.totalWins>=1, prog:g=>`${g.totalWins||0}/1`},
+  {id:'firstblood', name:'初露锋芒', d:'赢得第一场战斗', ok:g=>g.totalWins>=FIRSTBLOOD_GOAL, prog:g=>`${g.totalWins||0}/${FIRSTBLOOD_GOAL}`},
   {id:'hunt10',     name:'驱雾十战', d:`累计讨伐 ${HUNT_GOAL} 只魔物`, ok:g=>g.totalWins>=HUNT_GOAL, prog:g=>`${g.totalWins||0}/${HUNT_GOAL}`},
   {id:'lucky',      name:'幸运眷顾', d:`累计获得 ${LUCKY_GOAL} 次额外掉落`, ok:g=>(g.drops||0)>=LUCKY_GOAL, prog:g=>`${g.drops||0}/${LUCKY_GOAL}`},
   {id:'lvl5',       name:'独当一面', d:`等级达到 ${LVL5_GOAL} 级`, ok:g=>g.level>=LVL5_GOAL, prog:g=>`${g.level||1}/${LVL5_GOAL}`},
@@ -900,7 +909,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, ENCOUNTER, CAVE_TREASURE,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
