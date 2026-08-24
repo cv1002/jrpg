@@ -300,7 +300,13 @@ const LEVEL_GROWTH = {
   def: baseStats(2).def - baseStats(1).def,
 };
 
-const LEARN_AT = { 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术' };
+// 技能领悟表（单一数据源）：各等级领悟技能全表——含 1 级起始技能『火焰斩』。
+// hero.checkSkills 的升级领悟与 core.newGame 建档起始技能（skills:[learnsAt(1)]）同读此源；
+// 此前起始技能名只硬编码在 core.js newGame（skills:['火焰斩']），与其他四招的归属表分居两文件
+// 互不相关：想换起始技能/重命名初招要改两处、还极易只改领悟表漏改建档，新档会带一个
+// SKILL_DATA 里不存在的技能（技能菜单/状态页渲染空行）。收口后 起始技能与升级领悟 绝无第二套口径
+// （与 DEFAULT_NAME / SKIP_CHANCE / PHASE2_AT 同一「单一数据源收口」体系）
+const LEARN_AT = { 1: '火焰斩', 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术' };
 function learnsAt(lv) { return LEARN_AT[lv] || null; }
 
 // 经验曲线（单一数据源）：升级所需经验逐级 ×XP_GROW 取整——hero.grantXp 的升级结算

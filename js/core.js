@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -24,7 +24,7 @@ function newGame(name) {
     x: MAPS.village.playerStart.x,
     y: MAPS.village.playerStart.y,
     hp: 0, mp: 0,
-    skills: ['火焰斩'],
+    skills: [learnsAt(1)], // 起始技能 = 技能领悟表 1 级条目（LEARN_AT 单一数据源，v17.7 收口）
     poison: 0,
     bossDefeated: false,
     caveBoss: false,

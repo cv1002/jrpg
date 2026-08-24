@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.7 起始技能单一数据源——newGame 建档起始技能与升级领悟表同读 LEARN_AT 1 级条目（机制·单一口径，与 DEFAULT_NAME / SKIP_CHANCE / PHASE2_AT 同一「单一数据源收口」体系）
+
+- 【`'火焰斩'` 游离在领悟表之外，与其余四招的等级归属分居两文件】新档起始技能 = 『火焰斩』：这个名字只硬编码在 `core.js` `newGame` 建档一处（`skills: ['火焰斩']`），而其余四招（冰霜击 Lv.3 / 治愈术 Lv.4 / 雷鸣 Lv.5 / 陨石术 Lv.7）的等级归属全在 `data.js` `LEARN_AT` 学习表——起始技能名与技能领悟表互不引用：想换起始技能（如让新档开局就会冰霜击）或重命名初招，只改学习表会漏掉建档、只改建档又让领悟表对不上，新档极易带一个 `SKILL_DATA` 里查无此招的技能（技能菜单/状态页渲染空行、战斗点选报「尚未领悟该技能」）；且写着「火焰斩」，也无从考证它与技能表的关系——它本质上就是「Lv.1 领悟的技能」，却没进 `LEARN_AT`。
+- 【修正：data.js `LEARN_AT` 补入 1 级条目 `1: '火焰斩'` 为唯一真源（1..7 级连成一张「各等级领悟技能全表」）】`core.js` `newGame` 建档起始技能改读 `skills: [learnsAt(1)]`。收益：起始技能只是「学习表 1 级条目」，换起始技能 / 重命名初招只改 data.js `LEARN_AT` 一处、建档 / 升级领悟 / 技能全表同步，绝无第二套口径；行为逐字不变（`LEARN_AT[1]` 仍为『火焰斩』，新档起始技能原样 `['火焰斩']`），零 UI 回归。
+- 【零回归面】未动升级领悟机制——`hero.checkSkills` 仅在升级（`grantXp` 升级后）调用且按**新等级**查询，运行期永远查 `learnsAt(lv∈[2..8])`，1 级条目运行期不可达（新档自带起始技能，checkSkills 的 `!includes` 防重分支本就兜底），绝无「Lv.1 又弹一次领悟」；`skillXpHint` 下一技能预估从 `level+1` 起循环同样不触及 1 级。未动 `SKILL_DATA` 五招定义、技能菜单/状态页/战斗渲染、经验/等级/掉落/金币/难度/成就/存档。只改表 1 行 + core 建档 1 行 + 1 处 import，零新增依赖。README「等级解锁技能（火焰斩灼烧→…）」描述不变仍准确。
+- 验证：`node --check js/data.js js/core.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.7 专项冒烟（/tmp/jrpg_smoke_v177_startskill.mjs）**20 项断言全过**——`learnsAt(1)`='火焰斩'、全表 1/3/4/5/7 回归与 2/6/8 null 不变、领悟表技能名全部在 SKILL_DATA 无重复、真实 `newGame()` / `newGame('潮')` / `initGame` 起始技能均 ===[learnsAt(1)]（行为逐字 `['火焰斩']`）、Lv.1 `checkSkills` 不重复领悟、Lv.3 升级仍由同表领悟冰霜击、`applyStats` 兼容、grep 确认 core.js 可执行代码裸 `skills: ['火焰斩']` 已清零且建档改读 `learnsAt(1)`、data.js LEARN_AT 1 级条目唯一真源在位。
+
 ## v17.6 默认主角名单一数据源——newGame 兜底 / resetRun 兜底 / 启动建档同读 DEFAULT_NAME（机制·单一口径，与 POTION_CAP / SKIP_CHANCE / PHASE2_HEAL_PCT 同一「单一数据源收口」体系）
 
 - 【`'余烬'` 散落三文件四处互不相关】默认主角名 = HERO_NAMES 首位『余烬』：这个字面量硬编码在 `core.js` `newGame` 建档兜底（`name: name || '余烬'`）、`core.js` `resetRun` 无档兜底（`S.G ? S.G.name : '余烬'`）与 `main.js` 启动建档（`initGame('余烬')`）**四处**（含 data.js `HERO_NAMES=['余烬','灯见','潮']` 真源）——三文件互不引用：想改默认名（如把首位换成『灯见』）要改三个文件，还极易只改建档漏改兜底，新档默认名与无档重置名漂移；且写着「余烬」，也无从考证这数从哪来、是否就是名单首位。
