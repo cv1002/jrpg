@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.3 冰霜击冻结概率单一数据源——SKILL_DATA.skip 判定与技能提示文案同读 SKIP_CHANCE（机制·单一口径，与 BURN_PCT / POISON_CHANCE / ELITE_CHANCE 同一「概率数据化」体系）
+
+- 【0.30 同一对象内两处各写一份互不相关】冰霜击冻结敌回合概率 = 30%：这个 0.30 硬编码在 `data.js` `SKILL_DATA['冰霜击']` 的 `skip:0.30`（判定字段）与 `hint:'30%冻结（跳过敌回合）'`（提示文案）两处——同对象内、互不引用：想调冻结率（如放宽到 40%）要改两个字段，还极易只改判定漏改提示，实际冻结率变了技能提示却还报旧值；而写着「0.30」「30%」，也无从考证这数从哪来、两处是否早已漂移（实测同值，纯结构隐患）。同族的火焰斩灼烧比例早已由 `BURN_PCT` 单一数据源化（hint 拼 `Math.round(BURN_PCT*100)`），毒蛇施毒率也已由 `POISON_CHANCE` 收口——唯独冰霜击冻结率是 SKILL_DATA 内最后一处裸奔数值。
+- 【修正：data.js 新增 `SKIP_CHANCE = 0.30` 为唯一真源（置于 POISON_CHANCE 之后、SKILL_DATA 之前）】`SKILL_DATA['冰霜击'].skip` 改读 `skip:SKIP_CHANCE`；其 hint 改拼 `Math.round(SKIP_CHANCE * 100) + '%冻结（跳过敌回合）'`（与毒蛇帮助页同一推导式）。收益：调冻结率只改 data.js 一处、判定/提示两处同步，绝无第二套口径；显示文案 `30%冻结（跳过敌回合）` 逐字不变（0.30×100=30 原样推导），零 UI 回归。
+- 【零回归面】未动冻结机制本身——`battle.playerAction` 判定 `Math.random() < skill.skip` 逐字不变（读的是 SKILL_DATA 里由常量拼入的 skip，值 0.30 原样）、`enemy.skipNext` 置位与 enemyAI 冻结消耗流程、`drawBattle` 冻结角标/技能预览读 SKILL_DATA.hint 显示均不变；其余四技能（火焰斩/雷鸣/陨石术/治愈术）hint 与字段逐字不变（冒烟逐条断言）。未动任何掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改两个引用点（data.js 定义/导出、SKILL_DATA 一行两字段），零新增依赖。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.3 专项冒烟（/tmp/jrpg_smoke_v173_skipchance.mjs）**15 项断言全过**——常量导出 0.30、`SKILL_DATA['冰霜击'].skip` 同读常量、hint 由常量推导且与旧字面量逐字一致（`30%冻结（跳过敌回合）`）、data.js 源码裸字面量（`skip:0.30` / `'30%冻结`）已从 SKILL_DATA 清除且定义/导出/两引用在位、真实 `playerAction` 端到端（Math.random 固定 0.2 → skipNext=true 且博客记「冻结」；固定 0.5 → skipNext=false，与 0.30 阈值逐字耦合）、其余四技能 hint 与字段零回归。
+
 ## v17.2 二段变身触发阈值兜底单一数据源——enemyAI 变身触发与战斗「二段变身线」标注同读 PHASE2_AT（机制·单一口径，与 HEAL_PCT / HEAVY_MULT / SHIELD_MULT 同一体系）
 
 - 【0.5 散落两文件互不相关】Boss 二段变身触发血量线 = `hp < hpMax × at`（数据表显式写 at），但变身模板**漏写 at 时**的安全默认「血量过半才变身」= `phase.at || 0.5`：这个兜底字面量硬编码在 `enemyAI.js enemyAct`（变身触发判定 `enemy.hp < enemy.hpMax * (phase.at || 0.5)`）与 `view/drawBattle.js` 二段变身线标注（`Math.ceil(enemy.hpMax * (phase2.at || 0.5))`）**两处**互不相关——想调「未显式写 at 的变身默认血量线」要改两个文件，还极易只改结算漏改标注，实际触发阈值变了变身线却还报旧值；且写着「0.5」，也无从考证这数从哪来、两处是否早已漂移。v17.1 收口回血招默认比例时已把「结算/标注两处各自硬编码兜底」定为同款病根，二段变身触发阈值是本体系残留在变身流程上的兜底数值。

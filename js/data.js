@@ -334,9 +334,16 @@ const POISON_TURNS = 3;
 // 注意：SPECIES / MON_BASE 顶层字面量 poison 会拼入此值，故必须定义在两表之前
 const POISON_CHANCE = 0.35;
 
+// 冰霜击冻结概率（单一数据源）：battle.playerAction 的冻结判定 Math.random()<skill.skip 与
+// 技能提示 hint「N%冻结（跳过敌回合）」同读此源——此前 0.30 硬编码在 SKILL_DATA['冰霜击'] 的
+// skip 字段与 hint 文案「30%冻结」两处各写一份（同对象内互不引用），想调冻结率（如降到 25%）
+// 要改两个字段且极易改漏，实际触发率改了提示却还报旧值；数据化后 判定、提示 绝无第二套口径
+// （与 BURN_PCT / POISON_CHANCE / ELITE_CHANCE 同一「概率数据化」体系）
+const SKIP_CHANCE = 0.30;
+
 const SKILL_DATA={
   '火焰斩':{mp:4,mult:1.8,kind:'atk',sfx:'fire',txt:'🗡️',element:'fire',burn:2,hint:'灼烧2回合·每回合约-' + Math.round(BURN_PCT * 100) + '%最大HP',colors:['#ff3b3b','#ff8a2c','#ffd24a']},
-  '冰霜击':{mp:5,mult:2.2,kind:'atk',sfx:'ice',txt:'❄️',element:'ice',skip:0.30,hint:'30%冻结（跳过敌回合）',colors:['#5fd8ff','#9ff0ff','#3f8fe1']},
+  '冰霜击':{mp:5,mult:2.2,kind:'atk',sfx:'ice',txt:'❄️',element:'ice',skip:SKIP_CHANCE,hint:Math.round(SKIP_CHANCE * 100) + '%冻结（跳过敌回合）',colors:['#5fd8ff','#9ff0ff','#3f8fe1']},
   '雷鸣':  {mp:8,mult:2.8,kind:'atk',sfx:'thunder',txt:'⚡',element:'thunder',pierce:0.5,hint:'穿透一半防御',colors:['#ffe94a','#ffffff','#ffb84a']},
   '陨石术':{mp:14,mult:4.2,kind:'atk',sfx:'thunder',txt:'☄️',element:'meteor',breakShield:1,trueBonus:1.25,hint:'击碎石甲 · 克真身',colors:['#b06ff0','#ff5b8a','#ffd24a']},
   '治愈术':{mp:5,heal:0.55,kind:'heal',sfx:'heal',txt:'💚',cleanse:true,hint:'恢复HP并解毒',colors:['#8ff0a0','#d8ffe0','#62ff8a']},
@@ -810,7 +817,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,
   baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,
