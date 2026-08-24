@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -48,10 +48,10 @@ export function sellMushroom() {
     return;
   }
   hero.mushrooms--;
-  hero.gold += 10;
+  hero.gold += MUSHROOM_PRICE;
   SFX.coin();
   bind.renderHUD();
-  bind.boxMsg('售出 1 株魔法蘑菇，得 10 金');
+  bind.boxMsg(`售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金`);
 }
 
 export function buyWeapon(name) {
@@ -112,7 +112,7 @@ export function buildShopList() {
     list.push({
       t: blocked
         ? `🍄 魔法蘑菇 ×1（任务物品，集齐前不可卖）[现${hero.mushrooms}]`
-        : `🍄 卖出魔法蘑菇 ×1 → 10金 [现${hero.mushrooms}]`,
+        : `🍄 卖出魔法蘑菇 ×1 → ${MUSHROOM_PRICE}金 [现${hero.mushrooms}]`,
       price: 0, kind: 'sell', blocked, act: sellMushroom,
     });
   }

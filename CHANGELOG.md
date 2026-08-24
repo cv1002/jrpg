@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.9 蘑菇出售单价单一数据源——shop.sellMushroom 卖菇结账/得金提示、列表卖出价签三处同读 MUSHROOM_PRICE（机制·单一口径，与 INN_PRICE / BREW_GOLD / POTION_PRICE 同一「价格数据化」体系）
+
+- 【`10` 同一文件三处互不相关】卖 1 株魔法蘑菇得 10 金：这个 10 硬编码在 `shop.js` `sellMushroom` 卖菇结账（`hero.gold += 10`）与成功提示（`'售出 1 株魔法蘑菇，得 10 金'`）、`buildShopList` 商店列表卖菇行价签（`'卖出魔法蘑菇 ×1 → 10金'`）三处——三处互不引用：想调卖菇价（如涨到 15）要改三行，还极易只改结账漏改价签/提示，实际卖价改了列表价签却还标旧值、扣钱账目也对不上光标；且写着「10」，也无从考证这数从哪来——同族的价格早已收口（旅馆 `INN_PRICE=10`、酿造 `BREW_GOLD=10`、药水 `POTION_PRICE=15`），唯独卖菇价是经济循环里残存的裸奔数值。
+- 【修正：data.js 新增 `MUSHROOM_PRICE = 10` 为唯一真源（置于 MUSHROOM_GOAL 之后，同属「灯长蘑菇支线」常量块）】`shop.js` `sellMushroom` 结账改读 `hero.gold += MUSHROOM_PRICE`、成功提示改读模板串 `售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金`；`buildShopList` 卖出价签改读 `卖出魔法蘑菇 ×1 → ${MUSHROOM_PRICE}金`。收益：调卖菇价只改 data.js 一处、结账/提示/价签三处同步，绝无第二套口径；行为逐字不变（`MUSHROOM_PRICE` 仍为 10，提示/价签文案原样），零 UI 回归。
+- 【零回归面】未动卖菇机制本身——任务保护拦截（`canSellMushroom` + `mushroomQuestProtects` 判定 `side_mushroom` 为 active/turnin 且 `mushrooms <= MUSHROOM_GOAL`、拦截提示「灯长委托的蘑菇」）优先、卖菇成功流程（扣 1 株、+10 金、`售出` 提示、`renderHUD`）逐字不变；`MUSHROOM_GOAL `支线目标、酿造配方（`BREW_MUSHROOMS/BREW_GOLD`）、药水价格（`POTION_PRICE`）与商店其余行（药水/武器/防具/离开）原样。未动任何掉落/经验/金币曲线/难度/成就/存档。只新增一个常量 + 改三个引用点（shop 一处 import + 三行引用），零新增依赖。
+- 验证：`node --check js/data.js js/shop.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.9 专项冒烟（/tmp/jrpg_smoke_v179_mushroomprice.mjs）**15 项断言全过**——常量导出 10、可卖/保护期列表行（blocked 与文案）逐字正确、真实 `sellMushroom` 端到端（mushrooms 4→3、gold 0→10、提示「得 10 金」）、保护期拦截（active 态 mushrooms/gold 不动、提示引用 MUSHROOM_GOAL）、grep 确认 shop.js 可执行代码裸 `+= 10` / `得 10 金` / `→ 10金` 已清零且三处同读 MUSHROOM_PRICE。
+
 ## v17.8 生命药水购买价单一数据源——buyPotion 购买判定/扣款、商店列表价签三处同读 POTION_PRICE（机制·单一口径，与 INN_PRICE / BREW_GOLD / POTION_CAP 同一「价格数据化」体系）
 
 - 【`15` 同一文件三处互不相关】生命药水购买价 = 15 金币：这个 15 硬编码在 `shop.js` `buyPotion` 购买判定（`hero.gold >= 15`）与扣款（`hero.gold -= 15`）两行、`buildShopList` 商店列表药水行价签（`price: 15`）一处——三处互不引用：想调药水价（如涨到 20）要改三行，还极易只改判定漏改扣款/价签，实际价改了列表价签却还标旧值，或扣错钱；且写着「15」，也无从考证这数从哪来——同族的价格早已收口（旅馆 `INN_PRICE=10`、酿造 `BREW_GOLD=10`、支线奖励 `+40+级×10 金`），唯独生命药水售价是经济循环里残存的裸奔数值。
