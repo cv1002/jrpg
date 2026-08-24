@@ -661,15 +661,20 @@ const QUESTS={
       ]],
     },
   },
-  // 巡灯人·旧灯卫的名字：集齐 4 枚记忆碎片（cond 单一数据源 FRAGMENTS.length）
+  // 巡灯人·旧灯卫的名字：集齐全部记忆碎片（目标枚数单一数据源 = FRAGMENTS.length；连同状态页「记忆 X/N」、
+  // 真结局加页同读此源——此前这个 4 硬编码在 cond/condProg/obj/offer 四处互不相关：想增减记忆碎片
+  // （FRAGMENTS 增删一段）判定会漏改或文案会漏改，集齐 N-1 枚界面却还标「/4 枚」；且旧注释自称
+  // 「cond 单一数据源 FRAGMENTS.length」实为虚标——代码里全是裸 4。收口后 判定/进度/目标文案/接取对话
+  // 与状态页真源 FRAGMENTS.length 同源，绝无第二套口径（与 MIST_GOAL / MUSHROOM_GOAL 同一「支线目标
+  // 单一数据源」家族；turnin 的「四段都在这了」系逐字点名的枚举性旁白，非数值引用，保持文案原样）
   side_name:{
     id:'side_name', kind:'side', store:true, npc:'adventurer', giver:'adventurer',
     unlockOn:'bossDefeated',
-    cond:(g)=>((g.fragments||[]).length >= 4),
-    condProg:(g)=>`${(g.fragments||[]).length}/4 枚`,
+    cond:(g)=>((g.fragments||[]).length >= FRAGMENTS.length),
+    condProg:(g)=>`${(g.fragments||[]).length}/${FRAGMENTS.length} 枚`,
     name:'旧灯卫的名字', where:'收集记忆碎片 → 回镇找巡灯人',
     unlockHint:'击败幽冥魔王后',
-    obj:'集齐 4 枚记忆碎片，替旧灯卫把名字找回来',
+    obj:`集齐 ${FRAGMENTS.length} 枚记忆碎片，替旧灯卫把名字找回来`,
     turnin:'碎片集齐了！回镇找巡灯人',
     done:'旧灯卫的名字重新被记起。巡灯人的灯，更亮了。',
     reward:{ gold:120, potion2:1 },
@@ -677,7 +682,7 @@ const QUESTS={
       offer:[[
         '巡灯人：他吞下灯芯，是为了替镇子记住镇子。',
         '可没人记得他了。把散落的记忆碎片找回来——',
-        '凑齐 4 枚，我带你把他的名字念给灯听。',
+        `凑齐 ${FRAGMENTS.length} 枚，我带你把他的名字念给灯听。`,
         '[Enter] 接下   [Esc] 离开',
       ]],
       active:[[

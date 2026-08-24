@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v18.1 旧灯卫名字支线目标枚数单一数据源——「旧灯卫的名字」收集条件/实时进度/目标文案/接取对话同读 FRAGMENTS.length（机制·单一口径，与 MIST_GOAL / MUSHROOM_GOAL 同一「支线目标单一数据源」家族，并修正一处虚标注释）
+
+- 【`4` 同一支线定义内四处互不相关，且注释虚标单一数据源】巡灯人支线「旧灯卫的名字」目标 = 集齐 4 枚记忆碎片：这个 4 硬编码在 `data.js` `QUESTS.side_name` 的收集条件（`cond` 的 `>= 4`）、实时进度（`condProg` 的 `X/4 枚`）、任务条目标文案（`obj` 的「集齐 4 枚…」）、接取对话（`offer` 的「凑齐 4 枚…」）四处——四处互不引用：想增减记忆碎片（`FRAGMENTS` 增删一段，如加一枚龙王碎片改成 5 枚）要改四个字符串，还极易只改判定漏改文案，集齐 5 枚界面却还标「/4 枚」；且该定义上方注释自称「cond 单一数据源 FRAGMENTS.length」实为**虚标**——代码里其实全是裸 4，从未真正读 `FRAGMENTS.length`；而状态页「记忆 X/4」（`view/menus.js`）却早已是 `FRAGMENTS.length` 真源，一处已收口、一处裸奔，两套口径并存。
+- 【修正：`QUESTS.side_name` 四处全部改读 `FRAGMENTS.length`（唯一真源 = 记忆碎片数据表本身，无需另设常量）】`cond`（`>= FRAGMENTS.length`）、`condProg`（`/${FRAGMENTS.length} 枚`）、`obj`（模板串「集齐 ${FRAGMENTS.length} 枚…」）、`offer`（模板串「凑齐 ${FRAGMENTS.length} 枚…」）四处同源；并把虚标注释改写成如实描述（目标枚数 = 数据表长度、与状态页/真结局加页同一真源）。收益：增删 `FRAGMENTS` 一段（改掉落表即改支线目标），下次装载后 条件/进度/文案/状态页 自动同步，绝无第二套口径；行为逐字不变（`FRAGMENTS.length` 现为 4，全部文案原样），零 UI 回归。`turnin` 的「四段都在这了。守门人、灯卫、星砂、初灯……」系逐字点名四段碎片的枚举性旁白（并非「N 枚」式数值引用，且已手动列全四个名字），保持文案原样不纳入收口。
+- 【零回归面】未动支线机制本身——任务状态机（`bossDefeated` 解锁自动 active → 集齐转 turnin → 对话交付 done）、`quests.js` 的 `questStatus/questJournal/resolveNpcTalk/applyQuestReward` 只读 `QUESTS` 字段、碎片掉落（`battle.winBattle` 按 enemy 从 `FRAGMENTS` 查找）、真结局加页、名字石碑（`FRAGMENTS.forEach` 生成 `NPCS.steleN`）逐字不变；奖励（120 金 + 1 灵药）原样。未动任何掉落/经验/金币曲线/难度/成就/存档。只改 data.js 同一支线定义内 4 个引用点 + 1 处注释，零新增依赖、零新增常量。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v18.1 专项冒烟（/tmp/jrpg_smoke_v181_namefrag.mjs）**27 项断言全过**——`FRAGMENTS` 导出且现长 4、`cond` 恰好 FRAGMENTS.length 枚达成（3 枚 false / 4 枚 true / 无碎片兜底 false）、`condProg` 0/4·2/4·4/4 枚逐字、`obj/offer` 数据层与旧字面量逐字一致（offer 为防御性保留文案，直接校验数据源）、`turnin` 枚举旁白逐字、真实任务流端到端（auto active → 3 枚仍 active 且日志「3/4 枚」→ 4 枚转 turnin → 对话交付发 120 金+1 灵药 → done）、运行期 `FRAGMENTS.push` 增段后 cond/condProg 即刻跟随（5 枚门槛）再 pop 复原、grep 确认 data.js 可执行代码裸 `>= 4` / `/4 枚` / `集齐 4 枚` / `凑齐 4 枚` 已清零、`obj/offer` 为 `${FRAGMENTS.length}` 模板串（装载期同源）、`FRAGMENTS` 仍在 export（状态页同源）。
+
 ## v18.0 雾灵委托目标只数单一数据源——「雾里的新住客」讨伐条件/实时进度/目标文案/接取与交付对话同读 MIST_GOAL（机制·单一口径，与 MUSHROOM_GOAL 同一「支线目标单一数据源」家族）
 
 - 【`3` 同一支线定义内五处互不相关】雾径猎手支线「雾里的新住客」目标 = 讨伐 3 只雾灵：这个 3 硬编码在 `data.js` `QUESTS.side_mist` 的讨伐条件（`cond` 的 `>= 3`）、实时进度（`condProg` 的 `X/3 只`）、任务条目标文案（`obj` 的「讨伐 3 只…」）、接取对话（`offer` 的「帮我打 3 只回来」）、交付对话（`turnin` 的「3 只，干净利落」）五处——同对象内互不引用：想调支线目标（如改成 4 只）要改五个字符串，还极易只改判定漏改文案，集齐 4 只界面却还标「/3 只」；且写着「3」，也无从考证这数从哪来——同族的灯长蘑菇支线目标早已收口（`MUSHROOM_GOAL=3`），唯独自家支线目标是支线数据里残存的裸奔数值。
