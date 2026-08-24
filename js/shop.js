@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_HP_PCT, POTION_HP_FLAT } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -14,7 +14,7 @@ import { goto } from './scene.js';
 export function canSellMushroom() {
   const hero = S.G;
   if (!hero || (hero.mushrooms || 0) < 1) return false;
-  if (mushroomQuestProtects(hero) && hero.mushrooms <= 3) return false;
+  if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) return false;
   return true;
 }
 
@@ -42,9 +42,9 @@ export function sellMushroom() {
     bind.boxMsg('没有可出售的蘑菇');
     return;
   }
-  if (mushroomQuestProtects(hero) && hero.mushrooms <= 3) {
+  if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) {
     SFX.cancel();
-    bind.boxMsg('🍄 这是灯长委托的蘑菇，集齐 3 株前不能卖！', 2200);
+    bind.boxMsg(`🍄 这是灯长委托的蘑菇，集齐 ${MUSHROOM_GOAL} 株前不能卖！`, 2200);
     return;
   }
   hero.mushrooms--;
@@ -108,7 +108,7 @@ export function buildShopList() {
   const list = [];
   list.push({ t: `🍖 生命药水 ×1（恢复 ${Math.round(POTION_HP_PCT * 100)}%HP +${POTION_HP_FLAT}）[现有${hero.item}/99]`, price: 15, kind: 'potion', act: buyPotion });
   if (hero.mushrooms > 0) {
-    const blocked = mushroomQuestProtects(hero) && hero.mushrooms <= 3;
+    const blocked = mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL;
     list.push({
       t: blocked
         ? `🍄 魔法蘑菇 ×1（任务物品，集齐前不可卖）[现${hero.mushrooms}]`

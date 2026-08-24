@@ -169,6 +169,12 @@ const INN_PRICE = 10;
 const BREW_MUSHROOMS = 2;   // 酿造一剂高级灵药所需魔法蘑菇株数
 const BREW_GOLD = 10;       // 酿造一剂高级灵药所需金币
 
+// 灯长蘑菇支线目标株数（单一数据源）：QUESTS.side_mushroom.n（任务条「X/3 株」经 quests.objectiveText 推导）、
+// NPC 对话 offer/active 两处文案、world.js 开箱集齐转可交付判定（mushrooms >= 目标）、core.brewNow 与 shop.js 的
+// 任务保护判定（mushrooms <= 目标，集齐前不可酿/不可卖）同读此源——此前这个 3 散落在 data/world/core/shop
+// 四文件七处互不相关：想调支线目标（如放宽到 4 株）要改四处，还极易只改判定漏改文案，集齐 4 株界面却还标「/3 株」。
+const MUSHROOM_GOAL = 3;    // 灯长支线需找回的魔法蘑菇株数（集齐后转可交付）
+
 const TY = {
   GRASS: 0, TREE: 1, ROCK: 2, WATER: 3, TOWN: 4, PATH: 5, CHEST: 6, BOSS: 7,
   FOUNTAIN: 8, SHOP: 9, INN: 10, GATE: 11, EXIT: 12, NPC: 13, BREW: 14,
@@ -550,7 +556,7 @@ const QUESTS={
     done:'终焉之神已散。记忆回到镇上——你守住了记得的权利。',
   },
   side_mushroom:{
-    id:'side_mushroom', kind:'side', store:true, n:3, item:'mushrooms', giver:'chief',
+    id:'side_mushroom', kind:'side', store:true, n:MUSHROOM_GOAL, item:'mushrooms', giver:'chief',
     name:'灯长的委托', where:'雾语林宝箱 → 回镇找灯长',
     obj:'找回魔法蘑菇',
     offer:'去潮灯镇找灯长，接下唤醒井泉的委托',
@@ -560,12 +566,12 @@ const QUESTS={
     talk:{
       offer:[[
         '灯芯灭了，井口的泉水也跟着黯了，灯油眼看要见底。',
-        '林子里的【魔法蘑菇】带着残灯的荧光——是灯油最后的原料。帮我找回 3 株，好吗？',
+        '林子里的【魔法蘑菇】带着残灯的荧光——是灯油最后的原料。帮我找回 ' + MUSHROOM_GOAL + ' 株，好吗？',
         '[Enter] 接下委托   [Esc] 离开',
       ]],
       active:(hero)=>[[
         '魔法蘑菇藏在雾语林的宝箱里。那是残灯掉落的核。',
-        `（已找到 ${hero.mushrooms||0}/3 株）`,
+        `（已找到 ${hero.mushrooms||0}/${MUSHROOM_GOAL} 株）`,
         '[Enter] 继续',
       ]],
       turnin:[[
@@ -787,7 +793,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, ENCOUNTER, CAVE_TREASURE,
+  T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DIFFS, KEY,

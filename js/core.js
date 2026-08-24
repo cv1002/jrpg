@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, XP_INIT } from './data.js';
+import { MAPS, HERO_NAMES, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -84,7 +84,7 @@ function usePotion() {
 
 function brewNow() {
   const hero = S.G;
-  if (mushroomQuestProtects(hero) && hero.mushrooms <= 3) {
+  if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) {
     SFX.cancel();
     bind.boxMsg('🍄 任务蘑菇尚未上交，先去找灯长吧！', 2000);
     return;
