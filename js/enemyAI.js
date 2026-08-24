@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -86,7 +86,7 @@ export function enemyAct(deps) {
     return;
   }
   if (act.type === 'heal') {
-    const heal = Math.round(enemy.hpMax * (act.pct || 0.12));
+    const heal = Math.round(enemy.hpMax * (act.pct || HEAL_PCT));
     enemy.hp += heal;
     SFX.heal();
     S.blog.push(`🟣 ${enemy.name} 使出【暗影回血】，恢复 ${heal} HP`);

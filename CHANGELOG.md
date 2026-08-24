@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.1 敌方回血默认比例单一数据源——enemyAI 结算与战斗招数一览标注同读 HEAL_PCT（机制·单一口径，与 HEAVY_MULT / SHIELD_MULT / CRIT_MULT 同一体系）
+
+- 【`0.12` 兜底散落两文件互不相关】敌方「回血」招的恢复量 = `maxHP × act.pct`（数据表显式写 pct），但招数表**漏写 pct 时**的安全默认「恢复 12%」= `act.pct || 0.12`：这个兜底字面量硬编码在 `enemyAI.js enemyAct`（结算 `Math.round(enemy.hpMax * (act.pct || 0.12))`）与 `view/drawBattle.js` 敌方招数一览（标注 `(a.pct || 0.12) * 100`）**两处**，两处注释还都各写一句「0.12 同款兜底」互为镜像却各写各的——想调「未显式写 pct 的回血招默认恢复多少」要改两个文件，还极易只改结算漏改标注，实际回血量变了招数一览却还报旧百分比；而写着「0.12」，也无从考证这数从哪来、两处是否早已漂移。
+- 【修正：data.js 新增 `HEAL_PCT = 0.12` 为唯一真源（置于 HEAVY_MULT_PHASED 之后、DROP_* 之前）】`enemyAI.js` 结算改读 `act.pct || HEAL_PCT`；`view/drawBattle.js` 招数一览改读 `(a.pct || HEAL_PCT) * 100`（两处遗留注释同步改为 HEAL_PCT）。收益：调默认回血比例只改 data.js 一处、结算/标注两处同步，绝无第二套口径；行为逐字不变（三 Boss 回血招均显式带 pct——幽冥魔王/终焉之神 0.12、洞窟领主 0.10，此兜底仅守护招数表漏写 pct 的安全默认，当前游戏内敌人无一触发，纯收口数据源），零 UI 回归。
+- 【零回归面】未动敌方回血机制本身——显式 `pct`（幽冥魔王/终焉之神 0.12、洞窟领主 0.10）优先生效、`pickAct` 按 hpBelow 触发线选招、回血结算公式 `Math.round(hpMax × pct)`、招数一览「血<40%时·恢复N%HP」文案、终焉之神 `⛔封印` 标注均逐字不变；三 Boss 行为表与 `BOSS/CAVE_BOSS/TRUE_BOSS` 模板数据原样。未动任何掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改两个引用点（enemyAI 结算、drawBattle 标注）+ 两处注释同步，零新增依赖。
+- 验证：`node --check js/data.js js/enemyAI.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.1 专项冒烟（/tmp/jrpg_smoke_v171_healpct.mjs）**25 项断言全过**——常量导出 0.12、data/enemyAI/drawBattle 定义·导入·导出在位、源码裸字面量（`act.pct || 0.12)` / `(a.pct || 0.12)`）已从可执行代码清除且两处同读 HEAL_PCT、真实 `enemyAct` 端到端（no-pct 回血招 100/10 → 恢复 12 → hp22 且博客「恢复 12 HP」、显式 pct:0.10 仍优先生效 10→20、均不误触发胜负分支）、真实 `drawBattle` 敌方招数一览（幽冥魔王 ·恢复12%HP、no-pct 兜底 ·恢复12%HP、洞窟领主 ·恢复10%HP、终焉之神 ·恢复12%HP·⛔封印）、三 Boss 行为表显式 pct 全回归不变。
+
 ## v17.0 灯长蘑菇支线目标株数单一数据源——QUESTS/对话文案、开箱集齐判定、酿造与出售保护同读 MUSHROOM_GOAL（机制·单一口径，与 BREW_MUSHROOMS / ELITE_GATE_LV / POISON_CHANCE 同一「数据化」体系）
 
 - 【支线目标「3 株」散落四文件七处互不相关】灯长支线「帮我找回 3 株魔法蘑菇」：这个 3 硬编码在 `data.js` `QUESTS.side_mushroom.n`（任务框架目标株数，日志 `找回魔法蘑菇 X/3 株` 经 quests.objectiveText 推导）与 NPC 对话 offer/active 两处文案（`帮我找回 3 株，好吗？` / `（已找到 X/3 株）`）、`world.js` 开箱集齐转可交付判定（`mushrooms >= 3`）、`core.js` 酿造任务保护（`mushrooms <= 3`）、`shop.js` 出售任务保护与文案（`canSellMushroom`、`sellMushroom`、出售列表 blocked 判定共三处 + `集齐 3 株前不能卖！`）——四文件七处互不相关：想调支线目标（如放宽到 4 株）要改三四个文件，还极易只改判定漏改文案，集齐 4 株对话却还标「/3 株」、出售列表还说集齐 3 株前不能卖。v16.2 收口酿造配方时只动了「2 株蘑菇」的酿造侧，支线目标这同一个「3」却始终裸奔在任务/保护/文案三端。

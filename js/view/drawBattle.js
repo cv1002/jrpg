@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -196,7 +196,7 @@ export function drawBattle() {
     // 敌方招数一览（信息透明·纯显示）：与 battle.enemyAct/pickAct 读取同一份 enemy.acts 数据源，
     // 提前列清「它可能怎么做」——重击/回血/石甲，含血量触发线、回血数额(与结算同源 act.pct)、层数上限与变身后强化/封印；
     // v12.8：【回血数额透明化】此前只标「血<40%时」不标回多少——回血 = maxHP×act.pct（与 enemyAct
-    // 回血分支 Math.round(enemy.hpMax * (act.pct || 0.12)) 逐字同源，默认 0.12 同款兜底），
+    // 回血分支 Math.round(enemy.hpMax * (act.pct || HEAL_PCT)) 逐字同源，默认 HEAL_PCT 同款兜底），
     // 三 Boss 一栏看清 10%/12% 的暗影回血量，与 v12.7 变身回血比例同一「信息透明」体系。
     // 只读不改，不影响任何敌方行动判定；无 acts 的普通魔物（只会普攻）不显示，避免噪音。
     // 位置：右缘状态角标列纵向下延（y=162），不出血条下方精灵区，纯显示不改结算
@@ -206,8 +206,8 @@ export function drawBattle() {
         let s = ACT_NAME[a.type] || a.type;
         if (a.hpBelow != null) s += `·血<${Math.round((a.hpBelow || 0) * 100)}%时`;
         if (a.type === 'shield' && a.maxShield != null) s += `·至多${a.maxShield}层`;
-        // 回血数额（信息透明·纯显示）：与 battle.enemyAct 回血分支同源读 act.pct，默认 0.12 兜底同款
-        if (a.type === 'heal') s += `·恢复${Math.round((a.pct || 0.12) * 100)}%HP` + (enemy.forbid && enemy.forbid.includes('heal') ? '·⛔封印' : '');
+        // 回血数额（信息透明·纯显示）：与 battle.enemyAct 回血分支同源读 act.pct，默认 HEAL_PCT 兜底同款
+        if (a.type === 'heal') s += `·恢复${Math.round((a.pct || HEAL_PCT) * 100)}%HP` + (enemy.forbid && enemy.forbid.includes('heal') ? '·⛔封印' : '');
         if (a.w2 != null && enemy.phased) s += '·真身后强';
         return s;
       });
