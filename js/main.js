@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
-import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES } from './data.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
@@ -291,7 +291,7 @@ if (typeof window !== 'undefined') {
 }
 
 loadMap('village');
-initGame('余烬');
+initGame(DEFAULT_NAME);
 goto('title');
 drawTitle();
 // 游戏时钟（冒险时长/昼夜）由固定节拍推进，与渲染解耦

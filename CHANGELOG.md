@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v17.6 默认主角名单一数据源——newGame 兜底 / resetRun 兜底 / 启动建档同读 DEFAULT_NAME（机制·单一口径，与 POTION_CAP / SKIP_CHANCE / PHASE2_HEAL_PCT 同一「单一数据源收口」体系）
+
+- 【`'余烬'` 散落三文件四处互不相关】默认主角名 = HERO_NAMES 首位『余烬』：这个字面量硬编码在 `core.js` `newGame` 建档兜底（`name: name || '余烬'`）、`core.js` `resetRun` 无档兜底（`S.G ? S.G.name : '余烬'`）与 `main.js` 启动建档（`initGame('余烬')`）**四处**（含 data.js `HERO_NAMES=['余烬','灯见','潮']` 真源）——三文件互不引用：想改默认名（如把首位换成『灯见』）要改三个文件，还极易只改建档漏改兜底，新档默认名与无档重置名漂移；且写着「余烬」，也无从考证这数从哪来、是否就是名单首位。
+- 【修正：data.js 新增 `DEFAULT_NAME = HERO_NAMES[0]` 为唯一真源（紧随 HERO_NAMES 之后，2026-08 末档收口系列第 6 弹）】`core.js` `newGame` 兜底改读 `name || DEFAULT_NAME`、`resetRun` 兜底改读 `S.G ? S.G.name : DEFAULT_NAME`；`main.js` 启动建档改读 `initGame(DEFAULT_NAME)`。收益：改默认主角名只动 data.js `HERO_NAMES` 一处、建档/两兜底/启动四处同步，绝无第二套口径；行为逐字不变（`HERO_NAMES[0]` 仍为『余烬』，默认名原样），零 UI 回归。
+- 【零回归面】未动建档其余字段（Lv.1 / 30 金 / 3 药水 / 木剑布衣 / 火焰斩 / village 出生）与角色创建流程（`beginAdventure` 单选名单 `HERO_NAMES[S.createName]` 原样）；显式传名（`newGame('潮')`、主角创建选『灯见』/『潮』）仍优先。未动任何掉落/经验/金币/难度/成就/存档。只新增一个常量 + 改三个引用点（core 两处 + main 一处）+ 两处 import，零新增依赖。
+- 验证：`node --check js/data.js js/core.js js/main.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v17.6 专项冒烟（/tmp/jrpg_smoke_v176_defaultname.mjs）**16 项断言全过**——常量导出且 =HERO_NAMES[0]、data/core/main 定义·导入·导出在位、grep 确认可执行代码裸 `'余烬'` 已清零（仅 data.js HERO_NAMES 真源一行）、真实 `newGame()` 默认名 '余烬'/`newGame('潮')` 显式优先、`DEFAULT_NAME` 可用于 resetRun 无档兜底路径。
+
 ## v17.5 二段变身回血比例兜底单一数据源——enemyAI 变身回血结算与 drawBattle 变身角标同读 PHASE2_HEAL_PCT（机制·单一口径，与 PHASE2_AT 同一「变身模板兜底」体系）
 
 - 【`0.15` 兜底散落两处且显示对不上结算】Boss 二段变身的回血量 = `maxHP × phase.heal`（数据表显式写 heal），但变身模板**漏写 heal 时**的安全默认「恢复 15%」= `phase.heal || 0.15`：这个兜底字面量只硬编码在 `enemyAI.js enemyAct` 结算一处（`Math.round(enemy.hpMax * (phase.heal || 0.15))`），而 `view/drawBattle.js` 变身「增益数值」角标用的是 `if (p2.heal)` 直判——恰好漏写 heal 的模板（目前不存在，纯防未来）结算仍回 15%、角标却不显示「回15%」，显示对不上结算；且「2×2」两处互不引用，想调默认回血比例（如改 12%）要改结算、角标还得记得同步，极易改漏。v17.2 收口变身触发阈值（PHASE2_AT）时留下了这个同族的姊妹兜底——血量线已收口、回血比例还裸奔在结算/角标两处。
