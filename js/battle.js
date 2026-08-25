@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -140,7 +140,7 @@ function applyPoisonTick(hero) {
   hero.poison--;
   SFX.hurt();
   bind.renderHUD();
-  addFx(96, 340, '-' + damage, '#7fe08a', true);
+  addFx(FX_HERO.x, FX_HERO.y, '-' + damage, '#7fe08a', true);
   S.blog.push(`☠️ 毒素发作，${hero.name} 受到 ${damage} 点伤害！${hero.poison > 0 ? `（剩余 ${hero.poison} 回合）` : ''}`);
   if (hero.hp <= 0) {
     hero.hp = 0;
@@ -332,7 +332,7 @@ function attackMove(fin, sfx, crit, mult) {
     dmg = Math.max(1, Math.round(dmg * SHIELD_MULT));
     S.blog.push(`🪨 ${enemy.name} 的石甲挡下了部分伤害！${enemy.shield > 0 ? `（剩余 ${enemy.shield} 层）` : ''}`);
   }
-  addFx(bind.CV.width / 2, 188, '-' + dmg, enemy.isBoss ? '#ff7b7b' : '#ffd24a', dmg >= BIG_DMG || isCrit);
+  addFx(bind.CV.width / 2, FX_ENEMY.y, '-' + dmg, enemy.isBoss ? '#ff7b7b' : '#ffd24a', dmg >= BIG_DMG || isCrit);
   // 震屏触发（纯显示）：暴击或大额伤害（≥BIG_DMG，与浮字加粗同源阈值）
   if (isCrit || dmg >= BIG_DMG) S.shake = { t0: Date.now(), pow: isCrit ? 4 : 3 };
   enemy.hp -= dmg;

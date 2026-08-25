@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN, FX_ENEMY, FX_HERO } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -36,7 +36,7 @@ export function enemyAct(deps) {
     const burnDmg = Math.max(DOT_MIN, Math.round(enemy.hpMax * BURN_PCT));
     enemy.hp -= burnDmg;
     enemy.burn--;
-    addFx(bind.CV.width / 2, 188, '-' + burnDmg, '#ff8a2c', true);
+    addFx(bind.CV.width / 2, FX_ENEMY.y, '-' + burnDmg, '#ff8a2c', true);
     S.blog.push(`🔥 灼烧令 ${enemy.name} 受到 ${burnDmg} 点伤害！`);
     if (enemy.hp <= 0) {
       enemy.hp = 0;
@@ -100,14 +100,14 @@ export function enemyAct(deps) {
     bind.renderHUD();
     SFX.hurt();
     if (heavy) S.shake = { t0: Date.now(), pow: 3 }; // 重击震屏（纯显示）
-    addFx(96, 340, '-' + dmg, '#ff6b6b', true);
+    addFx(FX_HERO.x, FX_HERO.y, '-' + dmg, '#ff6b6b', true);
     S.blog.push(`${heavy ? '💥' : '👹'} ${enemy.name} 攻击你，造成 ${dmg} 伤害！${hero.defending ? '（被防御格挡！）' : ''}${heavy && enemy.phased ? '（深渊之怒！）' : ''}`);
     if (hero.defending && Math.random() < COUNTER_CHANCE) {
       const counter = Math.max(1, cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT));
       enemy.hp = Math.max(0, enemy.hp - counter);
       SFX.hit();
       bind.renderHUD();
-      addFx(bind.CV.width / 2, 188, '-' + counter, '#ffd24a', true);
+      addFx(bind.CV.width / 2, FX_ENEMY.y, '-' + counter, '#ffd24a', true);
       S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！`);
     }
     if (enemy.poison && Math.random() < enemy.poison) {
