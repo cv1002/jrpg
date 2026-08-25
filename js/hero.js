@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, PERFECTION_GOLD } from './data.js';
 import { unlockedAchievements } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -110,8 +110,8 @@ export function applyAchievements() {
     SFX.levelup();
     const def = ACH_LIST.find((x) => x.id === id);
     if (id === 'perfection') {
-      hero.gold += 999;
-      bind.boxMsg('🏆 图鉴收集完成！额外奖励 999 金币！', 4200);
+      hero.gold += PERFECTION_GOLD;
+      bind.boxMsg(`🏆 图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！`, 4200);
     } else {
       bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : ''}`, 3200);
     }

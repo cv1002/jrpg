@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.2 图鉴全收集金币奖励单一数据源——applyAchievements 的「记忆守护者」999 金 发奖/横幅文案两处同读 PERFECTION_GOLD（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL / LVL5_GOAL / LVL10_GOAL / FIRSTBLOOD_GOAL 同一「成就阈值数据化」家族——v18.7 收口 FIRSTBLOOD_GOAL 后 ACH_LIST 门槛已全部单源，本次收口的是成就触发后的专享奖励里残存的裸奔数字）
+
+- 【`2` 同分支内两处互不相关】成就「记忆守护者」图鉴全收集的专享奖励：`hero.js` `applyAchievements` 的 perfection 分支里，发奖数额（`hero.gold += 999`）与解锁横幅文案（「🏆 图鉴收集完成！额外奖励 999 金币！」）各写一份 999——同分支内互不引用：想调奖励（如改成 500 金）要改两处，还极易只改发奖漏改文案，实际到账与横幅报数悄然脱钩；且全库无任何现成源可借鉴（TRUE_BONUS_GOLD=300 是终焉之神专属、RICH_GOLD=500 是「小富翁」持有门槛，均非图鉴全收集奖励），故必须单设常量——v18.x 系列收口 ACH_LIST 判定/描述/进度的门槛后，全库与成就相关的数值中最后一段「同对象内互不引用」的裸奔数字。
+- 【修正：data.js 新增 `PERFECTION_GOLD = 999` 为唯一真源（置于 FIRSTBLOOD_GOAL 之后、药水恢复量块之前，紧邻「成就阈值」注释块）】`hero.js` `applyAchievements` 的发奖（`gold += PERFECTION_GOLD`）与横幅文案（模板串「额外奖励 ${PERFECTION_GOLD} 金币！」）两处同读此源，import 列表同步加 PERFECTION_GOLD，并加入 export。收益：调全收集奖励只改 data.js 一处、到账与横幅同步，绝无第二套口径；行为逐字不变（`PERFECTION_GOLD` 仍为 999，到账 999 金、横幅文案原样），零 UI/战斗回归。
+- 【零回归面】未动成就机制本身——`ACH_LIST` 17 条逐字不变（perfection 条判定/描述/进度本就读 BESTIARY_TARGET.length）、`unlockedAchievements` 判定流程、`hero.gold` 记账原样。未动任何掉落/经验/金币曲线/难度/技能/支线/存档。只新增一个常量 + 改 2 行（发奖/文案）+ import/export 各 1 处，零新增依赖。
+- 验证：`node --check js/data.js js/hero.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.2 专项冒烟（/tmp/jrpg_smoke_v192_perfectgold.mjs）**12 项断言全过**——`PERFECTION_GOLD` 导出且为 999、全收集时发奖到账 100+999、横幅文案与常量模板串逐字一致、文案把常量替换后无残留裸 999、未全收集不发奖且无专享横幅、hero.js 可执行代码裸 `999` 已清零（仅注释保留旧值说明）、发奖行与文案行均含常量标识符、同族成就阈值常量（RICH_GOLD/SCHOLAR_GOAL/LUCKY_GOAL/HUNT_GOAL/LVL5_GOAL/LVL10_GOAL/FIRSTBLOOD_GOAL）未动、ACH_LIST 17 条结构/描述不变、perfection 判定（全收集 true / 空图鉴 false）不受影响。
+
 ## v19.1 技能领悟等级上界单一数据源——skillXpHint「距下一技能」扫描上界改读 MAX_LEARN_LV（= LEARN_AT 最大领悟级，机制·单一口径，与 v17.7 LEARN_AT 单一数据源同一「技能表数据化」家族——v17.7 收口起始技能/升级领悟后，全库与技能领悟表相关的最后一处裸奔数值）
 
 - 【`1` 隐蔽的脱钩上界】`hero.skillXpHint` 的「距下一技能还差 N 经验」提示（状态页/技能菜单展示）用裸 `8` 作扫描上界（`for (let lv = (hero.level||1)+1; lv <= 8; lv++)`）——这个 8 是当年「最末领悟级 7 + 1」的随手值，与技能领悟表 `LEARN_AT`（`{1:火焰斩,3:冰霜击,4:治愈术,5:雷鸣,7:陨石术}`，最大领悟级 7）互不相关：想新增 9 级以上的技能（或往领悟表增删更高的领悟级）时，上界会悄然过期——新技能永远进不了「距下一技能」提示，玩家升到 9 级前毫无预告；且全库 grep 确认裸 `8` 仅此一处（其余 8 均与等级无关），但它是「写死值取代真源」的典型，收敛到领悟表推导是唯一正确归宿（v17.7 只收口了「起始技能/升级领悟」两处，此上界当时未纳入、裸 8 留存至今）。
