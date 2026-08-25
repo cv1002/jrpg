@@ -219,6 +219,32 @@ export function drawBattle() {
     }
   }
   drawHero(96, 400, 'R', hero.hurt ? { hurt: 1 } : null, BATTLE_SCALE);
+  // v19.6 蓄力金色呼吸光环（纯显示·信息透明）：此前「蓄力中」只在右上角有一行文字，
+  // 主角本体毫无可视信号——防御有盾牌角标、中毒有☠️角标、敌方灼烧/冻结/石甲各有角标，
+  // 唯独蓄力这枚关系大招的 buff 缺角色身上的反馈（敌方回合持蓄时更是只有一个角落的静态字）；
+  // 现给主角加一圈脉冲金色光环（径向渐变柔光 + 细环 + 顶部辉光点，周期 320ms 呼吸，
+  // 与盾牌/中毒角标同一 Date.now() 呼吸体系），一眼看出「这刀还蓄着 ×1.5」。
+  // 纯显示、零结算变化，复用 CTX / CHARGE_MULT（本文件已在 import 列表）零新增依赖。
+  if (hero.charge) {
+    const pulse = 0.5 + 0.5 * Math.sin((Date.now() / 320) * 6.2832);
+    const glow = CTX.createRadialGradient(96, 388, 6, 96, 388, 56);
+    glow.addColorStop(0, `rgba(255,210,74,${(0.10 + 0.18 * pulse).toFixed(3)})`);
+    glow.addColorStop(0.85, `rgba(255,210,74,${(0.06 + 0.10 * pulse).toFixed(3)})`);
+    glow.addColorStop(1, 'rgba(255,210,74,0)');
+    CTX.fillStyle = glow;
+    CTX.beginPath();
+    CTX.arc(96, 388, 56, 0, 6.2832);
+    CTX.fill();
+    CTX.strokeStyle = `rgba(255,224,120,${(0.25 + 0.25 * pulse).toFixed(3)})`;
+    CTX.lineWidth = 2;
+    CTX.beginPath();
+    CTX.arc(96, 388, 44, 0, 6.2832);
+    CTX.stroke();
+    CTX.fillStyle = `rgba(255,236,150,${(0.30 + 0.55 * pulse).toFixed(3)})`;
+    CTX.beginPath();
+    CTX.arc(96, 344, 2.6, 0, 6.2832);
+    CTX.fill();
+  }
   text(hero.name + '  Lv.' + hero.level, 200, 328, 'bold 14px');
   hpbar(200, 335, 150, hero.hp, hero.hpMax, '#e14b3f');
   hpbar(200, 350, 150, hero.mp, hero.mpMax, '#3f8fe1');

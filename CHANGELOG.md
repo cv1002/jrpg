@@ -2,7 +2,14 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
-## v19.5 威胁预警伤害估算单一数据源——battle.threatWarn 的双方基础伤害改直读 rules.cmdDmg（机制·单一口径，与 rules.atkEstimate/skillEstimate 预览、enemyAI 敌方攻击同一「伤害公式数据化」家族——预览与结算早已同源，威胁预警是最后一份手抄裸公式）
+## v19.6 蓄力金色呼吸光环——主角本体 buff 可视反馈（体验·纯显示，蓄力状态从「右上角一行静态字」升级为角色身上的脉冲光环；与盾牌/中毒/灼烧/冻结/石甲角标同一「buff 可视化」体系——防御有盾牌角标、我方中毒有 ☠️ 角标、敌方灼烧/冻结/石甲各有角标，唯独蓄力这枚关系大招的 buff 缺角色身上的反馈）
+
+- 【`1` buff 可视化不对称】战斗画面里「蓄力中」只有 drawBattle 右上角一行静态文字 `蓄力中 · 下击/技能×1.5`（且在敌方回合持蓄时该行仍在转角处、玩家视线在主角色身上）：防御有常驻盾牌角标、我方中毒有 ☠️ 角标（都带 400ms 呼吸脉冲）、敌方灼烧/冻结/石甲各有角标——唯独蓄力这一影响下一击 ×1.5 的关键 buff 没有任何角色本体信号，蓄着力进敌方回合后画面几乎看不出手里还捏着大招。
+- 【修正：`view/drawBattle.js` 在 `drawHero(96,400,…)` 之后、名字/血条之前插入 v19.6 光环块】`hero.charge` 为真时给主角叠加一圈金色呼吸光环：径向渐变柔光（圆心 96,388、半径 56、随脉冲 0.10~0.28 透明度）+ 金色细环（半径 44、描边 2px、alpha 0.25~0.50）+ 顶部辉光点（在角色头顶 344 处、alpha 0.30~0.85）——三者同用 320ms 正弦周期 `0.5+0.5*sin` 呼吸（与盾牌/中毒角标的 `Math.floor(Date.now()/400)%2` 同一 `Date.now()` 动画体系）。收益：蓄力状态一眼可感、技能菜单/敌方回合/防御中持蓄都持续可见，与右上角文字标注双保险；纯显示、零结算变化。
+- 【零回归面】未动蓄力机制本身——`battle.doCharge`（置 charge=true）、`rules.atkEstimate/skillEstimate`（×CHARGE_MULT 预览）、`battle.doAttack/doSkill`（爆发消耗）、技能菜单「·蓄力保留」/MP 行「蓄力×1.5」标注全部原样（本就同源）；`hero.charge=false` 时光环块整段跳过（守卫跳开、零绘制调用），普通战斗/未蓄力画面逐像素不变。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只改 view/drawBattle.js 一个文件、纯新增一段条件绘制，零新增依赖、零新增 export（复用已在 import 列表的 CTX / CHARGE_MULT）。
+- 验证：`node --check js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.6 专项冒烟（/tmp/jrpg_smoke_v196_chargeglow.mjs）**4 项断言全过**——CTX 桩执行光环块 `charge=true` 产生 2 次填充（柔光+辉光点）+1 次描边（细环）+3 次 arc 且全部 rgba alpha 合式（0..1）、`charge=false` 守卫跳开零绘制（原行为不变）、引用检查仅用 CTX/Date.now 零新增依赖、位置检查光环块在 drawHero 之后绘制（角色之上）。
+
+
 
 - 【`1` 同公式两处互不相关】`battle.js` `threatWarn`（开战威胁预警）手写裸公式估双方基础伤害：`playerHit = Math.max(1, hero.atkMax * 2 - enemy.def)`、`enemyHit = Math.max(1, enemy.atk * 2 - hero.defMax)`——而全库唯一伤害公式真源是 `rules.cmdDmg`（`raw = max(1, atk×2-def)`，无浮动档时恒等于裸公式）：伤害预览（`atkEstimate`/`skillEstimate`）与敌方攻击（`enemyAI.enemyAct` 的 `cmdDmg(enemy.atk, hero.defMax, mult)`）早已同读此源，唯独威胁预警是最后一份把 `atk×2-def` 抄成裸字面量的代码——想调伤害公式（如 atk×2 改 1.9）要改 rules.js + battle.js 两处，还极易只改结算漏改预警，实际伤害公式变了威胁预警却还按旧公式估、亮起的「⚠️ 强敌」悄然失真。
 - 【修正：`battle.js` `threatWarn` 两行改调 `cmdDmg(hero.atkMax, enemy.def, 1, false)` / `cmdDmg(enemy.atk, hero.defMax, 1, false)`（cmdDmg 本就在 import 列表，零新增依赖）】收益：调伤害公式只改 rules.cmdDmg 一处，预览/敌方攻击/威胁预警三端同源，绝无第二套口径；行为逐字不变——双方攻防恒为整数（baseStats 线性式、装备 atk/def 整数、MON_BASE 整数缩放、地图/困难倍率均 Math.round），`Math.round(整数)=整数`，`cmdDmg(...,1,false)` 与裸公式对任意整数输入逐值恒等。
