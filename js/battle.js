@@ -32,8 +32,11 @@ function threatWarn() {
   if (enemy.isBoss) return ' ⚠️ 强敌：旧灯卫的影子，注意补给与防御！';
   if (enemy.isRush) return '';
   const hero = S.G;
-  const playerHit = Math.max(1, hero.atkMax * 2 - enemy.def);
-  const enemyHit = Math.max(1, enemy.atk * 2 - hero.defMax);
+  // 双方基础伤害估算（单一数据源）：直读 rules.cmdDmg（raw = max(1, atk×2-def)，无浮动档即恒等于裸公式）——
+  // 与 atkEstimate/skillEstimate 预览、enemyAI 敌方攻击同读同一份伤害公式；此前此处手写「atk×2-def」裸公式，
+  // 想调伤害公式（如 atk×2 改 1.9）要改 rules.cmdDmg + 此处两处，威胁预警还会悄然与真实结算脱钩
+  const playerHit = cmdDmg(hero.atkMax, enemy.def, 1, false);
+  const enemyHit = cmdDmg(enemy.atk, hero.defMax, 1, false);
   let threat = enemy.isElite ? 1 : 0;
   if (enemy.hpMax > playerHit * 5) threat = Math.max(threat, 1);
   if (enemyHit * 2 >= hero.hpMax) threat = Math.max(threat, 2);

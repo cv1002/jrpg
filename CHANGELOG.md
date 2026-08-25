@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.5 威胁预警伤害估算单一数据源——battle.threatWarn 的双方基础伤害改直读 rules.cmdDmg（机制·单一口径，与 rules.atkEstimate/skillEstimate 预览、enemyAI 敌方攻击同一「伤害公式数据化」家族——预览与结算早已同源，威胁预警是最后一份手抄裸公式）
+
+- 【`1` 同公式两处互不相关】`battle.js` `threatWarn`（开战威胁预警）手写裸公式估双方基础伤害：`playerHit = Math.max(1, hero.atkMax * 2 - enemy.def)`、`enemyHit = Math.max(1, enemy.atk * 2 - hero.defMax)`——而全库唯一伤害公式真源是 `rules.cmdDmg`（`raw = max(1, atk×2-def)`，无浮动档时恒等于裸公式）：伤害预览（`atkEstimate`/`skillEstimate`）与敌方攻击（`enemyAI.enemyAct` 的 `cmdDmg(enemy.atk, hero.defMax, mult)`）早已同读此源，唯独威胁预警是最后一份把 `atk×2-def` 抄成裸字面量的代码——想调伤害公式（如 atk×2 改 1.9）要改 rules.js + battle.js 两处，还极易只改结算漏改预警，实际伤害公式变了威胁预警却还按旧公式估、亮起的「⚠️ 强敌」悄然失真。
+- 【修正：`battle.js` `threatWarn` 两行改调 `cmdDmg(hero.atkMax, enemy.def, 1, false)` / `cmdDmg(enemy.atk, hero.defMax, 1, false)`（cmdDmg 本就在 import 列表，零新增依赖）】收益：调伤害公式只改 rules.cmdDmg 一处，预览/敌方攻击/威胁预警三端同源，绝无第二套口径；行为逐字不变——双方攻防恒为整数（baseStats 线性式、装备 atk/def 整数、MON_BASE 整数缩放、地图/困难倍率均 Math.round），`Math.round(整数)=整数`，`cmdDmg(...,1,false)` 与裸公式对任意整数输入逐值恒等。
+- 【零回归面】未动威胁等级判定本身——`threat` 的累进规则（isElite +1 / 5 刀内可击杀 +1 / 敌方两刀致死 +2）与三档文案（「明显强于你」「有些棘手」「无」）以及 Boss/终焉/试炼的固定预警分支全部原样；`cmdDmg` 随机浮动档（rollVariance）未引入（传 false，估算仍为确定值）。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只改 2 行调用 + 扩注释，零新增 export。
+- 验证：`node --check js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.5 专项冒烟（/tmp/jrpg_smoke_v195_threat.mjs）**7 项断言全过**——200×140 整数域全扫 `cmdDmg(atk,def,1,false) ≡ max(1,atk×2-def)`、弱敌开战无「⚠️」、强敌开战出「⚠️ 强敌」、Boss 开战固定「旧灯卫的影子」预警、battle.js 可执行代码裸 `* 2 - enemy.def / * 2 - hero.defMax` 已清零（仅注释保留旧式说明）、cmdDmg 引用在位。
+
 ## v19.4 战斗石甲受击减伤标注单一数据源——drawBattle 石甲角标「受击-40%」改由 SHIELD_MULT 推导（纯显示·单一口径，与 SHIELD_MULT / 帮助页「石心魔像·石甲」/ enemyAI 凝甲提示同一「石甲数据化」家族——v15.2 收口结算/预览/凝甲提示、v16.7 收口帮助页石甲行、v19.0 收口石甲帮助页触发线/层数后，战斗画面石甲角标是 SHIELD_MULT 家族最后幸存的裸奔数值）
 
 - 【`1` 结算派生值互不相关】战斗画面敌方石甲角标 `🪨 石甲×N（受击-40%）` 的减伤百分比裸写「-40%」，而它的唯一真源实为 `SHIELD_MULT = 0.6`（石甲命中把最终伤害再 ×0.6 取整、保底 1）：同一减伤率在 `enemyAI.js` 凝甲提示（`Math.round((1 - SHIELD_MULT) * 100)%`）与 data.js 帮助页「石心魔像·石甲」（`-Math.round((1 - SHIELD_MULT) * 100)%`）早已同读此源，唯独战斗画面角标是 v15.2 收口时漏网的裸字面量——想调石甲强度（如放宽到 0.5 → 减伤 50%）要改结算/提示还极易只改结算漏改角标，实际减伤变了战斗画面却还报旧值「-40%」。
