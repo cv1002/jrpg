@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -187,7 +187,9 @@ export function drawBattle() {
     const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+' + TRUE_BONUS_GOLD + '金' : '') + (enemy.isBoss ? ' · ⚔️ 必掉圣光之剑' : '');
     const rushBonus = enemy.isRush ? `（试炼通关另奖 ${rushReward(S.G ? S.G.level : 1)} 金币，随等级提升）` : '';
     text(`战利品预览：经验 +${enemy.xp} 金币 +${enemy.gold}${wk}${res}${bonus}${rushBonus}`, ex0, 112, 'bold 13px', '#a8ff8a', 'center');
-    if ((enemy.shield || 0) > 0) text(`🪨 石甲×${enemy.shield}（受击-40%）`, 620, 112, 'bold 12px', '#c0b397', 'right');
+    // 石甲受击减伤标注（单一数据源）：与 enemyAI 凝甲提示 / 帮助页「石心魔像·石甲」同读 SHIELD_MULT——
+    // 此前裸写「受击-40%」与结算脱钩（调石甲强度会只剩这处报旧值），现改由 SHIELD_MULT 推导（0.6→40% 逐字不变）
+    if ((enemy.shield || 0) > 0) text(`🪨 石甲×${enemy.shield}（受击-${Math.round((1 - SHIELD_MULT) * 100)}%）`, 620, 112, 'bold 12px', '#c0b397', 'right');
     if ((enemy.burn || 0) > 0) {
       // 灼烧每回合扣血数值（信息透明·纯显示）：与 enemyAct 同源 max(2, round(hpMax×BURN_PCT))，一眼看清烧多少
       text(`🔥 灼烧 ${enemy.burn} · 每回合 -${Math.max(2, Math.round(enemy.hpMax * BURN_PCT))}血`, 620, 128, 'bold 12px', '#ff8a2c', 'right');

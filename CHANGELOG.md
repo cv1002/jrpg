@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.4 战斗石甲受击减伤标注单一数据源——drawBattle 石甲角标「受击-40%」改由 SHIELD_MULT 推导（纯显示·单一口径，与 SHIELD_MULT / 帮助页「石心魔像·石甲」/ enemyAI 凝甲提示同一「石甲数据化」家族——v15.2 收口结算/预览/凝甲提示、v16.7 收口帮助页石甲行、v19.0 收口石甲帮助页触发线/层数后，战斗画面石甲角标是 SHIELD_MULT 家族最后幸存的裸奔数值）
+
+- 【`1` 结算派生值互不相关】战斗画面敌方石甲角标 `🪨 石甲×N（受击-40%）` 的减伤百分比裸写「-40%」，而它的唯一真源实为 `SHIELD_MULT = 0.6`（石甲命中把最终伤害再 ×0.6 取整、保底 1）：同一减伤率在 `enemyAI.js` 凝甲提示（`Math.round((1 - SHIELD_MULT) * 100)%`）与 data.js 帮助页「石心魔像·石甲」（`-Math.round((1 - SHIELD_MULT) * 100)%`）早已同读此源，唯独战斗画面角标是 v15.2 收口时漏网的裸字面量——想调石甲强度（如放宽到 0.5 → 减伤 50%）要改结算/提示还极易只改结算漏改角标，实际减伤变了战斗画面却还报旧值「-40%」。
+- 【修正：`view/drawBattle.js` 石甲角标改拼 `` 🪨 石甲×${enemy.shield}（受击-${Math.round((1 - SHIELD_MULT) * 100)}%） ``（import 列表同步加 SHIELD_MULT）】收益：调石甲强度只改 data.js 的 SHIELD_MULT 一处、角标/凝甲提示/帮助页/结算四端同步，绝无第二套口径；行为逐字不变（`1 - 0.6`×100 = 40，文案 `（受击-40%）` 原样），零战斗/UI 回归。
+- 【零回归面】未动石甲机制本身——`battle.attackMove` 减伤（×SHIELD_MULT 取整保底 1）、`rules.withShield` 预览还原、`enemyAI` 凝甲结算与提示、帮助页标注全部原样（本就同源）；石甲角标的存在条件（`enemy.shield > 0` 才绘制）与居右位置（x=620）逐字不变。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只改 1 行角标文案 + import 1 处，零新增依赖、零新增 export。
+- 验证：`node --check js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.4 专项冒烟（/tmp/jrpg_smoke_v194_shieldbadge.mjs）**13 项断言全过**——`SHIELD_MULT` 推导 100×(1-0.6)=40、石心魔像 shield>0 时角标绘制且「受击-40%」由常量推导逐字一致（石甲×3 / 石甲×4 两档均验）、文案与历史字面量逐字相同、shield=0 不绘制（原行为）、洞窟领主石甲×2 角标联动、多类型敌人绘制无异常、源码 grep 确认 drawBattle 导入含 SHIELD_MULT 且可执行代码裸「受击-40%」已清零（仅注释保留旧值说明）。
+
 ## v19.3 幽冥魔王最大 HP 单一数据源——BOSS.bossHpMax 改读 BOSS_BASE.hpMax（机制·单一口径，与 v18.9 BOSS_BASE 同一「三强敌基础数值数据化」家族——v18.9 收口主线/试炼兵力时此值以裸 140 留存，本次收官）
 
 - 【`1` 同对象内两处互不相关】`data.js` 的 `BOSS` 常量（幽冥魔王主线版）里 `bossHpMax:140` 是硬编码字面量，而它的真源 `BOSS_BASE.hpMax` 同为 140（BOSS_BASE 就是 v18.9 单设的幽冥魔王兵力基准表）——同一数值两处互不引用：想调幽冥魔王最大 HP（如提到 160）要改两处，还极易只改 BOSS_BASE 漏改 bossHpMax（或反之），两处悄然脱钩；且该字段全库无任何读取方（主线判定/必掉圣光之剑/暴毙等全部由 `isBoss` 驱动，`bossHpMax` 仅是 BOSS 对象上的既有元数据——v18.9 专项冒烟断言「试炼版不带 bossHpMax」把它当作主线专属旗标保留校验），是 BOSS_BASE 家族里最后一处与真源脱钩的残留字面量。
