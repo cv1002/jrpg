@@ -323,6 +323,13 @@ const LEVEL_GROWTH = {
 const LEARN_AT = { 1: '火焰斩', 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术' };
 function learnsAt(lv) { return LEARN_AT[lv] || null; }
 
+// 技能领悟等级上界（单一数据源）：由 LEARN_AT 最大领悟等级推导——hero.skillXpHint 的
+// 「距下一技能还差 N 经验」扫描上界同读此源——此前上界是 hero.js 里的裸 8（= 当时最末
+// 领悟级 7 + 1）：想新增 9 级技能（或调整领悟表）时上界会悄然过期，新技能永远不被
+// 「距下一技能」提示找到。收口后 扫描上界与领悟表绝无第二套口径（v17.7 LEARN_AT
+// 单一数据源收口后，全库最后一段与技能领悟表相关的裸奔数值）
+const MAX_LEARN_LV = Math.max(...Object.keys(LEARN_AT).map(Number));
+
 // 经验曲线（单一数据源）：升级所需经验逐级 ×XP_GROW 取整——hero.grantXp 的升级结算
 // 与 hero.skillXpHint 的「距下一技能还差 N 经验」预估同读此源；新档首级所需经验与预估兜底
 // 同读 XP_INIT（core.newGame 建档 / skillXpHint 旧档缺字段兜底）。调经验曲线只改 data.js 一处，
@@ -934,5 +941,5 @@ export {
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, SHIELD_MULT, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
-  baseStats, learnsAt, withSpecies, codexTag, LEVEL_GROWTH,
+  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH,
 };

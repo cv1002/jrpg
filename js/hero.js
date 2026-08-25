@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT } from './data.js';
 import { unlockedAchievements } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -78,7 +78,9 @@ export function grantXp(hero, xp) {
 export function skillXpHint(hero) {
   if (!hero) return null;
   let next = null;
-  for (let lv = (hero.level || 1) + 1; lv <= 8; lv++) {
+  // 扫描上界读 data.js MAX_LEARN_LV（= LEARN_AT 最大领悟级，单一数据源）：
+  // 此前裸 8 与领悟表脱钩——新增更高等级技能时提示会永远扫不到
+  for (let lv = (hero.level || 1) + 1; lv <= MAX_LEARN_LV; lv++) {
     const skill = learnsAt(lv);
     if (skill && !(hero.skills || []).includes(skill)) {
       next = { name: skill, lv };
