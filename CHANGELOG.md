@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.16 开局经济/背包单一数据源——新档建档同读 START_GOLD/START_POTIONS（机制·单一口径，与 XP_INIT 同一「开局建档数值数据化」逻辑——建档行三枚数值里 XP_INIT（首级所需经验）早已数据化、唯独开局金币 30 / 生命药水 3 仍在 core.js 裸奔，本版补齐收口，与 INN_PRICE / BREW_GOLD / POTION_PRICE 同一「经济数据化」体系）
+
+- 【建档行「经验已数据化、家底仍裸奔」的 2 枚遗留数值】`core.newGame` 的开局建档行 `level:1, xp:0, xpNext: XP_INIT, gold:30, item:3, potion2:0` 里，`XP_INIT` 早已由 data.js 常量供给，惟独开局金币 `30` 与开局生命药水 `3` 仍是裸字面量（`potion2:0` 为恒零的占位字段、`level/xp` 为结构性初始值，不属经济旋钮）——全库唯一定义开局家底的这一行没有自己的名字，想调开局难度（如困难档加码 50 金、或试点「轻装开局」1 瓶药水）得在 core.js 里翻字面量，且没有任何一处能看出「开局 30 金 / 3 瓶药水」是数值设计而非随手写的数；同栖一行的 `XP_INIT` 自 v14.x 起就由 data.js 供给，唯独这两位邻居漏了数据化。
+- 【修正：data.js 在 `XP_INIT` 之后新增 `START_GOLD = 30`（新档开局金币）与 `START_POTIONS = 3`（新档开局生命药水）为唯一真源，注释说明这是建档行里 XP_INIT 的两位裸奔邻居，随原 export 块导出，零新增依赖】`core.js` 建档行改 `gold: START_GOLD, item: START_POTIONS`（import 列表同步加两常量）。收益：调开局家底只改 data.js 一处，建档与任何展示口径绝无第二套数值；行为逐字不变（`START_GOLD` 仍为 30、`START_POTIONS` 仍为 3，newGame 产出的开局状态与旧字面量逐值恒等），零开局/经济回归。
+- 【零回归面】未动建档机制本身——`level:1`、`xp:0`、`potion2:0`（灵药恒零占位）、`xpNext: XP_INIT`、木剑/布衣、出生点、起始技能 `learnsAt(1)` 全部原样；存档槽预览/`slotPreview` 只读 `hero.gold` 运行时值、不受影响。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/后续存档解析。只新增两个常量 + 改 1 处建档行 + 2 处 import + 1 处 export + 注释微调，零新增依赖。
+- 验证：`node --check js/data.js js/core.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.16 专项冒烟（/tmp/jrpg_smoke_v1916_start.mjs）**15 项断言全过**——`START_GOLD=30`/`START_POTIONS=3` 导出且与历史字面量逐值一致、`XP_INIT` 不受影响、`newGame()` 开局 gold=30/item=3/potion2=0/xpNext=20 与旧建档逐值恒等、core.js 建档行裸「gold: 30」/「item: 3」已清零（剩 0 处）且改读两常量、core.js import 与 data.js export 均含两常量。
+
 ## v19.15 UI「提示闪烁」脉冲周期单一数据源——防御/中毒角标、宝箱脉动、对话翻页指示四处同读 UI_PULSE_MS（纯显示·单一口径，与 v19.8 HIT_FB_MS 同一「UI 反馈时序数据化」家族——v19.8 收口受击反馈时长时把「盾牌/中毒角标与蓄力光环的呼吸周期」明确标为另一语义留白，本版兑现收口其中完全同型的方块波族）
 
 - 【`4` 处同语义互不相关】UI「状态/提示闪烁」的 400ms 方块波开关表达式完全相同的 `Math.floor(Date.now()/400)%2===0` 裸写三文件四处：`view/drawBattle.js` 防御（盾牌）角标闪烁、`view/drawBattle.js` 中毒角标闪烁、`view/drawWorld.js` 蘑菇宝箱金光脉动、`view/menus.js` 对话翻页 ▼ 指示闪烁——四处同值互不引用（方块波：每 400ms 切换一次亮度，亮 400ms 灭 400ms），想调整个「提示闪烁」节奏（如放慢到 500、或加快到 300）要改三个文件里的四个地方、还极易只改角标漏改宝箱脉动——U 盾角标节奏变了蘑菇宝箱还按旧速度脉，各处提示开关悄然脱钩（自家 v19.8 收口受击时长时把「盾牌/中毒角标与蓄力光环的呼吸周期」标为另一语义留白，现兑现收口其中与旧字面量逐字同型的方块波族）。注意：蓄力光环 320ms 正弦呼吸、任务问号 320ms、遇敌预警条 330ms 快闪、变身全屏闪光 `t/400` 衰减、水纹/喷泉 sine 相位 `/400` 是各自动画的独立参数，本版刻意不碰。

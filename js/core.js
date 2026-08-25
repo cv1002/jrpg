@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -18,7 +18,7 @@ function newGame(name) {
   return migrateQuests({
     name: name || DEFAULT_NAME,
     diff: 0,
-    level: 1, xp: 0, xpNext: XP_INIT, gold: 30, item: 3, potion2: 0,
+    level: 1, xp: 0, xpNext: XP_INIT, gold: START_GOLD, item: START_POTIONS, potion2: 0,
     weapon: '木剑', armor: '布衣',
     map: 'village',
     x: MAPS.village.playerStart.x,
