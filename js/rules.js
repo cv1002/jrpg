@@ -95,6 +95,17 @@ export function spawnLv(name) {
   return 1;
 }
 
+// 「强敌类敌手」判定（单一数据源·纯函数）：凡不可逃跑的 Boss 级敌人（主线魔王 /
+// 洞窟领主 / 终焉之神 / 试炼连战）都带这四个旗标其一——此前 battle.doFlee 的逃跑拦截、
+// startBattle 的重试快照、drawBattle 的名字配色与两处 isBossFlee 预判、drawMonster 的
+// Boss 形象选择共 6 处各写一份相同的 `isBoss||isTrue||isCaveBoss||isRush`，想给某类
+// 强敌加新旗标（如「可逃跑的机制怪」之外再加第五种强敌旗）要同步改六个地方；
+// 收口为一个帮身后，强敌判定只有这里一份口径。空敌/null 返回 false（与旧 `enemy &&
+// (...)` 短路一致），行为逐字不变。
+export function isBossFoe(enemy) {
+  return !!(enemy && (enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush));
+}
+
 export function canonicalName(name) {
   if (!name) return name;
   if (name === '幽冥魔王·真身' || name === '幽冥魔王 ·真身') return '幽冥魔王';

@@ -3,6 +3,7 @@
 // ============================================================
 import { S } from '../state.js';
 import { SPECIES, T } from '../data.js';
+import { isBossFoe } from '../rules.js';
 import { CTX, rr } from './canvas.js';
 import { sheets, blitFrame, SHEET_CELL16 } from './atlas.js';
 
@@ -265,7 +266,7 @@ DRAWS.true=(col,m)=>DRAWS.boss(col,m);
 const NO_SHEET = new Set(['wolf', 'snake', 'tree']);
 
 export function drawMonster(x,y,m){
-  const key=m.draw||(SPECIES[m.name]&&SPECIES[m.name].draw)||(m.isBoss||m.isTrue||m.isCaveBoss||m.isRush?'boss':'slime');
+  const key=m.draw||(SPECIES[m.name]&&SPECIES[m.name].draw)||(isBossFoe(m)?'boss':'slime');
   const s=BATTLE_SCALE*(m.isTrue?1.28:(m.isBoss||m.isCaveBoss?1.18:(m.isElite?1.08:1)));
   const sheetKey=NO_SHEET.has(key)?null:MON_SHEET[key];
   const img=sheetKey&&sheets[sheetKey];

@@ -5,7 +5,7 @@
 // ============================================================
 import { S, curMap } from './state.js';
 import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD } from './data.js';
-import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, rushReward, rollDrop } from './rules.js';
+import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -113,7 +113,7 @@ function startBattle(enemyDef) {
   startBgm('battle');
   bind.renderHUD();
   bind.drawBattle();
-  if (S.enemy.isBoss || S.enemy.isCaveBoss || S.enemy.isTrue || S.enemy.isRush) {
+  if (isBossFoe(S.enemy)) {
     const bossId = S.enemy.isTrue ? 'true' : S.enemy.isCaveBoss ? 'cave' : S.enemy.isBoss ? 'main' : 'rush';
     S.G._bossRetry = {
       hp: S.G.hp, mp: S.G.mp, item: S.G.item, potion2: S.G.potion2,
@@ -275,7 +275,7 @@ function doCharge() {
 function doFlee() {
   const hero = S.G;
   const enemy = S.enemy;
-  if (enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush) {
+  if (isBossFoe(enemy)) {
     // 气场压制：本回合行动保留——不调度敌方行动、立即释放战斗回合（回归 v2.2/v1.37 既定设计「battleBusy 释放、不调度 enemyAct」；
     // 此前误调 afterPlayer() 会让「按 4 逃跑 = 白送回合挨 Boss 打」，与指令栏 ⛔「别按 4」的提示矛盾。普通怪逃跑行为完全不变）
     S.blog.push(`⚠️ ${enemy.name} 的气场压制着你，无法逃脱！（本回合行动保留）`);

@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from '../state.js';
 import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
-import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
+import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
 import { bind } from '../bind.js';
@@ -145,7 +145,7 @@ export function drawBattle() {
   CTX.fill();
   if (enemy) {
     drawMonster(ex0, ey0, enemy);
-    text(enemy.name + '  Lv.' + enemyLv(enemy), ex0, 58, 'bold 18px', (enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush) ? '#d88bff' : '#ffd24a', 'center');
+    text(enemy.name + '  Lv.' + enemyLv(enemy), ex0, 58, 'bold 18px', isBossFoe(enemy) ? '#d88bff' : '#ffd24a', 'center');
     const er = enemy.hpMax > 0 ? enemy.hp / enemy.hpMax : 0;
     const ecol = er > 0.5 ? '#3fd06a' : (er > 0.2 ? '#e8c33a' : '#e14b3f');
     hpbar(ex0 - 110, 66, 220, enemy.hp, enemy.hpMax, ecol);
@@ -286,7 +286,7 @@ export function drawBattle() {
     const pN = hero.item || 0;
     const p2 = hero.potion2 || 0;
     const atkPrev = enemy ? `≈${atkEstimate(hero, enemy)}伤` : '';
-    const isBossFlee = !!(enemy && (enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush));
+    const isBossFlee = isBossFoe(enemy);
     // 逃跑成功率标注（单一数据源·纯显示）：读 data.js FLEE_SUCCESS（与 battle.doFlee 的随机判定同源）——
     // 此前指令栏与 help 各写一处「约60%」字面量、判定又是 battle.js 里的裸 0.6，调平衡要改三个地方；
     // 数据化后调一处三处同步，显示文案与结算绝无第二套口径
@@ -318,7 +318,7 @@ export function drawBattle() {
   // 敌方下一击伤害预估（信息透明）：与结算 cmdDmg 同公式的无浮动估算；
   // 仅在拟行动回合常驻，Boss/试炼战按招数表逐招列出（y≈395 无其他元素，纯显示不改结算）
   if (!S.skillMenuOpen) {
-    const isBossFlee = !!(enemy && (enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush));
+    const isBossFlee = isBossFoe(enemy);
     if (enemy && isBossFlee) {
       // Boss 战敌方攻击预判（信息透明·纯显示，承接 v6.3 敌招一览）：多招强敌逐一列出「普攻/重击」的期望伤害，
       // 数据源与 battle.pickAct/enemyAct 同一份 enemy.acts——重击倍率逐字同源（真身 2.3 / 平时 1.9）、

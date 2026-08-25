@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.11 强敌类敌手判定单一数据源——逃跑拦截/重试快照/名字配色/Boss 预判/Boss 形象六处同读 isBossFoe（机制·单一口径，与 v19.10 DOT_MIN 同一「战斗反馈数据化」家族——战斗/UI 里判断「是不是不可逃跑的 Boss 级敌人」这个谓词一直以同一段四旗标表达式裸写六处，是本家族里最后一处「同语义复制粘贴」的判定逻辑）
+
+- 【`6` 同语义六处互不相关】「Boss 级强敌」判定 `enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush`（视模块写作 `S.enemy.…` 或 `m.…`）裸写六处：`battle.js` `startBattle` 的开战重试快照写入条件、`doFlee` 的「无法逃脱（本回合行动保留）」拦截；`view/drawBattle.js` 敌方名字紫色配色（`#d88bff`）、指令栏 `[4]逃跑⛔` 置灰（isBossFlee）、Boss 战敌方攻击预判分支（isBossFlee）；`view/sprites.js` `drawMonster` 的 Boss 形象选择（`boss` vs `slime`）——六处同值互不引用，想给某类强敌增删旗标（如新增第五种「不可逃跑」的强敌旗、或给某 Boss 开放逃跑）要同步改六个地方，还极易只改拦截漏改配色——「按 4 被气场压制」但指令栏还显示「成功率约60%」、攻击预判走普通怪分支、形象缩成史莱姆，四处悄然脱钩。
+- 【修正：rules.js 新增 `isBossFoe(enemy)` 纯函数为唯一真源（置于 `canonicalName` 之前，注释同步说明，随既有逐一 export 方式导出）】`battle.js` 两处、`view/drawBattle.js` 三处、`view/sprites.js` 一处改读 `isBossFoe(…)`，三模块 import 列表同步加 isBossFoe。帮身 `!!(enemy && (isBoss||isTrue||isCaveBoss||isRush))` 自带 null/undefined 短路（与旧 `enemy && (…)` 恒等），调强敌判定只改 rules.js 一处、四处界面同步，绝无第二套口径；行为逐字不变（16 旗标组合全扫与旧谓词逐值恒等），零战斗/UI 回归。
+- 【零回归面】未动强敌判定本身——四旗标的含义/取值、Boss 重试快照记录范围、逃跑拦截文案、紫色名字、`[4]逃跑⛔`、Boss 攻击预判、Boss 形象全部原样。以下刻意不动：`drawBattle` 竞技场辉光的 3 旗标写（`isBoss||isTrue||isCaveBoss`，不包 isRush——试炼战无竞技场辉光是另一语义）、`drawMonster` 里 `m.isTrue?1.28:(m.isBoss||m.isCaveBoss?1.18:…)` 的分档缩放（不同旗标不同系数，不是布尔判定）。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个纯函数 + 改 6 处判定 + 3 处 import，零新增依赖、零新增数据常量。
+- 验证：`node --check js/rules.js js/battle.js js/view/drawBattle.js js/view/sprites.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.11 专项冒烟（/tmp/jrpg_smoke_v1911_bossfoe.mjs）**17 项断言全过**——`isBossFoe` 导出且为函数、16 旗标组合/null/undefined/空对象与旧谓词逐值恒等、六个调用点均改读 isBossFoe、battle/drawBattle/sprites 三文件强敌判定「四连裸谓词」已清零（rules.js 内仅帮身本体 1 处保留）、竞技场辉光 3 旗标与分档缩放两处另一语义仍独立。
+
 ## v19.10 灼烧/中毒每回合扣血下限单一数据源——结算与角标四处同读 DOT_MIN（机制·单一口径，与 v19.7 BIG_DMG / v19.8 HIT_FB_MS 同一「战斗反馈数据化」家族——持续伤害的比例（BURN_PCT 4% / POISON_PCT 5%）与回合数（POISON_TURNS）早已集中在 data.js，唯独「每回合至少扣 2 血」这个低血线钳制值是家族里最后一处裸奔数值）
 
 - 【`4` 同语义四处互不相关】持续伤害（DoT）「每回合至少扣 2 血」的钳制下限 `Math.max(2, round(hpMax×pct))` 裸写四处：`enemyAI.js` 灼烧结算、`battle.js` `applyPoisonTick` 中毒结算、`view/drawBattle.js` 灼烧角标与中毒角标——四处同值互不引用，且 DoT 的比例/回合数明明早就集中在 `BURN_PCT`/`POISON_PCT`/`POISON_TURNS`，唯独下限值游离在对象系列之外：想调 DoT 下限（如把保底 2 收紧到 1、或放宽到 3）要改四个地方，还极易只改结算漏改角标——低 HP 怪结算已扣 3、战斗角标却还标 2，界面读数与实际扣血悄然脱钩。
