@@ -334,7 +334,8 @@ function drawMinimap() {
     // 遇敌槽：色带 + 百分比读数（深底高对比，避免叠在地砖上发灰）
     // 满槽值读 data.js ENCOUNTER.full（单一数据源）：与 world.tickEncounter 累加上限/触发判定同源，调满槽只改 data.js 一处
     const encPct = Math.max(0, Math.min(ENCOUNTER.full, S.encGauge || 0));
-    const encDanger = encPct >= 70;
+    // 预警线读 data.js ENCOUNTER.warn（单一数据源）：与满槽 full 同属遇敌槽口径，调「⚠️ 危险逼近」触发临界只改 data.js 一处
+    const encDanger = encPct >= ENCOUNTER.warn;
     CTX.fillStyle = 'rgba(10,16,24,.9)';
     CTX.fillRect(mx, my + mh + 3, mw, 6);
     CTX.fillStyle = encDanger && (Math.floor(Date.now() / 330) % 2 === 0) ? '#ff8a5b' : '#e14b3f';

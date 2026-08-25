@@ -155,11 +155,13 @@ const MAPS={
   },
 };
 
-// 遇敌槽增减与满槽值（单一数据源）：world.tickEncounter 结算（累加/触发）与 view/drawWorld 小地图遇敌槽
-// （clamp 与刻度分母）同读此源——危险格 +10~18（dangerMin + [0,dangerVar) 随机）、喷泉 -25、其它可行走格 -6，
+// 遇敌槽增减与槽值（单一数据源）：world.tickEncounter 结算（累加/触发）与 view/drawWorld 小地图遇敌槽
+// （clamp 与刻度分母、预警线）同读此源——危险格 +10~18（dangerMin + [0,dangerVar) 随机）、喷泉 -25、其它可行走格 -6，
 // 满 ENCOUNTER.full（=100）必遇敌。调「满槽 100 / 整体遇敌频率」只改这一处，绝无第二套口径；
-// 小地图「⚠️ 危险逼近」的 70 线是另一语义（预警高亮），不并入本常量。
-const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 100 };
+// 预警线 ENCOUNTER.warn（=70）：小地图「⚠️ 危险逼近」高亮的读数临界值，同属于遇敌槽的口径——
+// 此前与 full 一样游离在对象之外（v19.9 收口 full 时预留「另一语义」），现一并归入，调「何时亮危险预警」
+// 也只改这一处。数值逐字不变（满槽仍 100、预警线仍 70），零遇敌/UI 回归。
+const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 100, warn: 70 };
 
 const CAVE_TREASURE = MAPS.cave.treasure;
 const INN_PRICE = 10;

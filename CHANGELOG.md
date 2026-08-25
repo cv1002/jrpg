@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.12 遇敌槽「危险逼近」预警线单一数据源——小地图高亮临界同读 ENCOUNTER.warn（机制·单一口径，与 v19.9 ENCOUNTER.full 同一「遇敌槽数据化」家族——v19.9 收口满槽 100 时在 data.js 注释里把 70 预警线明确预留为「另一语义（预警高亮），不并入本常量」，本版兑现收口）
+
+- 【`2` 处的收口】遇敌槽「⚠️ 危险逼近」预警临界值「70」此前以两种形态游离在遇敌槽口径之外：`view/drawWorld.js` 小地图的判定字面量 `encPct >= 70` + `data.js` 注释里对它的描述「70 线…不并入本常量」（注释本身即第二处提到此值的文字）。遇敌槽其余一切口径（dangerMin/dangerVar/fountain/calm/full）都已集中在 `ENCOUNTER` 对象，唯独这枚「何时向玩家亮危险预警」的读数临界是家族里最后一处游离值：想调预警灵敏度（如提前到 60%、或推迟到 85%）要改判定字面量 + 记得同步数据层注释，还极易只改界面漏改注释、让「预警线」这个概念仍然没有名字。
+- 【修正：data.js 的 `ENCOUNTER` 对象在 `full` 之后新增 `warn: 70` 为唯一真源（随原对象一同 export，零新增导出项；注释同步改写，原「不并入本常量」预留说明随收口收编）】`view/drawWorld.js` 预警判定改 `encPct >= ENCOUNTER.warn` 并补注释。收益：调预警灵敏度/整体遇敌槽读数口径只改 data.js 一处，界面判定与数据层注释同步，绝无第二套口径；行为逐字不变（`ENCOUNTER.warn` 仍为 70，预警判定与旧字面量在 encPct∈[0,100] 全扫下逐值恒等），零遇敌/UI 回归。
+- 【零回归面】未动遇敌槽机制本身——四个增减量与满槽 `full: 100` 逐字不变，`tickEncounter` 累加/触发、小地图色带与「遇敌 N%」读数、预警态闪烁 330ms 呼吸与「⚠️ 危险逼近」文案、`drawWorld` 其它 70 语义（minimap 高度等图形值）全部原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只加一个对象属性 + 改 1 处判定 + 注释微调，零新增依赖、零新增 export。
+- 验证：`node --check js/data.js js/view/drawWorld.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.12 专项冒烟（/tmp/jrpg_smoke_v1912_encwarn.mjs）**11 项断言全过**——`ENCOUNTER.warn` 导出且 = 70（与历史字面量一致）、`full` 仍 = 100、drawWorld 预警判定/注释均读 ENCOUNTER.warn、drawWorld 可执行代码裸「>= 70」已清零（剩 0 处）、data.js「不并入本常量」预留说明已随收口改写、预警判定与旧字面量 encPct∈[0,100] 全扫逐值恒等。
+
 ## v19.11 强敌类敌手判定单一数据源——逃跑拦截/重试快照/名字配色/Boss 预判/Boss 形象六处同读 isBossFoe（机制·单一口径，与 v19.10 DOT_MIN 同一「战斗反馈数据化」家族——战斗/UI 里判断「是不是不可逃跑的 Boss 级敌人」这个谓词一直以同一段四旗标表达式裸写六处，是本家族里最后一处「同语义复制粘贴」的判定逻辑）
 
 - 【`6` 同语义六处互不相关】「Boss 级强敌」判定 `enemy.isBoss || enemy.isTrue || enemy.isCaveBoss || enemy.isRush`（视模块写作 `S.enemy.…` 或 `m.…`）裸写六处：`battle.js` `startBattle` 的开战重试快照写入条件、`doFlee` 的「无法逃脱（本回合行动保留）」拦截；`view/drawBattle.js` 敌方名字紫色配色（`#d88bff`）、指令栏 `[4]逃跑⛔` 置灰（isBossFlee）、Boss 战敌方攻击预判分支（isBossFlee）；`view/sprites.js` `drawMonster` 的 Boss 形象选择（`boss` vs `slime`）——六处同值互不引用，想给某类强敌增删旗标（如新增第五种「不可逃跑」的强敌旗、或给某 Boss 开放逃跑）要同步改六个地方，还极易只改拦截漏改配色——「按 4 被气场压制」但指令栏还显示「成功率约60%」、攻击预判走普通怪分支、形象缩成史莱姆，四处悄然脱钩。
