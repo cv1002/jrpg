@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -33,7 +33,7 @@ export function enemyAct(deps) {
   hero.hurt = 1;
 
   if ((enemy.burn || 0) > 0) {
-    const burnDmg = Math.max(2, Math.round(enemy.hpMax * BURN_PCT));
+    const burnDmg = Math.max(DOT_MIN, Math.round(enemy.hpMax * BURN_PCT));
     enemy.hp -= burnDmg;
     enemy.burn--;
     addFx(bind.CV.width / 2, 188, '-' + burnDmg, '#ff8a2c', true);

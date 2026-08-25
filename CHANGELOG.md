@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.10 灼烧/中毒每回合扣血下限单一数据源——结算与角标四处同读 DOT_MIN（机制·单一口径，与 v19.7 BIG_DMG / v19.8 HIT_FB_MS 同一「战斗反馈数据化」家族——持续伤害的比例（BURN_PCT 4% / POISON_PCT 5%）与回合数（POISON_TURNS）早已集中在 data.js，唯独「每回合至少扣 2 血」这个低血线钳制值是家族里最后一处裸奔数值）
+
+- 【`4` 同语义四处互不相关】持续伤害（DoT）「每回合至少扣 2 血」的钳制下限 `Math.max(2, round(hpMax×pct))` 裸写四处：`enemyAI.js` 灼烧结算、`battle.js` `applyPoisonTick` 中毒结算、`view/drawBattle.js` 灼烧角标与中毒角标——四处同值互不引用，且 DoT 的比例/回合数明明早就集中在 `BURN_PCT`/`POISON_PCT`/`POISON_TURNS`，唯独下限值游离在对象系列之外：想调 DoT 下限（如把保底 2 收紧到 1、或放宽到 3）要改四个地方，还极易只改结算漏改角标——低 HP 怪结算已扣 3、战斗角标却还标 2，界面读数与实际扣血悄然脱钩。
+- 【修正：data.js 在 `POISON_TURNS` 之后新增 `DOT_MIN = 2` 为唯一真源（注释同步说明，随原 export 块导出，零新增导出项）】`enemyAI.js` 灼烧结算、`battle.js` 中毒结算、`view/drawBattle.js` 灼烧/中毒角标四处改读 `Math.max(DOT_MIN, …)`，三模块 import 列表同步加 DOT_MIN。收益：调 DoT 下限只改 data.js 一处、结算与角标同步，绝无第二套口径；行为逐字不变（`DOT_MIN` 仍为 2，四处下限与旧字面量逐值恒等），零战斗/UI 回归。
+- 【零回归面】未动持续伤害机制本身——`BURN_PCT`/`POISON_PCT` 比例、`POISON_TURNS` 回合数、毒蛇施毒概率 `POISON_CHANCE`、灼烧/中毒角标的 400ms 呼吸与配色全部原样；`sprites.js` 椭圆半径 `Math.max(2, …)` 与 `drawWorld.js` 小地图格子钳制 `Math.max(2, …)` 是另一语义（图形尺寸），刻意不动。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个常量 + 改 4 处下限 + 3 处 import + 1 处 export + 注释微调，零新增依赖。
+- 验证：`node --check js/data.js js/battle.js js/enemyAI.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.10 专项冒烟（/tmp/jrpg_smoke_v1910_dotmin.mjs）**13 项断言全过**——`DOT_MIN` 导出且 = 2（与历史字面量逐值一致）、四处 DoT 结算/角标均读 DOT_MIN、battle/enemyAI/drawBattle 三文件 DoT 语义裸「Math.max(2, Math.round(」已清零（仅注释保留说明）、`max(DOT_MIN, round(hpMax×pct))` 与旧字面量在 600 组全扫下逐值恒等、低 hpMax 钳制与高 hpMax 按比例语义验证。
+
 ## v19.9 遇敌槽满值单一数据源——world 累加/触发与 drawWorld 小地图同读 ENCOUNTER.full（机制·单一口径，与 v19.7 BIG_DMG / v19.8 HIT_FB_MS 同一「战斗反馈数据化」家族——遇敌槽的增减量（dangerMin/dangerVar/fountain/calm）早已集中在 data.js 的 ENCOUNTER 对象，唯独「满槽 100」这个决定遇敌触发频率的临界值是家族里最后一处裸奔数值）
 
 - 【`4` 同语义四处互不相关】遇敌槽「满槽 100」裸写四处：`world.js` `tickEncounter` 累加上限 `Math.min(100, ...)`、触发判定 `S.encGauge >= 100`、`view/drawWorld.js` 小地图遇敌槽的 clamp `Math.min(100, S.encGauge || 0)` 与刻度分母 `encPct / 100`——四处同值互不引用，且遇敌槽的增减量明明早就集中在 `ENCOUNTER` 对象（`dangerMin`/`dangerVar`/`fountain`/`calm`），唯独满槽值游离在对象之外：想调遇敌频率（如把满槽从 100 收紧到 80 让战斗更密集）要改四个地方，还极易只改累计触发（world.js）漏改小地图（drawWorld.js）——实际遇敌频率变了小地图却还按旧刻度显示，满 80% 就触发战斗但读数只走到 80% 永远到不了 100%。

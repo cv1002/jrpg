@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -192,8 +192,8 @@ export function drawBattle() {
     // 此前裸写「受击-40%」与结算脱钩（调石甲强度会只剩这处报旧值），现改由 SHIELD_MULT 推导（0.6→40% 逐字不变）
     if ((enemy.shield || 0) > 0) text(`🪨 石甲×${enemy.shield}（受击-${Math.round((1 - SHIELD_MULT) * 100)}%）`, 620, 112, 'bold 12px', '#c0b397', 'right');
     if ((enemy.burn || 0) > 0) {
-      // 灼烧每回合扣血数值（信息透明·纯显示）：与 enemyAct 同源 max(2, round(hpMax×BURN_PCT))，一眼看清烧多少
-      text(`🔥 灼烧 ${enemy.burn} · 每回合 -${Math.max(2, Math.round(enemy.hpMax * BURN_PCT))}血`, 620, 128, 'bold 12px', '#ff8a2c', 'right');
+      // 灼烧每回合扣血数值（信息透明·纯显示）：与 enemyAct 同源 max(DOT_MIN, round(hpMax×BURN_PCT))，一眼看清烧多少
+      text(`🔥 灼烧 ${enemy.burn} · 每回合 -${Math.max(DOT_MIN, Math.round(enemy.hpMax * BURN_PCT))}血`, 620, 128, 'bold 12px', '#ff8a2c', 'right');
     }
     // 敌方格斗状态角标（信息透明）：冰霜击冻结后与石甲/灼烧同列常驻，下回合敌方行动时自动解除
     if (enemy.skipNext) text('❄️ 冻结 · 下回合无法行动', 620, 144, 'bold 12px', '#8fd8ff', 'right');
@@ -278,9 +278,9 @@ export function drawBattle() {
   }
   if (hero.charge) text(`蓄力中 · 下击/技能×${CHARGE_MULT}`, 356, 322, 'bold 12px', '#ffd24a');
   if ((hero.poison || 0) > 0) {
-    // 中毒每回合扣血数值（信息透明·纯显示）：与 applyPoisonTick 同源 max(2, round(hpMax×POISON_PCT))，看清该不该净化/速战
+    // 中毒每回合扣血数值（信息透明·纯显示）：与 applyPoisonTick 同源 max(DOT_MIN, round(hpMax×POISON_PCT))，看清该不该净化/速战
     const pulse = (Math.floor(Date.now() / 400) % 2 === 0);
-    text(`☠️ 中毒 ${hero.poison} 回合 · 每回合 -${Math.max(2, Math.round(hero.hpMax * POISON_PCT))}血`, 200, 370, 'bold 12px', pulse ? '#7fe08a' : '#c0ffce');
+    text(`☠️ 中毒 ${hero.poison} 回合 · 每回合 -${Math.max(DOT_MIN, Math.round(hero.hpMax * POISON_PCT))}血`, 200, 370, 'bold 12px', pulse ? '#7fe08a' : '#c0ffce');
   }
   if (!S.battleBusy) {
     const pN = hero.item || 0;
