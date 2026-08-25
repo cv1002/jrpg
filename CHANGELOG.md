@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.8 受击视觉反馈时长单一数据源——三处裸 220 同读 HIT_FB_MS（纯显示·单一口径，与 v19.7 BIG_DMG 同一「战斗反馈数据化」家族——v19.7 收口「多大伤害算大额」后，「受击反馈持续多久」是战斗视觉反馈里最后一处同值三行互不引用的裸奔数值）
+
+- 【`3` 同语义三处互不相关】受击视觉反馈时长「220ms」裸写三处：`battle.js` `attackMove` 的敌方闪红复位 `setTimeout(..., 220)`、`enemyAI.js` `enemyAct` 的我方闪红复位 `setTimeout(..., 220)`、`view/drawBattle.js` 的震屏衰减 `/ 220`（另有注释「220ms 衰减」）——三处同值互不引用，注释都把它当「受击反馈节奏」：想调反馈时长（如放慢到 280、或收紧到 180）要改三个地方，还极易只改闪红漏改震屏——闪红已熄灭震屏却还在抖（或反之），暴击/重击的受击反馈悄然分成两套节奏。
+- 【修正：data.js 新增 `HIT_FB_MS = 220` 为唯一真源（置于 SHIELD_MULT 之后、宝箱块之前，紧邻「战斗反馈数据化」注释块，并加入 export）】`battle.js` / `enemyAI.js` 两处 `setTimeout` 改传 `HIT_FB_MS`，`drawBattle.js` 震屏衰减改 `(Date.now() - S.shake.t0) / HIT_FB_MS` 并更新注释，三模块 import 列表同步加 HIT_FB_MS。收益：调受击反馈节奏只改 data.js 一处、闪红与震屏同步，绝无第二套口径；行为逐字不变（`HIT_FB_MS` 仍为 220，三处时长与旧字面量逐值恒等），零战斗/UI 回归。
+- 【零回归面】未动受击反馈机制本身——`enemy.hurt`/`hero.hurt` 闪红帧（sprites.js 的 hurt 红色罩）、`S.anim` 受击动画、`S.shake` 的 `pow: 4/3` 震屏强度分级与衰减曲线（`t/220` 同形）、变身全屏闪光 `S.flash` 的 400ms（v16.x 变身反馈，独立语义不动）、盾牌/中毒角标与蓄力光环的 `Date.now()%400`/`/320` 呼吸周期（独立动画体系不动）全部原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个常量 + 改 3 行时长 + 3 处 import + 1 处 export + 注释微调，零新增依赖。
+- 验证：`node --check js/data.js js/battle.js js/enemyAI.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.8 专项冒烟（/tmp/jrpg_smoke_v198_hitfb.mjs）**9 项断言全过**——`HIT_FB_MS` 导出且 = 220（与历史字面量逐值一致）、三模块均 import 引用、敌方/我方闪红复位与震屏衰减三行均读 HIT_FB_MS、三处可执行代码裸「220」已清零（仅注释保留旧值说明）、行为等价校验。
+
 ## v19.7 大额伤害阈值单一数据源——attackMove 浮字加粗与震屏同读 BIG_DMG（纯显示·单一口径，与 CRIT_RATE / CRIT_MULT / FLEE_SUCCESS 同一「战斗反馈数据化」家族——v19.6 收口蓄力光环后，「多大伤害算大额」是战斗视觉反馈里最后一处同值两行互不引用的裸奔数值）
 
 - 【`1` 同函数内两行互不相关】`battle.js` `attackMove` 的「大额伤害」判定在相邻两行各写一个 `dmg >= 25`：浮字加粗（`addFx(..., dmg >= 25 || isCrit)` 传入 bold 参数）与震屏触发（`if (isCrit || dmg >= 25) S.shake = {...}`）——两行同值互不引用，注释自己都写着「≥25，与浮字加粗同阈值」：想调「多大伤害算大额」（如震屏更频繁放宽到 20、或更克制收紧到 30）要改两个地方，还极易只改震屏漏改加粗——加粗阈值与震屏阈值悄然脱钩，暴击外的中高伤要么只加粗不震、要么只震不加粗；且全库 grep 确认该「大额伤害」语义的裸 25 仅此两行。

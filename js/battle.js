@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, POISON_PCT, DEFEND_MP, TRUE_BONUS_GOLD } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, POISON_PCT, DEFEND_MP, TRUE_BONUS_GOLD } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -338,7 +338,7 @@ function attackMove(fin, sfx, crit, mult) {
   enemy.hp -= dmg;
   enemy.hurt = 1;
   S.anim = { hurt: 1, crit: isCrit };
-  setTimeout(() => { enemy.hurt = 0; S.anim = null; }, 220);
+  setTimeout(() => { enemy.hurt = 0; S.anim = null; }, HIT_FB_MS);
   fin(dmg);
 }
 

@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -106,10 +106,11 @@ export function openSkillMenu() {
 export function drawBattle() {
   CTX.imageSmoothingEnabled = false;
   CTX.clearRect(0, 0, CV.width, CV.height);
-  // 震屏（纯显示）：暴击/重击/大伤害由 battle.attackMove 与 enemyAI 设 S.shake，220ms 衰减；技能菜单不随震
+  // 震屏（纯显示）：暴击/重击/大伤害由 battle.attackMove 与 enemyAI 设 S.shake，HIT_FB_MS ms 衰减（与闪红复位
+  // 同源 data.js HIT_FB_MS，单一数据源）；技能菜单不随震
   let shx = 0, shy = 0;
   if (S.shake) {
-    const t = (Date.now() - S.shake.t0) / 220;
+    const t = (Date.now() - S.shake.t0) / HIT_FB_MS;
     if (t >= 1) S.shake = null;
     else {
       const k = (1 - t) * S.shake.pow;

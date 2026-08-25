@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -114,7 +114,7 @@ export function enemyAct(deps) {
       hero.poison = POISON_TURNS;
       S.blog.push(`☠️ ${hero.name} 中了【毒】！每回合扣血，持续 ${hero.poison} 回合`);
     }
-    setTimeout(() => { hero.hurt = 0; }, 220);
+    setTimeout(() => { hero.hurt = 0; }, HIT_FB_MS);
   }
   bind.drawBattle();
   if (hero.hp <= 0) {
