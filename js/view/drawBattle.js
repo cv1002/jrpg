@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -62,7 +62,7 @@ function drawArena() {
   }
   if (S.enemy && (S.enemy.isBoss || S.enemy.isTrue || S.enemy.isCaveBoss)) {
     const ex0 = CV.width / 2;
-    const ey0 = 248;
+    const ey0 = BATTLE_MON.y;   // 敌方本体锚点（data.js BATTLE_MON 单一数据源）：横坐标 ex0 为画布居中自描述式
     const rg = CTX.createRadialGradient(ex0, ey0, 6, ex0, ey0, 160);
     rg.addColorStop(0, S.enemy.isTrue ? 'rgba(255,210,74,.22)' : 'rgba(192,111,239,.18)');
     rg.addColorStop(1, 'rgba(0,0,0,0)');
@@ -134,14 +134,14 @@ export function drawBattle() {
     text(`🧭 试炼三连战 第 ${st}/${RUSH_BOSSES.length} 关${rushNote}`, 60, 48, 'bold 13px', '#a8ff8a');
   }
   const ex0 = CV.width / 2;
-  const ey0 = 248;
+  const ey0 = BATTLE_MON.y;   // 敌方本体锚点（data.js BATTLE_MON 单一数据源）：横坐标 ex0 为画布居中自描述式
   CTX.fillStyle = 'rgba(0,0,0,.22)';
   CTX.beginPath();
   CTX.ellipse(ex0, ey0 + 8, 128, 22, 0, 0, 7);
   CTX.fill();
   CTX.fillStyle = 'rgba(0,0,0,.18)';
   CTX.beginPath();
-  CTX.ellipse(96, 408, 76, 15, 0, 0, 7);
+  CTX.ellipse(BATTLE_HERO.x, BATTLE_HERO.y + 8, 76, 15, 0, 0, 7);  // 我方脚下阴影（BATTLE_HERO 派生）
   CTX.fill();
   if (enemy) {
     drawMonster(ex0, ey0, enemy);
@@ -219,7 +219,7 @@ export function drawBattle() {
       text(`敌方招数：${tags.join(' / ')}`, 620, 162, 'bold 11px', '#8fa8b8', 'right');
     }
   }
-  drawHero(96, 400, 'R', hero.hurt ? { hurt: 1 } : null, BATTLE_SCALE);
+  drawHero(BATTLE_HERO.x, BATTLE_HERO.y, 'R', hero.hurt ? { hurt: 1 } : null, BATTLE_SCALE);
   // v19.6 蓄力金色呼吸光环（纯显示·信息透明）：此前「蓄力中」只在右上角有一行文字，
   // 主角本体毫无可视信号——防御有盾牌角标、中毒有☠️角标、敌方灼烧/冻结/石甲各有角标，
   // 唯独蓄力这枚关系大招的 buff 缺角色身上的反馈（敌方回合持蓄时更是只有一个角落的静态字）；
@@ -228,22 +228,22 @@ export function drawBattle() {
   // 纯显示、零结算变化，复用 CTX / CHARGE_MULT（本文件已在 import 列表）零新增依赖。
   if (hero.charge) {
     const pulse = 0.5 + 0.5 * Math.sin((Date.now() / 320) * 6.2832);
-    const glow = CTX.createRadialGradient(96, 388, 6, 96, 388, 56);
+    const glow = CTX.createRadialGradient(BATTLE_HERO.x, BATTLE_HERO.y - 12, 6, BATTLE_HERO.x, BATTLE_HERO.y - 12, 56);
     glow.addColorStop(0, `rgba(255,210,74,${(0.10 + 0.18 * pulse).toFixed(3)})`);
     glow.addColorStop(0.85, `rgba(255,210,74,${(0.06 + 0.10 * pulse).toFixed(3)})`);
     glow.addColorStop(1, 'rgba(255,210,74,0)');
     CTX.fillStyle = glow;
     CTX.beginPath();
-    CTX.arc(96, 388, 56, 0, 6.2832);
+    CTX.arc(BATTLE_HERO.x, BATTLE_HERO.y - 12, 56, 0, 6.2832);
     CTX.fill();
     CTX.strokeStyle = `rgba(255,224,120,${(0.25 + 0.25 * pulse).toFixed(3)})`;
     CTX.lineWidth = 2;
     CTX.beginPath();
-    CTX.arc(96, 388, 44, 0, 6.2832);
+    CTX.arc(BATTLE_HERO.x, BATTLE_HERO.y - 12, 44, 0, 6.2832);
     CTX.stroke();
     CTX.fillStyle = `rgba(255,236,150,${(0.30 + 0.55 * pulse).toFixed(3)})`;
     CTX.beginPath();
-    CTX.arc(96, 344, 2.6, 0, 6.2832);
+    CTX.arc(BATTLE_HERO.x, BATTLE_HERO.y - 56, 2.6, 0, 6.2832);
     CTX.fill();
   }
   text(hero.name + '  Lv.' + hero.level, 200, 328, 'bold 14px');
