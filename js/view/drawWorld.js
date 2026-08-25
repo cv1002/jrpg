@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, ENCOUNTER } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { npcQuestMark } from '../quests.js';
 import { CV, CTX, rr, text } from './canvas.js';
@@ -332,12 +332,13 @@ function drawMinimap() {
     CTX.arc(mx + hero.x * sx, my + hero.y * sy, 3, 0, 7);
     CTX.fill();
     // 遇敌槽：色带 + 百分比读数（深底高对比，避免叠在地砖上发灰）
-    const encPct = Math.max(0, Math.min(100, S.encGauge || 0));
+    // 满槽值读 data.js ENCOUNTER.full（单一数据源）：与 world.tickEncounter 累加上限/触发判定同源，调满槽只改 data.js 一处
+    const encPct = Math.max(0, Math.min(ENCOUNTER.full, S.encGauge || 0));
     const encDanger = encPct >= 70;
     CTX.fillStyle = 'rgba(10,16,24,.9)';
     CTX.fillRect(mx, my + mh + 3, mw, 6);
     CTX.fillStyle = encDanger && (Math.floor(Date.now() / 330) % 2 === 0) ? '#ff8a5b' : '#e14b3f';
-    CTX.fillRect(mx, my + mh + 3, mw * (encPct / 100), 6);
+    CTX.fillRect(mx, my + mh + 3, mw * (encPct / ENCOUNTER.full), 6);
     const encLab = `遇敌 ${Math.round(encPct)}%${encDanger ? ' ⚠️ 危险逼近' : ''}`;
     CTX.font = 'bold 12px sans-serif';
     const encW = Math.max(mw, Math.ceil(CTX.measureText(encLab).width) + 16);

@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.9 遇敌槽满值单一数据源——world 累加/触发与 drawWorld 小地图同读 ENCOUNTER.full（机制·单一口径，与 v19.7 BIG_DMG / v19.8 HIT_FB_MS 同一「战斗反馈数据化」家族——遇敌槽的增减量（dangerMin/dangerVar/fountain/calm）早已集中在 data.js 的 ENCOUNTER 对象，唯独「满槽 100」这个决定遇敌触发频率的临界值是家族里最后一处裸奔数值）
+
+- 【`4` 同语义四处互不相关】遇敌槽「满槽 100」裸写四处：`world.js` `tickEncounter` 累加上限 `Math.min(100, ...)`、触发判定 `S.encGauge >= 100`、`view/drawWorld.js` 小地图遇敌槽的 clamp `Math.min(100, S.encGauge || 0)` 与刻度分母 `encPct / 100`——四处同值互不引用，且遇敌槽的增减量明明早就集中在 `ENCOUNTER` 对象（`dangerMin`/`dangerVar`/`fountain`/`calm`），唯独满槽值游离在对象之外：想调遇敌频率（如把满槽从 100 收紧到 80 让战斗更密集）要改四个地方，还极易只改累计触发（world.js）漏改小地图（drawWorld.js）——实际遇敌频率变了小地图却还按旧刻度显示，满 80% 就触发战斗但读数只走到 80% 永远到不了 100%。
+- 【修正：data.js 的 `ENCOUNTER` 对象新增 `full: 100` 为唯一真源（置于 calm 之后，注释同步说明，随原对象一同 export，零新增导出项）】`world.js` 累加上限改 `Math.min(ENCOUNTER.full, ...)`、触发判定改 `S.encGauge >= ENCOUNTER.full`；`view/drawWorld.js` import 列表加 ENCOUNTER，clamp 与刻度分母改读 `ENCOUNTER.full`。收益：调遇敌满槽/整体遇敌频率只改 data.js 一处、累计触发与小地图显示同步，绝无第二套口径；行为逐字不变（`ENCOUNTER.full` 仍为 100，累加 clamp、触发边界、小地图百分比读数与旧字面量逐值恒等），零遇敌/UI 回归。
+- 【零回归面】未动遇敌槽机制本身——四个增减量（危险格 +10~18、喷泉 -25、其它可行走格 -6）逐字不变，`tickEncounter` 触发后 `S.encGauge = 0` 复位、Boss 区域强制遇敌、`drawWorld` 小地图色带配色/「⚠️ 危险逼近」70 线（预警高亮，独立语义，注释已注明不并入本常量）/「遇敌 N%」读数全部原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只加一个对象属性 + 改 4 处引用 + 1 处 import + 注释微调，零新增依赖、零新增 export。
+- 验证：`node --check js/data.js js/world.js js/view/drawWorld.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.9 专项冒烟（/tmp/jrpg_smoke_v199_encfull.mjs）**9 项断言全过**——`ENCOUNTER.full` 导出且 = 100（与历史字面量逐值一致）、world 累加上限/触发判定与 drawWorld clamp/刻度分母四处均读 ENCOUNTER.full、world/drawWorld 遇敌槽语义裸「100」已清零（仅注释保留旧值说明）、累加 clamp 与触发边界 0..150×0..30 全扫与旧字面量逐值恒等。
+
 ## v19.8 受击视觉反馈时长单一数据源——三处裸 220 同读 HIT_FB_MS（纯显示·单一口径，与 v19.7 BIG_DMG 同一「战斗反馈数据化」家族——v19.7 收口「多大伤害算大额」后，「受击反馈持续多久」是战斗视觉反馈里最后一处同值三行互不引用的裸奔数值）
 
 - 【`3` 同语义三处互不相关】受击视觉反馈时长「220ms」裸写三处：`battle.js` `attackMove` 的敌方闪红复位 `setTimeout(..., 220)`、`enemyAI.js` `enemyAct` 的我方闪红复位 `setTimeout(..., 220)`、`view/drawBattle.js` 的震屏衰减 `/ 220`（另有注释「220ms 衰减」）——三处同值互不引用，注释都把它当「受击反馈节奏」：想调反馈时长（如放慢到 280、或收紧到 180）要改三个地方，还极易只改闪红漏改震屏——闪红已熄灭震屏却还在抖（或反之），暴击/重击的受击反馈悄然分成两套节奏。

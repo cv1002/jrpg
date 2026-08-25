@@ -190,8 +190,8 @@ function portalDest(mapName, tile) {
 
 function tickEncounter(x, y) {
   if (dangerAt(x, y)) {
-    S.encGauge = Math.min(100, S.encGauge + ENCOUNTER.dangerMin + Math.floor(Math.random() * ENCOUNTER.dangerVar));
-    if (S.encGauge >= 100) {
+    S.encGauge = Math.min(ENCOUNTER.full, S.encGauge + ENCOUNTER.dangerMin + Math.floor(Math.random() * ENCOUNTER.dangerVar));
+    if (S.encGauge >= ENCOUNTER.full) {
       S.encGauge = 0;
       startBattle(randomEncounter());
     }
