@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.3 幽冥魔王最大 HP 单一数据源——BOSS.bossHpMax 改读 BOSS_BASE.hpMax（机制·单一口径，与 v18.9 BOSS_BASE 同一「三强敌基础数值数据化」家族——v18.9 收口主线/试炼兵力时此值以裸 140 留存，本次收官）
+
+- 【`1` 同对象内两处互不相关】`data.js` 的 `BOSS` 常量（幽冥魔王主线版）里 `bossHpMax:140` 是硬编码字面量，而它的真源 `BOSS_BASE.hpMax` 同为 140（BOSS_BASE 就是 v18.9 单设的幽冥魔王兵力基准表）——同一数值两处互不引用：想调幽冥魔王最大 HP（如提到 160）要改两处，还极易只改 BOSS_BASE 漏改 bossHpMax（或反之），两处悄然脱钩；且该字段全库无任何读取方（主线判定/必掉圣光之剑/暴毙等全部由 `isBoss` 驱动，`bossHpMax` 仅是 BOSS 对象上的既有元数据——v18.9 专项冒烟断言「试炼版不带 bossHpMax」把它当作主线专属旗标保留校验），是 BOSS_BASE 家族里最后一处与真源脱钩的残留字面量。
+- 【修正：`BOSS` 构造行改为 `bossHpMax: BOSS_BASE.hpMax`（同文件同作用域，直接可取）】收益：调幽冥魔王最大 HP 只改 data.js 的 BOSS_BASE.hpMax 一处，bossHpMax 自动跟随，绝无第二套口径；行为逐字不变（现两值同为 140，合并后对象逐键逐值不变——专项冒烟 17 键逐键比对通过），零 UI/战斗回归。
+- 【零回归面】未动战斗机制本身——`isBoss` 驱动的全部主线判定（战前威胁/徽记/必掉圣光之剑/bossDefeated/banner）、`rules.js` `BOSS_DEFS` 直读 BOSS、`world.js` 祭坛 `deep(BOSS)` 遇敌、`SPECIES['幽冥魔王']` 经 withSpecies 并入的 phase2/acts/resist/tag/lv 全部原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只改 1 行构造表达式（+3 行注释说明），零新增依赖、零新增 export（BOSS_BASE 仍不对外导出）。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.3 专项冒烟（/tmp/jrpg_smoke_v193_bosshpmax.mjs）**13 项断言全过**——`BOSS.bossHpMax`=140 且与 `BOSS.hpMax` 恒等（同源推导、永不漂移）、合并后 17 键逐键与旧字面量一致（含 SPECIES 并入的 lv/acts/phase2）、试炼复刻 RUSH_BOSSES[0] 与 CAVE_BOSS/TRUE_BOSS 均不带 bossHpMax（v18.9 契约不变）、`isBoss` 专属旗标保留、phase2 原样并入、构造行可执行代码引 `BOSS_BASE.hpMax` 且裸 `bossHpMax:140` 已清零（仅注释保留旧值说明）。
+
 ## v19.2 图鉴全收集金币奖励单一数据源——applyAchievements 的「记忆守护者」999 金 发奖/横幅文案两处同读 PERFECTION_GOLD（机制·单一口径，与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL / HUNT_GOAL / LVL5_GOAL / LVL10_GOAL / FIRSTBLOOD_GOAL 同一「成就阈值数据化」家族——v18.7 收口 FIRSTBLOOD_GOAL 后 ACH_LIST 门槛已全部单源，本次收口的是成就触发后的专享奖励里残存的裸奔数字）
 
 - 【`2` 同分支内两处互不相关】成就「记忆守护者」图鉴全收集的专享奖励：`hero.js` `applyAchievements` 的 perfection 分支里，发奖数额（`hero.gold += 999`）与解锁横幅文案（「🏆 图鉴收集完成！额外奖励 999 金币！」）各写一份 999——同分支内互不引用：想调奖励（如改成 500 金）要改两处，还极易只改发奖漏改文案，实际到账与横幅报数悄然脱钩；且全库无任何现成源可借鉴（TRUE_BONUS_GOLD=300 是终焉之神专属、RICH_GOLD=500 是「小富翁」持有门槛，均非图鉴全收集奖励），故必须单设常量——v18.x 系列收口 ACH_LIST 判定/描述/进度的门槛后，全库与成就相关的数值中最后一段「同对象内互不引用」的裸奔数字。

@@ -641,7 +641,10 @@ const BOSS_BASE={name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,color:'#a03fd
 const CAVE_BOSS_BASE={name:'洞窟领主',hp:110,hpMax:110,atk:16,def:10,color:'#3f6b9f'};
 const TRUE_BOSS_BASE={name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,color:'#f0c040'};
 
-const BOSS=withSpecies({...BOSS_BASE,xp:150,gold:300,isBoss:true,bossHpMax:140});
+const BOSS=withSpecies({...BOSS_BASE,xp:150,gold:300,isBoss:true,bossHpMax:BOSS_BASE.hpMax});
+//          ↑ bossHpMax 由 BOSS_BASE.hpMax 推导（单一数据源）：v18.9 收口主线/试炼兵力时此值以裸 140 留存、
+//          全库亦无任何读取方（仅 isBoss 驱动主线判定），是 BOSS_BASE 家族最后一处与真源脱钩的残留字面量——
+//          调幽冥魔王最大 HP 只需改 BOSS_BASE.hpMax，bossHpMax 自动跟随；行为逐字不变（现两值同为 140）
 const CAVE_BOSS=withSpecies({...CAVE_BOSS_BASE,xp:120,gold:200,isElite:true,isCaveBoss:true});
 const TRUE_BOSS=withSpecies({...TRUE_BOSS_BASE,xp:400,gold:600,isTrue:true,isElite:true});
 // 无字回廊中段精英（Fire Golem CC0 素材）：双徽记开门后的守门考验
