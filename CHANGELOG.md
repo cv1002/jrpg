@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.17 遇敌预警条快闪周期单一数据源——小地图「⚠️ 危险逼近」红色预警条的 330ms 快闪开关同读 ENCOUNTER.warnFlash（纯显示·单一口径，与 v19.9 ENCOUNTER.full / v19.12 ENCOUNTER.warn 同一「遇敌槽数据化」家族——v19.12 收口 70 预警线时把「预警态闪烁 330ms 呼吸」明确标为家族留白，是 ENCOUNTER 对象之外最后一枚游离的遇敌槽读数可视反馈数值）
+
+- 【`1` 处可执行调用点 + 注释双重留白的收口】遇敌槽「⚠️ 危险逼近」红色预警条的快闪开关周期「330」此前以裸字面量游离在遇敌槽口径之外：`view/drawWorld.js` 小地图的 `Math.floor(Date.now()/330)%2===0` 判定（可执行代码 1 处）+ data.js UI_PULSE_MS 注释对它「遇敌预警条 330ms…刻意不动」的留白标注（文字第 2 处）。遇敌槽其余一切读数口径（dangerMin/dangerVar/fountain/calm/full/warn）都已集中在 `ENCOUNTER` 对象，唯独这枚「预警条以多快的节奏快闪」是家族里最后一处游离值：想调预警闪烁节奏（如放慢到 450、或换成 250 更快闪）要改判定字面量 + 记得同步数据层注释，还极易只改界面漏改注释、让「预警闪烁」这个概念仍然没有名字。
+- 【修正：data.js 的 `ENCOUNTER` 对象在 `warn` 之后新增 `warnFlash: 330`（红色预警条快闪开关周期，单位 ms）为唯一真源（随原对象一同 export，零新增导出项；对象注释补写 warnFlash 语义与家族收编说明，UI_PULSE_MS 注释里旧「遇敌预警条 330ms…刻意不动」的留白文字改写为已收口说明）】`view/drawWorld.js` 预警快闪判定改 `Math.floor(Date.now() / ENCOUNTER.warnFlash) % 2 === 0` 并补注释；`ENCOUNTER` 已在 drawWorld import 列表（v19.9/v19.12 已导入），零新增依赖。收益：调预警闪烁节奏只改 data.js 一处，界面判定与数据层注释同步，绝无第二套口径；行为逐字不变（`ENCOUNTER.warnFlash` 仍为 330，快闪开关与旧字面量在 t∈[0,2000] 全扫下逐值恒等），零遇敌/UI 回归。
+- 【零回归面】未动遇敌槽机制本身——四个增减量、满槽 `full: 100`、预警线 `warn: 70` 逐字不变，`tickEncounter` 累加/触发、小地图色带与「遇敌 N%」读数、预警态配色（`#ff8a5b`/`#e14b3f`）与「⚠️ 危险逼近」文案全部原样；蓄力光环 320ms 正弦呼吸、任务问号 320ms 方块波、变身闪光 `t/400` 衰减、水纹 sine 相位 `/400` 各自动画独立参数一概不动。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只加一个对象成员 + 改 1 处判定 + 注释微调，零新增依赖、零新增 export、零新增 import。
+- 验证：`node --check js/data.js js/view/drawWorld.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.17 专项冒烟（/tmp/jrpg_smoke_v1917_encflash.mjs）**14 项断言全过**——`ENCOUNTER.warnFlash=330` 导出且与历史字面量一致、对象定义与逐成员核对（dangerMin 10/dangerVar 9/fountain -25/calm -6/full 100/warn 70 不受影响）、drawWorld 可执行快闪调用点 1 处读该源、裸「Date.now()/330」已清零（剩 0 处）、快闪表达式与旧字面量 t∈[0,2000] 全扫逐值恒等、UI_PULSE_MS 注释留白说明已随收口改写、蓄力光环 320 正弦/任务问号 320/变身闪光 t/400 另一语义仍在。
+
 ## v19.16 开局经济/背包单一数据源——新档建档同读 START_GOLD/START_POTIONS（机制·单一口径，与 XP_INIT 同一「开局建档数值数据化」逻辑——建档行三枚数值里 XP_INIT（首级所需经验）早已数据化、唯独开局金币 30 / 生命药水 3 仍在 core.js 裸奔，本版补齐收口，与 INN_PRICE / BREW_GOLD / POTION_PRICE 同一「经济数据化」体系）
 
 - 【建档行「经验已数据化、家底仍裸奔」的 2 枚遗留数值】`core.newGame` 的开局建档行 `level:1, xp:0, xpNext: XP_INIT, gold:30, item:3, potion2:0` 里，`XP_INIT` 早已由 data.js 常量供给，惟独开局金币 `30` 与开局生命药水 `3` 仍是裸字面量（`potion2:0` 为恒零的占位字段、`level/xp` 为结构性初始值，不属经济旋钮）——全库唯一定义开局家底的这一行没有自己的名字，想调开局难度（如困难档加码 50 金、或试点「轻装开局」1 瓶药水）得在 core.js 里翻字面量，且没有任何一处能看出「开局 30 金 / 3 瓶药水」是数值设计而非随手写的数；同栖一行的 `XP_INIT` 自 v14.x 起就由 data.js 供给，唯独这两位邻居漏了数据化。

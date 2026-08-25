@@ -338,7 +338,8 @@ function drawMinimap() {
     const encDanger = encPct >= ENCOUNTER.warn;
     CTX.fillStyle = 'rgba(10,16,24,.9)';
     CTX.fillRect(mx, my + mh + 3, mw, 6);
-    CTX.fillStyle = encDanger && (Math.floor(Date.now() / 330) % 2 === 0) ? '#ff8a5b' : '#e14b3f';
+    // 预警闪烁节奏读 data.js ENCOUNTER.warnFlash（单一数据源）：与满槽 full / 预警线 warn 同属遇敌槽口径，调「⚠️ 危险逼近」快闪节奏只改 data.js 一处
+    CTX.fillStyle = encDanger && (Math.floor(Date.now() / ENCOUNTER.warnFlash) % 2 === 0) ? '#ff8a5b' : '#e14b3f';
     CTX.fillRect(mx, my + mh + 3, mw * (encPct / ENCOUNTER.full), 6);
     const encLab = `遇敌 ${Math.round(encPct)}%${encDanger ? ' ⚠️ 危险逼近' : ''}`;
     CTX.font = 'bold 12px sans-serif';

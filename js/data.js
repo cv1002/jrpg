@@ -156,12 +156,16 @@ const MAPS={
 };
 
 // 遇敌槽增减与槽值（单一数据源）：world.tickEncounter 结算（累加/触发）与 view/drawWorld 小地图遇敌槽
-// （clamp 与刻度分母、预警线）同读此源——危险格 +10~18（dangerMin + [0,dangerVar) 随机）、喷泉 -25、其它可行走格 -6，
+// （clamp 与刻度分母、预警线、预警闪烁）同读此源——危险格 +10~18（dangerMin + [0,dangerVar) 随机）、喷泉 -25、其它可行走格 -6，
 // 满 ENCOUNTER.full（=100）必遇敌。调「满槽 100 / 整体遇敌频率」只改这一处，绝无第二套口径；
 // 预警线 ENCOUNTER.warn（=70）：小地图「⚠️ 危险逼近」高亮的读数临界值，同属于遇敌槽的口径——
 // 此前与 full 一样游离在对象之外（v19.9 收口 full 时预留「另一语义」），现一并归入，调「何时亮危险预警」
-// 也只改这一处。数值逐字不变（满槽仍 100、预警线仍 70），零遇敌/UI 回归。
-const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 100, warn: 70 };
+// 也只改这一处。预警闪烁 ENCOUNTER.warnFlash（=330，单位 ms）：红色预警条的快闪开关周期
+// Math.floor(Date.now()/warnFlash)%2，是遇敌槽读数可视反馈里最后一块裸奔数值（v19.9 收口 full、
+// v19.12 收口 warn 后本家族最后一员——v19.12/v19.15 条目与 UI_PULSE_MS 注释都把它明确标为
+// 「预警态闪烁 330ms」留白），现一并归入，调「⚠️ 危险逼近」快闪节奏也只改这一处。
+// 数值逐字不变（满槽仍 100、预警线仍 70、预警闪烁仍 330），零遇敌/UI 回归。
+const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 100, warn: 70, warnFlash: 330 };
 
 const CAVE_TREASURE = MAPS.cave.treasure;
 const INN_PRICE = 10;
@@ -453,7 +457,8 @@ const HIT_FB_MS = 220;
 // 300）要改四处、还极易只改角标漏改宝箱脉动，各处开关悄然脱钩；
 // 数据化后 闪烁节奏 绝无第二套口径（与 HIT_FB_MS 震屏/闪红同一「UI 反馈时序数据化」体系——v19.8 收口
 // 受击时长时把「盾牌/中毒角标与蓄力光环的呼吸周期」明确标为另一语义留白，本版收口其中的方块波族；
-// 蓄力光环 320ms 正弦呼吸、任务问号 320ms、遇敌预警条 330ms、变身闪光 t/400 衰减、水纹 sine 相位
+// 蓄力光环 320ms 正弦呼吸、任务问号 320ms、遇敌预警条 ENCOUNTER.warnFlash（=330，已收口进 ENCOUNTER
+// 家族，见上）、变身闪光 t/400 衰减、水纹 sine 相位
 // /400 是各自动画的独立参数，刻意不动）
 const UI_PULSE_MS = 400;
 // 受击反馈落点（单一数据源）：战斗「伤害浮字/爆裂粒子」落在屏幕哪里——battle.attackMove、battle 中毒
