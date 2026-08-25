@@ -579,6 +579,13 @@ const SPECIES={
     acts:[{type:'attack',w:40},{type:'heavy',w:35,w2:50},{type:'heal',w:25,hpBelow:0.4,pct:0.12}],
     phase2:{at:0.5,name:'终焉之神·祸乱形态',color:'#ff5b8a',atk:7,def:3,heal:0.15,forbid:['heal']}},
 };
+// 石心魔像石甲招数（单一数据源）：帮助页「石心魔像·石甲」标注与战斗招数一览（view/drawBattle.js 行招表渲染）
+// 同读 SPECIES['石心魔像'].acts 的 shield 招——此前帮助页把「血量过半后」「至多 3 层」写成裸字面量，
+// drawBattle 却早已动态读 a.hpBelow / a.maxShield（渲染「·血<50%时」「·至多3层」），帮助页与行招表两处
+// 互不相关：想调石甲强度（如层数上限提到 4、触发线改 0.4）要改两处、还极易改漏让帮助页对不上行招表；
+// 数据化后 帮助页标注、招数一览 绝无第二套口径（与 SHIELD_MULT / HEAL_PCT / PHASE2_AT 同一
+// 「行招表数据化」体系）
+const GOLEM_SHIELD_ACT = (SPECIES['石心魔像'].acts || []).find(a => a.type === 'shield') || {};
 
 const MON_BASE=[
   // w(lv) 遇敌权重（单一数据源）：encounter.encounterWeight 与历史公式逐字一致；
@@ -867,7 +874,7 @@ const HELP_PAGES=[
     ['毒蛇中毒','毒蛇有 ' + Math.round(POISON_CHANCE * 100) + '% 概率使你中毒：每回合扣血（约' + Math.round(POISON_PCT * 100) + '%最大HP）持续 ' + POISON_TURNS + ' 回合'],
     ['中毒自救','治愈术可解毒；中毒不夺行动，也可速战或喝药'],
     ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
-    ['石心魔像·石甲','血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
+    ['石心魔像·石甲','血量低至 ' + Math.round((GOLEM_SHIELD_ACT.hpBelow || 0) * 100) + '% 后凝结石甲（至多 ' + GOLEM_SHIELD_ACT.maxShield + ' 层）：每层使下一次攻击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
     ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
     ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水 · ' + Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
     ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币(' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + ')·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水；城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],

@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.0 帮助页「石心魔像·石甲」标注单一数据源——「至多 3 层」「血量过半后」改读 SPECIES 石心魔像 shield 招（机制·单一口径，与 SHIELD_MULT / HEAL_PCT / PHASE2_AT 同一「行招表数据化」家族——v14.9 收口 SHIELD_MULT 时声明保持原样的裸奔文案，本次收口收尾）
+
+- 【`2` 帮助页一行内两处互不相关】帮助页「石心魔像·石甲」条：`血量过半后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -40%`——其中「血量过半后」（= hpBelow 0.5）与「至多 3 层」（= maxShield 3）是裸字面量，而这两个数值的真正唯一真源是 `SPECIES['石心魔像'].acts` 的 shield 招（`maxShield:3,hpBelow:0.5`），且 `view/drawBattle.js` 的「敌方招数一览」早已动态读 `a.hpBelow`/`a.maxShield` 渲染「·血<50%时」「·至多3层」——帮助页与行招表两处互不相关：想调石甲强度（如层数上限提到 4、触发线改 0.4）要改两处、还极易只改行招表漏改帮助页，行招表改了帮助页却还报旧值；且该条内的 -40% 部分早已读 SHIELD_MULT，唯独触发线与层数是残存裸奔数值（v14.9 收口 SHIELD_MULT 时声明「此处保持原样」、v18.9 之后行招表数据化家族的最后一块短板）。
+- 【修正：data.js 新增 `GOLEM_SHIELD_ACT = (SPECIES['石心魔像'].acts || []).find(a => a.type === 'shield') || {}` 为唯一真源（置于 SPECIES 之后、MON_BASE 之前，独立注释块）；帮助页「石心魔像·石甲」句改读模板串 `血量低至 ${hpBelow×100}% 后凝结石甲（至多 ${maxShield} 层）：每层使下一次攻击伤害 -40%`】收益：调石甲触发线/层数只改 SPECIES 石心魔像 shield 招一处，帮助页与战斗招数一览同步，绝无第二套口径；行为逐字不变（hpBelow=0.5 → 「血量低至 50% 后」、maxShield=3 → 「至多 3 层」，与旧文案「血量过半后…（至多 3 层）」语义逐字一致、数值逐字相同），零 UI/战斗回归。drawBattle 招数一览本就动态读行招表、无需改动。
+- 【零回归面】未动石甲机制本身——`validator.enemyAct` 凝甲（`maxShield` 封顶、`hpBelow` 触发线）、`battle.attackMove` 石甲减伤（SHIELD_MULT）、`rules.withShield` 预览、`drawBattle` 石甲角标/招数一览全部原样（本就与行招表同源）。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个派生常量 + 改 1 行帮助页文案，零新增依赖、零新增 export（GOLEM_SHIELD_ACT 仅为装载期渲染帮助页所用，无需对外导出）。
+- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.0 专项冒烟（/tmp/jrpg_smoke_v19_shieldact.mjs）**6 项断言全过**——帮助页存在「石心魔像·石甲」条目、SPECIES 石心魔像 shield 招 maxShield=3 / hpBelow=0.5、渲染文本与历史文案「血量低至 50% 后凝结石甲（至多 3 层）：每层使下一次攻击伤害 -40%」逐字一致、改表（maxShield=4/hpBelow=0.4）后重装载帮助页文案联动为「40%/4 层」（证明真源联动）、源码可执行代码无裸「至多 3 层」/「血量过半后」（仅注释保留旧值说明）。
+
 ## v18.9 三强敌基础数值单一数据源——主线 BOSS/CAVE_BOSS/TRUE_BOSS 与试炼场 RUSH_BOSSES 的兵力六项同读 BOSS_BASE / CAVE_BOSS_BASE / TRUE_BOSS_BASE（机制·单一口径，与 RICH_GOLD / SAVE_SLOTS / POTION_CAP 同一「数值数据化」家族——v18.8 存档槽收口后，三强敌「主线一份 + 试炼一份」的两处兵力是当前最显眼的同值重复）
 
 - 【`3` × 两处互不相关】三强敌（幽冥魔王 hp:140·atk:15·def:6、洞窟领主 hp:110·atk:16·def:10、终焉之神 hp:260·atk:22·def:13）的兵力数值各硬编码在两处：主线常量 `BOSS` / `CAVE_BOSS` / `TRUE_BOSS` 与试炼场复刻 `RUSH_BOSSES` 数组（试炼三连战的第 1/2/3 关就是这三强敌的原样兵力，仅 xp/gold 另计、加 isRush）——同一数值两处互不引用：想调强敌兵力（如把幽冥魔王 atk 提到 17）要改两处，还极易只改主线漏改试炼，两处强度悄然脱钩；且全库无任何现成源可借鉴（`SPECIES` 只存形态/弱点/动作等形态数据、`ELITE_GOLEM` 是独立的精英基准，均不含三强敌兵力），故必须单设基准表。
