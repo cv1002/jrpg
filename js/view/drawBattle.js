@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -254,7 +254,7 @@ export function drawBattle() {
   text(`${Math.max(0, Math.round(hero.hp))}/${hero.hpMax}`, 356, 345, 'bold 12px', '#e14b3f');
   text(`${Math.max(0, Math.round(hero.mp))}/${hero.mpMax}`, 356, 360, 'bold 12px', '#3f8fe1');
   if (hero.defending && S.battleBusy) {
-    const pulse = (Math.floor(Date.now() / 400) % 2 === 0);
+    const pulse = (Math.floor(Date.now() / UI_PULSE_MS) % 2 === 0);
     CTX.save();
     CTX.translate(428, 345);
     CTX.rotate(-0.18);
@@ -279,7 +279,7 @@ export function drawBattle() {
   if (hero.charge) text(`蓄力中 · 下击/技能×${CHARGE_MULT}`, 356, 322, 'bold 12px', '#ffd24a');
   if ((hero.poison || 0) > 0) {
     // 中毒每回合扣血数值（信息透明·纯显示）：与 applyPoisonTick 同源 max(DOT_MIN, round(hpMax×POISON_PCT))，看清该不该净化/速战
-    const pulse = (Math.floor(Date.now() / 400) % 2 === 0);
+    const pulse = (Math.floor(Date.now() / UI_PULSE_MS) % 2 === 0);
     text(`☠️ 中毒 ${hero.poison} 回合 · 每回合 -${Math.max(DOT_MIN, Math.round(hero.hpMax * POISON_PCT))}血`, 200, 370, 'bold 12px', pulse ? '#7fe08a' : '#c0ffce');
   }
   if (!S.battleBusy) {

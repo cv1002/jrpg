@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, ENCOUNTER } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, ENCOUNTER, UI_PULSE_MS } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { npcQuestMark } from '../quests.js';
 import { CV, CTX, rr, text } from './canvas.js';
@@ -292,7 +292,7 @@ function minimapColor(tile, hero, x, y) {
   const pulseChest = tile === TY.CHEST && hero
     && ((hero.quests && hero.quests.side_mushroom === 'active') || hero.caveBoss)
     && !hero.chests.has(x + ',' + y);
-  if (pulseChest) return (Math.floor(Date.now() / 400) % 2 === 0) ? '#ffd24a' : '#8a5a00';
+  if (pulseChest) return (Math.floor(Date.now() / UI_PULSE_MS) % 2 === 0) ? '#ffd24a' : '#8a5a00';
   return '#2f6b2f';
 }
 
