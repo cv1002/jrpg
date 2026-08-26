@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.20 药水/灵药恢复量公式单一数据源——结算与战斗预览共读 rules.potionRestore/elixirRestore（机制·单一口径，与 v19.5 threatWarn 同一「预览-结算同公式」家族——v19.5 收口了「我方攻击预览」后，「[3]药水/🧪灵药恢复多少」是战斗提示里最后一组结算量由视图层自算的裸公式）
+
+- 【`2` 处同公式互不相关】药水/灵药「恢复量」的计算公式裸写两处：`hero.js takePotion`（**结算**——core.js usePotion 与 battle.doItem 两条消费路径都经它出账）里 `Math.round(hpMax×POTION_HP_PCT)+POTION_HP_FLAT`（普通药水）、`Math.round(hpMax×ELIXIR_HP_PCT)+ELIXIR_HP_FLAT` 与 `Math.round(mpMax×ELIXIR_MP_PCT)`（高级灵药）；`view/drawBattle.js` 战斗指令栏「[3]恢复：🍖+…HP 🧪+…HP/+…MP」**预览**把同一公式再写一遍——两处同值互不引用，想改恢复模型（如改成比例+等级加成、或把舍入从 round 改 floor）要改两个文件四行，还极易只改结算漏改预览，界面标「+N HP」实际只回 M HP 悄然对不上（与 v19.5 threatWarn 收口前同款黑盒，这次轮到恢复量）。
+- 【修正：rules.js 新增 `potionRestore(hero)`（返回 `{h}`）与 `elixirRestore(hero)`（返回 `{h,m}`）两个纯函数为唯一公式源（与 cmdDmg/atkEstimate/skillEstimate 同一「无副作用计算」家族，data.js POTION_*/ELIXIR_* 常量只在 rules.js 一处被消费）】`hero.js takePotion` 与 `view/drawBattle.js` 预览同时改调这两函数（drawBattle 的 rules import 原先只含 cmdDmg/atkEstimate/skillEstimate/rushReward/canonicalName/isBossFoe，追加两函数）。收益：改恢复公式只改 rules.js 一处，结算与预览永远同一份公式、绝无第二套口径——与 v19.5「预览与结算同公式」完全同一思路，只是这次收的是恢复量而不是伤害量。数值逐字不变（旧公式全等移入 home 函数），零恢复量回归。
+- 【零回归面】未动药水机制本身——`takePotion` 的消耗顺序（灵药优先/普通药水只在掉血时用）、`Math.min(hpMax, …)` 夹取、`potionAvailability` 满状态判定、core.usePotion 的提示文案、battle.doItem 调用顺序全部原样；data.js `POTION_HP_PCT=0.5`/`POTION_HP_FLAT=8`/`ELIXIR_HP_PCT=0.8`/`ELIXIR_HP_FLAT=20`/`ELIXIR_MP_PCT=0.4` 五个常量逐字未动；menus.js 酿造页与 shop.js 商店价签显示的仍是配方百分比/固定加成（`Math.round(POTION_HP_PCT*100)%HP +FLAT` 之类），它们是常量文案而非按当前等级算的恢复量，保持原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增两个纯函数 + 改 6 行调用 + 3 处 import 整理 + 注释微调，零新增依赖。
+- 验证：`node --check js/rules.js js/hero.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.20 专项冒烟（/tmp/jrpg_smoke_v1920_potion.mjs）**24 项断言全过**——`potionRestore/elixirRestore` 导出、data.js 五常量逐值未动、全扫 hpMax∈[1,9999]×mpMax∈[1,333] 与旧公式逐值恒等（含 round 半入 53.5→54 / 85.6→86 精确值）、takePotion 灵药优先/恢复量逐值一致/HP 夹取到上限/普通药水只回 HP 且 MP 原样/药水不足返回 null、hero.js 与 drawBattle.js 裸公式清零且改读两函数、两模块 data.js import 不再含 POTION_/ELIXIR_ 常量、rules.js import 含之。
+
 ## v19.19 传送门「面向提示」锁定判定单一数据源——锁定的村门从「毫无反馈的死区」变成「⛔ 门锁着」（体验·单一口径，与 v19.17 ENCOUNTER.warnFlash 同源不同家族——本版收口的是地图传送门锁定判定在视图层的裸写副本，同时补上一个真实 UX 死区）
 
 - 【视图层裸写锁定判定 + 锁定时零反馈的 `2` 个问题】村庄东门（GATE）锁定条件「bossDefeated 后门常闭、只提示不传送」这一定义只在 `data.js MAPS.village.portals.GATE.locked(g)` 一处为真源，`world.usePortal` 锁定时弹 lockedMsg 拒绝通行；但视图层 `view/drawWorld.js` 的 `faceHint`（面向提示）把同一语义裸写成 `!(curMap()==='village' && S.G.bossDefeated)`——（a）与读表的 usePortal 互不引用，想给别的门加锁/换锁条件（如给 dungeon 的 GATE 按进度上锁）要改两个地方、还极易只改结算漏改提示，锁定判定悄然出现两套口径；（b）更糟的是锁定时条件为假、不进入该分支也不给任何提示——面向锁着的村门画面上什么都没有，玩家只能靠「踩上去才弹 lockedMsg」碰运气，无法从任何静态信号判断「这门通不通」。

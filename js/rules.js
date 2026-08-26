@@ -1,7 +1,7 @@
 // ============================================================
 // rules.js —— 无副作用的战斗 / 成长 / 图鉴计算
 // ============================================================
-import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD } from './data.js';
+import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
 
 export function deep(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -49,6 +49,24 @@ export function skillEstimate(hero, enemy, skill) {
   if (enemy && enemy.phase2 && skill.trueBonus) dmg *= skill.trueBonus;
   if (hero.charge) dmg *= CHARGE_MULT;
   return withShield(Math.round(dmg), enemy);
+}
+
+// 药水/灵药恢复量（单一数据源·纯函数）：hero.takePotion 结算与 view/drawBattle「[3]恢复」预览
+// 同读此源——此前「恢复量公式」在 hero.js takePotion（结算，核心.js usePotion 与 battle.doItem
+// 都经它消费）与 drawBattle 药水预览各写一遍 `Math.round(hpMax×POTION_HP_PCT)+POTION_HP_FLAT`、
+// `Math.round(hpMax×ELIXIR_HP_PCT)+ELIXIR_HP_FLAT`、`Math.round(mpMax×ELIXIR_MP_PCT)`：
+// 改恢复公式（如改成比例+等级加成、或换舍入方式）要改两个文件四行，还极易只改结算漏改预览，
+// 界面标「+N HP」实际只回 M HP 悄然对不上。收口为纯函数后结算与预览永远同一份公式，
+// 数值逐字不变（与旧公式逐值恒等），零恢复量回归。与 skillEstimate 同一「预览-结算同公式」家族。
+export function potionRestore(hero) {
+  return { h: Math.round(hero.hpMax * POTION_HP_PCT) + POTION_HP_FLAT };
+}
+
+export function elixirRestore(hero) {
+  return {
+    h: Math.round(hero.hpMax * ELIXIR_HP_PCT) + ELIXIR_HP_FLAT,
+    m: Math.round(hero.mpMax * ELIXIR_MP_PCT),
+  };
 }
 
 // Boss 报酬（单一数据源）：直读 data.js 的 BOSS / CAVE_BOSS / TRUE_BOSS，

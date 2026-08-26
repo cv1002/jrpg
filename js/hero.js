@@ -3,8 +3,8 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, PERFECTION_GOLD } from './data.js';
-import { unlockedAchievements } from './rules.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD } from './data.js';
+import { unlockedAchievements, potionRestore, elixirRestore } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
 
@@ -20,17 +20,18 @@ export function potionAvailability(hero) {
 
 export function takePotion() {
   const hero = S.G;
+  // 恢复量公式（单一数据源）：与 view/drawBattle「[3]恢复」预览同读 rules.potionRestore/elixirRestore，
+  // 结算与预览永远同一份公式——总量来自 hero.hpMax/mpMax × data.js POTION_*/ELIXIR_* 常量
   if (hero.potion2 > 0) {
     hero.potion2--;
-    const h = Math.round(hero.hpMax * ELIXIR_HP_PCT) + ELIXIR_HP_FLAT;
-    const m = Math.round(hero.mpMax * ELIXIR_MP_PCT);
+    const { h, m } = elixirRestore(hero);
     hero.hp = Math.min(hero.hpMax, hero.hp + h);
     hero.mp = Math.min(hero.mpMax, hero.mp + m);
     return { h, m, strong: true };
   }
   if (hero.item > 0) {
     hero.item--;
-    const h = Math.round(hero.hpMax * POTION_HP_PCT) + POTION_HP_FLAT;
+    const { h } = potionRestore(hero);
     hero.hp = Math.min(hero.hpMax, hero.hp + h);
     return { h, strong: false };
   }
