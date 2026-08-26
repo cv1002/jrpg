@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -242,7 +242,7 @@ function onFountainStep(x, y, hero) {
 
 function onBossAltar(x, y, hero) {
   if (!hero.bossDefeated) {
-    bind.boxMsg('👿 雾里走出一个穿旧袍的影子……幽冥魔王！', 1600);
+    bind.boxMsg('👿 雾里走出一个穿旧袍的影子……幽冥魔王！', ALTAR_TXT_MS);
     setTimeout(() => { if (S.scene === 'world') startBattle(deep(BOSS)); }, ALTAR_LEAD_MS);
   }
 }
@@ -250,12 +250,12 @@ function onBossAltar(x, y, hero) {
 function onCaveAltar(x, y, hero) {
   // 无字回廊中段：残焰魔像（可重复挑战的精英守门）
   if (curMap() === 'gallery') {
-    bind.boxMsg('🔥 灰烬拢成一具燃烧的空壳——残焰魔像！', 1600);
+    bind.boxMsg('🔥 灰烬拢成一具燃烧的空壳——残焰魔像！', ALTAR_TXT_MS);
     setTimeout(() => { if (S.scene === 'world') startBattle(deep(EMBER_GOLEM)); }, ALTAR_LEAD_MS);
     return;
   }
   if (!hero.caveBoss) {
-    bind.boxMsg('👹 矿脉深处，星井的守者现身——洞窟领主！', 1600);
+    bind.boxMsg('👹 矿脉深处，星井的守者现身——洞窟领主！', ALTAR_TXT_MS);
     setTimeout(() => { if (S.scene === 'world') startBattle(deep(CAVE_BOSS)); }, ALTAR_LEAD_MS);
   }
 }
