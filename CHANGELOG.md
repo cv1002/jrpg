@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.21 世界昼夜相位时长单一数据源——昼夜判定与界面注释同读 DAY_PHASE_S（纯显示·单一口径，与 v19.8 HIT_FB_MS / v19.15 UI_PULSE_MS / v19.18 IDLE_BOB / v19.17 warnFlash 同一「动画时序数据化」体系——本家族此前收口的都是 ms 级 UI/反馈节奏，唯独「一轮昼夜 4×90=360 秒」的世界时钟节奏仍是裸奔数值）
+
+- 【世界时钟「每档跑多快」没有名字的 `2` 处互不相关】昼夜四相位（day/dusk/night/dawn）各 90 秒一轮 360 秒的相位时长以裸字面量 `90` 游离在 data.js 之外：`view/drawWorld.js` 的 `timeOfDay()` 判定 `['day','dusk','night','dawn'][Math.floor(t/90)%4]`（可执行代码 1 处）+ `view/hud.js` 注释自写一句「90 秒一档的昼夜标签」（文字第 2 处）——想调昼夜节奏（如加快到 60 秒一档、放慢到 120）要改判定 + 记得同步注释，还极易只改判定漏改注释，让「这个世界的昼夜跑多快」始终没有名字；而 `S.G.time`（main.js 游戏时钟按真实秒累进）是纯世界时钟、零结算影响，正是该家族里最后一枚裸奔读数。
+- 【修正：data.js 在 `IDLE_BOB` 之后新增 `DAY_PHASE_S = 90`（每档相位时长，单位：秒）为唯一真源，注释说明与时序家族的关系与结构（4 相位各 90 秒轮转）、随原 export 块导出，零新增依赖】`view/drawWorld.js` 的 `timeOfDay()` 判定改 `Math.floor(t / DAY_PHASE_S) % 4` 并补注释；`view/hud.js` 注释旧「显示 90 秒一档的昼夜标签」改写为指向该源。收益：调昼夜节奏只改 data.js 一处，判定与界面注释绝无第二套口径；行为逐字不变（`DAY_PHASE_S` 仍为 90，`timeOfDay()` 与旧字面量在 t∈[0,9999] 全扫下逐值恒等），零渲染/世界时钟回归。
+- 【零回归面】未动昼夜机制本身——四相位数组、`S.G.time` 累进（main.js）、回廊恒暗特判、村庄夜晚灯火、drawTimeTint 各相位着色、`fmtTime` 冒险时长全部原样；drawWorld 其余独立动画参数（雨 /40、洞窟萤火 /80、回廊漂浮 /120、水面 /400）与 minimap 高度 `Math.min(90,…)` 另一语义刻意保留。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个常量 + 改 1 处判定 + 2 处注释 + 1 处 import + 1 处 export，零新增依赖。
+- 验证：`node --check js/data.js js/view/drawWorld.js js/view/hud.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.21 专项冒烟（/tmp/jrpg_smoke_v1921_dayphase.mjs）**14 项断言全过**——`DAY_PHASE_S=90` 导出且定义/export 齐全、时序家族既有成员（HIT_FB_MS 220 / UI_PULSE_MS 400 / IDLE_BOB 500·0.13）不受影响、drawWorld 读取该源恰好 1 处、裸「Math.floor(t / 90)」清零（剩 0 处）、timeOfDay 与旧公式 t∈[0,9999] 全扫逐值恒等、相位边界 4×90=360 一轮（0 白天→90 黄昏→180 夜晚→270 黎明→360 白天）核对通过、独立动画参数与 minimap 90 另一语义保留、hud 注释已改写且 PERIOD 四标签未动。
+
 ## v19.20 药水/灵药恢复量公式单一数据源——结算与战斗预览共读 rules.potionRestore/elixirRestore（机制·单一口径，与 v19.5 threatWarn 同一「预览-结算同公式」家族——v19.5 收口了「我方攻击预览」后，「[3]药水/🧪灵药恢复多少」是战斗提示里最后一组结算量由视图层自算的裸公式）
 
 - 【`2` 处同公式互不相关】药水/灵药「恢复量」的计算公式裸写两处：`hero.js takePotion`（**结算**——core.js usePotion 与 battle.doItem 两条消费路径都经它出账）里 `Math.round(hpMax×POTION_HP_PCT)+POTION_HP_FLAT`（普通药水）、`Math.round(hpMax×ELIXIR_HP_PCT)+ELIXIR_HP_FLAT` 与 `Math.round(mpMax×ELIXIR_MP_PCT)`（高级灵药）；`view/drawBattle.js` 战斗指令栏「[3]恢复：🍖+…HP 🧪+…HP/+…MP」**预览**把同一公式再写一遍——两处同值互不引用，想改恢复模型（如改成比例+等级加成、或把舍入从 round 改 floor）要改两个文件四行，还极易只改结算漏改预览，界面标「+N HP」实际只回 M HP 悄然对不上（与 v19.5 threatWarn 收口前同款黑盒，这次轮到恢复量）。

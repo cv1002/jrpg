@@ -28,7 +28,8 @@ export function renderHUD() {
   // 对 gallery 特判跳过昼夜、恒按暗色渲染，但此前 HUD 的昼夜标签仍无条件读世界时钟的阶段
   // （如正午进回廊会同时显示「某阶段标签 + 全屏暗色」，同一处设计自相矛盾）。
   // 现与 drawTimeTint 同判 curMap()==='gallery'、同读 S.G.time：回廊改标 🌑 恒暗，其余四图照常
-  // 显示 90 秒一档的昼夜标签。纯显示、零结算变化，不新增任何状态。
+  // 显示每档 90 秒的昼夜标签（时长读 data.js DAY_PHASE_S 单一数据源，与 drawWorld 昼夜判定同源，
+  // 调昼夜节奏只改 data.js 一处）。纯显示、零结算变化，不新增任何状态。
   const periodTag = curMap() === 'gallery' ? '🌑 恒暗' : (PERIOD[timeOfDay()] || '');
   set('s-map', (hero.name || '守灯人') + ' · ' + ((MAPS[curMap()] && MAPS[curMap()].name) || curMap()) + ' · ' + periodTag + (hero.diff ? ' ⚡' : '') + zoneTag);
   set('s-lv', hero.level);

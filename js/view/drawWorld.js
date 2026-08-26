@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, ENCOUNTER, UI_PULSE_MS } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { npcQuestMark } from '../quests.js';
 import { CV, CTX, rr, text } from './canvas.js';
@@ -34,7 +34,9 @@ export function cam() {
 
 function timeOfDay() {
   const t = (S.G && S.G.time) || 0;
-  return ['day', 'dusk', 'night', 'dawn'][Math.floor(t / 90) % 4];
+  // 昼夜相位时长单一数据源：data.js DAY_PHASE_S（=90 秒一档）——调昼夜节奏只改 data.js 一处，
+  // 与 hud.js 注释/界面标签同读此源，绝无第二套口径（与 HIT_FB_MS / UI_PULSE_MS 同一「动画时序数据化」体系）
+  return ['day', 'dusk', 'night', 'dawn'][Math.floor(t / DAY_PHASE_S) % 4];
 }
 
 function drawTimeTint() {
