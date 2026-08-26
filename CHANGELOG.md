@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.18 待机呼吸 bob 周期/相位展开单一数据源——世界与战斗精灵四处同读 IDLE_BOB（纯显示·单一口径，与 v19.15 UI_PULSE_MS / v19.17 ENCOUNTER.warnFlash 同一「动画时序数据化」体系——世界/战斗精灵「待机呼吸」的 ±1px 正弦浮动周期 500ms 与「相位随坐标错开」的展开系数 0.13 是精灵动画系列里最后一组四处复制的裸数值）
+
+- 【`4` 处同语义互不相关】「待机呼吸」的 `Math.sin(Date.now()/500 + (px+py)*0.13)`（±1px 正弦浮动，相位随坐标错开防全场同步）以完全相同的形态裸写四处：`view/sprites.js` 的 `drawSheetChar`（32px 图集路径）、`drawSheetCustom`（定制帧位图集）、`drawSheetStrip`（条状图集）三处 + `drawMonster` 程序化回退路径一处（该处变量名 px/py 写作 x/y，同一语义）——四处同值互不引用，想调待机呼吸节奏（如放慢到 600ms、或让相位随坐标错开得更密 0.2）要改四个地方、还极易只改图集路径漏改回退路径——同屏几种怪待机呼吸悄然脱钩（v13.3 引入待机呼吸时把周期/相位参数写在各绘制路径体内，图集路径改了回退路径还按旧节奏浮）。注意：蓄力光环 320ms 正弦呼吸、任务问号 320ms、变身闪光 `t/400` 衰减、水纹相位 `/400` 是各自仅一处的单点动画参数（非四处同语义复制），数据注释沿用「刻意不并入、无需收口」的处理，本版不碰。
+- 【修正：data.js 在 `UI_PULSE_MS` 之后新增 `IDLE_BOB = { period: 500, phase: 0.13 }`（period=待机呼吸正弦周期 ms、phase=相位随坐标错开的展开系数 rad/px）为唯一真源，注释说明派生形态与刻意保留的单点动画参数，随原 export 块导出，零新增依赖】`view/sprites.js` 四处改读 `Date.now()/IDLE_BOB.period + (px+py)*IDLE_BOB.phase`（回退路径同式 `(x+y)*IDLE_BOB.phase`），import 列表同步加 IDLE_BOB。收益：调待机呼吸节奏/相位错开密度只改 data.js 一处、图集与回退路径同步，绝无第二套口径；行为逐字不变（`IDLE_BOB.period` 仍为 500、`IDLE_BOB.phase` 仍为 0.13，四处表达式与旧字面量逐值恒等），零渲染/动画回归。
+- 【零回归面】未动待机呼吸机制本身——±1px 浮动幅度 `Math.round(Math.sin(…))`、`opts.idle` 开关、相位随坐标错开的设计、各绘制路径的调用全部分布原样；`drawSheetChar` 的 `Math.floor(Date.now()/300)%2`（16px hurt 交替帧）、`drawSheetCustom` 的帧播放 300ms、`drawSheetStrip` 的 140ms 换帧、行走走帧 120ms、`drawHero` 程序化回退的 380ms bob / 260ms 走步均为各动画独立参数，原样不动。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个对象常量 + 改 4 处表达式 + 1 处 import + 1 处 export + 注释微调，零新增依赖。
+- 验证：`node --check js/data.js js/view/sprites.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.18 专项冒烟（/tmp/jrpg_smoke_v1918_idlebob.mjs）**13 项断言全过**——`IDLE_BOB` 导出且 period=500/phase=0.13、data.js export 与 sprites.js import 均含该源、sprites.js 读 `IDLE_BOB.period`/`IDLE_BOB.phase` 各恰 4 处、裸「Date.now()/500 + (px+py)*0.13」与「(x+y)*0.13」已清零（剩 0 处）、新旧表达式 t∈[0,2000]×c∈[-64,64] 全扫逐值恒等、UI_PULSE_MS/HIT_FB_MS/warnFlash 既有动画时序常量原样。
+
 ## v19.17 遇敌预警条快闪周期单一数据源——小地图「⚠️ 危险逼近」红色预警条的 330ms 快闪开关同读 ENCOUNTER.warnFlash（纯显示·单一口径，与 v19.9 ENCOUNTER.full / v19.12 ENCOUNTER.warn 同一「遇敌槽数据化」家族——v19.12 收口 70 预警线时把「预警态闪烁 330ms 呼吸」明确标为家族留白，是 ENCOUNTER 对象之外最后一枚游离的遇敌槽读数可视反馈数值）
 
 - 【`1` 处可执行调用点 + 注释双重留白的收口】遇敌槽「⚠️ 危险逼近」红色预警条的快闪开关周期「330」此前以裸字面量游离在遇敌槽口径之外：`view/drawWorld.js` 小地图的 `Math.floor(Date.now()/330)%2===0` 判定（可执行代码 1 处）+ data.js UI_PULSE_MS 注释对它「遇敌预警条 330ms…刻意不动」的留白标注（文字第 2 处）。遇敌槽其余一切读数口径（dangerMin/dangerVar/fountain/calm/full/warn）都已集中在 `ENCOUNTER` 对象，唯独这枚「预警条以多快的节奏快闪」是家族里最后一处游离值：想调预警闪烁节奏（如放慢到 450、或换成 250 更快闪）要改判定字面量 + 记得同步数据层注释，还极易只改界面漏改注释、让「预警闪烁」这个概念仍然没有名字。

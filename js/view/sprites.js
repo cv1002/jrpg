@@ -2,7 +2,7 @@
 // view/sprites.js —— 主角 / 魔物 / NPC 特征
 // ============================================================
 import { S } from '../state.js';
-import { SPECIES, T } from '../data.js';
+import { SPECIES, T, IDLE_BOB } from '../data.js';
 import { isBossFoe } from '../rules.js';
 import { CTX, rr } from './canvas.js';
 import { sheets, blitFrame, SHEET_CELL16 } from './atlas.js';
@@ -64,7 +64,7 @@ function drawSheetChar(img, px, py, dir, opts) {
   const cell = (opts && opts.cell) || 32;
   let { dx, dy, ground } = plantDy(dest, (opts && opts.foot) || CHAR_FOOT, opts && opts.ground);
   // 待机呼吸（纯显示）：±1px 相位浮动，相位随坐标错开防全场同步
-  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / 500 + (px + py) * 0.13));
+  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / IDLE_BOB.period + (px + py) * IDLE_BOB.phase));
   // 32px 图集有专用 hurt 帧（col 20）；16px 图集帧少，受击走红闪罩（下方统一处理）
   const col = cell === 32 ? frameCol(opts && opts.hurt, opts && opts.moving)
     : Math.floor(Date.now() / 300) % 2;
@@ -85,7 +85,7 @@ function drawSheetCustom(img, px, py, opts) {
   const spec = CUSTOM_FRAMES[opts.key];
   const dest = Math.round(32 * ((opts && opts.scale) || 1));
   let { dx, dy, ground } = plantDy(dest, (opts && opts.foot) || 15 / 16, opts && opts.ground);
-  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / 500 + (px + py) * 0.13));
+  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / IDLE_BOB.period + (px + py) * IDLE_BOB.phase));
   const [fc, fr] = spec.frames[Math.floor(Date.now() / 300) % spec.frames.length];
   CTX.save();
   CTX.translate(Math.round(px), Math.round(py));
@@ -103,7 +103,7 @@ function drawSheetStrip(img, px, py, opts) {
   const dest = Math.round(32 * ((opts && opts.scale) || 1));
   const foot = (opts && opts.foot) || SLIME_FOOT;
   let { dx, dy, ground } = plantDy(dest, foot, opts && opts.ground);
-  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / 500 + (px + py) * 0.13));
+  if (opts && opts.idle) dy += Math.round(Math.sin(Date.now() / IDLE_BOB.period + (px + py) * IDLE_BOB.phase));
   const n = Math.max(1, Math.floor(img.width / 32));
   const live = Math.min(8, n);
   const col = (opts && opts.hurt) ? Math.min(n - 1, 8) : (Math.floor(Date.now() / 140) % live);
@@ -282,7 +282,7 @@ export function drawMonster(x,y,m){
     return;
   }
   CTX.save();
-  CTX.translate(x, y + Math.round(Math.sin(Date.now() / 500 + (x + y) * 0.13)));
+  CTX.translate(x, y + Math.round(Math.sin(Date.now() / IDLE_BOB.period + (x + y) * IDLE_BOB.phase)));
   CTX.scale(s, s);
   CTX.translate(0, -17);
   const col=m.color||'#8892a0';
