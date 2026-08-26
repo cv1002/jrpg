@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.23 强敌祭坛「战前切入战斗延时」单一数据源——三个强敌的对峙停顿同读 ALTAR_LEAD_MS（纯时序·单一口径，与 v19.8 HIT_FB_MS / v19.15 UI_PULSE_MS / v19.18 IDLE_BOB / v19.21 DAY_PHASE_S 同一「时序数据化」体系——本版收口的是世界交互「踩祭坛到切入战斗」的演出节奏，与 v19.22 BLOG_WIN 同为「一处语义三处复制」的收口形态）
+
+- 【强敌战前停顿「600ms」在 world.js 以裸字面量写三处、三处互不相关】强敌祭坛「先弹出场提示框、再延时切入战斗」的对峙停顿以完全相同的 `setTimeout(..., 600)` 裸写 world.js 三处：`onBossAltar` 的幽冥魔王（雾语林祭坛，行 246）、`onCaveAltar` 的残焰魔像（无字回廊祭坛，行 254）与洞窟领主（星井矿脉祭坛，行 259）——三处同值互不引用：想调强敌战前演出节奏（如放慢到 800 让出场台词多停一拍、收紧到 400 更快入战）要改三个地方、还极易只改一个祭坛漏改另外两处——三个强敌的对峙停顿悄然脱钩，而这个「战前停顿多久」的时序参数本身始终没有名字（同一文件里 BOSS 祭坛/回廊祭坛/矿脉祭坛三处恰好都凑巧写 600，无任何一处能说明这是设计值还是随手写的数）。
+- 【修正：data.js 在 `BATTLE_HERO` 之后新增 `ALTAR_LEAD_MS = 600`（强敌祭坛战前演出到切入战斗的延时，单位 ms，纯时序）为唯一真源，注释说明三处派生形态与刻意保留的 700 家族（终焉之神战前 700 / 回廊传送 700 / 试炼首战 700 是「真结局/传送一类」另一语义、值同为 7 开头却互不相干），随原 export 块导出，零新增依赖】`world.js` 三处祭坛切入延时的 `setTimeout(..., 600)` 改读 `setTimeout(..., ALTAR_LEAD_MS)`（import 列表同步加 ALTAR_LEAD_MS）。收益：调强敌战前演出节奏只改 data.js 一处、三个祭坛同步，绝无第二套口径；行为逐字不变（`ALTAR_LEAD_MS` 仍为 600，三处延时与旧字面量逐值恒等），零战斗/世界流程回归。
+- 【零回归面】未动强敌触发机制本身——`onBossAltar`/`onCaveAltar` 的出场提示框文案与 1600 时长、`S.scene === 'world'` 防重叠守卫、`deep(...)` 生成、Boss 登场前后 flag 判定（bossDefeated/caveBoss/gallery 分支）全部原样；终焉之神战前 700（`onTrueCrystal`）、回廊传送 700（`transition('gallery')`）、battle.startRush 试炼首战 700 等「另一语义」的延时逐字未动；`WALK_MS=180` 等世界节奏常量原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个常量 + 改 3 处表达式 + 1 处 import + 1 处 export + 注释，零新增依赖。
+- 验证：`node --check js/data.js js/world.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.23 专项冒烟（/tmp/jrpg_smoke_v1923_altarlead.mjs）**17 项断言全过**——`ALTAR_LEAD_MS=600` 导出且与字面量一致、data.js 定义/export 齐全、world.js import 与 3 处调用点（BOSS/EMBER_GOLEM/CAVE_BOSS）均读该源、裸「startBattle(...}, 600)」清零（剩 0 处）、终焉之神 700 / 回廊传送 700 另一语义保留、三处延时与旧字面量逐值恒等、时序家族既有成员（HIT_FB_MS 220 / UI_PULSE_MS 400 / IDLE_BOB 500·0.13 / DAY_PHASE_S 90 / BLOG_WIN 3 / BATTLE_MON 248 / BATTLE_HERO 96·400）不受影响。
+
 ## v19.22 战斗战报窗口「每屏行数」单一数据源——可见行数、回看偏移、溢出指示同读 BLOG_WIN（纯显示·单一口径，与 v19.8 HIT_FB_MS / v19.15 UI_PULSE_MS / v19.18 IDLE_BOB / v19.21 DAY_PHASE_S 同一「UI 显示参数数据化」体系——战斗画面这块收口的不是 ms 节奏，而是战报区「一屏摆几行」的布局阈值）
 
 - 【战报窗口「3 行」在 view/drawBattle 以裸字面量 `3` 写三处的 `3` 处互不相关】战斗战报区「每屏显示 3 行」以裸字面量 `3` 游离在 data.js 之外：`view/drawBattle.js` 战报区**回看偏移上限** `S.blog.length - 3`（行 311）、**切片窗口** `S.blog.length - 3 - S.blogView`（行 314）、**溢出指示** `S.blog.length > 3`（行 316）三处同值互不引用——想调战报窗口高度（如放宽到 4 行让更多信息常驻，或收紧让画面更空）要改三处、还极易只改窗口漏改溢出指示——窗口已显示 4 行「↑↓ 回看」却仍只在 >3 时才出现，溢出提示与窗口高度悄然脱钩；而窗口「摆几行」这一布局阈值本身始终没有名字，只能靠翻字面量识别「3 是设计值而非随手写的数」。
