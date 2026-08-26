@@ -165,9 +165,19 @@ function faceHint() {
   else if (tile === TY.MB && (curMap() === 'gallery' || !S.G.caveBoss)) lab = '踩上开战';
   else if (tile === TY.SB && !S.G.trueBoss) lab = curMap() === 'gallery' ? '踩上开战' : '踩上开门';
   else if (tile === TY.TRIAL && S.G.bossDefeated && S.G.caveBoss) lab = '踩上挑战';
-  else if (tile === TY.GATE && !(curMap() === 'village' && S.G.bossDefeated)) {
-    const dest = portalDest(curMap(), TY.GATE);
-    lab = (dest && MAPS[dest]) ? `踩上通行 → ${MAPS[dest].name}` : '踩上通行';
+  else if (tile === TY.GATE) {
+    // 传送门锁定判定（单一数据源）：与 world.usePortal 同读 MAPS[].portals.GATE.locked(g)——
+    // 此前这里裸写「curMap()==='village' && S.G.bossDefeated」硬编码在视图层、与 usePortal 读表的
+    // 判定互不引用（想给别的门加锁/换锁条件要改两处，还极易只改结算漏改提示）；
+    // 且锁定时完全不显示任何面向提示——面向锁着的村门没有任何交互反馈（踩上去才弹 lockedMsg），
+    // 无法从「门是亮的还是暗的」判断它通不通。现直读表：锁定时给「⛔ 门锁着」提示，未锁照旧。
+    const gate = (MAPS[curMap()].portals || {}).GATE;
+    if (gate && gate.locked && gate.locked(S.G)) {
+      lab = '⛔ 门锁着';
+    } else {
+      const dest = portalDest(curMap(), TY.GATE);
+      lab = (dest && MAPS[dest]) ? `踩上通行 → ${MAPS[dest].name}` : '踩上通行';
+    }
   }
   else if (tile === TY.EXIT) {
     const dest = portalDest(curMap(), TY.EXIT);

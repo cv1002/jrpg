@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.19 传送门「面向提示」锁定判定单一数据源——锁定的村门从「毫无反馈的死区」变成「⛔ 门锁着」（体验·单一口径，与 v19.17 ENCOUNTER.warnFlash 同源不同家族——本版收口的是地图传送门锁定判定在视图层的裸写副本，同时补上一个真实 UX 死区）
+
+- 【视图层裸写锁定判定 + 锁定时零反馈的 `2` 个问题】村庄东门（GATE）锁定条件「bossDefeated 后门常闭、只提示不传送」这一定义只在 `data.js MAPS.village.portals.GATE.locked(g)` 一处为真源，`world.usePortal` 锁定时弹 lockedMsg 拒绝通行；但视图层 `view/drawWorld.js` 的 `faceHint`（面向提示）把同一语义裸写成 `!(curMap()==='village' && S.G.bossDefeated)`——（a）与读表的 usePortal 互不引用，想给别的门加锁/换锁条件（如给 dungeon 的 GATE 按进度上锁）要改两个地方、还极易只改结算漏改提示，锁定判定悄然出现两套口径；（b）更糟的是锁定时条件为假、不进入该分支也不给任何提示——面向锁着的村门画面上什么都没有，玩家只能靠「踩上去才弹 lockedMsg」碰运气，无法从任何静态信号判断「这门通不通」。
+- 【修正：视图层 GATE 分支改读 `MAPS[curMap()].portals.GATE.locked(S.G)`（与 world.usePortal 同一真源，零新增依赖——`MAPS`/`curMap`/`portalDest` 均已在本文件 import 列表），锁定时显示「⛔ 门锁着」、未锁照旧显示「踩上通行 → 目的地」】`view/drawWorld.js` `faceHint` 的 GATE 分支：先取 `(MAPS[curMap()].portals||{}).GATE`，`gate.locked && gate.locked(S.G)` 为真则 `lab='⛔ 门锁着'`，否则回落到原 `portalDest` 目的地提示。收益：锁定判定只有 data.js 一处口径、界面提示与真实传送行为绝无第二套；锁定的门第一次有了静态可交互信号（面向即见 ⛔），不用踩上去才知道锁着；dungeon/cave/gallery 的无锁 GATE/EXIT 行为逐字不变（仍走原目的地提示分支）。纯显示、零结算变化。
+- 【零回归面】未动传送机制本身——`world.usePortal` 的 `p.locked(S.G)` 判定、`lockedMsg` 弹窗、`portalDest` 目的地、GATE/EXIT 踩踏与 Enter 打开全部原样；`MAPS.village.portals` 数据逐字不变；其余瓦片（NPC/SHOP/INN/BREW/STELE/FOUNTAIN/CHEST/BOSS/MB/SB/TRIAL）的 faceHint 分支原样。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只改 faceHint 一处 GATE 分支 + 注释，零新增依赖、零新增 export、零新增 import。
+- 验证：`node --check js/view/drawWorld.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.19 专项冒烟（/tmp/jrpg_smoke_v1919_gatelock.mjs）**8 项断言全过**——未锁村门仍显示「踩上通行 → 雾语林」、未锁不显示「门锁着」、锁定（bossDefeated）现显示「⛔ 门锁着」、锁定不再显示「踩上通行」、MAPS 表 `locked()` 在锁定/解锁两态判定正确（与 usePortal 同源验证）、dungeon 面向 EXIT 不抛错且仍显示「踩上通行 → 潮灯镇」。
+
 ## v19.18 待机呼吸 bob 周期/相位展开单一数据源——世界与战斗精灵四处同读 IDLE_BOB（纯显示·单一口径，与 v19.15 UI_PULSE_MS / v19.17 ENCOUNTER.warnFlash 同一「动画时序数据化」体系——世界/战斗精灵「待机呼吸」的 ±1px 正弦浮动周期 500ms 与「相位随坐标错开」的展开系数 0.13 是精灵动画系列里最后一组四处复制的裸数值）
 
 - 【`4` 处同语义互不相关】「待机呼吸」的 `Math.sin(Date.now()/500 + (px+py)*0.13)`（±1px 正弦浮动，相位随坐标错开防全场同步）以完全相同的形态裸写四处：`view/sprites.js` 的 `drawSheetChar`（32px 图集路径）、`drawSheetCustom`（定制帧位图集）、`drawSheetStrip`（条状图集）三处 + `drawMonster` 程序化回退路径一处（该处变量名 px/py 写作 x/y，同一语义）——四处同值互不引用，想调待机呼吸节奏（如放慢到 600ms、或让相位随坐标错开得更密 0.2）要改四个地方、还极易只改图集路径漏改回退路径——同屏几种怪待机呼吸悄然脱钩（v13.3 引入待机呼吸时把周期/相位参数写在各绘制路径体内，图集路径改了回退路径还按旧节奏浮）。注意：蓄力光环 320ms 正弦呼吸、任务问号 320ms、变身闪光 `t/400` 衰减、水纹相位 `/400` 是各自仅一处的单点动画参数（非四处同语义复制），数据注释沿用「刻意不并入、无需收口」的处理，本版不碰。
