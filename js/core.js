@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, SYS_MSG_MS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -99,7 +99,7 @@ function brewNow() {
   hero.potion2++;
   SFX.levelup();
   bind.renderHUD();
-  bind.boxMsg('🧪 酿造成功！高级灵药已放入背包（F/战斗[3]使用）', 2200);
+  bind.boxMsg('🧪 酿造成功！高级灵药已放入背包（F/战斗[3]使用）', SYS_MSG_MS);
 }
 
 function doTravel() {

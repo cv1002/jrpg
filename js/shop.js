@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SYS_MSG_MS } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -44,7 +44,7 @@ export function sellMushroom() {
   }
   if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) {
     SFX.cancel();
-    bind.boxMsg(`🍄 这是灯长委托的蘑菇，集齐 ${MUSHROOM_GOAL} 株前不能卖！`, 2200);
+    bind.boxMsg(`🍄 这是灯长委托的蘑菇，集齐 ${MUSHROOM_GOAL} 株前不能卖！`, SYS_MSG_MS);
     return;
   }
   hero.mushrooms--;

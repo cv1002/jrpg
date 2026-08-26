@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD, SYS_MSG_MS } from './data.js';
 import { unlockedAchievements, potionRestore, elixirRestore } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -43,7 +43,7 @@ export function checkSkills() {
   const skill = learnsAt(hero.level);
   if (skill && !hero.skills.includes(skill)) {
     hero.skills.push(skill);
-    bind.boxMsg(`🌟 领悟了新技能【${skill}】！`, 2200);
+    bind.boxMsg(`🌟 领悟了新技能【${skill}】！`, SYS_MSG_MS);
     SFX.levelup();
   }
 }
