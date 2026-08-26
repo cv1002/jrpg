@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.22 战斗战报窗口「每屏行数」单一数据源——可见行数、回看偏移、溢出指示同读 BLOG_WIN（纯显示·单一口径，与 v19.8 HIT_FB_MS / v19.15 UI_PULSE_MS / v19.18 IDLE_BOB / v19.21 DAY_PHASE_S 同一「UI 显示参数数据化」体系——战斗画面这块收口的不是 ms 节奏，而是战报区「一屏摆几行」的布局阈值）
+
+- 【战报窗口「3 行」在 view/drawBattle 以裸字面量 `3` 写三处的 `3` 处互不相关】战斗战报区「每屏显示 3 行」以裸字面量 `3` 游离在 data.js 之外：`view/drawBattle.js` 战报区**回看偏移上限** `S.blog.length - 3`（行 311）、**切片窗口** `S.blog.length - 3 - S.blogView`（行 314）、**溢出指示** `S.blog.length > 3`（行 316）三处同值互不引用——想调战报窗口高度（如放宽到 4 行让更多信息常驻，或收紧让画面更空）要改三处、还极易只改窗口漏改溢出指示——窗口已显示 4 行「↑↓ 回看」却仍只在 >3 时才出现，溢出提示与窗口高度悄然脱钩；而窗口「摆几行」这一布局阈值本身始终没有名字，只能靠翻字面量识别「3 是设计值而非随手写的数」。
+- 【修正：data.js 在 `DAY_PHASE_S` 之后新增 `BLOG_WIN = 3`（战报窗口每屏可见行数，纯显示）为唯一真源，注释说明三处派生形态与刻意保留的排版参数（行距 `18`、每行显字），随原 export 块导出，零新增依赖】`view/drawBattle.js` 战报区三处改读 `S.blog.length - BLOG_WIN` / `S.blog.length - BLOG_WIN - S.blogView` / `S.blog.length > BLOG_WIN`，import 列表同步加 BLOG_WIN。收益：调战报窗口高度只改 data.js 一处、回看偏移与溢出指示同步，绝无第二套口径；行为逐字不变（`BLOG_WIN` 仍为 3，三处表达式与旧字面量在战报长度/回看偏移全扫下逐值恒等），零战报/UI 回归。
+- 【零回归面】未动战报机制本身——blogView 上下翻页（main.js 按键、state.js 初始 0）、blog 每行显字与行距 18、回看提示文案（「↑↓ 回看战斗记录」/「↓ 回到最新」）、提示字号颜色位置全部原样；`3` 只在这三处是「窗口可见行数」语义，其余（战报区坐标 470、行距 18）为独立排版参数刻意不动。未动任何掉落/经验/金币曲线/难度/技能/支线/成就/存档。只新增一个常量 + 改 3 处表达式 + 1 处 import + 1 处 export + 注释微调，零新增依赖。
+- 验证：`node --check js/data.js js/view/drawBattle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.22 专项冒烟（/tmp/jrpg_smoke_v1922_blogwin.mjs）**18 项断言全过**——`BLOG_WIN=3` 导出且与历史字面量一致、data.js 定义/export 齐全、drawBattle import 与窗口逻辑 3 处读该源（共 5 处含 import/注释）、裸「blog.length - 3」与「blog.length > 3」已清零（剩 0 处）、窗口行为 L∈[0,12]×view∈[-3,12] 全扫逐值恒等（长战报 3 行+溢出指示 / 短战报 2 行无提示 / 回看尽头 maxV=5 核对）、时序家族既有成员（HIT_FB_MS 220 / UI_PULSE_MS 400 / IDLE_BOB 500·0.13 / DAY_PHASE_S 90）不受影响。
+
 ## v19.21 世界昼夜相位时长单一数据源——昼夜判定与界面注释同读 DAY_PHASE_S（纯显示·单一口径，与 v19.8 HIT_FB_MS / v19.15 UI_PULSE_MS / v19.18 IDLE_BOB / v19.17 warnFlash 同一「动画时序数据化」体系——本家族此前收口的都是 ms 级 UI/反馈节奏，唯独「一轮昼夜 4×90=360 秒」的世界时钟节奏仍是裸奔数值）
 
 - 【世界时钟「每档跑多快」没有名字的 `2` 处互不相关】昼夜四相位（day/dusk/night/dawn）各 90 秒一轮 360 秒的相位时长以裸字面量 `90` 游离在 data.js 之外：`view/drawWorld.js` 的 `timeOfDay()` 判定 `['day','dusk','night','dawn'][Math.floor(t/90)%4]`（可执行代码 1 处）+ `view/hud.js` 注释自写一句「90 秒一档的昼夜标签」（文字第 2 处）——想调昼夜节奏（如加快到 60 秒一档、放慢到 120）要改判定 + 记得同步注释，还极易只改判定漏改注释，让「这个世界的昼夜跑多快」始终没有名字；而 `S.G.time`（main.js 游戏时钟按真实秒累进）是纯世界时钟、零结算影响，正是该家族里最后一枚裸奔读数。

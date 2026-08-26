@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe, potionRestore, elixirRestore } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -308,12 +308,13 @@ export function drawBattle() {
       text(`[3]恢复：${weakP}${strongP}${orderNote}`, 60, 424, 'bold 12px', '#8ff0a0');
     }
   }
-  const maxV = Math.max(0, S.blog.length - 3);
+  // 战报窗口（data.js BLOG_WIN 单一数据源）：可见行数、回看偏移上限、溢出指示同读此源——调窗口高度只改 data.js 一处
+  const maxV = Math.max(0, S.blog.length - BLOG_WIN);
   if (S.blogView < 0) S.blogView = 0;
   else if (S.blogView > maxV) S.blogView = maxV;
-  const lg = S.blog.slice(Math.max(0, S.blog.length - 3 - S.blogView), Math.max(0, S.blog.length - S.blogView));
+  const lg = S.blog.slice(Math.max(0, S.blog.length - BLOG_WIN - S.blogView), Math.max(0, S.blog.length - S.blogView));
   lg.forEach((l, i) => text(l, CV.width / 2, 470 + (i - (lg.length - 1)) * 18, '13px', '#e8eef1', 'center'));
-  if (S.blog.length > 3) {
+  if (S.blog.length > BLOG_WIN) {
     text(S.blogView <= 0 ? '↑↓ 回看战斗记录' : (S.blogView >= maxV ? '↓ 回到最新' : '↑↓ 战斗记录'), 628, 448, 'bold 11px', '#7d93a3', 'right');
   }
   // 敌方下一击伤害预估（信息透明）：与结算 cmdDmg 同公式的无浮动估算；
