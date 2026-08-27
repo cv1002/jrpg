@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -334,7 +334,7 @@ function interact() {
     startBattle(deep(BOSS));
     return;
   }
-  bind.boxMsg('（这里没什么特别的）', 1200);
+  bind.boxMsg('（这里没什么特别的）', SHORT_MSG_MS);
 }
 
 function transition(name) {
@@ -347,7 +347,7 @@ function transition(name) {
   S.walk = null;
   bind.renderHUD();
   resumeBgm();
-  bind.boxMsg(`进入了【${MAPS[curMap()].name}】`, 1200);
+  bind.boxMsg(`进入了【${MAPS[curMap()].name}】`, SHORT_MSG_MS);
 }
 
 export {
