@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -265,7 +265,7 @@ function onTrueCrystal(x, y, hero) {
   if (curMap() === 'gallery') {
     if (!hero.trueBoss) {
       bind.boxMsg('✦ 回廊尽头，所有的名字一齐看向你。终焉之神醒了。', NARR_MSG_MS);
-      setTimeout(() => { if (S.scene === 'world') startBattle(deep(TRUE_BOSS)); }, 700);
+      setTimeout(() => { if (S.scene === 'world') startBattle(deep(TRUE_BOSS)); }, FINAL_LEAD_MS);
     }
     return;
   }
@@ -276,7 +276,7 @@ function onTrueCrystal(x, y, hero) {
   if (hero.bossDefeated && hero.caveBoss) {
     bind.boxMsg('✦ 水晶睁开了眼。门开了——通向存放名字的回廊。', NARR_MSG_MS);
     hero.galleryOpen = true;
-    setTimeout(() => { if (S.scene === 'world') transition('gallery'); }, 700);
+    setTimeout(() => { if (S.scene === 'world') transition('gallery'); }, FINAL_LEAD_MS);
   } else {
     bind.boxMsg('💠 水晶沉睡着。它在等两份记得的资格。', NARR_MSG_MS);
   }
