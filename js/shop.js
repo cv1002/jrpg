@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SYS_MSG_MS } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SYS_MSG_MS, NARR_MSG_MS } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -22,7 +22,7 @@ export function buyPotion() {
   const hero = S.G;
   if (hero.item >= POTION_CAP) {
     SFX.cancel();
-    bind.boxMsg(`🎒 背包已满（药水上限 ${POTION_CAP} 瓶），先去用掉一些吧！`, 1800);
+    bind.boxMsg(`🎒 背包已满（药水上限 ${POTION_CAP} 瓶），先去用掉一些吧！`, NARR_MSG_MS);
     return;
   }
   if (hero.gold >= POTION_PRICE) {

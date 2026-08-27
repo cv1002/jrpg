@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -264,27 +264,27 @@ function onTrueCrystal(x, y, hero) {
   // 终焉水晶是「门」：双徽记开启通往无字回廊的路；终焉之战在回廊尽头（TY.SB 祭坛）
   if (curMap() === 'gallery') {
     if (!hero.trueBoss) {
-      bind.boxMsg('✦ 回廊尽头，所有的名字一齐看向你。终焉之神醒了。', 1800);
+      bind.boxMsg('✦ 回廊尽头，所有的名字一齐看向你。终焉之神醒了。', NARR_MSG_MS);
       setTimeout(() => { if (S.scene === 'world') startBattle(deep(TRUE_BOSS)); }, 700);
     }
     return;
   }
   if (hero.trueBoss) {
-    bind.boxMsg('💠 水晶空了。回廊的门安静地敞着。', 1800);
+    bind.boxMsg('💠 水晶空了。回廊的门安静地敞着。', NARR_MSG_MS);
     return;
   }
   if (hero.bossDefeated && hero.caveBoss) {
-    bind.boxMsg('✦ 水晶睁开了眼。门开了——通向存放名字的回廊。', 1800);
+    bind.boxMsg('✦ 水晶睁开了眼。门开了——通向存放名字的回廊。', NARR_MSG_MS);
     hero.galleryOpen = true;
     setTimeout(() => { if (S.scene === 'world') transition('gallery'); }, 700);
   } else {
-    bind.boxMsg('💠 水晶沉睡着。它在等两份记得的资格。', 1800);
+    bind.boxMsg('💠 水晶沉睡着。它在等两份记得的资格。', NARR_MSG_MS);
   }
 }
 
 function onTrialStele(x, y, hero) {
   if (hero.bossDefeated && hero.caveBoss) startRush();
-  else bind.boxMsg('…试炼碑需要两枚徽记（幽冥魔王 + 洞窟领主）。', 1800);
+  else bind.boxMsg('…试炼碑需要两枚徽记（幽冥魔王 + 洞窟领主）。', NARR_MSG_MS);
 }
 
 // 踩格处理表：onStep 查表分发，默认走遇敌槽

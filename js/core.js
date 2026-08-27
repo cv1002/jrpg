@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, SYS_MSG_MS, MILESTONE_MS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -141,7 +141,7 @@ function talkNext() {
   const hero = S.G;
   const act = resolveNpcTalk(hero, S.curNpc);
   if (act && act.kind === 'accept') {
-    bind.boxMsg(`接受了「${act.name}」！按 J 可查看任务日志`, 1800);
+    bind.boxMsg(`接受了「${act.name}」！按 J 可查看任务日志`, NARR_MSG_MS);
     goto('world');
     return;
   }
