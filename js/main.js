@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
-import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS } from './data.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
@@ -151,7 +151,7 @@ const screens = {
         resumeBgm();
         goto('world');
         renderHUD();
-        boxMsg(`💾 读取了槽 ${S.curSaveSlot} 的存档`, 1600);
+        boxMsg(`💾 读取了槽 ${S.curSaveSlot} 的存档`, EVENT_MSG_MS);
       } else if (e.key === 'r' || e.key === 'R') {
         resetRun();
       }

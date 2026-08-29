@@ -525,7 +525,8 @@ const ALTAR_LEAD_MS = 600;
 // 三处祭坛出场提示 绝无第二套口径（与 ALTAR_LEAD_MS 同一「时序数据化」体系——本版收口的是切入延时
 // 的伴生量「提示框停多久」）。
 // 注意：喷泉「⛲ 喷泉清泉涌动，HP/MP 完全恢复！」的 1600（onFountainStep）是「小事件通知」另一语义的
-// 独立停留时长，值同为 1600 却互不相干，刻意不并入（与 ALTAR_LEAD_MS 注释中「700 家族」同款保留）。
+// 独立停留时长，值同为 1600 却互不相干 · 由 v19.30 收口为下方 EVENT_MSG_MS 单一数据源（属性同属「提示框
+// 停留时长」语义却不同，另立常量不混同，与 ALTAR_LEAD_MS 注释中「700 家族」同款处理）。
 const ALTAR_TXT_MS = 1600;
 
 // 系统提示框「常规」停留时长（单一数据源，单位 ms）：与 ALTAR_TXT_MS 同一「提示框停留时长」家族——
@@ -538,7 +539,8 @@ const ALTAR_TXT_MS = 1600;
 // 注意：其余 boxMsg 时长是各自不同的「停留时级」刻意保留：短档 1200 见下 SHORT_MSG_MS（进入地图/踏无发现/静音开关）、中长档 1800
 // 见下 NARR_MSG_MS（终焉之神水晶文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处，不含两处 setTimeout 1800 延时）、
 // 更长档 2800（记忆碎片，仅一处）与战间 1400 家族、700 家族（见下 FINAL_LEAD_MS：终局切入/回廊传送/试炼首战）逐类保留
-// 不动；ALTAR_TXT_MS=1600 与喷泉 1600 另为强敌/小事件语义；长档 2400 里程碑公告档见下 MILESTONE_MS。
+// 不动；1600 小事件档（见下 EVENT_MSG_MS：酿造失败/旅行未开/新冒险/重整旗鼓/喷泉/读档）与 ALTAR_TXT_MS=1600
+// 强敌文案另为独立语义；长档 2400 里程碑公告档见下 MILESTONE_MS。
 const SYS_MSG_MS = 2200;
 
 // 里程碑/阶段达成公告停留时长（单一数据源，单位 ms）：与 SYS_MSG_MS 同一「提示框停留时长」家族——
@@ -551,7 +553,7 @@ const SYS_MSG_MS = 2200;
 // 1800 见下 NARR_MSG_MS（终焉之神水晶文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处，不含两处
 // setTimeout 1800 延时）、
 // 短档见下 SHORT_MSG_MS（进入地图/踏无发现/静音开关）、战间 1400 与 700 家族（见下 FINAL_LEAD_MS）
-// 逐类保留不动；ALTAR_TXT_MS=1600 与喷泉 1600 另为强敌/小事件语义。本版只收口值恰为「2400 里程碑
+// 逐类保留不动；1600 小事件档（见下 EVENT_MSG_MS）与 ALTAR_TXT_MS=1600 强敌文案另为独立语义。本版只收口值恰为「2400 里程碑
 // 公告档」的三处，不改任何一语义对应的时间长度。
 const MILESTONE_MS = 2400;
 
@@ -564,7 +566,7 @@ const MILESTONE_MS = 2400;
 // 注意：其余 boxMsg 时长仍是各自不同的「停留时级」刻意保留：中长档 1800 见下 NARR_MSG_MS（终焉之神水晶
 // 文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处；存档回写/通关回世界两处 setTimeout 1800 延时
 // 另一语义保留）、更长档 2800（记忆碎片，仅一处）、战间 1400 与 700 家族（见下 FINAL_LEAD_MS）
-// 逐类保留不动；ALTAR_TXT_MS=1600 与喷泉 1600 另为强敌/小事件语义。本版只收口值恰为「1200 短档」的三处，
+// 逐类保留不动；1600 小事件档（见下 EVENT_MSG_MS）与 ALTAR_TXT_MS=1600 强敌文案另为独立语义。本版只收口值恰为「1200 短档」的三处，
 // 不改任何一语义对应的时间长度。
 const SHORT_MSG_MS = 1200;
 
@@ -577,8 +579,8 @@ const SHORT_MSG_MS = 1200;
 // 短档的姊妹版——本版收口的是 1800 中长档，也是该提示框停留时长家族的连续第七块拼图）。
 // 注意：值同为 18 开头却互不相干的 `setTimeout(..., 1800)` 两处延时（core.js 存档回写 saveMsg 清除 行 223、
 // battle.js 试炼通关回世界过渡 行 425）是「延时/过渡」另一语义，刻意不并入；更长档 2800（记忆碎片，仅一处）、
-// 战间 1400 与 700 家族（见下 FINAL_LEAD_MS）逐类保留；1600 小事件档（喷泉/酿造失败/旅行未开/
-// 新冒险/重整旗鼓/读档）与 ALTAR_TXT_MS 强敌 1600 另为独立语义。本版只收口值恰为「1800 中长档」的八处 boxMsg。
+// 战间 1400 与 700 家族（见下 FINAL_LEAD_MS）逐类保留；1600 小事件档（见下 EVENT_MSG_MS：喷泉/酿造失败/旅行未开/
+// 新冒险/重整旗鼓/读档）、ALTAR_TXT_MS 强敌 1600 另为独立语义。本版只收口值恰为「1800 中长档」的八处 boxMsg。
 const NARR_MSG_MS = 1800;
 
 // 终局/传送类「切入下一阶段」的演出延时（单一数据源，单位 ms）：与上面的 ALTAR_LEAD_MS 同族不同值——
@@ -590,6 +592,18 @@ const NARR_MSG_MS = 1800;
 // 首战的切入停顿悄然脱钩；数据化后 三处门关切入延时 绝无第二套口径（与 ALTAR_LEAD_MS 同一「时序数据化」
 // 体系——本版收口的是「强敌祭坛战前切入」之外、另一语义的「终局/传送类切入」）。
 const FINAL_LEAD_MS = 700;
+
+// 小事件通知「小事件档」停留时长（单一数据源，单位 ms）：与 SYS_MSG_MS 同一「提示框停留时长」家族——
+// 六处小事件回馈 `boxMsg(..., 1600)` 裸写三个文件、互不引用：core.js 酿造失败（行 94）、旅行未开（行 109）、
+// 新的冒险开始（行 274）、重整旗鼓（行 302）、world.js 喷泉恢复（行 238）、main.js 读取存档（行 154）——想调
+// 这类小事件通知读多久（如放慢到 1800 让回馈多停一拍、收紧到 1400 更利落）要改六个地方、还极易只改一处漏改
+// 另几处：酿造/旅行/重开/读档/喷泉的短促回馈悄然脱钩，而这个「小事件通知停多久」的参数始终没有名字
+// （SYS_MSG_MS 收口 2200 常规档、MILESTONE_MS 收口 2400 里程碑档、SHORT_MSG_MS 收口 1200 短档、NARR_MSG_MS
+// 收口 1800 中长档的姊妹版——本版收口的是 1600 小事件档，也是该提示框停留时长家族自 v19.23 起连续第八块拼图，
+// 正是历版注释反复标注「另为独立语义 · 刻意保留」的同一批值）。
+// 注意：ALTAR_TXT_MS 同为 1600 却是「强敌祭坛出场文案」另一语义，刻意不并入（与 FINAL_LEAD_MS / ALTAR_LEAD_MS
+// 「同族不同值」同款，另立常量不混同）。本版只收口值恰为「1600 小事件档」的六处 boxMsg。
+const EVENT_MSG_MS = 1600;
 
 // 宝箱掉落概率/金币公式（单一数据源）：world.onChestStep 的判定与帮助页「宝箱掉落」标注同读此源——
 // 此前 0.6（雾语林先判蘑菇）/0.45（再判金币）/12、5（金币=12+级×5）只硬编码在 world.js 一处，
@@ -1127,7 +1141,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH,

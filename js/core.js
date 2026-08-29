@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -91,7 +91,7 @@ function brewNow() {
   }
   if (hero.mushrooms < BREW_MUSHROOMS || hero.gold < BREW_GOLD) {
     SFX.cancel();
-    bind.boxMsg('材料不足，无法酿造！', 1600);
+    bind.boxMsg('材料不足，无法酿造！', EVENT_MSG_MS);
     return;
   }
   hero.mushrooms -= BREW_MUSHROOMS;
@@ -106,7 +106,7 @@ function doTravel() {
   const [key] = TRAVEL_LIST[S.travelSel];
   if (!S.G.visited.includes(key)) {
     SFX.cancel();
-    bind.boxMsg('尚未探索此地，先去找到入口吧。', 1600);
+    bind.boxMsg('尚未探索此地，先去找到入口吧。', EVENT_MSG_MS);
     return;
   }
   SFX.door();
@@ -271,7 +271,7 @@ function resetRun() {
   bind.renderHUD();
   goto('story');
   startBgm('village');
-  bind.boxMsg('🔄 新的冒险开始！', 1600);
+  bind.boxMsg('🔄 新的冒险开始！', EVENT_MSG_MS);
 }
 
 // Boss 战败重试（从 battle.js 迁出，存档/开局语义）：
@@ -299,7 +299,7 @@ function retryBoss() {
   hero.y = retry.y;
   bind.renderHUD();
   SFX.select();
-  bind.boxMsg('🔄 重整旗鼓，再战强敌！', 1600);
+  bind.boxMsg('🔄 重整旗鼓，再战强敌！', EVENT_MSG_MS);
   startBattle(deep(def));
   return true;
 }
