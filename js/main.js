@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
-import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS } from './data.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
@@ -188,7 +188,7 @@ const screens = {
         renderHUD();
         if (!S.G.tutDone) {
           S.G.tutDone = true;
-          boxMsg('💡 教程：WASD移动 · Enter对话 · Esc菜单 · P存档 · I状态 · J任务 · H帮助', 3600);
+          boxMsg('💡 教程：WASD移动 · Enter对话 · Esc菜单 · P存档 · I状态 · J任务 · H帮助', TUTOR_MSG_MS);
         } else {
           boxMsg('踏上旅途！去把灯芯讨回来！', STRONG_MSG_MS);
         }
