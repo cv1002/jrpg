@@ -80,7 +80,11 @@ export function drawStatus(){
   text('· 普攻' + Math.round(CRIT_RATE * 100) + '%暴击 ×' + CRIT_MULT, 288, 196, '11px', '#e8a858');
   text('防御',110,218,'14px'); text(`${b.def} +${ARMORS[hero.armor].def} = ${hero.defMax}`,150,218,'bold 14px','#e8eef1');
   text(`武器：${hero.weapon}    防具：${hero.armor}`,110,242,'14px');
-  text(`金币：${hero.gold}    药水🍖:${hero.item}  灵药🧪:${hero.potion2||0}   ⏱️${fmtTime(hero.time)}`,110,264,'14px');
+  // v19.40 魔法蘑菇计数补全（信息透明·纯显示）：HUD 顶栏已有 🍄(s-mushroom)，唯独 I 状态面板的资源总览行
+  // （金币/药水/灵药/时间）漏了蘑菇——而蘑菇是灯长支线进度（MUSHROOM_GOAL 株集齐转交付）与酿造高级灵药
+  // 的材料，状态页作为「角色全貌」却看不到它，玩家要靠 HUD 才能核对任务进度；此行与 HUD 同源读 hero.mushrooms，
+  // 纯显示零结算变化，任务条/酿造页各有对应读数、此处补齐让状态页资源清单自足
+  text(`金币：${hero.gold}    药水🍖:${hero.item}  灵药🧪:${hero.potion2||0}  🍄:${hero.mushrooms||0}   ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   hero.skills.forEach((s,i)=>{
     const sd=SKILL_DATA[s];
