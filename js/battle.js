@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -421,7 +421,7 @@ function winBattle() {
       hero.gold += reward;
       applyAchievements();
       SFX.victory();
-      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！`, 3200);
+      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！`, ACH_MSG_MS);
       setTimeout(() => { goto('world'); S.enemy = null; S.battleBusy = false; resumeBgm(); }, 1800);
     } else {
       // 连胜换关自动回血（data.js RUSH_RECOVER 单一数据源）：与战斗横幅/帮助页标注同读此源，数值结算逐字不变
@@ -452,7 +452,7 @@ function winBattle() {
     applyAchievements();
   }
   if (enemy.isTrue) {
-    bind.boxMsg(`✨ 初灯的意志散了。记忆回到镇上。额外 ${TRUE_BONUS_GOLD} 金币！`, 3200);
+    bind.boxMsg(`✨ 初灯的意志散了。记忆回到镇上。额外 ${TRUE_BONUS_GOLD} 金币！`, ACH_MSG_MS);
     applyAchievements();
     stopBgm();
     goto('ending');
