@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS } from '../data.js';
+import { GAME_VERSION, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -520,6 +520,9 @@ export function drawTitle(){
   // 与 main.js 世界画面按键分派逐字同源（I状态 J日志 B图鉴 C成就 T旅行 F喝药 H帮助），纯显示不改任何逻辑
   CTX.fillStyle='#5a6a78'; CTX.font='11px sans-serif';
   CTX.fillText('I 状态 · J 日志 · B 记忆图鉴 · C 成就 · T 旅行 · F 喝药 · H 帮助',CV.width/2,442);
+  // v19.39 版本号脚注（单一数据源）：data.js GAME_VERSION 与 CHANGELOG 同源，玩家排障/汇报可引用具体版本
+  CTX.fillStyle='#3d4a58'; CTX.font='10px sans-serif';
+  CTX.fillText(`潮灯记 ${GAME_VERSION}`,CV.width/2,464);
 }
 
 export function drawStory(){
