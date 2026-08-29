@@ -537,7 +537,7 @@ const ALTAR_TXT_MS = 1600;
 // 框停多久」的参数始终没有名字；数据化后 五处常规提示 绝无第二套口径（与 ALTAR_TXT_MS / ALTAR_LEAD_MS
 // 同一「时序数据化」体系——本版收口的是提示框家族里分布最广的常规档）。
 // 注意：其余 boxMsg 时长是各自不同的「停留时级」刻意保留：短档 1200 见下 SHORT_MSG_MS（进入地图/踏无发现/静音开关）、中长档 1800
-// 见下 NARR_MSG_MS（终焉之神水晶文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处，不含两处 setTimeout 1800 延时）、
+// 见下 NARR_MSG_MS（终焉之神水晶文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处；两处 setTimeout 1800 延时「存档回写/通关回世界」由 v19.38 收口为下方 WRAP_GAP_MS，另属「延时/过渡」家族）、
 // 更长档 2800（记忆碎片，仅一处）与战间 1400 家族、700 家族（见下 FINAL_LEAD_MS：终局切入/回廊传送/试炼首战）逐类保留
 // 不动；1600 小事件档（见下 EVENT_MSG_MS：酿造失败/旅行未开/新冒险/重整旗鼓/喷泉/读档）与 ALTAR_TXT_MS=1600
 // 强敌文案另为独立语义；长档 2400 里程碑公告档见下 MILESTONE_MS。
@@ -550,8 +550,7 @@ const SYS_MSG_MS = 2200;
 // 升级漏改集齐——三类里程碑公告的停留时长悄然脱钩，而这个参数始终没有名字；数据化后 三处里程碑
 // 公告 绝无第二套口径（SYS_MSG_MS 收口 2200 常规档的姊妹版——本版收口的是 2400 长档里程碑档）。
 // 注意：其余 boxMsg 时长仍是各自不同的「停留时级」刻意保留：更长档 2800（记忆碎片，仅一处）、中长档
-// 1800 见下 NARR_MSG_MS（终焉之神水晶文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处，不含两处
-// setTimeout 1800 延时）、
+// 1800 见下 NARR_MSG_MS（终焉之神水晶文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处；两处 setTimeout 1800 延时「存档回写/通关回世界」由 v19.38 收口为下方 WRAP_GAP_MS，另属「延时/过渡」家族）、
 // 短档见下 SHORT_MSG_MS（进入地图/踏无发现/静音开关）、战间 1400 与 700 家族（见下 FINAL_LEAD_MS）
 // 逐类保留不动；1600 小事件档（见下 EVENT_MSG_MS）与 ALTAR_TXT_MS=1600 强敌文案另为独立语义。本版只收口值恰为「2400 里程碑
 // 公告档」的三处，不改任何一语义对应的时间长度。
@@ -565,7 +564,7 @@ const MILESTONE_MS = 2400;
 // 收口 2200 常规档、MILESTONE_MS 收口 2400 里程碑档的姊妹版——本版收口的是最「短」的 1200 短档）。
 // 注意：其余 boxMsg 时长仍是各自不同的「停留时级」刻意保留：中长档 1800 见下 NARR_MSG_MS（终焉之神水晶
 // 文案家族五处 + 拾取蘑菇/接受任务/背包满等 boxMsg 八处；存档回写/通关回世界两处 setTimeout 1800 延时
-// 另一语义保留）、更长档 2800（记忆碎片，仅一处）、战间 1400 与 700 家族（见下 FINAL_LEAD_MS）
+// 由 v19.38 收口为下方 WRAP_GAP_MS、「延时/过渡」另一语义家族）、更长档 2800（记忆碎片，仅一处）、战间 1400 与 700 家族（见下 FINAL_LEAD_MS）
 // 逐类保留不动；1600 小事件档（见下 EVENT_MSG_MS）与 ALTAR_TXT_MS=1600 强敌文案另为独立语义。本版只收口值恰为「1200 短档」的三处，
 // 不改任何一语义对应的时间长度。
 const SHORT_MSG_MS = 1200;
@@ -578,7 +577,7 @@ const SHORT_MSG_MS = 1200;
 // 参数始终没有名字（SYS_MSG_MS 收口 2200 常规档、MILESTONE_MS 收口 2400 里程碑档、SHORT_MSG_MS 收口 1200
 // 短档的姊妹版——本版收口的是 1800 中长档，也是该提示框停留时长家族的连续第七块拼图）。
 // 注意：值同为 18 开头却互不相干的 `setTimeout(..., 1800)` 两处延时（core.js 存档回写 saveMsg 清除 行 223、
-// battle.js 试炼通关回世界过渡 行 425）是「延时/过渡」另一语义，刻意不并入；更长档 2800（记忆碎片，仅一处）、
+// battle.js 试炼通关回世界过渡 行 425）是「延时/过渡」另一语义家族，由 v19.38 收口为下方 WRAP_GAP_MS、刻意不并入本常量；更长档 2800（记忆碎片，仅一处）、
 // 战间 1400 与 700 家族（见下 FINAL_LEAD_MS）逐类保留；1600 小事件档（见下 EVENT_MSG_MS：喷泉/酿造失败/旅行未开/
 // 新冒险/重整旗鼓/读档）、ALTAR_TXT_MS 强敌 1600 另为独立语义。本版只收口值恰为「1800 中长档」的八处 boxMsg。
 const NARR_MSG_MS = 1800;
@@ -615,7 +614,7 @@ const EVENT_MSG_MS = 1600;
 // 注意：其余 boxMsg 时长仍是各自不同的「停留时级」刻意保留：胜利类 2600（胜利/额外掉落/圣光之剑/洞窟领主倒下/
 // 任务完成共五处，由 v19.32 收口为下方 WIN_MSG_MS）、成就类 3200（试炼通关/真结局/成就解锁共三处，由 v19.33 收口为
 // 下方 ACH_MSG_MS）、更长档 2800（记忆碎片，仅一处，由 v19.35 收口为下方 MEMORY_MSG_MS）、教程 3600（仅一处，由 v19.36 收口为下方 TUTOR_MSG_MS）、图鉴 4200（仅一处，由 v19.37 收口为下方 CODEX_MSG_MS）与战间 1400 家族（由 v19.34 收口为下方 BATTLE_GAP_MS）、
-// 两处 setTimeout 1800 延时（存档回写/通关回世界）逐类保留不动。本版只收口值恰为「2000 更强档」的三处 boxMsg。
+// 两处 setTimeout 1800 延时（存档回写/通关回世界）为同属「延时/过渡」的另一语义家族，由 v19.38 收口为下方 WRAP_GAP_MS。本版只收口值恰为「2000 更强档」的三处 boxMsg。
 const STRONG_MSG_MS = 2000;
 
 // 胜利类回馈「胜利档」停留时长（单一数据源，单位 ms）：与 SYS_MSG_MS 同一「提示框停留时长」家族——值为 2600、
@@ -628,7 +627,7 @@ const STRONG_MSG_MS = 2000;
 // 「更强档之上更长」的同一批值）。
 // 注意：成就类 3200（试炼通关/真结局/成就解锁，由 v19.33 收口为下方 ACH_MSG_MS）、更长档 2800（记忆碎片，仅一处，由 v19.35 收口为下方 MEMORY_MSG_MS）、教程 3600（仅一处，由 v19.36 收口为下方 TUTOR_MSG_MS）、图鉴 4200（仅一处，由 v19.37 收口为下方 CODEX_MSG_MS）
 // 是「更长档」另类语义；战间 1400（由 v19.34 收口为下方 BATTLE_GAP_MS）与两处 setTimeout
-// 1800 延时（存档回写/通关回世界）同为「延时/过渡」另一语义，也不并入。本版只收口值恰为「2600 胜利档」的五处 boxMsg。
+// 1800 延时（存档回写/通关回世界，由 v19.38 收口为下方 WRAP_GAP_MS）同为「延时/过渡」另一语义，也不并入。本版只收口值恰为「2600 胜利档」的五处 boxMsg。
 const WIN_MSG_MS = 2600;
 
 // 成就/终局类「成就档」停留时长（单一数据源，单位 ms）：与 SYS_MSG_MS 同一「提示框停留时长」家族——值为 3200、
@@ -640,8 +639,8 @@ const WIN_MSG_MS = 2600;
 // WIN_MSG_MS 收口 2600 胜利档的姊妹版——本版收口的正是历版注释反复标注「成就类 · 刻意保留」的同一批值，也是该
 // 提示框停留时长家族自 v19.23 起连续第十一块拼图）。
 // 注意：图鉴 4200（hero.js 图鉴收集完成，仅一处，由 v19.37 收口为下方 CODEX_MSG_MS）与 3200 同属「成就类」语义却是更长的独立档；更长档
-// 2800（记忆碎片，仅一处，由 v19.35 收口为下方 MEMORY_MSG_MS）、教程 3600（仅一处，由 v19.36 收口为下方 TUTOR_MSG_MS）是「更长档」另类语义，也不并入；战间 1400（由 v19.34 收口为下方
-// BATTLE_GAP_MS）与两处 setTimeout 1800 延时（存档回写/通关回世界）同为「延时/过渡」另一语义。本版只收口值恰为
+// 2800（记忆碎片，仅一处，由 v19.35 收口为下方 MEMORY_MSG_MS）、教程 3600（仅一处，由 v19.36 收口为下方 TUTOR_MSG_MS）是「更长档」另类语义，也不并入；战间 1400（由 v19.34 收口为
+// 下方 BATTLE_GAP_MS）与两处 setTimeout 1800 延时（存档回写/通关回世界，由 v19.38 收口为下方 WRAP_GAP_MS）同为「延时/过渡」另一语义。本版只收口值恰为
 // 「3200 成就档」的三处 boxMsg。
 const ACH_MSG_MS = 3200;
 
@@ -653,7 +652,7 @@ const ACH_MSG_MS = 3200;
 // 切入、FINAL_LEAD_MS 收口 700 终局/传送门关切入的姊妹版——本版收口的是历版注释反复标注「战间 1400 家族 · 刻意保留」
 // 的同一批值，也是该「setTimeout 延时」家族自 v19.23 起连续第三块拼图）。
 // 注意：同为「延时/过渡」另一语义的两处 setTimeout 1800（core.js 存档回写 saveMsg 清除 行 223 / battle.js 试炼通关后
-// 回世界 行 425）刻意不并入（行 425 的 1800 与行 462 的 1400 同为「通关回世界」却是不同档，各自保留）；boxMsg 各停留
+// 回世界 行 425）由 v19.38 收口为下方 WRAP_GAP_MS（行 425 的 1800 与行 462 的 1400 同为「通关回世界」却是不同档——试炼通关多留一拍余韵，故刻意分常量、不并入本常量）；boxMsg 各停留
 // 时级（1200/1600/1800/2000/2200/2400/2600/2800/3200/3600/4200）不属本家族。本版只收口值恰为「1400 战间」的两处 setTimeout。
 const BATTLE_GAP_MS = 1400;
 
@@ -666,7 +665,7 @@ const BATTLE_GAP_MS = 1400;
 // 胜利档、ACH_MSG_MS 收口 3200 成就档的姊妹版——本版收口的正是历版注释反复标注「更长档 2800 · 刻意保留」
 // 的同一批值，也是该提示框停留时长家族自 v19.23 起连续第十二块拼图）。
 // 注意：教程 3600（main.js 教程提示，仅一处，由 v19.36 收口为下方 TUTOR_MSG_MS）、图鉴 4200（hero.js 图鉴收集完成，仅一处，由 v19.37 收口为下方 CODEX_MSG_MS）同属「更长档」
-// 另类语义；两处 setTimeout 1800 延时（core.js 存档回写 / battle.js 试炼通关回世界）与战间
+// 另类语义；两处 setTimeout 1800 延时（core.js 存档回写 / battle.js 试炼通关回世界，由 v19.38 收口为下方 WRAP_GAP_MS）与战间
 // 1400（上方 BATTLE_GAP_MS）同为「延时/过渡」另一语义。本版只收口值恰为「2800 更长档」的一处 boxMsg。
 const MEMORY_MSG_MS = 2800;
 
@@ -679,7 +678,7 @@ const MEMORY_MSG_MS = 2800;
 // 胜利档、ACH_MSG_MS 收口 3200 成就档、MEMORY_MSG_MS 收口 2800 更长档的姊妹版——本版收口的正是历版注释反复
 // 标注「教程 3600 · 刻意保留」的同一批值，也是该提示框停留时长家族自 v19.23 起连续第十三块拼图）。
 // 注意：图鉴 4200（hero.js 图鉴收集完成，仅一处，由 v19.37 收口为下方 CODEX_MSG_MS）同属「更长档」却是更长的独立档；
-// 两处 setTimeout 1800 延时（core.js 存档回写 / battle.js 试炼通关回世界）与战间 1400（上方 BATTLE_GAP_MS）
+// 两处 setTimeout 1800 延时（core.js 存档回写 / battle.js 试炼通关回世界，由 v19.38 收口为下方 WRAP_GAP_MS）与战间 1400（上方 BATTLE_GAP_MS）
 // 同为「延时/过渡」另一语义。本版只收口值恰为「3600 教程档」的一处 boxMsg。
 const TUTOR_MSG_MS = 3600;
 
@@ -692,9 +691,23 @@ const TUTOR_MSG_MS = 3600;
 // 胜利档、ACH_MSG_MS 收口 3200 成就档、MEMORY_MSG_MS 收口 2800 更长档、TUTOR_MSG_MS 收口 3600 教程档的姊妹版——
 // 本版收口的正是历版注释从 v19.25 起反复标注「图鉴 4200 · 刻意保留」的同一批值，也是该提示框停留时长家族
 // 自 v19.23 起连续第十四块拼图、成就类是「更长档」里的最后一块拼图）。
-// 注意：两处 setTimeout 1800 延时（core.js 存档回写 / battle.js 试炼通关回世界）与战间 1400（上方 BATTLE_GAP_MS）
+// 注意：两处 setTimeout 1800 延时（core.js 存档回写 / battle.js 试炼通关回世界，由 v19.38 收口为下方 WRAP_GAP_MS）与战间 1400（上方 BATTLE_GAP_MS）
 // 同为「延时/过渡」另一语义，不属本家族。本版只收口值恰为「4200 图鉴」的一处 boxMsg。
 const CODEX_MSG_MS = 4200;
+
+// 事后收尾延时「回场/熄灭」延时（单一数据源，单位 ms）：与 ALTAR_LEAD_MS / FINAL_LEAD_MS / BATTLE_GAP_MS 同一
+// 「setTimeout 切入/过渡延时」家族——值为 1800、两处「事件后的异步收尾」`setTimeout(..., 1800)` 裸写两个文件、
+// 互不引用：core.js 存档回写 saveMsg 熄灭（行 223，`setTimeout(() => { S.saveMsg = ''; bind.renderHUD(); }, ...)`，
+// 「💾 已存档到槽 N」横幅停留后自动熄灭）、battle.js 试炼通关回世界过渡（行 425，试炼三连胜后
+// `goto('world')` 并清理战斗态）——想调这类事后收尾节奏（如放慢到 2000 让「已存档」横幅多亮一拍/通关余韵多停
+// 一秒、收紧到 1600 更利落）要改两个地方、还极易只改一处漏改另一处——存档提示熄灭与试炼通关回场的收尾延时悄然
+// 脱钩，而这个「事后收尾停多久」的延时参数始终没有名字（ALTAR_LEAD_MS 收口 600 强敌祭坛战前切入、FINAL_LEAD_MS
+// 收口 700 终局/传送门关切入、BATTLE_GAP_MS 收口 1400 战间换关/回归的姊妹版——本版收口的是历版注释从 v19.25 起
+// 反复标注「两处 setTimeout 1800 延时 · 刻意保留/逐类保留不动」的同一批值，也是该「setTimeout 延时」家族自
+// v19.23 起连续第四块拼图；注意 battle.js 行 425 的 1800 与行 462 的 1400 同为「通关回世界」却是不同档——试炼
+// 通关比普通胜利多留一拍余韵，刻意保留为独立档不并入上方 BATTLE_GAP_MS）。boxMsg 各停留时级（1200/1600/1800/
+// 2000/2200/2400/2600/2800/3200/3600/4200）不属本家族。本版只收口值恰为「1800 事后收尾」的两处 setTimeout。
+const WRAP_GAP_MS = 1800;
 
 // 宝箱掉落概率/金币公式（单一数据源）：world.onChestStep 的判定与帮助页「宝箱掉落」标注同读此源——
 // 此前 0.6（雾语林先判蘑菇）/0.45（再判金币）/12、5（金币=12+级×5）只硬编码在 world.js 一处，
@@ -1232,7 +1245,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH,
