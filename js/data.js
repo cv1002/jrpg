@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.45';
+const GAME_VERSION = 'v19.46';
 
 const T=32;
 
@@ -51,6 +51,7 @@ const MAPS={
       { x: 13, y: 6, ty: 'NPC' },   // 灯长（井边）
       { x: 10, y: 13, ty: 'NPC' },  // 镇民（酿造旁）
       { x: 19, y: 8, ty: 'NPC' },   // 巡灯人（城门动线）
+      { x: 12, y: 8, ty: 'NPC' },   // 守书记（广场喷泉南侧·主路旁，v19.46 新支线）
       { x: 2, y: 4, ty: 'NPC' },    // 井巫（民宅区南）
       { x: 10, y: 12, ty: 'BREW' }, // 酿造锅（广场南）
     ],
@@ -199,6 +200,10 @@ const MUSHROOM_GOAL = 3;    // 灯长支线需找回的魔法蘑菇株数（集�
 // 想调支线目标（如改成 4 只）要改五个字符串，还极易只改判定漏改文案，集齐 4 只界面却还标「/3 只」
 // （与 MUSHROOM_GOAL 同一「支线目标单一数据源」家族，雾灵/蘑菇两条收集型支线同口径）。
 const MIST_GOAL = 3;        // 雾径猎手支线需讨伐的雾灵只数（bestiary 计数，集齐后转可交付）
+// 石魔像讨伐目标（单一数据源）：守书记支线「石壳里的记忆」需讨伐的石魔像只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / MUSHROOM_GOAL 同一「支线目标单一数据源」家族，想调阈值
+// 只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
+const STONE_GOAL = 3;       // 守书记支线需带回的「石壳记痕」份数（= 讨伐石魔像只数）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -227,6 +232,8 @@ const NPC_SPOTS = {
   '13,6': 'chief',
   '10,13': 'villager',
   '19,8': 'adventurer',
+  // 守书记（v19.46 新支线「石壳里的记忆」）：广场喷泉南侧，与灯长/巡灯人同处潮灯镇
+  '12,8': 'clerk',
   '2,4': 'sage',
   '13,9': 'hunter',
   '3,1': 'sage',
@@ -300,6 +307,12 @@ const NPCS={
     ['星砂车夫：你若击败洞窟领主，碎石坍落，','那车货会在祭坛左边显形。打完别急着走，','记得回头把箱子开了。 [Enter] 结束'],
   ], after:[
     ['星砂车夫：矿脉安静了。星砂不再发亮——','不是灭了，是被记起来了。','[Enter] 结束'],
+  ]},
+  clerk:{name:'守书记', mark:'hood', lines:[
+    ['守书记：旧矿的账，我记了一辈子。石魔像本该是守门人——','石壳里封着矿脉的记忆。可它们如今在雾语林游荡，像丢了钥匙。','[Enter] 继续'],
+    ['守书记：你若讨伐三尊石魔像，带回三份「石壳记痕」，','我替你读旧矿最后那页。去吧，雾语林里找它。','[Enter] 结束'],
+  ], after:[
+    ['守书记：旧矿最后那页读完了。星砂不发光的那天，','不是灭了——是被记起来了。账上又多了一个名字。','[Enter] 结束'],
   ]},
 };
 
@@ -1140,6 +1153,43 @@ const QUESTS={
       ]],
     },
   },
+  // 守书记·石壳里的记忆（v19.46 新支线）：讨伐 STONE_GOAL 只石魔像（bestiary 计数）——
+  // 石魔像是旧矿的守门人，石壳里封着矿脉的记忆；与 side_mist（雾灵）同一「讨伐采集型支线」模式，
+  // 阈值单一数据源 STONE_GOAL（判定/进度/目标文案/接取对话同读），奖励灵药（potion2）与 side_mist
+  // 的药水互补，另一条「打通途径」不重复
+  side_stone:{
+    id:'side_stone', kind:'side', store:true, npc:'clerk', giver:'clerk',
+    cond:(g)=>(((g.bestiary||{})['石魔像'])||0) >= STONE_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['石魔像'])||0}/${STONE_GOAL} 份`,
+    name:'石壳里的记忆', where:'雾语林',
+    obj:`讨伐 ${STONE_GOAL} 只雾语林的【石魔像】`,
+    offer:'去潮灯镇找守书记，接下解读旧矿最后的委托',
+    turnin:'石壳记痕齐了！回镇找守书记',
+    done:'旧矿最后那页读完了。守门人的记忆，记回了账上。',
+    reward:{ gold:60, potion2:1 },
+    talk:{
+      offer:[[
+        '守书记：旧矿的账，我记了一辈子。石魔像本该是守门人——',
+        '石壳里封着矿脉的记忆。可它们如今在雾语林游荡，像丢了钥匙。',
+        `帮我带 ${STONE_GOAL} 份「石壳记痕」回来，我替你读旧矿最后那页。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守书记：石魔像的石壳，打完记得刮下记痕。',
+        `（已带回 ${((hero.bestiary||{})['石魔像'])||0}/${STONE_GOAL} 份）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '守书记：三份记痕，字字都认得。守门人的记忆，回来了。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:[[
+        '守书记：旧矿最后那页读完了。星砂不发光的那天，',
+        '不是灭了——是被记起来了。谢谢你，守灯人。',
+        '[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -1160,6 +1210,7 @@ const ACH_LIST=[
   {id:'cartman',    name:'星砂之约', d:'把星砂消息告诉星砂车夫', ok:g=>g.quests&&g.quests.side_cart==='done'},
   {id:'names',      name:'名字归还', d:'替旧灯卫找回名字（巡灯人支线）', ok:g=>g.quests&&g.quests.side_name==='done'},
   {id:'mist',       name:'雾中辨形', d:'完成雾径猎手的雾灵委托', ok:g=>g.quests&&g.quests.side_mist==='done'},
+  {id:'stone',      name:'旧账已结', d:'完成守书记的石壳委托', ok:g=>g.quests&&g.quests.side_stone==='done'},
 ];
 
 function codexTag(name) {
@@ -1193,7 +1244,7 @@ const HELP_PAGES=[
     ['存档槽','标题按 1/2/' + SAVE_SLOTS + ' 选择 · L 读档'],
   ],
   [
-    ['潮灯镇','商店·旅馆·酿造锅·灯长(支线)·喷泉回血'],
+    ['潮灯镇','商店·旅馆·酿造锅·灯长/守书记(支线)·喷泉回血'],
     ['雾语林','强魔物·精英·魔王祭坛 · 右下裂洞进矿脉'],
     ['星井矿脉','更强魔物·迷宫 · 中央终焉水晶集齐双徽记后化为门'],
     ['无字回廊','名字石碑·残焰魔像·东端祭坛藏终焉之神（极高难）'],
@@ -1259,7 +1310,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
