@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { npcQuestMark } from '../quests.js';
 import { CV, CTX, rr, text } from './canvas.js';
@@ -448,7 +448,13 @@ export function drawWorld() {
       for (let x = x0; x <= x1; x++) {
         if (at(x, y) !== TY.TRIAL) continue;
         const ready = !!(S.G.bossDefeated && S.G.caveBoss);
-        const lab = ready ? '⚔️ 试炼·可挑战' : '试炼·未解锁';
+        // v19.52 试炼阵容预览（信息透明·纯显示）：试炼碑此前只标「⚔️ 试炼·可挑战 / 试炼·未解锁」，
+        // 完全看不出碑里埋着哪三名强敌——凑齐双徽记的玩家踩碑前既不知道「要连续打三场」的三位是谁、
+        // 也不知道各自什么等级（帮助页只笼统写「连战三名最强 Boss」），是「信息透明」主题里仅存的黑盒之一。
+        // 现直接列阵容：顺序与 battle.startRush 同读 RUSH_BOSSES 单一数据源，推荐等级与战斗 enemyLv / 祭坛
+        // ⚠Lv 标签同读 SPECIES[].lv（真身/普通同名归一），阵容/等级永不漂移。只读不改，零结算变化。
+        const roster = RUSH_BOSSES.map((b) => `${b.name}Lv${(SPECIES[b.name] && SPECIES[b.name].lv) || 1}`).join('→');
+        const lab = ready ? `⚔️ 试炼三连战 ${roster}` : '试炼·未解锁';
         const lx = x * T - c.x + T / 2;
         const ly = y * T - c.y;
         CTX.font = 'bold 12px sans-serif';
