@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.50';
+const GAME_VERSION = 'v19.51';
 
 const T=32;
 
@@ -872,6 +872,22 @@ const FIRSTBLOOD_GOAL = 1;   // 成就「初露锋芒」需累计赢得的战斗
 // 数值中最后一段「同对象内互不引用」的裸奔数字，本次收口）
 const PERFECTION_GOLD = 999;   // 成就「记忆守护者」图鉴全收集的专享金币奖励
 
+// 成就「开箱寻宝」累计开启宝箱数阈值（单一数据源）：ACH_LIST 该条的判定（ok: chestCount(g)>=TREASURE_GOAL）、
+// 描述文案（d「累计开启 N 个宝箱」）、进度条（prog「X/N」）三处同读此源——宝箱开启计数此前只存在
+// hero.chests（world.onChestStep 的开箱坐标 Set，坐标键 "x,y"；newGame/restoreChests/resetRun 均归一为
+// Set），全库没有任何成就/文案引用过「开了几个箱」这一探勘深度指标；v19.47 小地图暖金让「扫箱」可规划以来，
+// 全图可开启宝箱共 11 个（潮灯镇 2 + 雾语林 3 + 星井矿脉 2 + 洞窟宝藏 4），访遍村落/林/矿约半数箱即达成、
+// 属中期可达的常规目标（无需进矿脉深处/回廊），故单设此常量（与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL /
+// HUNT_GOAL / LVL5_GOAL / LVL10_GOAL / FIRSTBLOOD_GOAL 同一「成就阈值数据化」家族——v18.5 收口
+// firstblood 时该家族数值型门槛已全部收口，本次是该家族第一条「全新门槛」，沿用同一单源模式）
+const TREASURE_GOAL = 6;   // 成就「开箱寻宝」需累计开启的宝箱个数
+
+// 已开启宝箱计数（单一数据源）：world.onChestStep 开箱即向 hero.chests（Set）add，ACH_LIST 该条 ok/prog
+// 同用此函数——运行期 hero.chests 恒为 Set（snapshotHero 存档转数组、restoreChests/resetRun 读回均
+// new Set 还原），此处防御性兼容数组/缺失形态：Set 读 size、数组读 length、缺失计 0，绝无第二套口径；
+// 纯只读计数，不改任何状态
+function chestCount(g){ const c=(g&&g.chests)||{}; return (typeof c.size==='number') ? c.size : ((c&&typeof c.length==='number')?c.length:0); }
+
 // —— 药水恢复量（POTION_ 生命药水 / ELIXIR_ 高级灵药）—— 结算·战斗预览·商店文案三处唯一真源
 // 药水背包上限（POTION_CAP = 99）：商店购买拦截判定（shop.js）、背包已满提示文案、商店列表「现有X/99」、
 // 购买栏 置灰判定（view/menus.js）四处同读此源——调上限（如放宽到 120）只改 data.js 一处，四端同步，
@@ -1211,6 +1227,7 @@ const ACH_LIST=[
   {id:'names',      name:'名字归还', d:'替旧灯卫找回名字（巡灯人支线）', ok:g=>g.quests&&g.quests.side_name==='done'},
   {id:'mist',       name:'雾中辨形', d:'完成雾径猎手的雾灵委托', ok:g=>g.quests&&g.quests.side_mist==='done'},
   {id:'stone',      name:'旧账已结', d:'完成守书记的石壳委托', ok:g=>g.quests&&g.quests.side_stone==='done'},
+  {id:'chests',     name:'开箱寻宝', d:`累计开启 ${TREASURE_GOAL} 个宝箱`, ok:g=>chestCount(g)>=TREASURE_GOAL, prog:g=>`${chestCount(g)}/${TREASURE_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -1314,5 +1331,5 @@ export {
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
-  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH,
+  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL,
 };

@@ -16,6 +16,7 @@ import { deep } from './rules.js';
 import { startBattle, startRush } from './battle.js';
 import { randomEncounter } from './encounter.js';
 import { buildShopList } from './shop.js';
+import { applyAchievements } from './hero.js';
 import { setSideQuest } from './quests.js';
 
 const WALK_MS = 180;
@@ -206,6 +207,11 @@ function onChestStep(x, y, hero) {
   // 已开过的宝箱格等同普通地面（维持既有行为：仍会走遇敌槽结算）
   if (hero.chests.has(x + ',' + y)) { tickEncounter(x, y); return; }
   hero.chests.add(x + ',' + y);
+  // 开箱计数成就即时判定（v19.51 信息透明·新成就）：宝箱开启计数只存在 hero.chests（本函数开箱 add），
+  // 若不在开箱当场判定，「开箱寻宝」要等下一场战斗胜利的 applyAchievements 才会解锁，反馈迟到且易被
+  // 玩家当作「没解锁」；此处开箱即查（unlockedAchievements 只读 ACH_LIST 的 ok 谓词，纯判定零结算变化），
+  // 与 quests 交付时的即时判定（core.talkNext 同款顺序：先 applyAchievements 再报奖励）同一惯例
+  applyAchievements();
   // 开箱掉落（data.js CHEST_* 单一数据源）：与帮助页「宝箱掉落」标注同读此源，数值逐字不变——
   // 雾语林先判 60% 蘑菇，余 40% 再判 45% 金币（12+级×5），余 22% 药水；城镇/矿脉直接 45% 金币 / 55% 药水
   if (curMap() === 'dungeon' && Math.random() < CHEST_MUSHROOM) {
