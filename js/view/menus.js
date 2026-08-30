@@ -587,6 +587,14 @@ export function drawWin(){
   CTX.fillText('灯 芯 回 来 了',CV.width/2, 300);
   CTX.fillStyle='#e8eef1'; CTX.font='16px sans-serif';
   CTX.fillText(`最终等级 Lv.${S.G.level} · 金币 ${S.G.gold}`,CV.width/2,340);
+  // v19.49 战绩补全（信息透明·纯显示）：胜利画面此前只报 等级/金币，是唯一一处「战绩口径」缺失的
+  // run 总结屏——阵亡画面早有（等级/金币/累计讨伐/时间），尾声战绩页更有（讨伐/成就/记忆/金币/时间），
+  // 唯独「灯芯回来了」的瞬间看不到这趟的累计讨伐、成就数与冒险时长，想回味得先按 Enter 进尾声；
+  // 此处按同一口径补齐（与 drawDead/drawEnding 同读 hero.bestiary/hero.ach/hero.time，绝无第二套
+  // 数据源，成就上限读 ACH_LIST 单一数据源），居中 14px 不抢主标题与按钮行，纯显示零结算变化
+  const kills=Object.values(S.G.bestiary||{}).reduce((a,b)=>a+b,0);
+  CTX.fillStyle='#a8ff8a'; CTX.font='bold 14px sans-serif';
+  CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}`,CV.width/2,362);
   CTX.fillStyle='#7d93a3'; CTX.font='14px sans-serif';
   CTX.fillText('按 Enter 观看尾声 · 按 R 重新开始',CV.width/2,380);
 }
