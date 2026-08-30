@@ -17,6 +17,10 @@ export function migrateQuests(hero) {
   if (!hero) return hero;
   if (!hero.quests) hero.quests = {};
   if (!hero.fragments) hero.fragments = [];
+  // v19.41 图鉴「已遭遇」记录（信息透明·纯状态）：进战即记（battle.startBattle），
+  // 逃跑/战败后图鉴也能揭示名字与出没地；旧档/新档都在此兜底为空对象，
+  // 新增字段随 snapshotHero 全量快照自动持久化，零存档结构变更。
+  if (!hero.seen) hero.seen = {};
   const quests = hero.quests;
   if (quests.side_mushroom == null) {
     if (hero.quest === 1) quests.side_mushroom = 'active';

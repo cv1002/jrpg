@@ -90,6 +90,16 @@ function advanceQueue() {
 function startBattle(enemyDef) {
   cancelBattleQueue();
   S.enemy = deep(enemyDef);
+  // v19.41 图鉴「已遭遇」记录（信息透明·纯状态）：一进战即记入 hero.seen——
+  // 此前只有「击败」才进图鉴（hero.bestiary），逃跑/战败的敌人在图鉴里仍是 ❓？？？，
+  // 明明亲身撞见过却显示「从没遇到」；记下后图鉴对已遭遇未讨伐者揭示名字与出没地，
+  // 兵力/弱点仍在讨伐后才显示（不剧透）。名字经 canonicalName 归一（真身→本体，与 bestiary 同口径），
+  // 纯追加字段零结算变化（逃跑成功率/掉落/经验均不受影响）。
+  {
+    const _seenKey = canonicalName(S.enemy.name);
+    if (S.G.seen) S.G.seen[_seenKey] = true;
+    else S.G.seen = { [_seenKey]: true };
+  }
   S.enemy.hpMax = enemyDef.hpMax || enemyDef.hp;
   S.G.defending = false;
   S.G.charge = false;

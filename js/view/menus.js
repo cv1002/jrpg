@@ -124,7 +124,9 @@ export function drawCodex(){
   drawWorld(); panel(80,40,480,410,'— 记忆图鉴 —');
   const PAGE=10;
   const names=Object.keys(hero.bestiary||{});
-  const rows=BESTIARY_TARGET.map(n=>({n,got:!!(hero.bestiary||{})[n]}));
+  // v19.41 图鉴「已遭遇」揭示（信息透明·纯显示）：rows 增补 seen（hero.seen，battle.startBattle 进战即记，
+  // 与 bestiary 同经 canonicalName 归一）——已遭遇未讨伐的敌人不再伪装成「从没遇到」，见 r.seen 分支
+  const rows=BESTIARY_TARGET.map(n=>({n,got:!!(hero.bestiary||{})[n],seen:!!((hero.seen||{})[n])}));
   if(names.length===0){
     text('尚未击败任何敌人。',320,170,'16px','#ffd24a','center');
     text('前往雾语林的草丛，开始你的冒险吧！',320,200,'14px','#7d93a3','center');
@@ -134,7 +136,23 @@ export function drawCodex(){
     const shown=rows.slice(S.codexScroll,S.codexScroll+PAGE);
     shown.forEach((r,i)=>{
       const y=92+i*30;
-      if(!r.got){ text('❓ ？？？',120,y,'15px','#5a6a78'); text('未讨伐',420,y,'14px','#4b5a66','right'); return; }
+      if(!r.got){
+        // 已遭遇·未讨伐：揭示名字/出没地/「已遭遇 ✕0」，兵力/弱点仍加密（讨伐后同 got 行才显示）——
+        // 此前连自己撞见过的强敌（石心魔像/残焰魔像/Boss）都显示 ❓？？？「从没遇到」，与「信息透明」
+        // 主题相悖；名字/位置经 whereFind 与 got 行同源（出没等级/精英概率同样揭示，不剧透兵力）
+        if(r.seen){
+          const n=r.n; const isBoss=/魔王/.test(n);
+          const nm=(isBoss?'👿 ':'• ')+n;
+          text(nm,120,y,'15px','#8fa8b8');
+          const nmw=CTX.measureText(nm).width;
+          text('（'+whereFind(n)+'）',128+nmw,y,'12px','#5f8aa8');
+          text('已遭遇 ✕0',420,y,'14px','#8fa8b8','right');
+          text('⚠️ 尚未讨伐 · 兵力待收复',124,y+16,'11px','#7d93a3');
+        } else {
+          text('❓ ？？？',120,y,'15px','#5a6a78'); text('未讨伐',420,y,'14px','#4b5a66','right');
+        }
+        return;
+      }
       const n=r.n; const isBoss=/魔王/.test(n); const rw=monReward(n,hero.level);
       const nm=(isBoss?'👿 ':'• ')+n;
       text(nm,120,y,'15px',isBoss?'#d88bff':'#e8eef1');
