@@ -301,10 +301,17 @@ function minimapColor(tile, hero, x, y) {
   if (tile === TY.CAVEWALL) return '#151a22';
   if (tile === TY.STELE) return '#9aa4ad';
   if (tile === TY.GATE || tile === TY.EXIT) return '#4a90d9';
-  const pulseChest = tile === TY.CHEST && hero
-    && ((hero.quests && hero.quests.side_mushroom === 'active') || hero.caveBoss)
-    && !hero.chests.has(x + ',' + y);
-  if (pulseChest) return (Math.floor(Date.now() / UI_PULSE_MS) % 2 === 0) ? '#ffd24a' : '#8a5a00';
+  // 未开启宝箱常驻暖金色（信息透明·纯显示）：世界画面始终画着宝箱精灵（TILE_PROP），
+  // 小地图此前却与草地同色（#2f6b2f 一色到底）——未开启的宝箱除非处于蘑菇支线/洞窟宝藏的
+  // 「金光脉动」引导态，否则在小地图上完全隐形，玩家扫小地图看不出「哪还有宝可开」；
+  // 现区分三态：未开启且处引导态→维持既有金光脉动（v3.x 蘑菇支线 + v3.36 洞窟宝藏同判）、
+  // 未开启的常态→常驻暖金 #c9a86a、开启过（hero.chests 已有该坐标）→回草地色。三态都只读
+  // hero.chests / 任务态，与画布那侧 TILE_CHEST_OPEN 同源，纯显示零结算变化。
+  if (tile === TY.CHEST && hero && !hero.chests.has(x + ',' + y)) {
+    const guided = (hero.quests && hero.quests.side_mushroom === 'active') || hero.caveBoss;
+    if (guided) return (Math.floor(Date.now() / UI_PULSE_MS) % 2 === 0) ? '#ffd24a' : '#8a5a00';
+    return '#c9a86a';
+  }
   return '#2f6b2f';
 }
 
