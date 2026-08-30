@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.55';
+const GAME_VERSION = 'v19.56';
 
 const T=32;
 
@@ -12,6 +12,11 @@ const MAPS={
   // 潮灯镇（v13.5 重排）：广场大灯地标居中，商店/旅馆/酿造环广场，井在广场北，东门出镇
   village:{
     name:'潮灯镇',
+    // 推荐等级（v19.56 区域难度透明化·单一数据源）：world.transition 进图危险预警与
+    // TRAVEL_LIST 快速旅行「推荐 Lv.X 起」提示同读此源——想调某图进图门槛只改这里一处，
+    // 预警与旅行提示永不漂移；与 ALTAR_TAG 祭坛 ⚠Lv（SPECIES[].lv）/ v19.52 试炼阵容预览同属
+    // 「难度透明」体系
+    recLv:1,
     // 区域修正：镇内及其周边魔物偏弱（battle.randomEncounter 与 HUD 同读此源）
     zone:{ label:'安宁之地', hp:0.9, atk:0.9 },
     // 遇敌池限定（v19.44 数值平衡·encounter.randomEncounter 同读）：潮灯镇是「安宁之地」安全枢纽，
@@ -59,6 +64,7 @@ const MAPS={
   // 雾语林（v13.5 重排）：西入口 → 蛇形主路 → 中段营地（泉水+猎手）→ 北环路蘑菇宝箱 → 东祭坛，裂洞在祭坛南
   dungeon:{
     name:'雾语林',
+    recLv:3,
     portals:{
       GATE:{ to:'cave' },
       EXIT:{ to:'village' },
@@ -96,6 +102,7 @@ const MAPS={
   // 星井矿脉（v13.5 重排）：轨道引导线贯穿——入口（井巫）→ 矿车区（车夫/试炼碑）→ 深处祭坛 → 中央水晶
   cave:{
     name:'星井矿脉',
+    recLv:6,
     // 区域修正：高难区魔物更强，经验/金币同步上浮（battle.randomEncounter 与 HUD 同读此源）
     zone:{ label:'凶险之地', hp:1.2, atk:1.15, def:1.1, xp:1.15, gold:1.15 },
     portals:{
@@ -134,6 +141,7 @@ const MAPS={
   // 无字回廊（v13.5 新图）：被忘掉的名字存放处——线性回廊 + 北壁 4 名字石碑 + 中段残焰魔像 + 东端终焉祭坛
   gallery:{
     name:'无字回廊',
+    recLv:10,
     // 区域修正：终焉之地，魔物最凶（battle.randomEncounter 与 HUD 同读此源）
     zone:{ label:'忘却之地', hp:1.3, atk:1.2, def:1.15, xp:1.3, gold:1.3 },
     portals:{
@@ -1298,7 +1306,10 @@ const HELP_PAGES=[
   ],
 ];
 
-const TRAVEL_LIST=[['village','潮灯镇','记忆之镇：商店·旅馆·灯长委托（补给与任务）','安全区 · Lv.1 即可'],['dungeon','雾语林','雾语林：魔物·宝箱·祭坛·矿脉入口','推荐 Lv.3 起 · 当心精英'],['cave','星井矿脉','星井矿脉：强敌·试炼碑·终焉水晶（高难区域）','推荐 Lv.6 起 · 高难'],['gallery','无字回廊','被遗忘者的回廊：守名者·名字石碑·残焰魔像·终焉之神','推荐 Lv.10 起 · 极高难']];
+// 快速旅行列表（v19.56 区域难度透明化）：「推荐 Lv.X 起」提示由 MAPS[].recLv 派生（与 world.transition
+// 进图危险预警同读此源）——此前四个推荐等级是手写裸字面量，与真实进图体验各自为政；现派生式拼接的
+// 输出串与旧文案逐字相等（1/3/6/10），零显示变化，调门槛只改 MAPS.recLv 一处两处同步
+const TRAVEL_LIST=[['village','潮灯镇','记忆之镇：商店·旅馆·灯长委托（补给与任务）','安全区 · Lv.'+MAPS.village.recLv+' 即可'],['dungeon','雾语林','雾语林：魔物·宝箱·祭坛·矿脉入口','推荐 Lv.'+MAPS.dungeon.recLv+' 起 · 当心精英'],['cave','星井矿脉','星井矿脉：强敌·试炼碑·终焉水晶（高难区域）','推荐 Lv.'+MAPS.cave.recLv+' 起 · 高难'],['gallery','无字回廊','被遗忘者的回廊：守名者·名字石碑·残焰魔像·终焉之神','推荐 Lv.'+MAPS.gallery.recLv+' 起 · 极高难']];
 
 const HERO_NAMES=['余烬','灯见','潮'];
 const DEFAULT_NAME = HERO_NAMES[0]; // 默认主角名（newGame 兜底/resetRun 兜底/启动建档同读此源，改名单只动 HERO_NAMES）

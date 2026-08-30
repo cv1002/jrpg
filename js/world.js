@@ -353,7 +353,18 @@ function transition(name) {
   S.walk = null;
   bind.renderHUD();
   resumeBgm();
-  bind.boxMsg(`进入了【${MAPS[curMap()].name}】`, SHORT_MSG_MS);
+  // 区域难度透明化（v19.56 信息透明·纯显示，承接 v19.52 试炼预览 / ALTAR_TAG ⚠Lv 标签的「难度透明」
+  // 体系）：进入某图时若玩家等级低于该图推荐等级（data.js MAPS[].recLv 单一数据源，快速旅行「推荐
+  // Lv.X 起」提示同读此源），入口处直接预警「魔物远强于你」并给出推荐等级——此前低等级冒进强区
+  // 只有在吃下第一口高伤后才反应过来，残血回村才知道这图现在不该进；此处进图即提醒（快速旅行/传送门/
+  // 水晶开门三条入口同走本函数，统一生效）。只读不改，零结算/遇敌概率变化；等级达标或回村级安全图
+  // 则维持原「进入了【X】」提示，行为逐字不变
+  const rec = MAPS[name].recLv || 0;
+  if (S.G && S.G.level < rec) {
+    bind.boxMsg(`⚠️ 前方【${MAPS[name].name}】的魔物远强于你（推荐 Lv.${rec} · 当前 Lv.${S.G.level}），先补给再战！`, NARR_MSG_MS);
+  } else {
+    bind.boxMsg(`进入了【${MAPS[curMap()].name}】`, SHORT_MSG_MS);
+  }
 }
 
 export {
