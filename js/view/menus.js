@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -107,7 +107,14 @@ function whereFind(name){
   // - v13.7 剧情重构后终焉之神已随主线迁至无字回廊东端祭坛（原「星井矿脉·终焉水晶」为旧位置，水晶已化为开门机关）；
   // - 残焰魔像（回廊中段精英）此前缺表项，会误显「草丛随机遇敌」——补上。
   const LOC={'石心魔像':'雾语林·稀有精英','幽冥魔王':'雾语林祭坛','洞窟领主':'星井矿脉深处','终焉之神':'无字回廊东端','残焰魔像':'无字回廊中段'};
-  let loc = LOC[name]||'草丛随机遇敌';
+  // v19.50 普通魔物出没地（遇敌池单一数据源派生，纯显示）：此前 8 种普通魔物一律笼统标「草丛随机遇敌」，
+  // 与真实遇敌池脱钩——v19.44 潮灯镇限定四基础怪、无字回廊限定雾灵/石魔像/骷髅兵后，图鉴仍写
+  // 「草丛随机遇敌」会让玩家误以为树精/石魔像也出现在镇内草地（那版恰恰把它们清出镇子）。
+  // 现与 encounter.randomEncounter 的 MAPS[].pool 判定同源派生：某魔物出现在一张图 ⇔ 该图无 pool 限定
+  // （雾语林/星井矿脉 = 全 8 种）或 pool 含其名；图名读同一 MAPS[].name——今后调任何图的遇敌池，
+  // 图鉴出没地自动跟随，永不漂移。BOSS/精英仍走上方 LOC 剧情遭遇表。
+  let loc = LOC[name] ||
+    Object.values(MAPS).filter((def)=>!def.pool || def.pool.includes(name)).map((def)=>def.name).join(' · ');
   // v12.3: 出没等级门槛（与 battle 遇敌分布同源 MON_BASE.minLv / ELITE_GATE_LV，纯显示）——
   // 树精/石魔像/石心魔像 都要 Lv.3 才在野外出没，图鉴一眼看清「为什么还没遇到它」
   const lv = spawnLv(name);
