@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.41';
+const GAME_VERSION = 'v19.42';
 
 const T=32;
 
@@ -905,8 +905,13 @@ const GOLEM_SHIELD_ACT = (SPECIES['石心魔像'].acts || []).find(a => a.type =
 const MON_BASE=[
   // w(lv) 遇敌权重（单一数据源）：encounter.encounterWeight 与历史公式逐字一致；
   // minLv 出没等级门槛：仅 树精/石魔像 为 3，其余缺省 1——battle.encounterWeight 与图鉴「Lv.3起出没」标注同读此源
+  // 基础怪渐进退场（v19.42 数值平衡）：史莱姆/哥布林本就是 max(1,4-⌊lv/2⌋) 随级衰减，唯独野狼以恒定 3
+  // 常驻到高等级——Lv.10+ 在星井矿脉野狼出现频率与 Lv.1 在潮灯镇时一样高，弱怪的强度/奖励却明显掉队
+  // （hp22+5lv 攻7+2lv xp12+3lv，低于同级骷髅兵/毒蛇/雾灵），高等级图理应由强怪池主导；
+  // 改为 max(1,3-⌊lv/4⌋)：Lv.1-3 逐字不变（仍为 3），Lv.4-7 降至 2、Lv.8+ 与史莱姆/哥布林同为兜底 1——
+  // 野狼保留「偶遇」薄存在、强怪主导，遇敌分布整体更贴合「渐进」曲线，行为低等级零变化
   {name:'史莱姆',hp:[16,5],atk:[5,2],def:[2,1],xp:[8,3],gold:[8,2],color:'#7fd84f',weak:'fire',draw:'slime',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
-  {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf',w:()=>3},
+  {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf',w:(lv)=>Math.max(1,3-Math.floor(lv/4))},
   {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,4],gold:[15,3],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
   {name:'哥布林',hp:[20,5],atk:[6,2],def:[3,1],xp:[10,3],gold:[10,2],color:'#6fae4f',weak:'ice',draw:'goblin',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
   {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:POISON_CHANCE,weak:'ice',draw:'snake',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
