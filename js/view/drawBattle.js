@@ -75,17 +75,29 @@ export function drawSkillMenu() {
   const hero = S.G;
   const enemy = S.enemy;
   panel(150, 96, 340, 308, '— 技能 —');
+  // v19.48 技能菜单光标（输入体验·信息透明）：技能菜单此前只能按数字键 1-7 直发技能，是
+  // 全游戏唯一不能用 ↑↓ 导航的菜单（商店/快速旅行/暂停都走 onArrow 惯例）——新增 S.skillSel
+  // 光标（state.js 注册），高亮当前行、Enter 施放、↑↓ 移动；数字键快捷原行为逐字保留，
+  // 纯输入层/显示层改动，不碰任何技能结算公式
+  const sel = Math.max(0, Math.min(hero.skills.length - 1, S.skillSel || 0));
   hero.skills.forEach((s, i) => {
     const skill = SKILL_DATA[s];
     const banned = !!(enemy && enemy.forbid && ((skill.kind === 'heal' && enemy.forbid.includes('heal')) || enemy.forbid.includes(s)));
     const ok = hero.mp >= skill.mp && !banned;
     const col = !ok ? '#7d93a3' : (skill.kind === 'heal' ? '#8ff0a0' : '#e8eef1');
+    // 光标高亮（纯显示·与 shop/travel/pause 同款 rgba(255,210,74,.15) 底条 + ▶）
+    const focus = i === sel;
+    if (focus) {
+      CTX.fillStyle = 'rgba(255,210,74,.15)';
+      rr(162, 148 + i * 36, 320, 32, 6);
+      CTX.fill();
+    }
     let prev = '';
     // v14.0 蓄力状态下治疗不消耗蓄力（纯显示注释，与 battle.doSkill 同源）：储备清晰的「蓄力保留」标注
     if (skill.kind === 'heal') prev = ' +' + Math.round(hero.hpMax * skill.heal) + 'HP' + (skill.cleanse ? ' ·解毒' : '') + (hero.charge ? ' ·蓄力保留' : '');
     else prev = ' ≈' + skillEstimate(hero, enemy, skill) + '伤';
     const hint = skill.hint ? (' · ' + skill.hint) : '';
-    text(`[${i + 1}] ${s}${prev}${banned ? '  ⛔封印' : (ok ? '' : '  ⛔')}`, 170, 160 + i * 36, '14px', col);
+    text(`${focus ? '▶ ' : '  '}[${i + 1}] ${s}${prev}${banned ? '  ⛔封印' : (ok ? '' : '  ⛔')}`, 170, 160 + i * 36, '14px', col);
     // MP 消耗标注（信息透明）：蓝=够用 红=不足 灰=被封印；右对齐独立列，不挤占技能名/伤害预览
     text(`MP ${skill.mp}`, 474, 160 + i * 36, 'bold 12px', banned ? '#7d93a3' : (hero.mp >= skill.mp ? '#62c6ff' : '#e14b3f'), 'right');
     text(hint, 188, 176 + i * 36, '11px', '#7d93a3');
@@ -95,11 +107,12 @@ export function drawSkillMenu() {
     if (!banned && hero.mp < skill.mp) text(`⛔ 还差 ${skill.mp - hero.mp} MP`, 474, 176 + i * 36, 'bold 11px', '#e14b3f', 'right');
   });
   text(`当前 MP：${hero.mp}/${hero.mpMax}${hero.charge ? `  · 蓄力×${CHARGE_MULT}` : ''}`, 320, 368, '13px', '#7d93a3', 'center');
-  text('[数字键] 选择   [Esc] 取消', 320, 394, '13px', '#7d93a3', 'center');
+  text('[↑↓]选择  [Enter]施放  [数字键]快捷  [Esc]取消', 320, 394, '13px', '#7d93a3', 'center');
 }
 
 export function openSkillMenu() {
   S.skillMenuOpen = true;
+  S.skillSel = 0;   // v19.48：打开技能菜单时光标复位到第一招（与 shopSel/travelSel 同款复位惯例）
   drawBattle();
 }
 

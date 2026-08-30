@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.47';
+const GAME_VERSION = 'v19.48';
 
 const T=32;
 
@@ -1240,7 +1240,7 @@ const HELP_PAGES=[
     ['快速旅行','T'],
     ['操作说明','H'],
     ['静音','M'],
-    ['战斗','1攻击 2技能 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力(下击/技能×' + CHARGE_MULT + ') · Boss无法逃跑'],
+    ['战斗','1攻击 2技能(↑↓/Enter 选招) 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力(下击/技能×' + CHARGE_MULT + ') · Boss无法逃跑'],
     ['存档槽','标题按 1/2/' + SAVE_SLOTS + ' 选择 · L 读档'],
   ],
   [

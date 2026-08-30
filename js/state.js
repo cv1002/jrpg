@@ -39,6 +39,7 @@ export const S = {
   createName: 0,
   createDiff: 0,
   skillMenuOpen: false,
+  skillSel: 0,
   enemy: null,
   fx: [],
   parr: [],

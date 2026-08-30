@@ -119,10 +119,23 @@ const screens = {
           const list = S.G.skills;
           const idx = ['1', '2', '3', '4', '5', '6', '7'].indexOf(e.key);
           if (idx >= 0 && idx < list.length) {
+            S.skillSel = idx;   // v19.48：数字快捷施放的同时记下光标，下次打开高亮同一招
             S.skillMenuOpen = false;
             playerAction('skill', list[idx]);
           } else if (isEsc(e)) {
             S.skillMenuOpen = false;
+          } else if (e.key === 'Enter' && list.length) {
+            // v19.48：Enter 施放光标所在技能（与商店/快速旅行 Enter 确认同一惯例）
+            const i = Math.max(0, Math.min(list.length - 1, S.skillSel || 0));
+            S.skillSel = i;
+            S.skillMenuOpen = false;
+            playerAction('skill', list[i]);
+          } else {
+            // v19.48：↑↓ 移动技能光标（与 shopSel/travelSel/pauseSel 同款 onArrow 循环）
+            onArrow(e,
+              () => { S.skillSel = (S.skillSel + 1) % list.length; SFX.select(); },
+              () => { S.skillSel = (S.skillSel - 1 + list.length) % list.length; SFX.select(); }
+            );
           }
         }
         return;
