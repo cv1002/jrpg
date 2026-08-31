@@ -178,6 +178,16 @@ function hasSlot(slot) {
   catch (e) { return false; }
 }
 
+// 标题画面存档槽「最后游玩时间」格式化：旧档无 savedAt 时返回空串，避免破坏既有显示
+function fmtAgo(ms) {
+  if (!ms || typeof ms !== 'number') return '';
+  const sec = Math.floor((Date.now() - ms) / 1000);
+  if (sec < 60) return ' · 刚刚';
+  if (sec < 3600) return ' · ' + Math.floor(sec / 60) + '分钟前';
+  if (sec < 86400) return ' · ' + Math.floor(sec / 3600) + '小时前';
+  return ' · ' + Math.floor(sec / 86400) + '天前';
+}
+
 function slotPreview(slot) {
   try {
     const raw = localStorage.getItem(saveKey(slot));
@@ -194,7 +204,8 @@ function slotPreview(slot) {
     // v19.45 存档预览补难度（信息透明·纯显示）：多存档槽时标题页一眼区分普通/困难档——
     // 难度与「状态面板」同源读 hero.diff（DIFFS 下标），绝无第二套口径；仅困难档追加标注，
     // 普通默认档不刷屏（与 drawStatus 只标困难的惯例一致），纯显示零结算变化
-    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}`;
+    // v19.64 存档预览补时间戳：saveGame 写入 savedAt，slotPreview 显示相对时间，方便多槽玩家一眼识别最新档
+    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)}`;
   } catch (e) {
     return null;
   }
@@ -219,7 +230,7 @@ function saveGame() {
     const hero = S.G;
     if (!hero) return;
     const snap = snapshotHero(hero);
-    localStorage.setItem(saveKey(S.curSaveSlot), JSON.stringify({ G: snap, chests: snap.chests }));
+    localStorage.setItem(saveKey(S.curSaveSlot), JSON.stringify({ G: snap, chests: snap.chests, savedAt: Date.now() }));
     S.saveMsg = `💾 已存档到槽 ${S.curSaveSlot}`;
     bind.renderHUD();
     SFX.select();
