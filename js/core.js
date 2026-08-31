@@ -86,7 +86,7 @@ function brewNow() {
   const hero = S.G;
   if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) {
     SFX.cancel();
-    bind.boxMsg('🍄 任务蘑菇尚未上交，先去找灯长吧！', STRONG_MSG_MS);
+    bind.boxMsg(`🍄 任务蘑菇尚未上交（当前 ${hero.mushrooms}/${MUSHROOM_GOAL} 株），先去找灯长吧！`, STRONG_MSG_MS);
     return;
   }
   if (hero.mushrooms < BREW_MUSHROOMS || hero.gold < BREW_GOLD) {

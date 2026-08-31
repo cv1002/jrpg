@@ -46,7 +46,7 @@ export function sellMushroom() {
   }
   if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) {
     SFX.cancel();
-    bind.boxMsg(`🍄 这是灯长委托的蘑菇，集齐 ${MUSHROOM_GOAL} 株前不能卖！`, SYS_MSG_MS);
+    bind.boxMsg(`🍄 这是灯长委托的蘑菇，当前 ${hero.mushrooms}/${MUSHROOM_GOAL} 株，集齐 ${MUSHROOM_GOAL} 株前不能卖！`, SYS_MSG_MS);
     return;
   }
   hero.mushrooms--;
