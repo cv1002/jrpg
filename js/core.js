@@ -188,6 +188,16 @@ function fmtAgo(ms) {
   return ' · ' + Math.floor(sec / 86400) + '天前';
 }
 
+// 累计游玩时长格式化：与状态页/结算页 fmtTime 同算法，slotPreview 纯显示「这个档玩了多久」
+// 旧档无 time 字段时按 0 显示 00:00:00，不抛错；零结算变化
+function fmtTime(s) {
+  s = Math.max(0, Math.floor(s || 0));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor(s % 3600 / 60);
+  const ss = s % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
+}
+
 function slotPreview(slot) {
   try {
     const raw = localStorage.getItem(saveKey(slot));
@@ -205,7 +215,9 @@ function slotPreview(slot) {
     // 难度与「状态面板」同源读 hero.diff（DIFFS 下标），绝无第二套口径；仅困难档追加标注，
     // 普通默认档不刷屏（与 drawStatus 只标困难的惯例一致），纯显示零结算变化
     // v19.64 存档预览补时间戳：saveGame 写入 savedAt，slotPreview 显示相对时间，方便多槽玩家一眼识别最新档
-    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)}`;
+    // v19.65 存档预览补累计游玩时长：slotPreview 追加 ⏱HH:MM:SS，多槽时一眼区分「哪个档玩得更久」，
+    // 与状态页/结算页 fmtTime 同源算法，纯显示零结算变化
+    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)}`;
   } catch (e) {
     return null;
   }
