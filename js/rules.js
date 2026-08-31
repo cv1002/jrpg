@@ -1,7 +1,7 @@
 // ============================================================
 // rules.js —— 无副作用的战斗 / 成长 / 图鉴计算
 // ============================================================
-import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
+import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, EMBER_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
 
 export function deep(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -78,6 +78,10 @@ export function monReward(name, level) {
   const base = MON_BASE.find((m) => m.name === name);
   if (base) return { xp: base.xp[0] + lv * base.xp[1], gold: base.gold[0] + lv * base.gold[1] };
   if (name === ELITE_GOLEM.name) return { xp: ELITE_GOLEM.xp[0] + lv * ELITE_GOLEM.xp[1], gold: ELITE_GOLEM.gold[0] + lv * ELITE_GOLEM.gold[1] };
+  // 残焰魔像（无字回廊中段精英）：固定兵力（不随玩家等级成长），报酬 xp/gold 直读 data.js EMBER_GOLEM
+  // 单一数据源——与 BOSS/CAVE_BOSS/TRUE_BOSS 同为「固定值直达」档（此前漏分支返回 null，图鉴已讨伐行
+  // 因 `if(rw)` 守卫整行不绘，玩家打完这位晚期精英反而看不到它的兵力/报酬，与石心魔像/三 Boss 不一致）
+  if (name === EMBER_GOLEM.name) return { xp: EMBER_GOLEM.xp, gold: EMBER_GOLEM.gold };
   const boss = BOSS_DEFS[canonicalName(name)];
   if (boss) return { xp: boss.xp, gold: boss.gold };
   return null;
@@ -100,6 +104,8 @@ export function codexStats(name, level) {
   const base = MON_BASE.find((m) => m.name === name);
   if (base) return { hp: base.hp[0] + lv * base.hp[1], atk: base.atk[0] + lv * base.atk[1], def: base.def[0] + lv * base.def[1] };
   if (name === ELITE_GOLEM.name) return { hp: ELITE_GOLEM.hp[0] + lv * ELITE_GOLEM.hp[1], atk: ELITE_GOLEM.atk[0] + lv * ELITE_GOLEM.atk[1], def: ELITE_GOLEM.def[0] + lv * ELITE_GOLEM.def[1] };
+  // 残焰魔像：固定兵力直读 data.js EMBER_GOLEM（与 monReward 同款补分支，单源、零结算，纯图鉴显示）
+  if (name === EMBER_GOLEM.name) return { hp: EMBER_GOLEM.hp, atk: EMBER_GOLEM.atk, def: EMBER_GOLEM.def };
   const boss = BOSS_DEFS[canonicalName(name)];
   if (boss) return { hp: boss.hp, atk: boss.atk, def: boss.def };
   return null;
