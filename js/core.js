@@ -91,7 +91,10 @@ function brewNow() {
   }
   if (hero.mushrooms < BREW_MUSHROOMS || hero.gold < BREW_GOLD) {
     SFX.cancel();
-    bind.boxMsg('材料不足，无法酿造！', EVENT_MSG_MS);
+    // v19.69 酿造材料不足提示具体化（信息透明·纯显示）：此前只报笼统「材料不足」，
+    // 玩家不知道自己差多少蘑菇/金币——与 v19.67 商店反馈同一「消费/配方透明」主线，
+    // 直接读 data.js BREW_MUSHROOMS/BREW_GOLD 同源常量，配方调整时提示自动跟随
+    bind.boxMsg(`材料不足：酿造需要 ${BREW_MUSHROOMS} 株蘑菇 + ${BREW_GOLD} 金币（当前 ${hero.mushrooms || 0}/${hero.gold || 0}）`, EVENT_MSG_MS);
     return;
   }
   hero.mushrooms -= BREW_MUSHROOMS;
