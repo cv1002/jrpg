@@ -355,7 +355,17 @@ export function drawJournal(){
 export function drawHelp(){
   drawWorld(); panel(70,28,500,424,'— 操作说明 —');
   const P=HELP_PAGES[S.helpPage];
-  P.forEach((r,i)=>text(`${r[0]}   ${r[1]}`,100,80+i*34,'14px',i===P.length-1?'#ffd24a':'#e8eef1'));
+  // v19.59 帮助页排版修复（操作说明页 14 行在固定 34px 行距下最后两行 y=488/522 落在画布 480 之下、
+  // 盖住页脚——玩家看不到「战斗/存档槽」两行）：行距按页长自适应——>10 行长页收紧到 25px（14 行
+  // 最后基线 y=405 留白充裕且不再压页脚），短页（地图指南/机制/试炼 ≤7 行）保持 34px、渲染逐位不变；
+  // 行若带第三元素 r[2]（data.js 战斗行拆出的次行说明）在其基线 +18px 处以 12px 次级灰另起一行
+  const sp = P.length > 10 ? 25 : 34;
+  let y = 80;
+  P.forEach((r, i) => {
+    text(`${r[0]}   ${r[1]}`, 100, y, '14px', i === P.length - 1 ? '#ffd24a' : '#e8eef1');
+    if (r[2]) { text(r[2], 100, y + 18, '12px', '#7d93a3'); y += 16; }
+    y += sp;
+  });
   text(`第 ${S.helpPage+1}/${HELP_PAGES.length} 页   ·   ← → 翻页   ·   H/Esc 关闭`,320,452,'12px','#7d93a3','center');
 }
 
