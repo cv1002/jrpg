@@ -226,11 +226,11 @@ function onChestStep(x, y, hero) {
     const gold = CHEST_GOLD_BASE + hero.level * CHEST_GOLD_PER_LV;
     hero.gold += gold;
     SFX.coin();
-    bind.boxMsg(`📦 宝箱！获得 ${gold} 金币`);
+    bind.boxMsg(`📦 宝箱！获得 ${gold} 金币（共 ${hero.gold} 枚）`);
   } else {
     hero.item++;
     SFX.item();
-    bind.boxMsg('📦 宝箱！获得 1 个🍖 生命药水');
+    bind.boxMsg(`📦 宝箱！获得 1 个🍖 生命药水（共 ${hero.item} 瓶）`);
   }
   bind.renderHUD();
 }
