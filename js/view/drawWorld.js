@@ -4,6 +4,7 @@
 import { S, curMap } from '../state.js';
 import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
+import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
 import { CV, CTX, rr, text } from './canvas.js';
 import { TILE, TILE_PROP, TILE_GRASS_VAR, TILE_CHEST_OPEN } from './tiles.js';
@@ -454,6 +455,10 @@ export function drawWorld() {
         // 现直接列阵容：顺序与 battle.startRush 同读 RUSH_BOSSES 单一数据源，推荐等级与战斗 enemyLv / 祭坛
         // ⚠Lv 标签同读 SPECIES[].lv（真身/普通同名归一），阵容/等级永不漂移。只读不改，零结算变化。
         const roster = RUSH_BOSSES.map((b) => `${b.name}Lv${(SPECIES[b.name] && SPECIES[b.name].lv) || 1}`).join('→');
+        // v19.60 试炼奖励预告（信息透明·纯显示）：v19.52 列阵容时漏掉的另一半——「三连战通关奖多少钱」
+        // 只在进入试炼战后的战斗预览里才显示（drawBattle 读同源 rushReward），玩家在碑前做「值不值得开打」
+        // 决策时它仍是黑盒；现与阵容同挂在碑上、同读 rules.rushReward(玩家当前等级) 单一数据源（与
+        // battle.winBattle 结算 / drawBattle 战斗预览逐字同源，随等级实时显示）。只读不改、零结算变化。
         const lab = ready ? `⚔️ 试炼三连战 ${roster}` : '试炼·未解锁';
         const lx = x * T - c.x + T / 2;
         const ly = y * T - c.y;
@@ -465,6 +470,19 @@ export function drawWorld() {
         CTX.fillStyle = '#fff';
         CTX.textAlign = 'center';
         CTX.fillText(lab, lx, ly - 9);
+        if (ready) {
+          const rewLab = `💰 通关奖 ${rushReward(S.G.level)} 金（随等级）`;
+          const rw = CTX.measureText(rewLab).width + 12;
+          CTX.fillStyle = 'rgba(10,16,24,.88)';
+          rr(lx - rw / 2, ly + 2, rw, 17, 4);
+          CTX.fill();
+          CTX.strokeStyle = 'rgba(255,210,74,.55)';
+          CTX.lineWidth = 1;
+          rr(lx - rw / 2, ly + 2, rw, 17, 4);
+          CTX.stroke();
+          CTX.fillStyle = '#ffd24a';
+          CTX.fillText(rewLab, lx, ly + 14);
+        }
       }
     }
     CTX.textAlign = 'left';
