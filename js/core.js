@@ -102,7 +102,10 @@ function brewNow() {
   hero.potion2++;
   SFX.levelup();
   bind.renderHUD();
-  bind.boxMsg('🧪 酿造成功！高级灵药已放入背包（F/战斗[3]使用）', SYS_MSG_MS);
+  // v19.70 酿造成功反馈追加剩余材料（信息透明·纯显示）：v19.69 已补齐材料不足时的差额提示，
+  // 但成功分支只报「酿造成功」——玩家交完材料后想确认包里还剩多少蘑菇/金币，还得再按 I 看状态页。
+  // 直接读结算后的 hero.mushrooms / hero.gold，在成功文案末尾追加剩余数量，零结算变化。
+  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币；F/战斗[3]使用）`, SYS_MSG_MS);
 }
 
 function doTravel() {
