@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.60';
+const GAME_VERSION = 'v19.61';
 
 const T=32;
 
@@ -1253,6 +1253,11 @@ const ACH_LIST=[
   {id:'mist',       name:'雾中辨形', d:'完成雾径猎手的雾灵委托', ok:g=>g.quests&&g.quests.side_mist==='done'},
   {id:'stone',      name:'旧账已结', d:'完成守书记的石壳委托', ok:g=>g.quests&&g.quests.side_stone==='done'},
   {id:'chests',     name:'开箱寻宝', d:`累计开启 ${TREASURE_GOAL} 个宝箱`, ok:g=>chestCount(g)>=TREASURE_GOAL, prog:g=>`${chestCount(g)}/${TREASURE_GOAL}`},
+  // 灯火同心（v19.61 新成就·支线全收集）：完成全部支线任务——判定/描述/进度三处同源于 QUESTS 的
+  // kind==='side' 列表（数量由数据推导、不写死）：未来增删支线（QUESTS 增删一条）成就自动跟随，
+  // 绝无第二套口径；读的是既有 g.quests.<id>==='done' 存档字段（与 quest/cartman/names/mist/stone
+  // 五条单支线成就同口径，交付侧 status 由 quests.setSideQuest 写定），零新计数/零新状态/零新依赖
+  {id:'allquests', name:'灯火同心', d:`完成全部 ${Object.values(QUESTS).filter(q=>q.kind==='side').length} 个支线任务`, ok:g=>Object.values(QUESTS).filter(q=>q.kind==='side').every(q=>(g.quests||{})[q.id]==='done'), prog:g=>{const s=Object.values(QUESTS).filter(q=>q.kind==='side');return `${s.filter(q=>(g.quests||{})[q.id]==='done').length}/${s.length}`;}},
 ];
 
 function codexTag(name) {
