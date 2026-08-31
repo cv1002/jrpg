@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.72 状态页资源总览追加宝箱计数——按 I 一眼看清开箱进度（体验打磨·信息透明，v19.71 补齐宝箱反馈后继续把「探索深度指标」收进状态页）
+
+|- 【状态页资源行仍缺「已开几个宝箱」】v19.40 补齐魔法蘑菇计数后，金币/药水/灵药/蘑菇/时间已在 I 状态面板资源总览行聚合，但「累计开启宝箱数」仍只活在 HUD 无此数字、成就页与图鉴页——玩家想核对「开箱寻宝」成就（累计 ${TREASURE_GOAL} 个）还差几个，必须切到 C 成就页或看图鉴底部，与「按 I 看角色全貌」的入口不一致。
+|- 【修正：资源行追加 📦X/6，纯显示零结算】`view/menus.js` `drawStatus()` 资源行改为紧凑图标式：`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`。`chestCount(hero)` / `TREASURE_GOAL` 与成就「开箱寻宝」判定/进度同源于 `data.js`，调成就阈值只改 `data.js` 一处，状态页自动跟随；未改变宝箱掉落、开启结算、成就判定任何逻辑。`data.js` 同步导出 `chestCount`（此前为内部函数），保持单一数据源。
+|- 【零回归面】未动宝箱掉落概率/蘑菇/金币/药水增减结算、未改成就判定、未改 `CHEST_GOLD_BASE`/`CHEST_GOLD_PER_LV`/`TREASURE_GOAL` 数值、未改地图/移动/遇敌/战斗逻辑。只改 2 个文件（`data.js`：版本号 `v19.71→v19.72` + 导出 `chestCount`；`view/menus.js`：导入 2 个常量 + `drawStatus()` 资源行 + 注释）。
+|- 验证：`node --check js/data.js js/view/menus.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.72 专项冒烟 `/tmp/jrpg_smoke_v1972_statuschest.mjs` **12/12 全过**——`GAME_VERSION='v19.72'` 递增且导出、`TREASURE_GOAL=6` 与 `chestCount` 导出、计数函数对缺失/Set/数组三态正确、`drawStatus()` 在 0/3/6 箱均不抛错且资源行实际绘出 `📦:0/6`、`📦:3/6`、`📦:6/6`。
+
 ## v19.71 宝箱金币/药水反馈追加持有总量——开箱后一眼看清累计收入与药水库存（体验打磨·信息透明，v19.70 酿造成功追加剩余材料之后，把同一信息透明思路延伸到探索开箱）
 
 |- 【开箱获得金币/药水时只报本次收益，玩家看不到持有总量】`world.js` `onChestStep()` 在金币分支弹「📦 宝箱！获得 N 金币」、药水分支弹「📦 宝箱！获得 1 个🍖 生命药水」——玩家刚拿到战利品，想确认「兜里现在一共有多少金币/药水」，必须再按 `I` 看状态页，与 v19.70「酿造成功带剩余蘑菇/金币」的信息透明主线不一致；而蘑菇分支此前已带「共 X 株」，三档掉落文案不齐。

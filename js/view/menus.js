@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -80,11 +80,10 @@ export function drawStatus(){
   text('· 普攻' + Math.round(CRIT_RATE * 100) + '%暴击 ×' + CRIT_MULT, 288, 196, '11px', '#e8a858');
   text('防御',110,218,'14px'); text(`${b.def} +${ARMORS[hero.armor].def} = ${hero.defMax}`,150,218,'bold 14px','#e8eef1');
   text(`武器：${hero.weapon}    防具：${hero.armor}`,110,242,'14px');
-  // v19.40 魔法蘑菇计数补全（信息透明·纯显示）：HUD 顶栏已有 🍄(s-mushroom)，唯独 I 状态面板的资源总览行
-  // （金币/药水/灵药/时间）漏了蘑菇——而蘑菇是灯长支线进度（MUSHROOM_GOAL 株集齐转交付）与酿造高级灵药
-  // 的材料，状态页作为「角色全貌」却看不到它，玩家要靠 HUD 才能核对任务进度；此行与 HUD 同源读 hero.mushrooms，
-  // 纯显示零结算变化，任务条/酿造页各有对应读数、此处补齐让状态页资源清单自足
-  text(`金币：${hero.gold}    药水🍖:${hero.item}  灵药🧪:${hero.potion2||0}  🍄:${hero.mushrooms||0}   ⏱️${fmtTime(hero.time)}`,110,264,'14px');
+  // v19.72 状态页资源总览追加宝箱计数（信息透明·纯显示）：v19.40 补齐蘑菇后资源行仍缺「已开几个宝箱」——
+  // 宝箱是探索深度指标（成就「开箱寻宝」阈值 ${TREASURE_GOAL}），玩家按 I 看状态时理应一眼看到进度；
+  // 计数同源于 data.js chestCount(hero) / TREASURE_GOAL，与成就判定/图鉴累计掉落同源，纯显示零结算。
+  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   hero.skills.forEach((s,i)=>{
     const sd=SKILL_DATA[s];
