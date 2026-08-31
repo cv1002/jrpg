@@ -29,10 +29,12 @@ export function buyPotion() {
     hero.gold -= POTION_PRICE;
     hero.item++;
     SFX.shop();
-    bind.boxMsg('购买成功');
+    // v19.67 商店反馈具体化（信息透明·纯显示）：购买成功/失败不再只报笼统「购买成功」「金币不足」，
+    // 而是带出品名与价格，让玩家一眼确认这口消费花了多少、差多少——与商品列表/价格常量同源，零结算变化
+    bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金）`);
     bind.renderHUD();
   } else {
-    bind.boxMsg('金币不足');
+    bind.boxMsg(`金币不足：生命药水需 ${POTION_PRICE} 金`);
   }
 }
 
@@ -63,10 +65,10 @@ export function buyWeapon(name) {
     SFX.shop();
     applyStats(hero);
     applyAchievements();
-    bind.boxMsg(`装备了 ${name}`);
+    bind.boxMsg(`装备了 ${name}（-${price} 金）`);
     bind.renderHUD();
   } else {
-    bind.boxMsg('金币不足');
+    bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
   }
 }
 
@@ -78,10 +80,10 @@ export function buyArmor(name) {
     hero.armor = name;
     SFX.shop();
     applyStats(hero);
-    bind.boxMsg(`装备了 ${name}`);
+    bind.boxMsg(`装备了 ${name}（-${price} 金）`);
     bind.renderHUD();
   } else {
-    bind.boxMsg('金币不足');
+    bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
   }
 }
 
@@ -93,9 +95,9 @@ export function stayInn() {
       hero.hp = hero.hpMax;
       hero.mp = hero.mpMax;
       SFX.heal();
-      bind.boxMsg('🌙 你美美地睡了一晚，HP/MP 恢复！');
+      bind.boxMsg(`🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金）`);
     } else {
-      bind.boxMsg('金币不足！');
+      bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金`);
     }
   } else {
     bind.boxMsg('你现在精神饱满。');
