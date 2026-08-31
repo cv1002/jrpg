@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v19.61';
+const GAME_VERSION = 'v19.62';
 
 const T=32;
 
@@ -461,6 +461,13 @@ const ELITE_CHANCE = 0.07;
 // 此前 0.35/0.5 只硬编码在 battle.winBattle，连战中悄然回血玩家却从未被告知（v3.15 只标「第 N/3 关」、v11.0 只标通关金币）；
 // 数据化后 结算、横幅、帮助页三处绝无第二套口径
 const RUSH_RECOVER={ hp:0.35, mp:0.5 };
+// 试炼三连战通关金币奖励公式（单一数据源）：rules.rushReward 的 150+lv×20 结算、战斗预览「另奖 N 金币」、
+// 试炼碑奖励预告（v19.60）、成就「百炼成钢」奖励标注（v19.62）四处同读此源——
+// 此前 150/20 只硬编码在 rules.rushReward 一处裸字面量，四端里预览/预告已同经该函数、唯独成就页想
+// 标注「这项成就能拿到多少通关奖」时无源可引（再写一遍公式即成第二套口径）；数据化后 结算、预览、预告、
+// 成就标注 绝无第二套口径（与 RUSH_RECOVER 同一「试炼数值数据化」体系），调试炼通关奖只改 data.js 一处
+const RUSH_BASE_GOLD = 150;    // 试炼三连战通关奖金的固定部分（金币）
+const RUSH_GOLD_PER_LV = 20;   // 试炼三连战通关奖金的随等级加成（金币/级）
 // 普通怪逃跑成功率（单一数据源）：battle.doFlee 的随机判定与指令栏「成功率约N%」、
 // 帮助页「约N%」标注同读此源——此前 0.6 硬编码在 battle.js，指令栏与帮助页又各写一处
 // 字面量「约60%」，三处互不相关：调逃跑平衡要改三个地方、还容易改漏改出对不上的文案；
@@ -1244,10 +1251,10 @@ const ACH_LIST=[
   {id:'quest',      name:'三株荧光', d:'完成灯长的支线任务', ok:g=>(g.quests&&g.quests.side_mushroom==='done')||g.quest>=3},
   {id:'boss',       name:'讨回灯芯', d:'击倒幽冥魔王', ok:g=>!!g.bossDefeated},
   {id:'cave',       name:'井之守望', d:'击败洞窟领主', ok:g=>!!g.caveBoss},
-  {id:'trueboss',   name:'记得一切', d:'击败隐藏的终焉之神', ok:g=>!!g.trueBoss},
-  {id:'rush',       name:'百炼成钢', d:'通过试炼场三连战', ok:g=>!!g.rushDone},
-  {id:'perfection', name:'记忆守护者', d:`记忆图鉴收录全部 ${BESTIARY_TARGET.length} 种魔物`, ok:g=>BESTIARY_TARGET.every(n=>(g.bestiary||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.bestiary||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
-  {id:'legend',     name:'黎明归剑', d:'装备传说圣光之剑', ok:g=>g.weapon==='圣光之剑'},
+  {id:'trueboss',   name:'记得一切', d:'击败隐藏的终焉之神', r:'击败另奖 ' + TRUE_BONUS_GOLD + ' 金币', ok:g=>!!g.trueBoss},
+  {id:'rush',       name:'百炼成钢', d:'通过试炼场三连战', r:'通关另奖 ' + RUSH_BASE_GOLD + '+' + RUSH_GOLD_PER_LV + '×等级 金币', ok:g=>!!g.rushDone},
+  {id:'perfection', name:'记忆守护者', d:`记忆图鉴收录全部 ${BESTIARY_TARGET.length} 种魔物`, r:'奖励 ' + PERFECTION_GOLD + ' 金币', ok:g=>BESTIARY_TARGET.every(n=>(g.bestiary||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.bestiary||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
+  {id:'legend',     name:'黎明归剑', d:'装备传说圣光之剑', r:'获得 圣光之剑（攻+' + WEAPONS['圣光之剑'].atk + '）', ok:g=>g.weapon==='圣光之剑'},
   {id:'cartman',    name:'星砂之约', d:'把星砂消息告诉星砂车夫', ok:g=>g.quests&&g.quests.side_cart==='done'},
   {id:'names',      name:'名字归还', d:'替旧灯卫找回名字（巡灯人支线）', ok:g=>g.quests&&g.quests.side_name==='done'},
   {id:'mist',       name:'雾中辨形', d:'完成雾径猎手的雾灵委托', ok:g=>g.quests&&g.quests.side_mist==='done'},
@@ -1369,7 +1376,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL,

@@ -196,6 +196,15 @@ export function drawAch(){
     const prog=a.prog?a.prog(hero):'';
     text((done?'✔ ':'✘ ')+a.name,120,y,'bold 15px',done?'#4cd964':'#5a6a78');
     text(a.d,132,y+17,'12px',done?'#7d93a3':'#4b5a66');
+    // v19.62 成就奖励揭示（信息透明·纯显示）：四条带专享奖励的成就在一览页即标注回报——
+    // perfection/trueboss/rush/legend 的 r 字段与结算同源（PERFECTION_GOLD / TRUE_BONUS_GOLD /
+    // RUSH_BASE_GOLD·RUSH_GOLD_PER_LV / WEAPONS['圣光之剑']），此前奖励只在解锁瞬间横幅或战斗预览里
+    // 一闪而过，未解锁的玩家浏览成就页无从得知「这项成就值多少」；纯显示零结算变化，无 r 字段的其余
+    // 16 条不显示。测宽基于上行 text() 已设的 12px 字体，与描述同行右侧紧随（实测合计 ≤273px < 面板右缘）
+    if (a.r) {
+      const dw = CTX.measureText(a.d).width;
+      text(' '+a.r, 132 + dw, y + 17, '12px', done ? '#e8a858' : '#a08a50');
+    }
     if(prog) text(prog,470,y,'bold 13px',done?'#62c6ff':'#7d93a3','right');
   });
   const remain=ACH_LIST.length-(S.achScroll+PAGE);

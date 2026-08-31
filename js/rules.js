@@ -1,7 +1,7 @@
 // ============================================================
 // rules.js —— 无副作用的战斗 / 成长 / 图鉴计算
 // ============================================================
-import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
+import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
 
 export function deep(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -84,10 +84,12 @@ export function monReward(name, level) {
 }
 
 // 试炼三连战通关奖励（单一数据源）：battle.winBattle 结算与此处逐字同源，
-// 战斗预览行实时显示确切数额（随当前等级）——通关前一眼看清「三连战除了经验还值多少金币」
+// 战斗预览行实时显示确切数额（随当前等级）——通关前一眼看清「三连战除了经验还值多少金币」；
+// 公式 150+lv×20 由 data.js RUSH_BASE_GOLD / RUSH_GOLD_PER_LV 推导（v19.62 数据化），
+// 成就「百炼成钢」奖励标注同读此源（v19.62），调试炼通关奖只改 data.js 一处
 export function rushReward(level) {
   const lv = Math.max(0, (level | 0) || 0);
-  return 150 + lv * 20;
+  return RUSH_BASE_GOLD + lv * RUSH_GOLD_PER_LV;
 }
 
 // 图鉴「魔物强度」参考值（纯函数·随玩家等级）：与 battle.js 的 scaleEnemy / eliteEncounter 逐字同源，
