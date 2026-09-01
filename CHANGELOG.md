@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.85 图鉴收集完成奖励追加剩余金币——解锁「尽善尽美」后一眼看清兜里还剩多少（体验打磨·信息透明，v19.84 补齐真结局额外金币余额后，继续把「收入后即时反馈余额」主线延伸到图鉴全收集成就奖励）
+
+|- 【图鉴收集完成（尽善尽美）时只报「额外 300 金币」，玩家看不到剩余金币】`hero.js` `applyAchievements()` 在判定 `id === 'perfection'` 后结算 `hero.gold += PERFECTION_GOLD`，boxMsg 仅提示额外奖励数额——玩家刚完成全魔物图鉴收集拿到一笔大额金币收入，想确认「兜里现在一共多少」仍需再按 `I` 看状态页；与 v19.80「普通战斗胜利带剩余金币」、v19.81「升级成功带剩余金币」、v19.82「试炼通关带剩余金币」、v19.83「随机掉落带持有/剩余量」、v19.84「终焉之神胜利带剩余金币」的同一信息透明主线不一致。
+|- 【修正：图鉴完成奖励文案追加结算后剩余金币，纯显示零结算】`hero.js` 改为：`🏆 图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！（剩余 ${hero.gold} 金）`。`hero.gold` 为 `hero.gold += PERFECTION_GOLD` 结算后的实时值，调 `PERFECTION_GOLD` 只改 `data.js` 一处，提示自动跟随；未改变图鉴统计、成就判定、解锁时机、`applyAchievements` 其它成就分支、存档任何逻辑。
+|- 【零回归面】未动 `PERFECTION_GOLD`/`ACH_LIST` 数值与成就判定；未改 `unlockedAchievements`/图鉴计数；未改 `view/drawStatus` 状态页绘制；未改其它成就解锁文案；未改 `SFX.levelup()` 时机。只改 2 个文件（`data.js`：版本号 `v19.84→v19.85`；`hero.js`：`applyAchievements()` 1 条 boxMsg + 注释）。
+|- 验证：`node --check js/data.js js/hero.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## v19.84 终焉之神胜利反馈追加剩余金币——击败真 Boss 拿到额外 300 金币后一眼看清兜里还剩多少（体验打磨·信息透明，v19.83 补齐战斗随机掉落持有/剩余量后，继续把「收入后即时反馈余额」主线延伸到真结局之战的额外金币奖励）
 
 |- 【击败终焉之神时只报「额外 300 金币」，玩家看不到剩余金币】`battle.js` `winBattle()` 在 `enemy.isTrue` 分支结算 `hero.gold += TRUE_BONUS_GOLD` 后，boxMsg 仅提示额外奖励数额——玩家刚完成真结局之战拿到一笔大额金币收入，想确认「兜里现在一共多少」仍需再按 `I` 看状态页；与 v19.80「普通战斗胜利带剩余金币」、v19.81「升级成功带剩余金币」、v19.82「试炼通关带剩余金币」、v19.83「随机掉落带持有/剩余量」的同一信息透明主线不一致。

@@ -112,7 +112,7 @@ export function applyAchievements() {
     const def = ACH_LIST.find((x) => x.id === id);
     if (id === 'perfection') {
       hero.gold += PERFECTION_GOLD;
-      bind.boxMsg(`🏆 图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！`, CODEX_MSG_MS);
+      bind.boxMsg(`🏆 图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！（剩余 ${hero.gold} 金）`, CODEX_MSG_MS);
     } else {
       bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : ''}`, ACH_MSG_MS);
     }
