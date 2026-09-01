@@ -98,7 +98,9 @@ export function stayInn() {
       hero.hp = hero.hpMax;
       hero.mp = hero.mpMax;
       SFX.heal();
-      bind.boxMsg(`🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金）`);
+      // v19.76 旅馆住宿反馈追加剩余金币（信息透明·纯显示）：v19.67 已带价格，但大额恢复消费后
+      // 玩家想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.75 装备购买同源。
+      bind.boxMsg(`🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）`);
     } else {
       bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金`);
     }
