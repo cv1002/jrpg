@@ -399,7 +399,11 @@ function winBattle() {
   hero.gold += enemy.gold;
   const g = grantXp(hero, enemy.xp);
   if (g.leveled) {
-    bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}${enemy.isBoss ? '，你终于可以……' : ''}`, MILESTONE_MS);
+    // v19.81 升级反馈追加剩余金币（信息透明·纯显示）：v19.80 已给普通胜利文案带上余额，但升级瞬间的
+    // 里程碑横幅只报「金币加到 hero.gold 后」的等级属性变化——玩家刚因一场胜仗升级，往往正想确认「兜里
+    // 还剩多少」去补给或换装；直接读结算后的 hero.gold（enemy.gold 已在 line399 加入），与 v19.80 普通胜利
+    // 余额提示同源，零数值变化。
+    bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}${enemy.isBoss ? '，你终于可以……' : ''}（剩余 ${hero.gold} 金）`, MILESTONE_MS);
   } else if (!enemy.isRush && hero.xpNext > hero.xp) {
     // v19.80 普通战斗胜利反馈追加剩余金币（信息透明·纯显示）：v19.75/19.76/19.77/19.78 已给商店/旅馆/
     // 任务奖励/药水购买成功文案带上余额，但战斗胜利（高频收入来源）仍只报「获得 N 金币」；玩家刚拿到一笔
