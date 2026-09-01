@@ -254,7 +254,10 @@ function saveGame() {
     if (!hero) return;
     const snap = snapshotHero(hero);
     localStorage.setItem(saveKey(S.curSaveSlot), JSON.stringify({ G: snap, chests: snap.chests, savedAt: Date.now() }));
-    S.saveMsg = `💾 已存档到槽 ${S.curSaveSlot}`;
+    // v19.87 存档成功反馈追加角色摘要（信息透明·纯显示）：此前只报「已存档到槽 N」，
+    // 玩家按 P 或菜单存档后想确认「当前角色/等级/所在地图/金币」是否写入正确，仍需再按 I 看状态页；
+    // 与 v19.86「读档追加角色摘要」的同一信息透明主线一致。
+    S.saveMsg = `💾 已存档到槽 ${S.curSaveSlot}：${hero.name} Lv.${hero.level} · ${MAPS[hero.map].name} · ${hero.gold} 金`;
     bind.renderHUD();
     SFX.select();
     setTimeout(() => { S.saveMsg = ''; bind.renderHUD(); }, WRAP_GAP_MS);
