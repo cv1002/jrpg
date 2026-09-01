@@ -68,6 +68,14 @@ export function drawStatus(){
   drawWorld(); panel(70,28,500,424,'— 状态 —');
   const b=baseStats(hero.level);
   text(`${hero.name}  Lv.${hero.level}  ${hero.diff?`[困难 · 魔物HP×${DIFF_SCALE.hp} 攻×${DIFF_SCALE.atk} 防×${DIFF_SCALE.def}]`:''}`,320,72,'bold 18px','#ffd24a','center');
+  // v19.89 状态页追加当前地图与区域难度（信息透明·纯显示）：此前按 I 看状态时看不到「我现在在哪张图、
+  // 这张图推荐多少级、区域难度标签」——玩家常常忘记当前地图名或不确定是否越级探索；
+  // 现与快速旅行/世界 transition 同读 data.js MAPS[].name / recLv / zone.label，纯显示零结算，
+  // 地图数据调整时此处自动跟随。
+  const mapKey=curMap();
+  const mapDef=MAPS[mapKey]||{};
+  const zoneLabel=mapDef.zone&&mapDef.zone.label?`（${mapDef.zone.label}）`:'';
+  text(`📍 ${mapDef.name||mapKey}${zoneLabel} · 推荐 Lv.${mapDef.recLv||'?'}`,320,82,'12px','#7d93a3','center');
   text(`经验 ${hero.xp} / ${hero.xpNext} · 距升级还差 ${Math.max(0,(hero.xpNext||0)-(hero.xp||0))} 经验`,320,98,'13px','#e8eef1','center');
   CTX.fillStyle='#122029'; rr(180,106,280,10,5); CTX.fill();
   CTX.fillStyle='#62c6ff'; rr(180,106,Math.max(0,280*(hero.xp/hero.xpNext)),10,5); CTX.fill();
