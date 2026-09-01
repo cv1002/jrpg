@@ -596,12 +596,16 @@ export function drawDead(){
     const kills=Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0);
     if(killName) text('败于 '+killName,CV.width/2,206,'bold 15px','#ff8a5b','center');
     text(`当前 Lv.${hero.level} · 金币 ${hero.gold} · 累计讨伐 ${kills} 只 · ⏱️${fmtTime(hero.time)}`,CV.width/2,236,'13px','#7d93a3','center');
+    // v19.88 阵亡画面追加剩余补给（信息透明·纯显示）：死亡结算屏此前只报 等级/金币/讨伐/时间，
+    // 但玩家紧接着要做「R 重开 / B 重整旗鼓 / T 回标题」的决策，身上还剩多少药水/灵药/蘑菇直接影响
+    // 「是否需要先回旅馆/酿造」。现在直接读 hero.item / hero.potion2 / hero.mushrooms，零结算变化。
+    text(`身上余粮：🍖 生命药水 ${hero.item} 瓶 · 🧪 高级灵药 ${hero.potion2 || 0} 瓶 · 🍄 魔法蘑菇 ${hero.mushrooms || 0} 株`,CV.width/2,264,'13px','#e8eef1','center');
     const bossDeath=!!(hero._bossRetry && hero._bossRetry.bossId && hero._bossRetry.bossId!=='rush');
-    text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，用记忆图鉴(B)查看魔物强度后再战。',CV.width/2,264,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
+    text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，用记忆图鉴(B)查看魔物强度后再战。',CV.width/2,292,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
   }
-  text('按 R 重新开始本次冒险',CV.width/2,304,'15px','#7d93a3','center');
-  text('按 T 返回标题画面',CV.width/2,334,'15px','#7d93a3','center');
-  if(hero && hero._bossRetry && hero._bossRetry.bossId!=='rush') text('按 B 重整旗鼓，再战强敌！',CV.width/2,364,'15px','#ffd24a','center');
+  text('按 R 重新开始本次冒险',CV.width/2,332,'15px','#7d93a3','center');
+  text('按 T 返回标题画面',CV.width/2,362,'15px','#7d93a3','center');
+  if(hero && hero._bossRetry && hero._bossRetry.bossId!=='rush') text('按 B 重整旗鼓，再战强敌！',CV.width/2,392,'15px','#ffd24a','center');
 }
 bind.drawDead=drawDead;
 
