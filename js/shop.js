@@ -29,9 +29,10 @@ export function buyPotion() {
     hero.gold -= POTION_PRICE;
     hero.item++;
     SFX.shop();
-    // v19.67 商店反馈具体化（信息透明·纯显示）：购买成功/失败不再只报笼统「购买成功」「金币不足」，
-    // 而是带出品名与价格，让玩家一眼确认这口消费花了多少、差多少——与商品列表/价格常量同源，零结算变化
-    bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金）`);
+    // v19.78 购买药水反馈追加剩余药水与金币（信息透明·纯显示）：v19.67 已带价格，但玩家消费后
+    // 想确认「药水还剩几瓶 / 兜里还剩多少金币」仍需瞄 HUD 或按 I 看状态页；现在直接读结算后的
+    // hero.item / hero.gold，与 v19.74 喝药剩余量、v19.75/19.76/19.77 消费余额同源。
+    bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）`);
     bind.renderHUD();
   } else {
     bind.boxMsg(`金币不足：生命药水需 ${POTION_PRICE} 金`);
