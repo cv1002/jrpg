@@ -182,27 +182,36 @@ export function rollDrop(hero, curMap) {
       return '🛡️ 掉落防具：锁子甲 已装备！';
     }
     hero.gold += DROP_GOLD;
-    return '✨ 宝箱：金币 +' + DROP_GOLD;
+    // v19.83 战斗随机掉落金币反馈追加持有总量（信息透明·纯显示）：v19.80 已给普通胜利/升级/试炼通关
+    // 等大额金币来源带上余额，但战斗后约 38% 概率触发的额外掉落（含装备档已尽善时的 +60 金兜底）仍只报
+    // 「金币 +N」；玩家拿到这笔意外之财后想确认「兜里现在一共多少」仍需再按 I 看状态页。直接读结算后的
+    // hero.gold（本行已加 DROP_GOLD），与 v19.80 普通胜利余额提示同源，零数值变化。
+    return `✨ 宝箱：金币 +${DROP_GOLD}（共 ${hero.gold} 金）`;
   }
   if (roll < edgePotion) {
     hero.item++;
     hero.drops = (hero.drops || 0) + 1;
-    return '🍖 掉落：生命药水 ×1';
+    // v19.83 战斗随机掉落药水反馈追加剩余数量（信息透明·纯显示）：此前只报「生命药水 ×1」，
+    // 玩家想确认药水库存是否充足仍需再按 I；直接读结算后的 hero.item，与 v19.74 用药剩余量同源，零数值变化。
+    return `🍖 掉落：生命药水 ×1（剩余 ${hero.item} 瓶）`;
   }
   if (roll < edgeMushroom) {
     if (curMap === 'dungeon' || curMap === 'cave') {
       hero.mushrooms++;
       hero.drops = (hero.drops || 0) + 1;
-      return '🍄 掉落：魔法蘑菇 ×1';
+      // v19.83 战斗随机掉落蘑菇反馈追加剩余数量（信息透明·纯显示）：与 v19.79 精英魔像蘑菇 /
+      // v19.73 卖菇剩余量同源，零数值变化。
+      return `🍄 掉落：魔法蘑菇 ×1（剩余 ${hero.mushrooms || 0} 株）`;
     }
     hero.item++;
     hero.drops = (hero.drops || 0) + 1;
-    return '🍖 掉落：生命药水 ×1';
+    return `🍖 掉落：生命药水 ×1（剩余 ${hero.item} 瓶）`;
   }
   if (roll < edgeElixir) {
     hero.potion2 = (hero.potion2 || 0) + 1;
     hero.drops = (hero.drops || 0) + 1;
-    return '🧪 掉落：高级灵药 ×1！';
+    // v19.83 战斗随机掉落高级灵药反馈追加剩余数量（信息透明·纯显示）：与 v19.74 用药剩余量同源，零数值变化。
+    return `🧪 掉落：高级灵药 ×1（剩余 ${hero.potion2 || 0} 瓶）`;
   }
   return null;
 }
