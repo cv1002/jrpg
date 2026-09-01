@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
-import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS } from './data.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
@@ -164,7 +164,10 @@ const screens = {
         resumeBgm();
         goto('world');
         renderHUD();
-        boxMsg(`💾 读取了槽 ${S.curSaveSlot} 的存档`, EVENT_MSG_MS);
+        // v19.86 读档反馈追加角色摘要（信息透明·纯显示）：此前读取成功后只报「读取了槽 N 的存档」，
+        // 玩家想确认读到了哪个角色/进度/身上多少金币仍需再按 I 看状态页。现在直接读 S.G 的 name/level/map/gold，
+        // 与 v19.65 存档预览摘要、状态页信息同源，零数值变化。
+        boxMsg(`💾 读取槽 ${S.curSaveSlot}：${S.G.name} Lv.${S.G.level} · ${MAPS[S.G.map].name} · ${S.G.gold} 金`, EVENT_MSG_MS);
       } else if (e.key === 'r' || e.key === 'R') {
         resetRun();
       }
