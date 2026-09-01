@@ -480,7 +480,11 @@ function winBattle() {
     return result;
   }
   if (enemy.isCaveBoss) {
-    bind.boxMsg('🏆 洞窟领主倒下！左边的星砂宝箱显形了，快去开启！', WIN_MSG_MS);
+    // v19.91 洞窟领主胜利反馈追加剩余金币（信息透明·纯显示）：v19.80 已给普通胜利/升级横幅
+    // 带上余额，但洞窟领主作为首个主线 Boss 击败后只报「宝箱显形」——玩家刚拿到一笔金币/经验收入，
+    // 想确认「兜里还剩多少」仍需再按 I 看状态页；直接读结算后的 hero.gold（line 399 已加 enemy.gold），
+    // 同时补充本次获得的金币与经验，零数值变化。
+    bind.boxMsg(`🏆 洞窟领主倒下！左边的星砂宝箱显形了，快去开启！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 剩余 ${hero.gold} 金`, WIN_MSG_MS);
     applyAchievements();
   }
   if (enemy.isTrue) {

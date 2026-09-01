@@ -1944,6 +1944,13 @@ v2.0 模块化重构在“行为与重构前一致”的目标下仍漏了三处
 - 【零回归面】未动 `FRAGMENTS` 内容与强敌首胜掉落规则；未改 `canonicalName` 归一化；未改任务日志 `J` 记忆碎片节显示；未改真结局加页 `ENDING_TRUE_FRAG`；未改 `winBattle` 其它分支（普通胜利/升级/Boss/试炼/真结局）。只改 2 个文件（`data.js`：版本号 `v19.89→v19.90`；`battle.js`：记忆碎片拾取 `boxMsg` 1 条 + 注释）。
 - 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` 89/89 + 8/8 全绿（回归不受影响）。
 
+## v19.91 洞窟领主胜利反馈追加剩余金币（体验打磨 / 信息透明）
+
+- 【击败洞窟领主后只报「宝箱显形」，玩家看不到本次收益与剩余金币】`battle.js` `winBattle()` 在 `enemy.isCaveBoss` 分支只弹出 `🏆 洞窟领主倒下！左边的星砂宝箱显形了，快去开启！`——玩家刚击败首个主线 Boss，获得一笔金币/经验，想确认「兜里还剩多少」仍需再按 `I` 看状态页；与 v19.80「普通战斗胜利带剩余金币」、v19.81「升级带剩余金币」、v19.82「试炼通关带剩余金币」的同一「信息透明」主线不一致。
+- 【修正：洞窟领主胜利文案追加本次获得与结算后剩余金币，纯显示零结算】`battle.js` 改为：`🏆 洞窟领主倒下！左边的星砂宝箱显形了，快去开启！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 剩余 ${hero.gold} 金`。`hero.gold` 为 `enemy.gold` 结算加入后的实时值；调洞窟领主金币/经验只改 `data.js` 一处，提示自动跟随；未改变洞窟领主击败后的世界状态（`hero.caveBoss` 置位、宝藏显形、矿车支线激活）、`applyVictoryWorld` 调用时机、任何结算或掉落逻辑。
+- 【零回归面】未动 `CAVE_BOSS` 属性/掉落/成就判定；未改 `applyVictoryWorld`、`world.js` 宝藏显形、任务 `side_cart` 激活；未改 `winBattle` 其它分支（普通胜利/升级/Boss/试炼/真结局/记忆碎片）。只改 2 个文件（`data.js`：版本号 `v19.90→v19.91`；`battle.js`：洞窟领主胜利 `boxMsg` 1 条 + 注释）。
+- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` 89/89 + 8/8 全绿（回归不受影响）。
+
 ## 技术要点
 - 单文件、零依赖、离线可玩；Canvas 程序化绘制全部图块/角色/敌人
 - 音乐/音效用 Web Audio 实时合成（步进音序器）
