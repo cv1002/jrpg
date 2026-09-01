@@ -53,7 +53,7 @@ export function sellMushroom() {
   hero.gold += MUSHROOM_PRICE;
   SFX.coin();
   bind.renderHUD();
-  bind.boxMsg(`售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金`);
+  bind.boxMsg(`售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金（剩余 ${hero.mushrooms} 株 / 共 ${hero.gold} 金）`);
 }
 
 export function buyWeapon(name) {
