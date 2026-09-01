@@ -391,7 +391,10 @@ function winBattle() {
   hero.totalWins++;
   if (enemy.isElite) {
     hero.mushrooms++;
-    bind.boxMsg('💎 从魔像残骸中捡到 1 株魔法蘑菇！', NARR_MSG_MS);
+    // v19.79 精英怪掉落蘑菇反馈追加剩余库存（信息透明·纯显示）：此前击败石心魔像只报「捡到 1 株」，
+    // 玩家想确认「包里现在有几株」还需再按 I 看状态页；现在直接读结算后的 hero.mushrooms，与 v19.73 卖菇剩余量、
+    // v19.74 用药剩余量同源，零数值变化。
+    bind.boxMsg(`💎 从魔像残骸中捡到 1 株魔法蘑菇！（剩余 ${hero.mushrooms || 0} 株）`, NARR_MSG_MS);
   }
   hero.gold += enemy.gold;
   const g = grantXp(hero, enemy.xp);
