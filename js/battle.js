@@ -249,10 +249,12 @@ function doItem() {
   const result = takePotion();
   SFX.heal();
   bind.renderHUD();
+  // v19.74 战斗用药反馈追加剩余数量（信息透明·纯显示）：与大地图 F 键喝药同源，
+  // 直接读结算后的 hero.item / hero.potion2，让玩家连战中一眼知道灵药/药水库存。
   S.blog.push(
     result.strong
-      ? `🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP`
-      : `🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP`
+      ? `🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（高级灵药剩余 ${hero.potion2} 瓶）`
+      : `🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（药水剩余 ${hero.item} 瓶）`
   );
   afterPlayer();
 }

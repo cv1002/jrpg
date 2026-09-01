@@ -75,10 +75,12 @@ function usePotion() {
   const result = takePotion();
   SFX.heal();
   bind.renderHUD();
+  // v19.74 喝药反馈追加剩余数量（信息透明·纯显示）：之前只报恢复量，玩家确认背包还剩几瓶
+  // 需要再按 I 看状态页。现在直接读结算后的 hero.item / hero.potion2，零数值变化。
   bind.boxMsg(
     result.strong
-      ? `🧪 服下高级灵药，恢复 ${result.h} HP、${result.m} MP`
-      : `🍖 使用药水，恢复 ${result.h} 点 HP`
+      ? `🧪 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（高级灵药剩余 ${hero.potion2} 瓶）`
+      : `🍖 使用药水，恢复 ${result.h} 点 HP（药水剩余 ${hero.item} 瓶）`
   );
 }
 
