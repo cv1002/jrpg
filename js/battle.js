@@ -479,7 +479,7 @@ function winBattle() {
     applyAchievements();
   }
   if (enemy.isTrue) {
-    bind.boxMsg(`✨ 初灯的意志散了。记忆回到镇上。额外 ${TRUE_BONUS_GOLD} 金币！`, ACH_MSG_MS);
+    bind.boxMsg(`✨ 初灯的意志散了。记忆回到镇上。额外 ${TRUE_BONUS_GOLD} 金币！（剩余 ${hero.gold} 金）`, ACH_MSG_MS);
     applyAchievements();
     stopBgm();
     goto('ending');
