@@ -444,7 +444,11 @@ function winBattle() {
       hero.gold += reward;
       applyAchievements();
       SFX.victory();
-      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！`, ACH_MSG_MS);
+      // v19.82 试炼通关反馈追加剩余金币（信息透明·纯显示）：v19.60 已给试炼碑加上「通关奖 N 金」预览，
+      // 但三连战真正通关后的横幅只报奖励数额——玩家刚拿到一笔大额金币收入，想确认「兜里还剩多少」
+      // 仍需再按 I 看状态页；直接读结算后的 hero.gold（line 444 已加 reward），与 v19.80 普通胜利/
+      // v19.81 升级余额提示同源，零数值变化。
+      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！（剩余 ${hero.gold} 金）`, ACH_MSG_MS);
       setTimeout(() => { goto('world'); S.enemy = null; S.battleBusy = false; resumeBgm(); }, WRAP_GAP_MS);
     } else {
       // 连胜换关自动回血（data.js RUSH_RECOVER 单一数据源）：与战斗横幅/帮助页标注同读此源，数值结算逐字不变

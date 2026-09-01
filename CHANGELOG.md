@@ -2,7 +2,14 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
-## v19.81 升级成功反馈追加剩余金币——等级提升后一眼看清兜里还剩多少（体验打磨·信息透明，v19.80 补齐普通胜利剩余金币后，继续把「收入后即时反馈余额」主线延伸到升级里程碑）
+## v19.82 试炼通关反馈追加剩余金币——三连战胜利后一眼看清兜里还剩多少（体验打磨·信息透明，v19.81 补齐升级余额后，继续把「收入后即时反馈余额」主线延伸到试炼通关这一大额金币来源）
+
+||||||- 【试炼三连战通关后只报奖励数额，玩家看不到剩余金币】`battle.js` `winBattle()` 在 `enemy.isRush` 分支完成三场连胜后，结算 `hero.gold += reward`（`reward = rushReward(hero.level)`）并弹出 `🌈 试炼通关！奖励 N 金币！…` 横幅——玩家刚拿到一笔大额金币收入，想确认「接下来能不能买药水/装备/住店」仍需额外按 `I` 看状态页；与 v19.80「普通战斗胜利带剩余金币」、v19.81「升级成功带剩余金币」的同一信息透明主线不一致。
+||||||- 【修正：试炼通关文案追加结算后剩余金币，纯显示零结算】`battle.js` 改为：`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！（剩余 ${hero.gold} 金）`。`hero.gold` 为 `hero.gold += reward` 结算后的实时值，调 `RUSH_BASE_GOLD`/`RUSH_GOLD_PER_LV` 只改 `data.js` 一处，提示自动跟随；未改变试炼生成、关间回血、连胜判定、rushReward 公式、真结局/普通战斗/升级分支任何逻辑。
+||||||- 【零回归面】未动 `RUSH_BOSSES`/试炼三连战阵容/关间恢复 `RUSH_RECOVER` 数值与结算；未改试炼碑阵容/奖励预览徽章；未改 `rules.rushReward` 计算；未改 `applyAchievements`/成就判定；未改 `winBattle` 其它分支（精英蘑菇/普通胜利/升级/Boss 战/真结局）。只改 2 个文件（`data.js`：版本号 `v19.81→v19.82`；`battle.js`：试炼通关 `boxMsg` 1 条 + 注释）。
+||||||- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.82 专项冒烟 `/tmp/jrpg_smoke_v1982_trialgold.mjs` **9/9 全过**——版本号递增、试炼通关文案同时含「奖励 N 金币」与「剩余 X 金」、余额与 `hero.gold` 结算后同源、金币确实增加、`ACH_MSG_MS` 停留时长未变、rush 状态机正确归零置位。
+
+
 
 |||||- 【升级成功时只报属性增长，玩家看不到剩余金币】`battle.js` `winBattle()` 在 `g.leveled` 分支结算 `hero.gold += enemy.gold` 后，boxMsg 仅提示等级与属性提升——玩家刚因一场胜仗升级，往往立刻想确认「接下来能不能买药水/装备/住店」却仍要额外按 `I` 看状态页；与 v19.80「普通战斗胜利带剩余金币」的同一信息透明主线不一致。
 |||||- 【修正：升级文案追加结算后剩余金币，纯显示零结算】`battle.js` 改为：`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}…（剩余 ${hero.gold} 金）`。`hero.gold` 为 `hero.gold += enemy.gold` 结算后的实时值，调怪物金币掉落只改 `data.js` 一处，提示自动跟随；未改变经验结算、升级判定、属性成长、试炼结算、Boss 战后特殊文案任何逻辑。
