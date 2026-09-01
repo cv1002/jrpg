@@ -1938,6 +1938,12 @@ v2.0 模块化重构在“行为与重构前一致”的目标下仍漏了三处
 - 版本号同步递增：`js/data.js` `GAME_VERSION` 由 `v19.88` → `v19.89`。
 - 验证：`npm run check` 25 模块语法校验全过；`npm test` 89/89 + 8/8 全绿；新增行在 `village`/`dungeon`/`cave`/`gallery` 状态下渲染均不抛错。
 
+## v19.90 记忆碎片拾取反馈追加收集进度（体验打磨 / 信息透明）
+- 【强敌首胜掉落记忆碎片时只报「拾起一段记忆」与回看提示，玩家看不到收集进度】`battle.js` `winBattle()` 在强敌首胜后追加记忆碎片时，`boxMsg` 仅提示 `🕯️ 拾起一段记忆：【X】（按 J 日志回看）`——玩家刚拿到一段关键剧情碎片，想确认「离真结局·全记忆还差几段」仍需按 `J` 翻日志或按 `I` 看状态页；与 v19.85「图鉴完成带剩余金币」、v19.88「阵亡画面带剩余补给」的同一「信息透明」主线不一致。
+- 【修正：拾取文案追加结算后收集段数，纯显示零结算】`battle.js` 改为：`🕯️ 拾起一段记忆：【${frag.name}】（按 J 日志回看 · ${fragCount}/${FRAGMENTS.length} 段记忆已集齐）`。`fragCount` 为 `hero.fragments.push(frag.id)` 结算后的实时长度，`FRAGMENTS.length` 与真结局判定、任务进度、名字石碑同读 `data.js` 单一数据源；调记忆碎片总数时只改 `data.js` 一处，提示自动跟随；未改变碎片掉落条件、首胜判定、图鉴/成就结算、`hooks.applyVictoryWorld` 任何逻辑。
+- 【零回归面】未动 `FRAGMENTS` 内容与强敌首胜掉落规则；未改 `canonicalName` 归一化；未改任务日志 `J` 记忆碎片节显示；未改真结局加页 `ENDING_TRUE_FRAG`；未改 `winBattle` 其它分支（普通胜利/升级/Boss/试炼/真结局）。只改 2 个文件（`data.js`：版本号 `v19.89→v19.90`；`battle.js`：记忆碎片拾取 `boxMsg` 1 条 + 注释）。
+- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` 89/89 + 8/8 全绿（回归不受影响）。
+
 ## 技术要点
 - 单文件、零依赖、离线可玩；Canvas 程序化绘制全部图块/角色/敌人
 - 音乐/音效用 Web Audio 实时合成（步进音序器）

@@ -431,7 +431,12 @@ function winBattle() {
   const frag = FRAGMENTS.find((f) => f.enemy === bookName);
   if (frag && !(hero.fragments || []).includes(frag.id)) {
     hero.fragments.push(frag.id);
-    bind.boxMsg(`🕯️ 拾起一段记忆：【${frag.name}】（按 J 日志回看）`, MEMORY_MSG_MS);
+    // v19.90 记忆碎片拾取反馈追加收集进度（信息透明·纯显示）：此前只报「拾起一段记忆」与回看提示，
+    // 玩家刚拿到强敌首胜掉落的一段记忆，想确认「离真结局·全记忆还差几段」仍需按 J 翻日志或按 I 看状态页；
+    // 直接读结算后的 hero.fragments.length 与 FRAGMENTS.length（真结局判定/任务进度/名字石碑同读此源），
+    // 零结算变化，只追加显示当前已集齐段数。
+    const fragCount = (hero.fragments || []).length;
+    bind.boxMsg(`🕯️ 拾起一段记忆：【${frag.name}】（按 J 日志回看 · ${fragCount}/${FRAGMENTS.length} 段记忆已集齐）`, MEMORY_MSG_MS);
   }
   hooks.applyVictoryWorld(result);
 
