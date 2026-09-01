@@ -65,7 +65,9 @@ export function buyWeapon(name) {
     SFX.shop();
     applyStats(hero);
     applyAchievements();
-    bind.boxMsg(`装备了 ${name}（-${price} 金）`);
+    // v19.75 武器购买反馈追加剩余金币（信息透明·纯显示）：v19.67 已带价格，但玩家大额消费后
+    // 想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.70/73/74 同源。
+    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金）`);
     bind.renderHUD();
   } else {
     bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
@@ -80,7 +82,8 @@ export function buyArmor(name) {
     hero.armor = name;
     SFX.shop();
     applyStats(hero);
-    bind.boxMsg(`装备了 ${name}（-${price} 金）`);
+    // v19.75 防具购买反馈追加剩余金币（信息透明·纯显示）：同武器购买，零结算变化。
+    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金）`);
     bind.renderHUD();
   } else {
     bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
