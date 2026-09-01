@@ -401,7 +401,11 @@ function winBattle() {
   if (g.leveled) {
     bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}${enemy.isBoss ? '，你终于可以……' : ''}`, MILESTONE_MS);
   } else if (!enemy.isRush && hero.xpNext > hero.xp) {
-    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验`, WIN_MSG_MS);
+    // v19.80 普通战斗胜利反馈追加剩余金币（信息透明·纯显示）：v19.75/19.76/19.77/19.78 已给商店/旅馆/
+    // 任务奖励/药水购买成功文案带上余额，但战斗胜利（高频收入来源）仍只报「获得 N 金币」；玩家刚拿到一笔
+    // 收入想确认「兜里还剩多少」仍需再按 I 看状态页。直接读结算后的 hero.gold（line 399 已加 enemy.gold），
+    // 零数值变化，只追加显示。
+    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）`, WIN_MSG_MS);
   }
   bind.renderHUD();
   applyAchievements();
