@@ -159,7 +159,10 @@ function talkNext() {
     bind.renderHUD();
     applyAchievements();
     const extra = (act.item ? ` +${act.item} 药水` : '') + (act.potion2 ? ` +${act.potion2} 灵药` : '');
-    bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}`, WIN_MSG_MS);
+    // v19.77 任务奖励反馈追加剩余金币（信息透明·纯显示）：v19.75/19.76 已给商店/旅馆消费成功文案
+    // 带上余额，但任务奖励（灯长、井巫等NPC交付）完成后只报「金币 +N」，玩家确认兜里还剩多少仍需
+    // 再按 I 看状态页。现在直接读 applyQuestReward 结算后的 hero.gold，零数值变化。
+    bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}（剩余 ${hero.gold} 金）`, WIN_MSG_MS);
     goto('world');
     return;
   }

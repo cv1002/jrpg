@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.77 任务奖励反馈追加剩余金币——交任务后一眼看清兜里还剩多少（体验打磨·信息透明，v19.76 补齐旅馆住宿剩余金币后，继续把「消费/收入后即时反馈余额」主线延伸到任务奖励这一高频收入交互）
+
+|||- 【NPC 任务交付成功后只报「金币 +N」，看不到余额】`core.js` `talkNext()` 在 `resolveNpcTalk` 判定为 `reward` 时，由 `quests.applyQuestReward` 完成金币/药水/灵药结算后，boxMsg 仅提示 `🎁 「${act.name}」完成：金币 +${act.gold}…`——玩家刚拿到一笔任务收入，想确认「接下来还能不能买药水/装备/住店」仍需额外按 `I` 看状态页；与 v19.75「商店购买装备带剩余金币」、v19.76「旅馆住宿带剩余金币」的同一信息透明主线不一致。
+|||- 【修正：任务奖励成功文案追加结算后剩余金币，纯显示零结算】`core.js` 改为：`🎁 「${act.name}」完成：金币 +${act.gold}${extra}（剩余 ${hero.gold} 金）`。`hero.gold` 为 `applyQuestReward` 加法结算后的实时值（与结算同源），调任务奖励金额只改 `js/quests.js` 一处，提示自动跟随；未改变任务接受、奖励发放、成就判定、NPC 对话翻页、任务日志任何逻辑。
+|||- 【零回归面】未动 `QUESTS` 奖励数值与 `applyQuestReward` 结算；未改 `setSideQuest` / `questStatus` / `npcQuestPages` 任何任务状态流转；未改 `bind.renderHUD` / `applyAchievements` 调用时机；未改接任务 `accept` 分支文案 `接受了「X」！按 J 可查看任务日志`。只改 2 个文件（`data.js`：版本号 `v19.76→v19.77`；`core.js`：`talkNext()` 1 条 boxMsg + 注释）。
+|||- 验证：`node --check js/data.js js/core.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v19.77 专项冒烟 `/tmp/jrpg_smoke_v1977_questgold.mjs` **11/11 全过**——版本号递增、任务奖励文案同时含「+N 金」与「剩余 X 金」、金币增加与余额同源、药水奖励同步显示、接任务分支与无奖励分支行为不变。
+
 ## v19.76 旅馆住宿反馈追加剩余金币——住店后一眼看清兜里还剩多少（体验打磨·信息透明，v19.75 补齐装备购买剩余金币后，继续把「消费后即时反馈余额」主线延伸到旅馆这一高频恢复交互）
 
 ||- 【旅馆住店成功后只报恢复与扣价，看不到余额】`shop.js` `stayInn()` 在 HP/MP 不满、金币足够时扣款并回满状态，boxMsg 只提示「🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金）」——玩家刚花掉一笔住宿费，想确认「接下来还能不能继续买药水/装备」仍需额外瞄 HUD；与 v19.75「装备购买成功带剩余金币」、v19.73「卖菇带剩余库存/金币总量」的同一信息透明主线不一致。
