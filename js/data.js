@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v20.5';
+const GAME_VERSION = 'v20.6';
 
 const T=32;
 
@@ -1013,9 +1013,21 @@ function withSpecies(enemy) {
 // 的 name/hp/hpMax/atk/def/color 六项同读此源——此前 hp:140·atk:15·def:6 这类数值在主线 Boss 定义与
 // RUSH_BOSSES 各写一份互不相关：想调强敌兵力（如把幽冥魔王 atk 提到 17）要改两处，还极易只改主线漏改试炼，
 // 两处强度悄然脱钩。试炼版仅覆盖 xp/gold/isRush（试炼不给金币、经验另计少给），兵力数值与主线逐字同源、永不漂移。
-const BOSS_BASE={name:'幽冥魔王',hp:140,hpMax:140,atk:15,def:6,color:'#a03fd9'};
-const CAVE_BOSS_BASE={name:'洞窟领主',hp:110,hpMax:110,atk:16,def:10,color:'#3f6b9f'};
-const TRUE_BOSS_BASE={name:'终焉之神',hp:260,hpMax:260,atk:22,def:13,color:'#f0c040'};
+// v20.6 数值平衡（Boss 战力与 ⚠Lv 警告脱节修复）：原 140/15/6、110/16/10、260/22/13 沿袭单文件时代（技能
+// 尚未分化：火焰斩 1.8 / 冰霜击 2.2 / 雷鸣 2.8 / 陨石术 4.2 + 弱点×1.35），而玩家 atkMax 随等级线性
+// 7+2·lv——实测（rules.skillEstimate 真实预览）在各自⚠Lv（8/7/12）推荐装备下 陨石术 期望伤害 305/263/415，
+// 一击即秒 Boss（140/110/260），且 0 药/裸打胜率 100%（20k 蒙特卡洛，镜像 enemyAct/attackMove 公式）：
+// 「⚠Lv.X 推荐」全游戏信息透明体系与实际战力完全脱节，三场主线 Boss 战沦为单键演出。本次把三 Boss 基准
+// 抬到「⚠Lv 推荐装备下 2.7-3.0 回合的正面战、无药也有 94-100% 胜率但 phase2 重击（×2.3）威胁明显、
+// 低于⚠Lv 2 级（如 Lv5-6 打魔王）胜率骤降」的档位——数值来源为 12 组×6000 次蒙特卡洛参数扫描
+// （真实 actions 表/石甲/回血/phase2/防御反击公式镜像）：魔王 420/23/13、领主 380/25/15、神 700/33/19。
+// 三 Boss phase2 重击对 ⚠Lv 满血玩家仍可存活（魔王76/领主81/神92 vs 上限血量 94/87/122），低于推荐
+// 等级则可能一击致死——「该练到多少级再来」有了真实后果；试炼三连战（同源）Lv11 约 42% / Lv12 约 100%
+// 通关（明智打法），仍是全游戏最重考验。xp/gold/phase2/acts/掉落/成就/剧情逐字不动，图鉴/帮助页/威胁预警
+// 全部直读本表自动跟随（rules.BOSS_DEFS / threatWarn / monReward 同源）。
+const BOSS_BASE={name:'幽冥魔王',hp:420,hpMax:420,atk:23,def:13,color:'#a03fd9'};
+const CAVE_BOSS_BASE={name:'洞窟领主',hp:380,hpMax:380,atk:25,def:15,color:'#3f6b9f'};
+const TRUE_BOSS_BASE={name:'终焉之神',hp:700,hpMax:700,atk:33,def:19,color:'#f0c040'};
 
 const BOSS=withSpecies({...BOSS_BASE,xp:150,gold:300,isBoss:true,bossHpMax:BOSS_BASE.hpMax});
 //          ↑ bossHpMax 由 BOSS_BASE.hpMax 推导（单一数据源）：v18.9 收口主线/试炼兵力时此值以裸 140 留存、
