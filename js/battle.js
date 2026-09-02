@@ -270,7 +270,10 @@ function doDefend() {
   const gained = mp - hero.mp;
   hero.mp = mp;
   bind.renderHUD();
-  S.blog.push(`🛡️ ${hero.name} 摆出防御架势，本回合受到的伤害减半${gained > 0 ? `，并恢复 ${gained} 点 MP` : ''}！`);
+  // v19.96 防御反馈追加当前 MP（信息透明·纯显示）：v19.95 已给 MP 不足拦截带上「当前/最大 MP」，
+  // 但防御姿态恢复 MP 后只报恢复量——玩家刚靠防御回蓝，想确认「当前 MP 能否支撑下一轮技能」仍需瞄 HUD；
+  // 直接读结算后的 hero.mp / hero.mpMax，与技能菜单/状态页 MP 显示同源，零结算变化。
+  S.blog.push(`🛡️ ${hero.name} 摆出防御架势，本回合受到的伤害减半${gained > 0 ? `，并恢复 ${gained} 点 MP` : ''}！（MP ${hero.mp}/${hero.mpMax}）`);
   afterPlayer();
 }
 

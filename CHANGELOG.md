@@ -1982,6 +1982,13 @@ v2.0 模块化重构在“行为与重构前一致”的目标下仍漏了三处
 |||- 【零回归面】未动 `SKILL_DATA` 各技能 MP 与效果；未改技能领悟、技能菜单绘制、状态页 MP 显示、战斗胜利/失败结算。只改 2 个文件（`data.js`：版本号 `v19.94→v19.95`；`battle.js`：`doSkill()` MP 不足分支 1 条文案 + 注释）。
 |||- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
 
+## v19.96 防御反馈追加当前 MP——摆防御回蓝后一眼看清能否放出下一轮技能（体验打磨·信息透明）
+
+|||- 【摆出防御姿态后只报「恢复 N 点 MP」，玩家看不到当前 MP 能否支撑下一轮技能】`battle.js` `doDefend()` 在结算 `hero.mp += DEFEND_MP` 后，`S.blog.push` 仅提示恢复量——玩家刚靠防御回蓝，往往紧接着就要决定下一轮是继续防御、喝药还是放技能，想确认「当前 MP 够不够」仍需瞄 HUD 或按 `I` 看状态页；与 v19.95「MP 不足拦截带当前/最大 MP」的同一「信息透明」主线不一致。
+|||- 【修正：防御文案追加结算后当前/最大 MP，纯显示零结算】`battle.js` 改为：`🛡️ ${hero.name} 摆出防御架势，本回合受到的伤害减半…（MP ${hero.mp}/${hero.mpMax}）`。`hero.mp` / `hero.mpMax` 为防御回蓝结算后的实时值，与技能菜单、状态页、MP 不足拦截文案同源；调 `DEFEND_MP` 只改 `data.js` 一处，提示自动跟随。未改变防御减伤倍率、反击概率、回合推进、敌方行动任何逻辑。
+|||- 【零回归面】未动 `DEFEND_MP`/`DEFEND_MULT`/`COUNTER_CHANCE` 数值与防御结算；未改 `doDefend` 的 `renderHUD`、`SFX.block` 时机；未改 `drawBattle` 指令栏「防御中 · 减伤 X% · 回 Y MP/回合」提示；未改 `afterPlayer` 回合推进。只改 2 个文件（`data.js`：版本号 `v19.95→v19.96`；`battle.js`：`doDefend()` 1 条 blog 文案 + 注释）。
+|||- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## 技术要点
 |- 单文件、零依赖、离线可玩；Canvas 程序化绘制全部图块/角色/敌人
 - 音乐/音效用 Web Audio 实时合成（步进音序器）
