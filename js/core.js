@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, DIFFS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, DIFFS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -162,7 +162,13 @@ function talkNext() {
     // v19.77 任务奖励反馈追加剩余金币（信息透明·纯显示）：v19.75/19.76 已给商店/旅馆消费成功文案
     // 带上余额，但任务奖励（灯长、井巫等NPC交付）完成后只报「金币 +N」，玩家确认兜里还剩多少仍需
     // 再按 I 看状态页。现在直接读 applyQuestReward 结算后的 hero.gold，零数值变化。
-    bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}（剩余 ${hero.gold} 金）`, WIN_MSG_MS);
+    // v19.98 任务奖励反馈追加药水/灵药剩余量（信息透明·纯显示）：v19.77 已补齐金币余额，但若奖励包含
+    // 生命药水或高级灵药，玩家只能看到「+1 药水/灵药」，确认补给库存是否充足仍需再按 I。现在直接读
+    // 结算后的 hero.item / hero.potion2，并带上 POTION_CAP 上限，与 v19.74/19.78/19.83 同源，零数值变化。
+    const remain = [];
+    if (act.item) remain.push(`药水 ${hero.item}/${POTION_CAP} 瓶`);
+    if (act.potion2) remain.push(`灵药 ${hero.potion2} 瓶`);
+    bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}（剩余 ${hero.gold} 金${remain.length ? '；' + remain.join('，') : ''}）`, WIN_MSG_MS);
     goto('world');
     return;
   }

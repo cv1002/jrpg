@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.98 任务奖励反馈追加药水/灵药剩余量——交任务获得补给后一眼看清库存（体验打磨·信息透明，把「收入/获得后即时反馈库存」主线延伸到 NPC 任务奖励）
+
+|||- 【任务奖励包含生命药水或高级灵药时只报「+1 药水/灵药」，玩家看不到剩余库存】`core.js` `talkNext()` 在 `act.kind === 'reward'` 分支已结算 `applyQuestReward()` 并在 v19.77 追加剩余金币，但当奖励 `act.item > 0` 或 `act.potion2 > 0` 时，文案仅显示 `+N 药水` / `+N 灵药`——玩家刚拿到任务补给，想确认「药水买到上限没有 / 高级灵药还剩几瓶」仍需再按 `I` 看状态页；与 v19.74「喝药带剩余量」、v19.78「购买药水带剩余量」、v19.83「战斗掉落带剩余量」的同一「补给库存即时可见」主线不一致。
+|||- 【修正：任务奖励文案追加结算后药水/灵药剩余量，纯显示零结算】`core.js` 改为：若奖励含生命药水则追加「药水 ${hero.item}/${POTION_CAP} 瓶」、含高级灵药则追加「灵药 ${hero.potion2} 瓶」，接在剩余金币之后，用「；」分隔。`hero.item` / `hero.potion2` 为 `applyQuestReward()` 结算后的实时值，`POTION_CAP` 与 `buyPotion()` 背包上限同源；未改变任何任务奖励数值、任务接取/完成判定、成就结算、`goto('world')` 时序。
+|||- 【零回归面】未动 `QUESTS` 各任务 `reward` 数值与 `applyQuestReward()` 结算；未改 `talkNext()` 其它分支（接受任务/翻页/离开）；未改存档结构/任务状态/成就判定。只改 2 个文件（`data.js`：版本号 `v19.97→v19.98`；`core.js`：`talkNext()` 奖励分支 1 条 boxMsg + 新增 `POTION_CAP` import + 注释）。
+|||- 验证：`node --check js/data.js js/core.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## v19.97 治疗技能反馈追加当前 HP——战斗中回血/解毒后一眼看清剩余血量（体验打磨·信息透明，把「状态一目了然」主线延伸到战斗内治疗/净化技能）
 
 ||- 【治疗/净化技能释放后只报恢复量，玩家看不到当前 HP】`battle.js` `doSkill()` 在 `skill.kind === 'heal'` 分支结算 `hero.hp = Math.min(hero.hpMax, hero.hp + heal)` 后，`S.blog.push` 仅提示「恢复 N 点 HP」与是否净化毒素——玩家刚用掉 MP 回血或解毒，想确认「当前血量是否安全、能否撑过下一轮敌方攻击」仍需瞄 HUD 或按 `I` 看状态页；与 v19.96「防御反馈追加当前 MP」的同一「关键资源即时可见」主线不一致。
