@@ -104,7 +104,13 @@ export function enemyAct(deps) {
     SFX.hurt();
     if (heavy) S.shake = { t0: Date.now(), pow: 3 }; // 重击震屏（纯显示）
     addFx(FX_HERO.x, FX_HERO.y, '-' + dmg, '#ff6b6b', true);
-    S.blog.push(`${heavy ? '💥' : '👹'} ${enemy.name} 攻击你，造成 ${dmg} 伤害！${hero.defending ? '（被防御格挡！）' : ''}${heavy && enemy.phased ? '（深渊之怒！）' : ''}`);
+    // v20.2 敌方攻击反馈追加我方剩余 HP（信息透明·纯显示）：v20.0 已给玩家攻击命中后追加敌方剩余 HP、
+    // v20.1 已给敌方回血后追加敌方当前 HP，但敌方攻击命中时仍只报伤害值——玩家刚挨一刀，想确认
+    // 「这血量还扛得住吗 / 是否需要防御或喝药」仍需瞄 HUD 血条；这里读结算后（hero.hp -= dmg 之后、
+    // 含防御减伤/重击倍率）的 hero.hp / hero.hpMax，与 HUD 血条/状态页同源。致死一击（hero.hp<=0）
+    // 不追加，避免与后续败北提示重复（同 v20.0 击杀时不追加敌方剩余 HP 的口径）。零数值变化。
+    const hpSuffix = hero.hp > 0 ? `（我方 HP ${hero.hp}/${hero.hpMax}）` : '';
+    S.blog.push(`${heavy ? '💥' : '👹'} ${enemy.name} 攻击你，造成 ${dmg} 伤害！${hero.defending ? '（被防御格挡！）' : ''}${heavy && enemy.phased ? '（深渊之怒！）' : ''}${hpSuffix}`);
     if (hero.defending && Math.random() < COUNTER_CHANCE) {
       const counter = Math.max(1, cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT));
       enemy.hp = Math.max(0, enemy.hp - counter);
