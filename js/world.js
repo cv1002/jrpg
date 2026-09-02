@@ -217,7 +217,12 @@ function onChestStep(x, y, hero) {
   if (curMap() === 'dungeon' && Math.random() < CHEST_MUSHROOM) {
     hero.mushrooms++;
     SFX.item();
-    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株）`);
+    // v19.93 宝箱蘑菇反馈追加任务进度（信息透明·纯显示）：此前只报总株数，玩家接取灯长支线后
+    // 想确认「还差几株可交付」仍需再按 I/J 查看；现与酿造/出售保护提示同源读 MUSHROOM_GOAL，
+    // 支线未激活或已集齐时不额外显示，零结算变化。
+    const qm = (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms < MUSHROOM_GOAL)
+      ? `，任务还差 ${MUSHROOM_GOAL - hero.mushrooms} 株` : '';
+    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm}）`);
     if (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms >= MUSHROOM_GOAL) {
       setSideQuest(hero, 'side_mushroom', 'turnin');
       bind.boxMsg('💡 蘑菇集齐了！回去找灯长领取奖励吧！', MILESTONE_MS);

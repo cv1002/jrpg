@@ -1958,6 +1958,13 @@ v2.0 模块化重构在“行为与重构前一致”的目标下仍漏了三处
 - 【零回归面】未动 `CAVE_BOSS` 属性/掉落/成就判定；未改 `applyVictoryWorld`、`world.js` 宝藏显形、任务 `side_cart` 激活；未改 `winBattle` 其它分支（普通胜利/升级/Boss/试炼/真结局/记忆碎片）。只改 2 个文件（`data.js`：版本号 `v19.90→v19.91`；`battle.js`：洞窟领主胜利 `boxMsg` 1 条 + 注释）。
 - 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
 
+## v19.93 宝箱蘑菇反馈追加任务进度——雾语林开箱拿到蘑菇后一眼看清灯长支线还差几株（体验打磨·信息透明）
+
+|- 【雾语林宝箱开出魔法蘑菇时只报总株数，接取支线后看不到任务进度】`world.js` `onChestStep()` 在 `curMap() === 'dungeon'` 分支命中蘑菇掉落时，`boxMsg` 仅提示 `🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株）`——玩家已接取灯长支线后，想确认「离交付还差几株」仍需再按 `I` 看状态页或 `J` 翻日志；与 v19.68「酿造/出售蘑菇保护带进度」、v19.70「酿造成功带剩余材料」的同一「任务进度即时透明」主线不一致。
+|- 【修正：宝箱蘑菇文案追加任务进度，纯显示零结算】`world.js` 改为在支线 `side_mushroom === 'active'` 且尚未集齐时追加：`，任务还差 ${MUSHROOM_GOAL - hero.mushrooms} 株`。`MUSHROOM_GOAL` 与酿造保护、商店阻止、任务交付同源读 `data.js`；支线未激活或已集齐时不额外显示，保持文案简洁；未改变开箱掉落概率、蘑菇计数、任务状态流转、`setSideQuest` 触发逻辑。
+|- 【零回归面】未动 `CHEST_MUSHROOM` / `CHEST_GOLD` / `CHEST_GOLD_BASE` / `CHEST_GOLD_PER_LV` 任何数值；未改金币/药水宝箱分支；未改 `applyAchievements` 即时判定；未改地图渲染或 NPC 交互。只改 2 个文件（`data.js`：版本号 `v19.92→v19.93`；`world.js`：`onChestStep` 蘑菇分支 1 条 `boxMsg` + 进度推导 + 注释）。
+|- 验证：`node --check js/data.js js/world.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## 技术要点
 - 单文件、零依赖、离线可玩；Canvas 程序化绘制全部图块/角色/敌人
 - 音乐/音效用 Web Audio 实时合成（步进音序器）
