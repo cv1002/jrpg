@@ -204,7 +204,7 @@ const screens = {
         renderHUD();
         if (!S.G.tutDone) {
           S.G.tutDone = true;
-          boxMsg('💡 教程：WASD移动 · Enter对话 · Esc菜单 · P存档 · I状态 · J任务 · H帮助', TUTOR_MSG_MS);
+          boxMsg('💡 教程：WASD移动 · Enter对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音', TUTOR_MSG_MS);
         } else {
           boxMsg('踏上旅途！去把灯芯讨回来！', STRONG_MSG_MS);
         }
