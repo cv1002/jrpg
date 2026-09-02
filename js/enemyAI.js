@@ -89,7 +89,10 @@ export function enemyAct(deps) {
     const heal = Math.round(enemy.hpMax * (act.pct || HEAL_PCT));
     enemy.hp += heal;
     SFX.heal();
-    S.blog.push(`🟣 ${enemy.name} 使出【暗影回血】，恢复 ${heal} HP`);
+    // v20.1 敌方回血反馈追加当前 HP（信息透明·纯显示）：v20.0 已给玩家攻击命中后追加敌方剩余 HP，
+    // 但敌方使用回血技能时仍只报恢复量，玩家无法确认「这怪又回上来了多少、当前还剩多少血」；
+    // 直接读结算后的 enemy.hp / enemy.hpMax，与 v20.0 敌方剩余 HP / HUD 血条同源，零数值变化。
+    S.blog.push(`🟣 ${enemy.name} 使出【暗影回血】，恢复 ${heal} HP（敌方 HP ${enemy.hp}/${enemy.hpMax}）`);
     hero.hurt = 0;
   } else {
     const heavy = act.type === 'heavy';
