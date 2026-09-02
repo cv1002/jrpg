@@ -216,7 +216,10 @@ function doSkill(skillName) {
       extra = '，毒素被净化了';
     }
     SFX.heal();
-    S.blog.push(`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力保留）' : ''}`);
+    // v19.97 治疗技能反馈追加当前 HP（信息透明·纯显示）：v19.74 已给战斗用药反馈带上剩余数量，
+    // 但治疗/净化类技能释放后只报恢复量——玩家刚用掉 MP 回血或解毒，想确认「当前 HP 是否安全、能否撑过下一轮」
+    // 仍需瞄 HUD；直接读结算后的 hero.hp / hero.hpMax，与状态页 HP 显示同源，零结算变化。
+    S.blog.push(`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力保留）' : ''}！（HP ${hero.hp}/${hero.hpMax}）`);
     bind.renderHUD();
     afterPlayer();
     return;

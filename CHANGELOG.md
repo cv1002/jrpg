@@ -2,6 +2,13 @@
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
 
+## v19.97 治疗技能反馈追加当前 HP——战斗中回血/解毒后一眼看清剩余血量（体验打磨·信息透明，把「状态一目了然」主线延伸到战斗内治疗/净化技能）
+
+||- 【治疗/净化技能释放后只报恢复量，玩家看不到当前 HP】`battle.js` `doSkill()` 在 `skill.kind === 'heal'` 分支结算 `hero.hp = Math.min(hero.hpMax, hero.hp + heal)` 后，`S.blog.push` 仅提示「恢复 N 点 HP」与是否净化毒素——玩家刚用掉 MP 回血或解毒，想确认「当前血量是否安全、能否撑过下一轮敌方攻击」仍需瞄 HUD 或按 `I` 看状态页；与 v19.96「防御反馈追加当前 MP」的同一「关键资源即时可见」主线不一致。
+||- 【修正：治疗文案追加结算后当前 HP，纯显示零结算】`battle.js` 改为：`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力保留）' : ''}！（HP ${hero.hp}/${hero.hpMax}）`。`hero.hp` / `hero.hpMax` 为回血/解毒后的实时值，直接读结算后的状态，与状态页 HP 显示同源；未改治疗量公式、MP 消耗、净化逻辑、蓄力保留机制、`bind.renderHUD()` 与 `afterPlayer()` 调用时序。
+||- 【零回归面】未动 `SKILL_DATA` 治疗类技能数值/MP/效果；未改 `doSkill()` MP 不足拦截、气场封印、伤害技能分支；未改 `applyStats`/`grantXp`/战斗胜负结算；未改 `enemyAI.js` 敌方行动；未改 `SFX.heal()` 时机。只改 2 个文件（`data.js`：版本号 `v19.96→v19.97`；`battle.js`：`doSkill()` 治疗分支 1 条 blog 文案 + 注释）。
+||- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## v19.87 存档成功反馈追加角色摘要——按 P 或菜单存档后一眼确认写入哪一档（体验打磨·信息透明，把「进度/金币即时可见」主线延伸到手动存档操作）
 
 ||- 【存档成功时只报「已存档到槽 N」，玩家看不到角色进度与金币】`core.js` `saveGame()` 在写入 localStorage 后，仅设置 `S.saveMsg = 💾 已存档到槽 ${S.curSaveSlot}`——玩家多槽存档或想确认「当前角色/等级/所在地图/身上多少金币」是否已写入，仍需再按 `I` 看状态页；与 v19.86「读档追加角色摘要」的同一信息透明主线不一致。
