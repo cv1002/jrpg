@@ -149,7 +149,10 @@ function talkNext() {
   const hero = S.G;
   const act = resolveNpcTalk(hero, S.curNpc);
   if (act && act.kind === 'accept') {
-    bind.boxMsg(`接受了「${act.name}」！按 J 可查看任务日志`, NARR_MSG_MS);
+    // v19.99 接取任务反馈追加当前目标（信息透明·纯显示）：此前只报「接受了任务」并提示按 J 看日志，
+    // 玩家接完委托后想确认「现在要做什么 / 还差多少」仍需手动翻日志或看 HUD；现在直接读 quests.questObjective
+    // 的实时目标文本（与任务日志/状态页同源），接取瞬间即可知道下一步，零结算变化。
+    bind.boxMsg(`接受了「${act.name}」！当前目标：${questObjective(hero)}（按 J 查看任务日志）`, NARR_MSG_MS);
     goto('world');
     return;
   }

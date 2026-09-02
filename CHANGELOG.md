@@ -1,3 +1,10 @@
+## v19.99 接取任务反馈追加当前目标——接受 NPC 委托后一眼看清下一步要做什么（体验打磨·信息透明，把「进度一目了然」主线延伸到任务接取瞬间）
+
+|||- 【接受任务后只报「接受了 XX」并提示按 J，玩家看不到当前目标】`core.js` `talkNext()` 在 `act.kind === 'accept'` 分支结算 `setSideQuest()` 后，`boxMsg` 仅提示「接受了「${act.name}」！按 J 可查看任务日志」——玩家刚接下灯长的蘑菇委托或猎手的雾灵委托，想确认「现在要做什么 / 还差多少」仍需再按 J 翻日志或看 HUD；与 v19.98「任务奖励带剩余量」、v19.94「喷泉恢复带数值」、v19.93「宝箱蘑菇带任务进度」的同一「信息透明」主线不一致。
+|||- 【修正：接取任务文案追加实时目标，纯显示零结算】`core.js` 改为：`接受了「${act.name}」！当前目标：${questObjective(hero)}（按 J 查看任务日志）`。`questObjective(hero)` 与任务日志/状态页 HUD 同源（由 `quests.js` `questLines` / `objectiveText` 推导），任务进度、地点后缀、讨伐/采集计数均实时跟随；未改变任何任务接取判定、奖励结算、`goto('world')` 时序。
+|||- 【零回归面】未动 `QUESTS` 各任务目标/奖励/解锁条件；未改 `resolveNpcTalk()` 接取逻辑；未改 `questObjective()` / `questJournal()` 返回值。只改 2 个文件（`data.js`：版本号 `v19.98→v19.99`；`core.js`：`talkNext()` 接受分支 1 条 boxMsg + 注释）。
+|||- 验证：`node --check js/data.js js/core.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 # 潮灯记 · 变更日志
 
 模块化 Canvas JRPG（v1.x 为单文件 `index.html`，v2.0 起拆分 `index.html` + `js/` ES Modules）。v4.0 执行 `improve-plan.md`。v5.0 换上全新剧情。
