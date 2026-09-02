@@ -191,7 +191,10 @@ function doSkill(skillName) {
   const enemy = S.enemy;
   const skill = SKILL_DATA[skillName];
   if (!hero.skills.includes(skillName)) return abortAction('❌ 尚未领悟该技能');
-  if (hero.mp < skill.mp) return abortAction('❌ MP 不足！');
+  // v19.95 MP 不足反馈追加所需/当前 MP（信息透明·纯显示）：技能菜单已显示每招 MP 与缺口，
+  // 但直接按数字键尝试施法时只报「MP 不足」——玩家想确认「这招到底要多少蓝、当前差几点」
+  // 仍需瞄技能菜单或按 I 看状态页；直接读 skill.mp / hero.mp / hero.mpMax，零结算变化。
+  if (hero.mp < skill.mp) return abortAction(`❌ MP 不足！【${skillName}】需要 ${skill.mp} MP（当前 ${hero.mp}/${hero.mpMax}）`);
   if (skillForbidden(skillName, skill, enemy)) {
     SFX.cancel();
     return abortAction(`⛔ 祸乱气场封印了【${skillName}】！`);
