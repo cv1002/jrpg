@@ -1,3 +1,10 @@
+## v20.4 新成就「灯火记忆」——记忆碎片全收集也有里程碑（新内容·收集向成就，v19.61「支线全清」后把 milestone 补全收尾——收集向主线里 图鉴全收集(perfection)/宝箱(chests)/支线全清(allquests) 都有成就，唯独贯穿强敌首胜掉落的 4 枚记忆碎片（守门人/灯卫/星砂/初灯，真结局加页·任务日志·名字石碑同读 FRAGMENTS 表）没有任何纪念）
+
+|- 【记忆碎片作为核心叙事收集品却没有成就】`ACH_LIST` 20 项成就覆盖 战斗/等级/金币/掉落/图鉴/任务/宝箱/支线，而「集齐全部 4 枚记忆碎片」——需逐一击败 石心魔像/幽冥魔王/洞窟领主/终焉之神 四强收集、且是真结局「全记忆」页前置——作为收集向主线的最深一环，成就一览里连进度都没有：收藏型玩家在 J 日志看到「记忆 X/4」后，无法在 C 成就页得到对应里程碑回馈。
+|- 【修正：ACH_LIST 末尾追加一条通用成就，零逻辑改动】`data.js` 新增 `{id:'memoir', name:'灯火记忆', d:'集齐全部 ${FRAGMENTS.length} 枚记忆碎片', ok:g=>FRAGMENTS.every(f=>(g.fragments||[]).includes(f.id)), prog:g=>`${(g.fragments||[]).length}/${FRAGMENTS.length}`}`——判定/进度全部同源于 FRAGMENTS 表（数量由 length 推导不写死，未来增删碎片自动跟随），读既有 g.fragments 存档字段（core.newGame 建档 `[]`、migrateQuests 旧档兜底均已就绪），与 perfection/chests/allquests 同一「通用 ACH_LIST + ok/prog」模式；解锁时机自动落在第 4 枚碎片（终焉之神首胜）写入之后的 hero.applyAchievements 既有调用点（battle.winBattle isTrue 分支），零新增计数/状态/依赖/结算；不设 r 字段（碎片本身无金币奖励，与 16 条无奖励成就一致，成就页不显示回报以免误导）。
+|- 【零回归面】未动 battle/quests/world/core 任何逻辑；未动 ACH_LIST 既有 20 条（仅末尾追加 1 条）；成就判定/解锁横幅/成就页滚动/胜屏分母全走既有通用遍历（rules.unlockedAchievements / hero.applyAchievements / menus.drawAch「成就 X/21」自动跟随）；未动 FRAGMENTS/真结局/任务日志/名字石碑任何读取。只改 2 个文件（data.js：GAME_VERSION v20.3→v20.4 + ACH_LIST 追加 1 条；README.md：成就数 20→21 两处）。
+|- 验证：`node --check js/data.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）；新增 v20.4 专项冒烟（/tmp/jrpg_smoke_v204_memoir.mjs）。
+
 ## v20.3 快捷键可发现性收口——成就一览(C)/快速旅行(T)/操作说明(H)补齐到常驻帮助条与开局教程（体验打磨·按键透明，把「信息透明」主线延伸到「按键表本身」）
 
 |- 【常驻帮助条（index.html #help）与开局教程只列了部分快捷键，C(成就一览)/T(快速旅行) 两个核心系统完全不可发现】`index.html` 底部帮助条列了 WASD/Enter/Esc/P/F/I/J/B/M + 战斗 1-6 + 标题 L，唯独没有 `C`(成就一览) 与 `T`(快速旅行)，也未提示存在 `H`(操作说明/完整按键表)；`main.js` story 结束后的开局教程消息（`💡 教程：…H帮助`）同样只列 WASD/Enter/Esc/P/I/J/H——玩家照常驻帮助条操作，永远不会知道「C 看成就」「T 快速旅行」：成就一览是收集向玩家的核心回馈入口，快速旅行是主线后期频繁回城补给/前往下一区域的刚需，而这两个功能在 `screens.world.onKey` 早已实现（v2.x 起），唯独入口对玩家不可见——功能形同虚设。

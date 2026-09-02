@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v20.3';
+const GAME_VERSION = 'v20.4';
 
 const T=32;
 
@@ -1272,6 +1272,13 @@ const ACH_LIST=[
   // 绝无第二套口径；读的是既有 g.quests.<id>==='done' 存档字段（与 quest/cartman/names/mist/stone
   // 五条单支线成就同口径，交付侧 status 由 quests.setSideQuest 写定），零新计数/零新状态/零新依赖
   {id:'allquests', name:'灯火同心', d:`完成全部 ${Object.values(QUESTS).filter(q=>q.kind==='side').length} 个支线任务`, ok:g=>Object.values(QUESTS).filter(q=>q.kind==='side').every(q=>(g.quests||{})[q.id]==='done'), prog:g=>{const s=Object.values(QUESTS).filter(q=>q.kind==='side');return `${s.filter(q=>(g.quests||{})[q.id]==='done').length}/${s.length}`;}},
+  // 灯火记忆（v20.4 新成就·记忆碎片全收集）：四段记忆碎片（data.js FRAGMENTS 单一数据源）是贯穿
+  // 强敌首胜掉落的叙事收集品（守门人/灯卫/星砂/初灯各一段，真结局加页·任务日志·名字石碑同读此表），
+  // 但此前没有任何成就纪念「集齐全部记忆」——收集向主线里 图鉴全收集（perfection）/宝箱（chests）/
+  // 支线全清（allquests）都有里程碑，唯独记忆碎片这一枚是空白。判定读既有 g.fragments 数组（与真结局
+  // 判定/日志/名字石碑同源；新档 core.newGame、旧档迁移 migrateQuests 均已兜底初始化），数量由
+  // FRAGMENTS.length 推导不写死——未来增删碎片成就自动跟随。零新计数/零新状态/零新依赖/零结算变化。
+  {id:'memoir', name:'灯火记忆', d:`集齐全部 ${FRAGMENTS.length} 枚记忆碎片`, ok:g=>FRAGMENTS.every(f=>(g.fragments||[]).includes(f.id)), prog:g=>`${(g.fragments||[]).length}/${FRAGMENTS.length}`},
 ];
 
 function codexTag(name) {
