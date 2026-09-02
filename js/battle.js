@@ -364,7 +364,9 @@ function attackMove(fin, sfx, crit, mult) {
 }
 
 function finishPlayer(fmt, dmg) {
-  S.blog.push(fmt.replace('<dmg>', dmg));
+  const enemy = S.enemy;
+  const suffix = enemy.hp > 0 ? `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）` : '';
+  S.blog.push(fmt.replace('<dmg>', dmg) + suffix);
   if (S.enemy.hp <= 0) {
     S.enemy.hp = 0;
     S.blog.push(`💀 ${S.enemy.name} 被击败了！`);

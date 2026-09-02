@@ -1,3 +1,10 @@
+## v20.0 玩家攻击/技能反馈追加敌方剩余 HP——命中后一眼看清怪物还剩多少血（体验打磨·信息透明，把「状态一目了然」主线延伸到战斗内进攻反馈）
+
+||||- 【普通攻击与伤害技能命中后只报伤害值，玩家看不到敌方剩余 HP】`battle.js` `finishPlayer()` 在 `attackMove()` 扣减 `enemy.hp` 后，仅把 `<dmg>` 替换进文案推入战报——玩家刚用掉 MP 或一回合行动打出伤害，想确认「这怪还要几轮才死、是否该转防御/用药」仍需瞄 HUD 的血条或凭记忆估算；与 v19.97「治疗反馈带当前 HP」、v19.96「防御反馈带当前 MP」的同一「关键资源即时可见」主线不一致。
+||||- 【修正：非击杀命中后追加敌方剩余 HP，纯显示零结算】`battle.js` 改为：若 `enemy.hp > 0`，在原战报文案后追加 `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）`。`enemy.hp` / `enemy.hpMax` 为 `attackMove()` 扣减后的实时值，与 HUD 血条/状态页同源；未改变伤害公式、暴击/蓄力/石甲/弱点判定、胜负结算、`afterPlayer()` 与 `winBattle()` 时序。击杀时仍保持原流程（先推「被击败了」再调 `winBattle`），不追加剩余 HP 避免与击杀提示重复。
+||||- 【零回归面】未动 `MON_BASE`/`SKILL_DATA`/`CRIT_*`/`CHARGE_MULT`/`SHIELD_MULT`/`BIG_DMG` 任何数值；未改 `doAttack()`/`doSkill()`/`attackMove()` 伤害结算与特效时序；未改 `enemyAI.js` 敌方行动；未改 `view/drawBattle.js` 血条渲染。只改 2 个文件（`data.js`：版本号 `v19.99→v20.0`；`battle.js`：`finishPlayer()` 新增 2 行后缀拼接 + 注释）。
+||||- 验证：`node --check js/data.js js/battle.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## v19.99 接取任务反馈追加当前目标——接受 NPC 委托后一眼看清下一步要做什么（体验打磨·信息透明，把「进度一目了然」主线延伸到任务接取瞬间）
 
 |||- 【接受任务后只报「接受了 XX」并提示按 J，玩家看不到当前目标】`core.js` `talkNext()` 在 `act.kind === 'accept'` 分支结算 `setSideQuest()` 后，`boxMsg` 仅提示「接受了「${act.name}」！按 J 可查看任务日志」——玩家刚接下灯长的蘑菇委托或猎手的雾灵委托，想确认「现在要做什么 / 还差多少」仍需再按 J 翻日志或看 HUD；与 v19.98「任务奖励带剩余量」、v19.94「喷泉恢复带数值」、v19.93「宝箱蘑菇带任务进度」的同一「信息透明」主线不一致。
