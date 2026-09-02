@@ -467,6 +467,11 @@ function winBattle() {
     return result;
   }
   if (enemy.isBoss) {
+    // v19.92 幽冥魔王胜利反馈追加剩余金币（信息透明·纯显示）：v19.91 已给洞窟领主胜利横幅
+    // 带上余额，但首个主线 Boss 幽冥魔王击败后只报「圣光之剑」——玩家刚拿到一笔金币/经验收入，
+    // 想确认「兜里还剩多少」仍需再按 I 看状态页；直接读结算后的 hero.gold（line 399 已加 enemy.gold），
+    // 同时补充本次获得的金币与经验，零数值变化。
+    bind.boxMsg(`🏆 ${enemy.name}倒下！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 剩余 ${hero.gold} 金`, WIN_MSG_MS);
     if (hero.weapon !== '圣光之剑') {
       hero.weapon = '圣光之剑';
       applyStats(hero);
