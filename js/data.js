@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v20.7';
+const GAME_VERSION = 'v20.8';
 
 const T=32;
 
@@ -213,6 +213,11 @@ const MIST_GOAL = 3;        // 雾径猎手支线需讨伐的雾灵只数（best
 // 集齐后转可交付）——与 MIST_GOAL / MUSHROOM_GOAL 同一「支线目标单一数据源」家族，想调阈值
 // 只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
 const STONE_GOAL = 3;       // 守书记支线需带回的「石壳记痕」份数（= 讨伐石魔像只数）
+
+// 残焰魔像讨伐目标（单一数据源）：守名者支线「残焰的安息」需讨伐的残焰魔像只数（bestiary 计数，
+// 讨伐后转可交付）——与 MIST_GOAL / MUSHROOM_GOAL / STONE_GOAL 同一「支线目标单一数据源」家族，
+// 想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
+const EMBER_GOAL = 1;       // 守名者支线需带回的「残焰之证」份数（= 讨伐残焰魔像只数）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -1257,6 +1262,53 @@ const QUESTS={
       ]],
     },
   },
+  // 守名者·残焰的安息（v20.8 新支线）：讨伐 EMBER_GOAL 只残焰魔像（bestiary 计数）——
+  // 无字回廊是全游戏唯一没有支线的地图：守名者此前只有静态台词（点破回廊立意、指引强敌），
+  // 而中段精英「残焰魔像」作为终局之神的守门考验没有任何任务挂钩；与 side_mist / side_stone
+  // 同一「讨伐采集型支线」模式（无 unlockOn → 从开局即 offer，保留「接取→讨伐→交付」完整
+  // offer/accept 流程——带 unlockOn 的支线会自动变 active、没有接取瞬间；守名者本就只在终局区
+  // 可达，接取时机天然正确），阈值单一数据源 EMBER_GOAL（判定/进度/目标文案/接取对话同读），
+  // 奖励 100 金 + 灵药（potion2）与终局补给节奏匹配；done 页按 hero.trueBoss 分档：
+  // 通关前讲残焰（不剧透初灯），通关后保留原「初灯的名字」彩蛋口吻（该 NPC 的 after 在有任务后不再单独展示）
+  side_ember:{
+    id:'side_ember', kind:'side', store:true, npc:'guard', giver:'guard',
+    cond:(g)=>(((g.bestiary||{})['残焰魔像'])||0) >= EMBER_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['残焰魔像'])||0}/${EMBER_GOAL} 只`,
+    name:'残焰的安息', where:'无字回廊',
+    obj:`讨伐 ${EMBER_GOAL} 只无字回廊的【残焰魔像】`,
+    offer:'去无字回廊找守名者，接下替残焰讨回名字的委托',
+    turnin:'残焰熄了！回无字回廊找守名者',
+    done:'残焰的名字刻上了碑。守门者记住了，回廊记住了。',
+    reward:{ gold:100, potion2:1 },
+    talk:{
+      offer:[[
+        '守名者：这条回廊里躺的名字，都是「替别人记住了什么、却没人记得他们」的人。',
+        '再往东，残焰魔像守着窄道——它是一段没人记得的火，连自己烧过什么都不晓得。',
+        `替我了结它——带回 ${EMBER_GOAL} 只残焰魔像，把它的名字讨回来，我替它刻上碑。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:[[
+        '守名者：残焰魔像就在回廊中段，窄道东侧。它不会说，但它记得。',
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '守名者：火熄了……它的名字，碑上已经有了。',
+        '它托我记着：替别人记住的人，总有人替他记住。这段谢礼，是它给你的。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [[
+        '守名者：初灯的名字……你也带回来了。我守着无字回廊守了一辈子，',
+        '头一回看见碑上有人能念出声。去吧——名字被记住了的人，雾就进不了他的梦。',
+        '（支线任务·已完成）',
+        '[Enter] 结束',
+      ]] : [[
+        '守名者：残焰的名字刻上了碑，火熄了，碑还温着。',
+        '回廊不记输家——你记着它，它就算没输。',
+        '（支线任务·已完成）',
+        '[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -1278,11 +1330,15 @@ const ACH_LIST=[
   {id:'names',      name:'名字归还', d:'替旧灯卫找回名字（巡灯人支线）', ok:g=>g.quests&&g.quests.side_name==='done'},
   {id:'mist',       name:'雾中辨形', d:'完成雾径猎手的雾灵委托', ok:g=>g.quests&&g.quests.side_mist==='done'},
   {id:'stone',      name:'旧账已结', d:'完成守书记的石壳委托', ok:g=>g.quests&&g.quests.side_stone==='done'},
+  // 残焰已熄（v20.8 新成就·守名者支线）：完成守名者的「残焰的安息」——与 quest/cartman/names/mist/stone
+  // 同一「单支线成就」模式（读既有 g.quests.side_ember==='done'，交付侧 status 由 quests.setSideQuest 写定），
+  // 零新计数/零新状态/零新依赖；无 r 字段（奖励在任务结算侧，同 cartman/mist/stone 惯例不重复标注）
+  {id:'ember',      name:'残焰已熄', d:'完成守名者的嘱托（残焰魔像）', ok:g=>!!(g.quests&&g.quests.side_ember==='done')},
   {id:'chests',     name:'开箱寻宝', d:`累计开启 ${TREASURE_GOAL} 个宝箱`, ok:g=>chestCount(g)>=TREASURE_GOAL, prog:g=>`${chestCount(g)}/${TREASURE_GOAL}`},
   // 灯火同心（v19.61 新成就·支线全收集）：完成全部支线任务——判定/描述/进度三处同源于 QUESTS 的
   // kind==='side' 列表（数量由数据推导、不写死）：未来增删支线（QUESTS 增删一条）成就自动跟随，
-  // 绝无第二套口径；读的是既有 g.quests.<id>==='done' 存档字段（与 quest/cartman/names/mist/stone
-  // 五条单支线成就同口径，交付侧 status 由 quests.setSideQuest 写定），零新计数/零新状态/零新依赖
+  // 绝无第二套口径；读的是既有 g.quests.<id>==='done' 存档字段（与 quest/cartman/names/mist/stone/ember
+  // 六条单支线成就同口径，交付侧 status 由 quests.setSideQuest 写定），零新计数/零新状态/零新依赖
   {id:'allquests', name:'灯火同心', d:`完成全部 ${Object.values(QUESTS).filter(q=>q.kind==='side').length} 个支线任务`, ok:g=>Object.values(QUESTS).filter(q=>q.kind==='side').every(q=>(g.quests||{})[q.id]==='done'), prog:g=>{const s=Object.values(QUESTS).filter(q=>q.kind==='side');return `${s.filter(q=>(g.quests||{})[q.id]==='done').length}/${s.length}`;}},
   // 灯火记忆（v20.4 新成就·记忆碎片全收集）：四段记忆碎片（data.js FRAGMENTS 单一数据源）是贯穿
   // 强敌首胜掉落的叙事收集品（守门人/灯卫/星砂/初灯各一段，真结局加页·任务日志·名字石碑同读此表），
@@ -1335,7 +1391,7 @@ const HELP_PAGES=[
     ['潮灯镇 Lv.' + MAPS.village.recLv,'商店·旅馆·酿造锅·灯长/守书记(支线)·喷泉回血'],
     ['雾语林 Lv.' + MAPS.dungeon.recLv,'强魔物·精英·魔王祭坛·右下裂洞进矿脉'],
     ['星井矿脉 Lv.' + MAPS.cave.recLv,'更强魔物·迷宫·中央终焉水晶·双徽记化为门'],
-    ['无字回廊 Lv.' + MAPS.gallery.recLv,'名字石碑·守名者·残焰魔像·终焉之神·极高难'],
+    ['无字回廊 Lv.' + MAPS.gallery.recLv,'名字石碑·守名者(支线)·残焰魔像·终焉之神·极高难'],
     ['通关之路','讨回灯芯 → 击败洞窟领主 → 双徽记开门 → 回廊尽头面对终焉之神'],
   ],
   [
@@ -1361,7 +1417,7 @@ const HELP_PAGES=[
 // 快速旅行列表（v19.56 区域难度透明化）：「推荐 Lv.X 起」提示由 MAPS[].recLv 派生（与 world.transition
 // 进图危险预警同读此源）——此前四个推荐等级是手写裸字面量，与真实进图体验各自为政；现派生式拼接的
 // 输出串与旧文案逐字相等（1/3/6/10），零显示变化，调门槛只改 MAPS.recLv 一处两处同步
-const TRAVEL_LIST=[['village','潮灯镇','记忆之镇：商店·旅馆·灯长委托（补给与任务）','安全区 · Lv.'+MAPS.village.recLv+' 即可'],['dungeon','雾语林','雾语林：魔物·宝箱·祭坛·矿脉入口','推荐 Lv.'+MAPS.dungeon.recLv+' 起 · 当心精英'],['cave','星井矿脉','星井矿脉：强敌·试炼碑·终焉水晶（高难区域）','推荐 Lv.'+MAPS.cave.recLv+' 起 · 高难'],['gallery','无字回廊','被遗忘者的回廊：守名者·名字石碑·残焰魔像·终焉之神','推荐 Lv.'+MAPS.gallery.recLv+' 起 · 极高难']];
+const TRAVEL_LIST=[['village','潮灯镇','记忆之镇：商店·旅馆·灯长委托（补给与任务）','安全区 · Lv.'+MAPS.village.recLv+' 即可'],['dungeon','雾语林','雾语林：魔物·宝箱·祭坛·矿脉入口','推荐 Lv.'+MAPS.dungeon.recLv+' 起 · 当心精英'],['cave','星井矿脉','星井矿脉：强敌·试炼碑·终焉水晶（高难区域）','推荐 Lv.'+MAPS.cave.recLv+' 起 · 高难'],['gallery','无字回廊','被遗忘者的回廊：守名者(支线)·名字石碑·残焰魔像·终焉之神','推荐 Lv.'+MAPS.gallery.recLv+' 起 · 极高难']];
 
 const HERO_NAMES=['余烬','灯见','潮'];
 const DEFAULT_NAME = HERO_NAMES[0]; // 默认主角名（newGame 兜底/resetRun 兜底/启动建档同读此源，改名单只动 HERO_NAMES）
@@ -1401,7 +1457,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
