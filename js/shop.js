@@ -61,6 +61,9 @@ export function buyWeapon(name) {
   const hero = S.G;
   const price = WEAPONS[name].price;
   if (hero.gold >= price) {
+    // v20.5 购买反馈追加面板攻击前后对比（信息透明·纯显示）：在改动装备前捕获旧总攻击，
+    // 与状态页「基础+装备=总面板」同源（applyStats 后 hero.atkMax 即新值），旧档防御力兜底。
+    const atkBefore = typeof hero.atkMax === 'number' ? hero.atkMax : null;
     hero.gold -= price;
     hero.weapon = name;
     SFX.shop();
@@ -68,7 +71,7 @@ export function buyWeapon(name) {
     applyAchievements();
     // v19.75 武器购买反馈追加剩余金币（信息透明·纯显示）：v19.67 已带价格，但玩家大额消费后
     // 想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.70/73/74 同源。
-    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金）`);
+    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${atkBefore !== null ? ` · 攻击 ${atkBefore}→${hero.atkMax}` : ''}）`);
     bind.renderHUD();
   } else {
     bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
@@ -79,12 +82,14 @@ export function buyArmor(name) {
   const hero = S.G;
   const price = ARMORS[name].price;
   if (hero.gold >= price) {
+    // v20.5 购买反馈追加面板防御前后对比（信息透明·纯显示）：同 buyWeapon，零结算变化。
+    const defBefore = typeof hero.defMax === 'number' ? hero.defMax : null;
     hero.gold -= price;
     hero.armor = name;
     SFX.shop();
     applyStats(hero);
     // v19.75 防具购买反馈追加剩余金币（信息透明·纯显示）：同武器购买，零结算变化。
-    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金）`);
+    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${defBefore !== null ? ` · 防御 ${defBefore}→${hero.defMax}` : ''}）`);
     bind.renderHUD();
   } else {
     bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
