@@ -243,11 +243,18 @@ function onChestStep(x, y, hero) {
 function onFountainStep(x, y, hero) {
   S.encGauge = Math.max(0, S.encGauge + ENCOUNTER.fountain);
   if (hero.hp < hero.hpMax || hero.mp < hero.mpMax) {
+    const hpBefore = hero.hp;
+    const mpBefore = hero.mp;
     hero.hp = hero.hpMax;
     hero.mp = hero.mpMax;
     SFX.heal();
-    bind.boxMsg('⛲ 喷泉清泉涌动，HP/MP 完全恢复！', EVENT_MSG_MS);
+    // v19.94 喷泉恢复反馈追加具体数值（信息透明·纯显示）：此前只报「HP/MP 完全恢复」，
+    // 玩家踩泉后想确认「到底回了多少 / 现在满没满」仍需再按 I 看状态页；现在直接读结算后的
+    // hero.hp/hpMax/mp/mpMax，显示本次恢复量与最终值，满状态分支则按帮助页口径提示「状态已满」。
+    bind.boxMsg(`⛲ 清泉涌动，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！`, EVENT_MSG_MS);
     bind.renderHUD();
+  } else {
+    bind.boxMsg('⛲ 踩上回血 · 状态已满', EVENT_MSG_MS);
   }
 }
 

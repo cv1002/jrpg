@@ -1965,8 +1965,18 @@ v2.0 模块化重构在“行为与重构前一致”的目标下仍漏了三处
 |- 【零回归面】未动 `CHEST_MUSHROOM` / `CHEST_GOLD` / `CHEST_GOLD_BASE` / `CHEST_GOLD_PER_LV` 任何数值；未改金币/药水宝箱分支；未改 `applyAchievements` 即时判定；未改地图渲染或 NPC 交互。只改 2 个文件（`data.js`：版本号 `v19.92→v19.93`；`world.js`：`onChestStep` 蘑菇分支 1 条 `boxMsg` + 进度推导 + 注释）。
 |- 验证：`node --check js/data.js js/world.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
 
+## v19.94 喷泉恢复反馈追加具体数值——踩泉时一眼看清回了多少 / 满状态不再静默（体验打磨·信息透明）
+
+||- 【喷泉恢复时只报「HP/MP 完全恢复」，玩家看不到回复量与当前值】`world.js` `onFountainStep()` 在踩到喷泉且未满时仅提示 `⛲ 喷泉清泉涌动，HP/MP 完全恢复！`——玩家刚经历一场战斗，想确认「到底回了多少 / 现在满没满」仍需再按 `I` 看状态页；与 v19.74「喝药带剩余量」、v19.80「战斗胜利带余额」的同一「信息透明」主线不一致。
+||- 【修正：喷泉文案追加本次恢复量与最终值，并补全满状态分支】`world.js` 改为：
+||  - 非满状态：`⛲ 清泉涌动，HP +${hp}（${hero.hp}/${hero.hpMax}）· MP +${mp}（${hero.mp}/${hero.mpMax}）完全恢复！`，恢复量由恢复前后差值计算，最终值与 `hero.hpMax` / `hero.mpMax` 同源；
+||  - 满状态：新增分支，按帮助页/面向提示口径显示 `⛲ 踩上回血 · 状态已满`（此前满状态踩泉无任何反馈）。
+||  未改变喷泉恢复结算（仍回满 HP/MP、仍减遭遇槽）、未改音效时机、未改 `ENCOUNTER.fountain` 数值。
+||- 【零回归面】未动 `ENCOUNTER` / `POTION_*` / 成长/存档任何逻辑；未改喷泉坐标与地图数据；未改帮助页「喷泉」行文案（本改动与帮助页口径一致）。只改 2 个文件（`data.js`：版本号 `v19.93→v19.94`；`world.js`：`onFountainStep()` 1 条 `boxMsg` + 新增满状态分支 + 注释）。
+||- 验证：`node --check js/data.js js/world.js` 与 `npm run check`（25 模块）全部通过；`npm test` **89/89 + 8/8** 全绿（回归不受影响）。
+
 ## 技术要点
-- 单文件、零依赖、离线可玩；Canvas 程序化绘制全部图块/角色/敌人
+|- 单文件、零依赖、离线可玩；Canvas 程序化绘制全部图块/角色/敌人
 - 音乐/音效用 Web Audio 实时合成（步进音序器）
 - 存档存于 `localStorage`（`jrpg_save1/2/3`）
 - 每次改动均做全路径功能回归 + `new Function` 语法校验
