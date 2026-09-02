@@ -240,7 +240,11 @@ function doSkill(skillName) {
     }
     if (elemMult(skill, enemy) > 1) note += '（弱点）';
     if (elemMult(skill, enemy) < 1) note += '（抗性）';
-    finishPlayer(`✨ ${hero.name} 使出【${skillName}】，造成 <dmg> 伤害${note}${charged ? '（蓄力）' : ''}！`, dmg);
+    // v20.7 伤害技能施放反馈追加当前 MP（信息透明·纯显示）：v19.96 防御回蓝已报 MP、v19.97 治疗已报 HP、
+    // v20.0 命中已报敌方剩余 HP，唯独「伤害技能扣蓝」后不报我方剩余 MP——玩家施法后想确认「还能不能再放一招」
+    // 仍需瞄 HUD；直接读结算后的 hero.mp / hero.mpMax（line 202 已扣 skill.mp），与技能菜单/状态页 MP 显示
+    // 同源，零结算变化（普攻不耗蓝，不在此列）。
+    finishPlayer(`✨ ${hero.name} 使出【${skillName}】，造成 <dmg> 伤害${note}${charged ? '（蓄力）' : ''}！（MP ${hero.mp}/${hero.mpMax}）`, dmg);
   }, skill.sfx, false, mult);
   enemy.def = defSave;
   return true;
