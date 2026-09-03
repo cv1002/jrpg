@@ -35,24 +35,66 @@ export function enemyLv(enemy) {
   return S.G ? S.G.level : 1;
 }
 
+// 战斗背景主题单一数据源入口（美术·分场景背景，承 improve-plan §2.2-3「战斗背景跟 curMap：村/林/洞三套底」）：
+// village→草地 / dungeon→雾林 / cave→矿洞 / gallery→无字回廊 / 其它兜底→通用星夜——与 drawArena 绘制分支
+// 一对一；此前 雾语林(dungeon)/无字回廊(gallery) 都落入兜底星空，四张图只有两套背景，进回廊打残焰魔像
+// 与在矿脉打骷髅兵视觉无差别。导出供冒烟断言「主题与地图一一对应、绘制分支零脱节」，纯显示零结算。
+export function arenaTheme(map) {
+  if (map === 'village') return 'grass';
+  if (map === 'dungeon') return 'mist';
+  if (map === 'cave') return 'cave';
+  if (map === 'gallery') return 'ember';
+  return 'night';
+}
+
 function drawArena() {
-  const map = curMap();
-  if (map === 'village') {
-    const g = CTX.createLinearGradient(0, 0, 0, CV.height);
+  const theme = arenaTheme(curMap());
+  const g = CTX.createLinearGradient(0, 0, 0, CV.height);
+  if (theme === 'grass') {
     g.addColorStop(0, '#3a7d4a');
     g.addColorStop(1, '#1a3020');
     CTX.fillStyle = g;
     CTX.fillRect(0, 0, CV.width, CV.height);
-  } else if (map === 'cave') {
-    const g = CTX.createLinearGradient(0, 0, 0, CV.height);
+  } else if (theme === 'cave') {
     g.addColorStop(0, '#1a2230');
     g.addColorStop(1, '#0a0e16');
     CTX.fillStyle = g;
     CTX.fillRect(0, 0, CV.width, CV.height);
     CTX.fillStyle = 'rgba(95,216,255,.12)';
     for (let i = 0; i < 20; i++) CTX.fillRect((i * 47) % CV.width, (i * 31) % 200, 2, 2);
+  } else if (theme === 'mist') {
+    // 雾语林·月下之森：暗青绿底 + 底部缓慢横漂的雾团（透明度随位置呼吸），
+    // 与大地图「雾径/晨雾」观感一致——此前的通用星空让林间战斗毫无「雾」的在场感
+    g.addColorStop(0, '#2b4a42');
+    g.addColorStop(1, '#0e1c17');
+    CTX.fillStyle = g;
+    CTX.fillRect(0, 0, CV.width, CV.height);
+    const t = Date.now() / 1000;
+    for (let i = 0; i < 7; i++) {
+      const wob = Math.sin(t * 0.35 + i * 2.1);
+      const fx = ((i * 131 + wob * 46) % (CV.width + 180)) - 90;
+      const fy = CV.height - 46 - ((i * 53) % 170) + Math.sin(t * 0.22 + i * 1.3) * 12;
+      CTX.fillStyle = `rgba(196,224,208,${(0.05 + 0.04 * (0.5 + 0.5 * wob)).toFixed(3)})`;
+      CTX.beginPath();
+      CTX.ellipse(fx, fy, 84 + wob * 14, 24, 0, 0, 6.2832);
+      CTX.fill();
+    }
+  } else if (theme === 'ember') {
+    // 无字回廊·被忘掉的暗廊：近黑紫底 + 上升的残焰火星（上浮渐隐、明灭闪烁）——与「恒暗」(drawTimeTint)
+    // 「残焰魔像/初灯」叙事一致；淡淡的火星微光是这条走廊唯一的光，替代通用星空的白色星点
+    g.addColorStop(0, '#18101c');
+    g.addColorStop(1, '#070509');
+    CTX.fillStyle = g;
+    CTX.fillRect(0, 0, CV.width, CV.height);
+    for (let i = 0; i < 14; i++) {
+      const ph = ((Date.now() / 900) + i * 1.7) % 1;
+      const ex = ((i * 89) % CV.width) + Math.sin((Date.now() / 800 + i) * 1.3) * 6;
+      const ey = CV.height - ph * (CV.height + 30);
+      const a = (0.10 + 0.22 * (0.5 + 0.5 * Math.sin(Date.now() / 260 + i * 2.9))) * (1 - ph);
+      CTX.fillStyle = `rgba(255,138,60,${a.toFixed(3)})`;
+      CTX.fillRect(ex, ey, 2, 2);
+    }
   } else {
-    const g = CTX.createLinearGradient(0, 0, 0, CV.height);
     g.addColorStop(0, '#1a2030');
     g.addColorStop(1, '#0d1119');
     CTX.fillStyle = g;
