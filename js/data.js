@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v20.8';
+const GAME_VERSION = 'v20.9';
 
 const T=32;
 
@@ -1041,7 +1041,15 @@ const BOSS=withSpecies({...BOSS_BASE,xp:150,gold:300,isBoss:true,bossHpMax:BOSS_
 const CAVE_BOSS=withSpecies({...CAVE_BOSS_BASE,xp:120,gold:200,isElite:true,isCaveBoss:true});
 const TRUE_BOSS=withSpecies({...TRUE_BOSS_BASE,xp:400,gold:600,isTrue:true,isElite:true});
 // 无字回廊中段精英（Fire Golem CC0 素材）：双徽记开门后的守门考验
-const EMBER_GOLEM=withSpecies({name:'残焰魔像',hp:170,hpMax:170,atk:19,def:12,xp:130,gold:260,color:'#e07a3f',isElite:true});
+// v20.9 数值平衡（走廊精英战力与「终局区」标签脱节修复）：此前固定 170/19/12 沿袭 v13.5 旧值——当玩家
+// 带着双徽记、圣光之剑与龙鳞甲（走廊推荐装备）于 Lv10-11 进入时，走廊 zone 缩放后的普通怪（石魔像 147/36/24、
+// 雾灵 103/37/17、骷髅兵 120/36/18）无论攻击、防御都全面高于这位「守门精英」；实测普通怪普攻对 Lv10 玩家造
+// 34-38 伤害，而残焰魔像仅 2 点，且陨石术 378 伤害可一击秒杀（1 回合结束），守门战沦为演出。本次将兵力抬升到
+// 「走廊精英」档位：340/44/28——高于同图 Lv11 zone 缩放后的普通怪（hp/def/atk 均高出一截），整体战力远低于
+// 终焉之神（700/33/19，HP 仅约其一半），奖励 130xp/260 金、任务链、火焰弱点/精英标签等全部不变。Lv10 推荐装备下重击约 99
+// 点（占满血 108 的 92%，满血可存活、低血需防御/用药），陨石术+普攻约 2 回合击杀；Lv9 以下/未换毕业装会
+// 承受真实压力，与 v20.6 Boss 战力修复同一「⚠Lv 推荐等级必须名副其实」原则。
+const EMBER_GOLEM=withSpecies({name:'残焰魔像',hp:340,hpMax:340,atk:44,def:28,xp:130,gold:260,color:'#e07a3f',isElite:true});
 
 const RUSH_BOSSES=[
   withSpecies({...BOSS_BASE,xp:60,gold:0,isRush:true}),
