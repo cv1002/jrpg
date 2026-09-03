@@ -120,6 +120,9 @@ function startBattle(enemyDef) {
   S.blog = [`⚔️ 遭遇了 ${S.enemy.name}！${threatWarn()}`];
   S.blogView = 0;
   S.battleTurn = 1;
+  // v21.3 战斗开场警报音（音效反馈）：进战瞬间的听觉钩子——Boss/试炼=低沉警报（SFX.boss），
+  // 普通遭遇=两连下坠（SFX.alert）；与威胁预警文案/isBossFoe 同一强敌口径，静音时 tone 自然哑掉，零结算影响
+  if (isBossFoe(S.enemy)) SFX.boss(); else SFX.alert();
   startBgm('battle');
   bind.renderHUD();
   bind.drawBattle();
