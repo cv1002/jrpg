@@ -172,14 +172,21 @@ export function rollDrop(hero, curMap) {
   if (roll < DROP_EQUIP) {
     hero.drops = (hero.drops || 0) + 1;
     if (hero.weapon === '木剑' || hero.weapon === '铁剑') {
+      // v21.1 掉落自动换装反馈追加面板攻击前后对比（信息透明·纯显示）：v20.5 已给商店购买换装
+      // 带上「攻击 X→Y」，但战斗随机掉落的免费自动升级（木剑/铁剑→秘银剑）仍只报「已装备」——
+      // 玩家在胜利结算拿到白嫖升级时，想确认面板涨了多少还要再按 I；与商店购买同款在改动
+      // hero.weapon 前捕获 atkMax（旧档 typeof 兜底保持原文案），applyStats 后同源读数，零结算变化。
+      const atkBefore = typeof hero.atkMax === 'number' ? hero.atkMax : null;
       hero.weapon = '秘银剑';
       applyStats(hero);
-      return '⚔️ 掉落武器：秘银剑 已装备！';
+      return `⚔️ 掉落武器：秘银剑 已装备！${atkBefore !== null ? `（攻击 ${atkBefore}→${hero.atkMax}）` : ''}`;
     }
     if (hero.armor === '布衣' || hero.armor === '皮甲') {
+      // v21.1 掉落自动换装反馈追加面板防御前后对比：同武器分支，与 v20.5 商店购买同款口径。
+      const defBefore = typeof hero.defMax === 'number' ? hero.defMax : null;
       hero.armor = '锁子甲';
       applyStats(hero);
-      return '🛡️ 掉落防具：锁子甲 已装备！';
+      return `🛡️ 掉落防具：锁子甲 已装备！${defBefore !== null ? `（防御 ${defBefore}→${hero.defMax}）` : ''}`;
     }
     hero.gold += DROP_GOLD;
     // v19.83 战斗随机掉落金币反馈追加持有总量（信息透明·纯显示）：v19.80 已给普通胜利/升级/试炼通关
