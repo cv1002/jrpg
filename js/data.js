@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.1';
+const GAME_VERSION = 'v21.2';
 
 const T=32;
 
@@ -1407,6 +1407,15 @@ const HELP_PAGES=[
     ['中毒自救','治愈术可解毒；中毒不夺行动，也可速战或喝药'],
     ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
     ['石心魔像·石甲','血量低至 ' + Math.round((GOLEM_SHIELD_ACT.hpBelow || 0) * 100) + '% 后凝结石甲（至多 ' + GOLEM_SHIELD_ACT.maxShield + ' 层）：每层使下一次攻击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
+    // v21.2 帮助页「魔物状态」补两种精英的出没/守门信息（信息透明·战前知识中枢收口）：此前 H 页只有
+    // 石心魔像的「石甲」机制行，两种精英「在哪遇见/多稀有/打它用什么属性」的信息只存在于图鉴（B）——
+    // 而图鉴要已遭遇/已讨伐才揭示，玩家进雾语林/无字回廊之前从任何界面都看不到精英的出没条件与弱点
+    // 预览（README 在游戏外）。两行全部从单一数据源派生：ELITE_GATE_LV/ELITE_CHANCE（遇敌判定同源）、
+    // SPECIES['石心魔像'].tag（必掉蘑菇标注同源）、SPECIES['残焰魔像'].weak/resist（弱点/抗性同源）、
+    // NPCS[QUESTS.side_ember.npc].name（守名者委托 NPC 名同源）——调门槛/概率/属性/委托 NPC 只改 data.js
+    // 一处，这里的战前预告自动跟随，文字零硬编码。
+    ['石心魔像·出没','雾语林 Lv.' + ELITE_GATE_LV + ' 起 · 约' + Math.round(ELITE_CHANCE * 100) + '% 精英 · ' + (SPECIES['石心魔像'].tag || '')],
+    ['残焰魔像','无字回廊守门 · 弱' + ELEM_NAME[SPECIES['残焰魔像'].weak] + '抗' + (ELEM_NAME[SPECIES['残焰魔像'].resist] || '') + ' · ' + ((NPCS[QUESTS.side_ember.npc] && NPCS[QUESTS.side_ember.npc].name) || '守名者') + '委托'],
     ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
     ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水 · ' + Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
     ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币(' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + ')·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水；城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
