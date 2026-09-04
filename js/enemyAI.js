@@ -37,7 +37,12 @@ export function enemyAct(deps) {
     enemy.hp -= burnDmg;
     enemy.burn--;
     addFx(bind.CV.width / 2, FX_ENEMY.y, '-' + burnDmg, '#ff8a2c', true);
-    S.blog.push(`🔥 灼烧令 ${enemy.name} 受到 ${burnDmg} 点伤害！`);
+    // v21.8 灼烧结算反馈追加敌方剩余 HP（信息透明·纯显示）：v20.0 已给玩家攻击命中后追加敌方剩余 HP、
+    // v20.1 已给敌方回血后追加当前 HP，但持续伤害（灼烧 tick）仍只报伤害值——玩家盯着敌方的灼烧层数，
+    // 想确认「再烧几轮死」仍需瞄血条；直接读结算后（enemy.hp -= burnDmg 之后）的 enemy.hp / enemy.hpMax，
+    // 与 attackMove 扣减后追加剩余 HP 同源；致死灼烧（enemy.hp <= 0）不追加，避免与随后「被击败了」重复
+    // （同 v20.0 击杀时不追加敌方剩余 HP 的口径）。零结算变化。
+    S.blog.push(`🔥 灼烧令 ${enemy.name} 受到 ${burnDmg} 点伤害！${enemy.hp > 0 ? `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）` : ''}`);
     if (enemy.hp <= 0) {
       enemy.hp = 0;
       S.blog.push(`💀 ${enemy.name} 被击败了！`);
@@ -117,7 +122,12 @@ export function enemyAct(deps) {
       SFX.hit();
       bind.renderHUD();
       addFx(bind.CV.width / 2, FX_ENEMY.y, '-' + counter, '#ffd24a', true);
-      S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！`);
+      // v21.8 反击结算反馈追加敌方剩余 HP（信息透明·纯显示）：反击与普攻/技能同属「玩家打出的伤害」，
+      // v20.0 已给普攻/技能追加敌方剩余 HP，唯独防御反击这条玩家伤害输出仍只报伤害值——玩家在防御中
+      // 白赚一下反击时，同样想一眼看清「这刀下去怪还剩多少」；直接读结算后（enemy.hp = Math.max(0, …)
+      // 之后）的 enemy.hp / enemy.hpMax，与 attackMove 扣减后追加剩余 HP 同源；反杀（enemy.hp <= 0）
+      // 不追加，避免与随后「被反杀倒地」重复（同 v20.0 击杀时不追加敌方剩余 HP 的口径）。零结算变化。
+      S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！${enemy.hp > 0 ? `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）` : ''}`);
     }
     if (enemy.poison && Math.random() < enemy.poison) {
       hero.poison = POISON_TURNS;

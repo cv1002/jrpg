@@ -154,7 +154,12 @@ function applyPoisonTick(hero) {
   SFX.hurt();
   bind.renderHUD();
   addFx(FX_HERO.x, FX_HERO.y, '-' + damage, '#7fe08a', true);
-  S.blog.push(`☠️ 毒素发作，${hero.name} 受到 ${damage} 点伤害！${hero.poison > 0 ? `（剩余 ${hero.poison} 回合）` : ''}`);
+  // v21.8 中毒结算反馈追加我方剩余 HP（信息透明·纯显示）：v20.2 已给敌方攻击命中后追加我方剩余 HP，
+  // 但持续伤害（中毒 tick）仍只报伤害值与剩余回合——玩家中毒后每回合掉血，想确认「再毒几轮会不会死」
+  // 仍需瞄 HUD 血条；直接读结算后（hero.hp -= damage 之后）的 hero.hp / hero.hpMax，与 v20.2 的
+  // 「我方 HP X/Y」同源同式；致死毒发（hero.hp <= 0）不追加，避免与后续败北提示重复（同 v20.0 击杀时
+  // 不追加敌方剩余 HP 的口径）。零结算变化。
+  S.blog.push(`☠️ 毒素发作，${hero.name} 受到 ${damage} 点伤害！${hero.poison > 0 ? `（剩余 ${hero.poison} 回合）` : ''}${hero.hp > 0 ? `（我方 HP ${hero.hp}/${hero.hpMax}）` : ''}`);
   if (hero.hp <= 0) {
     hero.hp = 0;
     bind.renderHUD();
