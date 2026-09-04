@@ -18,7 +18,12 @@ function ok(name, cond, extra) {
 
 console.log('— v19.65 存档槽累计时长冒烟 —');
 
-ok('GAME_VERSION 递增为 v19.65', GAME_VERSION === 'v19.65');
+// v21.7 修复（版本锚点去硬化）：原断言 GAME_VERSION==='v19.65' 是「一次性」锚点——版本继续递增后必然失败
+// （实测 v21.6 下 5/6），且本测试自 v19.65 起从未挂进 npm test、静默腐烂。改为「格式合法 + 已越过 v19.65」
+// 的单调断言：随版本递增不再需要每次同步，版本意外回退时仍会立刻报警。
+const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
+const _gv = _vm(GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v19.65', !!_gv && (_gv[0] > 19 || (_gv[0] === 19 && _gv[1] >= 65)));
 
 // 构造一个带 savedAt/time 的档
 const hero = newGame('时长测试');

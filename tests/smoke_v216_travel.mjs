@@ -21,7 +21,11 @@ function ok(name, cond, extra) {
 
 console.log('— v21.6 快速旅行防误触冒烟 —');
 
-ok('GAME_VERSION 递增为 v21.6', GAME_VERSION === 'v21.6');
+// v21.7 修复（版本锚点去硬化）：原「GAME_VERSION===v21.6」是「一次性」锚点，版本递增到 v21.7 后必然失败；
+// 改为「格式合法 + 已越过 v21.6」的单调断言——随版本递增免维护，版本意外回退仍会报警。
+const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
+const _gv = _vm(GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.6', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 6)));
 
 // 场景：站在雾语林中段（非入口），全部已到访，选中「当前所在地」
 S.G = newGame('旅行测试');
