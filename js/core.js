@@ -2,7 +2,7 @@
 // core.js —— 存档 / 对话 / 补给 / 开局 / Boss 重试
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
-import { S } from './state.js';
+import { S, curMap } from './state.js';
 import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, DIFFS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
@@ -115,6 +115,17 @@ function doTravel() {
   if (!S.G.visited.includes(key)) {
     SFX.cancel();
     bind.boxMsg('尚未探索此地，先去找到入口吧。', EVENT_MSG_MS);
+    return;
+  }
+  // v21.6 快速旅行防误触（体验打磨·纯拦截）：旅行列表常驻标出📍当前位置（menus.drawTravel 同源标注，
+  // 目的就是「一眼看出自己在哪、避免误传送」），但该行仍可被选中——选中再按 Enter 会对当前所在地执行
+  // transition()：重载整张地图并把主角丢回 playerStart（实测 9,9 → 1,2），费一趟传送却回到原点，
+  // 与列表自身的防误传意图自相矛盾。现按 core 侧同源判定（state.curMap，与 G.map 同源）直接拦截并提示，
+  // 零重载/零移动/零消耗——地图、位置、BGM、遇敌、存档全部不受影响；传送门/水晶开门等其它入口不走本函数，
+  // 逐字不动。
+  if (key === curMap()) {
+    SFX.cancel();
+    bind.boxMsg('已经在这里了！', EVENT_MSG_MS);
     return;
   }
   SFX.door();
