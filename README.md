@@ -81,7 +81,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check

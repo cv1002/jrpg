@@ -73,7 +73,11 @@ export function enemyAct(deps) {
     enemy.hp = Math.min(enemy.hpMax, enemy.hp + heal);
     SFX.thunder();
     S.flash = { t0: Date.now() }; // 变身全屏闪光（纯显示）
-    S.blog.push(`🌀 ${enemy.name} 现出真身！力量暴涨，HP 恢复 ${heal}！${phase.forbid && phase.forbid.includes('heal') ? ' 治愈被封印！' : ''}`);
+    // v21.9 变身回血结算反馈追加敌方当前 HP（信息透明·纯显示）：v20.1 已给普通回血（暗影回血）追加「敌方 HP X/Y」，
+    // 但变身（现出真身）的 HP 恢复仍只报恢复量——Boss 变身的这一口血是玩家最关心的一次回复（变身线/增益已常驻血条，
+    // 唯独结算后精确血数没进战报）；直接读结算后（enemy.hp = Math.min(hpMax, hp + heal) 之后）的 enemy.hp / enemy.hpMax，
+    // 与 v20.1「敌方 HP X/Y」同源同式；变身必回血且 hp>0（hp<=0 早已胜负结算），无需致死保护。零结算变化。
+    S.blog.push(`🌀 ${enemy.name} 现出真身！力量暴涨，HP 恢复 ${heal}！（敌方 HP ${enemy.hp}/${enemy.hpMax}）${phase.forbid && phase.forbid.includes('heal') ? ' 治愈被封印！' : ''}`);
     hero.hurt = 0;
     S.battleBusy = false;
     bind.drawBattle();
