@@ -156,8 +156,10 @@ const screens = {
     onKey(e) {
       ac();
       if (!S.bgmTimer && S.SND) startBgm('title');
-      // 标题按 1..SAVE_SLOTS 选择存档槽（读 data.js SAVE_SLOTS，加档位只改常量一处）
+      // 标题按 1..SAVE_SLOTS 或 ←/→（亦可 A/D）选择存档槽（读 data.js SAVE_SLOTS，加档位只改常量一处）
       if (/^[1-9]$/.test(e.key) && Number(e.key) <= SAVE_SLOTS) { S.curSaveSlot = Number(e.key); SFX.select(); }
+      else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { S.curSaveSlot = (S.curSaveSlot % SAVE_SLOTS) + 1; SFX.select(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { S.curSaveSlot = ((S.curSaveSlot - 2 + SAVE_SLOTS) % SAVE_SLOTS) + 1; SFX.select(); }
       else if (e.key === 'Enter') { ac(); SFX.select(); goto('create'); }
       else if ((e.key === 'l' || e.key === 'L') && load()) {
         SFX.select();

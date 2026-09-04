@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.3';
+const GAME_VERSION = 'v21.4';
 
 const T=32;
 
@@ -1389,7 +1389,7 @@ const HELP_PAGES=[
     // 拆两行——首行 6 指令（估算结束 x≈548 不越界），次行（r[2]，12px 次级灰）专述 蓄力与 Boss 规则；
     // FLEE_SUCCESS / CHARGE_MULT 仍与原文同源派生，不新增任何裸字面量
     ['战斗','1攻击 2技能(↑↓/Enter 选招) 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力','蓄力：下击/技能×' + CHARGE_MULT + ' · Boss无法逃跑'],
-    ['存档槽','标题按 1/2/' + SAVE_SLOTS + ' 选择 · L 读档'],
+    ['存档槽','标题按 1/2/' + SAVE_SLOTS + ' 或 ←/→ 选择 · L 读档'],
   ],
   // 地图指南（v19.57 区域难度透明化·单一数据源）：四图行标签的「Lv.N」由 MAPS[].recLv 派生——与
   // TRAVEL_LIST 旅行提示、world.transition 进图预警同读同一份数据，帮助页这处文档死角补齐后，

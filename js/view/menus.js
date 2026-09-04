@@ -569,7 +569,9 @@ export function drawTitle(){
   if(pv){ CTX.fillStyle='#7dd47f'; CTX.font='13px sans-serif'; CTX.fillText(pv,CV.width/2,360); }
   if(hasSave()){ CTX.fillStyle='#62c6ff'; CTX.fillText('按 L 读取当前槽存档',CV.width/2,378); }
   CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
-  CTX.fillText(`按 ${slotNums.join(' / ')} 选择存档槽 · L 读档 · WASD 移动 · Esc 菜单 · P 存档 · M 静音`,CV.width/2,420);
+  // v21.4 标题选槽按键提示（与 main.js title 分派逐字同源）：新增 ←/→（A/D）循环切槽后，提示行同步点名，
+  // 保持 v20.3「快捷键可发现性」口径——功能存在就必须能让玩家看到入口；压缩「/」两侧空格抵消新增长度
+  CTX.fillText(`按 ${slotNums.join('/')} 或 ←/→ 选择存档槽 · L 读档 · WASD 移动 · Esc 菜单 · P 存档 · M 静音`,CV.width/2,420);
   // v10.0 可发现性（承接 v9.0 暂停菜单补全）：常驻面板/操作快捷键此前只写在 H 帮助与 README 里，
   // 标题页从未提示——新玩家不开 H 就不知道 I/J/B/C/T/F 这些界面存在。这里补全第二行快捷一览，
   // 与 main.js 世界画面按键分派逐字同源（I状态 J日志 B图鉴 C成就 T旅行 F喝药 H帮助），纯显示不改任何逻辑
