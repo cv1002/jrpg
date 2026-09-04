@@ -370,7 +370,10 @@ export function drawBattle() {
   const lg = S.blog.slice(Math.max(0, S.blog.length - BLOG_WIN - S.blogView), Math.max(0, S.blog.length - S.blogView));
   lg.forEach((l, i) => text(l, CV.width / 2, 470 + (i - (lg.length - 1)) * 18, '13px', '#e8eef1', 'center'));
   if (S.blog.length > BLOG_WIN) {
-    text(S.blogView <= 0 ? '↑↓ 回看战斗记录' : (S.blogView >= maxV ? '↓ 回到最新' : '↑↓ 战斗记录'), 628, 448, 'bold 11px', '#7d93a3', 'right');
+    // v21.5 战报回看跟随（体验打磨·纯显示）：回看中（blogView>0）新战报正被顶出视窗——指示文案直接给出
+    // 「新 N 条 · ↓ 回最新」，N=blogView（被顶出视窗的最新行数，与回看偏移同源）；配合 battle.playerAction
+    // 的「行动即回最新」，回看期间「离开最新多少条」明码可见；最新（<=0）分支逐字保留
+    text(S.blogView <= 0 ? '↑↓ 回看战斗记录' : `新 ${S.blogView} 条 · ↓ 回最新`, 628, 448, 'bold 11px', '#7d93a3', 'right');
   }
   // 敌方下一击伤害预估（信息透明）：与结算 cmdDmg 同公式的无浮动估算；
   // 仅在拟行动回合常驻，Boss/试炼战按招数表逐招列出（y≈395 无其他元素，纯显示不改结算）

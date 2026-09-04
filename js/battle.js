@@ -340,6 +340,11 @@ const PLAYER_ACTIONS = {
 
 function playerAction(type, arg) {
   if (S.scene !== 'battle' || S.battleBusy) return;
+  // v21.5 战报回看跟随（体验打磨·纯显示）：回看旧战报（blogView>0）后发起行动 = 已读完历史、正在行动，
+  // 把视图弹回最新——让本次行动产生的新战报（伤害/敌方 HP 剩余/敌方招数）直接落入 3 行视窗
+  // （BLOG_WIN 单一数据源），不再出现「行动完看不到结果、以为没反应」；零结算，只复位显示偏移，
+  // 回看能力本身（main.js ↑↓ 分派）逐字保留，被拒指令（MP 不足等）同样复位（其战报也值得立刻看到）
+  if (S.blogView > 0) S.blogView = 0;
   S.battleBusy = true;
   S.G.defending = false;
   if (applyPoisonTick(S.G)) return;
