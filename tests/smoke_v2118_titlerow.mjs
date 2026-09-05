@@ -76,15 +76,16 @@ ok('第二行快捷一览（I/J/B/C/T/F/H）逐字在列',
 // —— 版本脚注行仍在（GAME_VERSION 单一数据源）——
 ok('标题页版本脚注行仍在（潮灯记 ${GAME_VERSION}）', srcOk.includes('潮灯记 ${GAME_VERSION}'));
 
-// —— README 同步守护（v21.7 去硬化惯例：新件数由本版守护，上一版降级为存在性断言）——
+// —— README 同步守护（v21.7 去硬化惯例：件数随版本递增，数字写死必然脱节——本次 14→15 即触发其失败，
+// 原「十四件套/十三件套」断言降级为「冒烟/件套」存在性，实件数由最新版冒烟（smoke_v2119）守护 README 口径）——
 const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-    return txt.includes('smoke_v2118_titlerow') && txt.includes('十四件套') && !txt.includes('十三件套');
+    return txt.includes('smoke_v2118_titlerow') && txt.includes('冒烟') && txt.includes('件套');
   } catch { return false; }
 })();
-ok('README 已同步（tests 树收录 smoke_v2118_titlerow + 冒烟十四件套口径、十三件套清除）', readmeOk);
+ok('README 已同步（tests 树收录 smoke_v2118_titlerow + 冒烟/件套口径存在）', readmeOk);
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

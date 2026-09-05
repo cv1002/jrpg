@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.18';
+const GAME_VERSION = 'v21.19';
 
 const T=32;
 
@@ -151,9 +151,12 @@ const MAPS={
     // 全图暗岩地均为危险格；遇敌池限定（encounter.randomEncounter 同读）
     dangerTiles:[15],
     pool:['雾灵','石魔像','骷髅兵'],
+    // 回廊宝箱（v21.19 内容扩充）：北壁名字石碑群间的遗物宝箱（16,1）——全图此前唯一没有宝箱的地图，
+    // 终局区既要全力探索危险岩地才有额外收获；'C' 走 world.onStep 既有开箱管线（hero.chests 持久化），
+    // 掉落走「非雾语林」档（45% 金币 12+级×5 / 55% 药水），与 H 页「宝箱掉落」行同源
     rows:[
       "111111111111111111111111",
-      "100000000000000000000001",
+      "1000000000000000C0000001",
       "101010101010101010101001",
       "100000000000000000000001",
       "1E.....................1",
@@ -1468,7 +1471,7 @@ const HELP_PAGES=[
     // 仍 10 行，不触发 v19.59 页长自适应；估算宽 ≈427 ≤470 不触面板右缘；「战斗[3]优先」沿用旧口径）。
     ['高级灵药','酿造：'+BREW_MUSHROOMS+'株蘑菇+'+BREW_GOLD+'金 → 🧪 恢复'+Math.round(ELIXIR_HP_PCT*100)+'%HP+'+Math.round(ELIXIR_MP_PCT*100)+'%MP（战斗[3]优先）'],
     ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水', Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
-    ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币（' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + '）·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水', '城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
+    ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币（' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + '）·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水', '城镇/矿脉/无字回廊 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
     ['魔物强度','记忆图鉴（B）可查看已遇魔物兵力与弱点，战前先看威胁预警'],
   ],
   [
