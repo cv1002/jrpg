@@ -75,18 +75,49 @@ export function renderHUD() {
   }
 }
 
+// v21.10 消息队列（信息透明·纯显示）：同帧/近帧多次 boxMsg 此前互相覆盖、只有最后一条可见——
+// winBattle 结算流程最多 5 连发（精英蘑菇→胜利→额外掉落→记忆碎片→Boss 奖励），终焉之神一战
+// v19.80 起的 余额/经验/掉落/记忆进度 四条反馈全部静默消失（只剩「初灯的意志散了」）；现改为
+// 「正片消息（ms>0）显示期间，不同文本的新消息按序排队，当前条到点后自动接续下一条」，每条都完整可见。
+// 同文本连发只刷新时长（不排队、不刷屏）；瞬时/清理消息（ms<=0：💀 击中闪字、drawTalk 清空、
+// drawStory 逐帧「按 Enter 继续」）立即显示且带 CUR_TRANSIENT 标记——随后到达的正片消息（如
+// talkNext 的「接受了…」、教程提示）可立即抢占，不被 2500ms 默认时长阻塞；瞬时消息到点后接续
+// 队列（如有）。纯显示零结算变化。
+const MSG_QUEUE = [];
+let msgOn = false;
+let curTransient = false;
+
+function showMsg(m, t, dur, transient) {
+  curTransient = !!transient;
+  m.textContent = t;
+  if (m.classList && typeof m.classList.add === 'function') m.classList.add('show');
+  msgOn = true;
+  clearTimeout(S.msgTO);
+  S.msgTO = setTimeout(() => {
+    try {
+      const next = MSG_QUEUE.shift();
+      if (next) showMsg(m, next.t, next.dur, false);
+      else {
+        msgOn = false;
+        curTransient = false;
+        if (m.classList && typeof m.classList.remove === 'function') m.classList.remove('show');
+      }
+    } catch (e) {}
+  }, dur);
+}
+
 export function boxMsg(t, ms = 1700) {
   try {
     const m = elId('msg');
     if (!m) return;
-    m.textContent = t;
-    if (m.classList && typeof m.classList.add === 'function') m.classList.add('show');
-    clearTimeout(S.msgTO);
-    S.msgTO = setTimeout(() => {
-      try {
-        if (m.classList && typeof m.classList.remove === 'function') m.classList.remove('show');
-      } catch (e) {}
-    }, ms || 2500);
+    const dur = ms || 2500;
+    if (ms <= 0) { showMsg(m, t, dur, true); return; }
+    if (msgOn && m.textContent !== t && !curTransient) {
+      const last = MSG_QUEUE[MSG_QUEUE.length - 1];
+      if (!last || last.t !== t) MSG_QUEUE.push({ t, dur });
+      return;
+    }
+    showMsg(m, t, dur, false);
   } catch (e) {}
 }
 
