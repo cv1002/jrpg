@@ -68,7 +68,7 @@
 | 升级经验 | `round(20 × 1.42^(lv-1))`（Lv1→2 需 20，Lv11→12 需 667） | `XP_INIT` / `XP_GROW` |
 | 技能领悟 | Lv1 火焰斩 · Lv3 冰霜击 · Lv4 治愈术 · Lv5 雷鸣 · Lv7 陨石术 | `LEARN_AT` |
 | 装备价格 | 铁剑 80 / 秘银剑 220 / 勇者之剑 600；皮甲 60 / 锁子甲 180 / 龙鳞甲 480 | `WEAPONS` / `ARMORS` |
-| 经济 | 新档 30 金 + 3 药；药水 15 金（50%HP+8）；旅馆 10 金全恢复；卖菇 10 金；酿造 3 菇+10 金→灵药 | `START_*` `POTION_*` `INN_PRICE` `MUSHROOM_PRICE` `BREW_*` |
+| 经济 | 新档 30 金 + 3 药；药水 15 金（50%HP+8）；旅馆 10 金全恢复；卖菇 10 金；酿造 2 菇+10 金→灵药（80%HP+40%MP） | `START_*` `POTION_*` `INN_PRICE` `MUSHROOM_PRICE` `BREW_*` `ELIXIR_*` |
 | 区域修正 | 村 hp/攻×0.9 · 矿 ×1.2/1.15/1.1（经验金币×1.15）· 回廊 ×1.3/1.2/1.15（经验金币×1.3） | `MAPS[].zone` |
 | 战斗 | 普攻 12% 暴击 ×1.8 · 逃跑 60% · 防御减伤 50%+回 2MP+50% 反击 ×0.7 · 蓄力 ×1.5 | `CRIT_*` `FLEE_SUCCESS` `DEFEND_*` `COUNTER_*` `CHARGE_MULT` |
 | 克制 / 状态 | 弱点 ×1.35 · 抗性 ×0.7；灼烧 4%HP×2 回合 · 中毒 5%HP×3 回合（下限 2）；石甲每层 -40% | `ELEM_MULT` `BURN_PCT` `POISON_*` `DOT_MIN` `SHIELD_MULT` |
@@ -100,7 +100,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check
@@ -126,7 +126,7 @@ my-jrpg/
 
 - `index.html` + `js/` — 游戏本体（ES Modules 模块化的 25 模块结构）
 - `start.command` / `start.sh` — 一键启动
-- `tests/` — 冒烟十件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护）
+- `tests/` — 冒烟十一件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护）
 - `improve-plan.md` — 改进计划留档
 - `preview.png` — 运行截图
 

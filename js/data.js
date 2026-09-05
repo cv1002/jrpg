@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.14';
+const GAME_VERSION = 'v21.15';
 
 const T=32;
 
@@ -1427,7 +1427,13 @@ const HELP_PAGES=[
     // 一处，这里的战前预告自动跟随，文字零硬编码。
     ['石心魔像·出没','雾语林 Lv.' + ELITE_GATE_LV + ' 起 · 约' + Math.round(ELITE_CHANCE * 100) + '% 精英 · ' + (SPECIES['石心魔像'].tag || '')],
     ['残焰魔像','无字回廊守门 · 弱' + ELEM_NAME[SPECIES['残焰魔像'].weak] + '抗' + (ELEM_NAME[SPECIES['残焰魔像'].resist] || '') + ' · ' + ((NPCS[QUESTS.side_ember.npc] && NPCS[QUESTS.side_ember.npc].name) || '守名者') + '委托'],
-    ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
+    // v21.15 帮助页「高级灵药」行补全配方与恢复数值（信息透明·H 页战前知识中枢收口，承 v21.2「帮助页
+    // 补两种精英出没/守门信息」同主线）：此行此前只写「酿造或掉落获得 🧪：可同时恢复 HP/MP」——配方
+    // （几株蘑菇+几金）与确切恢复量只能走到酿造锅（drawBrew）才看得到，玩家在镇外/矿脉想决定「要不要
+    // 回去酿一瓶」时无从查证；现与 drawBrew/brewNow 同读 BREW_MUSHROOMS / BREW_GOLD / ELIXIR_HP_PCT /
+    // ELIXIR_MP_PCT 单一数据源，纯显示零结算：调配方/恢复量只改 data.js 一处，帮助页自动跟随（行数不变
+    // 仍 10 行，不触发 v19.59 页长自适应；估算宽 ≈427 ≤470 不触面板右缘；「战斗[3]优先」沿用旧口径）。
+    ['高级灵药','酿造：'+BREW_MUSHROOMS+'株蘑菇+'+BREW_GOLD+'金 → 🧪 恢复'+Math.round(ELIXIR_HP_PCT*100)+'%HP+'+Math.round(ELIXIR_MP_PCT*100)+'%MP（战斗[3]优先）'],
     ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水', Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
     ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币（' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + '）·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水', '城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
     ['魔物强度','记忆图鉴（B）可查看已遇魔物兵力与弱点，战前先看威胁预警'],
