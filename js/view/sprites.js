@@ -315,6 +315,9 @@ export function drawNpcMark(px,py,mark){
   else if(mark==='sword'){ c.fillStyle='#cfe0ee'; c.fillRect(24,8,3,12); c.fillStyle='#8a5a2b'; c.fillRect(23,18,5,3); }
   else if(mark==='basket'){ c.fillStyle='#c08040'; c.fillRect(6,18,8,6); }
   else if(mark==='hood'){ c.fillStyle='#3a4a5c'; c.fillRect(10,2,12,8); }
+  // 矿镐（v21.17 老矿工专属）：NPC 贴图缺失时程序化绘制的头侧小镐——与既有 hat/lamp/sword 等占位标记
+  // 同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它 mark 惯例）
+  else if(mark==='pick'){ c.fillStyle='#8a5a2b'; c.fillRect(22,16,7,3); c.fillStyle='#cfe0ee'; c.fillRect(28,13,3,9); }
   else if(mark==='staff'){ /* 默认图块已有杖 */ }
   c.restore();
 }

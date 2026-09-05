@@ -108,10 +108,13 @@ const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-    return txt.includes('连按两次') && txt.includes('smoke_v2116_titlereset') && txt.includes('十二件套') && !txt.includes('十一件套');
+    return txt.includes('连按两次') && txt.includes('smoke_v2116_titlereset') &&
+      // v21.17 去硬化（承 v21.16 对 v2115 的同款惯例）：原断言「十二件套」数字写死，件数随版本递增
+      // 必然脱节——改为只守护「冒烟 / 件套」存在性，实件数由最新版冒烟（smoke_v2117）守护 README 十三件套口径
+      txt.includes('冒烟') && txt.includes('件套');
   } catch { return false; }
 })();
-ok('README 已同步（标题行连按两次确认 + tests 树收录 v2116 + 冒烟十二件套口径、十一件套清除）', readmeOk);
+ok('README 已同步（标题行连按两次确认 + tests 树收录 v2116 + 冒烟/件套口径存在）', readmeOk);
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);
