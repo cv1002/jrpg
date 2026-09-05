@@ -63,6 +63,19 @@ export function drawBrew(){
   else text(`材料不足（还差 ${Math.max(0,BREW_MUSHROOMS-hero.mushrooms)} 株蘑菇、${Math.max(0,BREW_GOLD-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
 }
 
+// 冒险进度徽记行距（单一数据源，纯显示）：drawStatus 徽记行 190+i*SP——v13.7 四幕重构把徽记从四格
+// 增到五格（灯芯/星井/回廊/初灯/试炼场）时仍按四格 88px 步距排布，第 5 格「✓ 试炼场」x=542、
+// 12px 字形宽 @napi-rs/canvas 实测 ≈41px（浏览器含 ✓ 全宽字形 ≈47px），右缘 583–589 越过面板右缘
+// 570（panel(70,28,500,424)），徽记压出面板——「面板内侧一切文字必须落在面板内」主线在状态页的
+// 漏网之鱼（v19.59/v21.11/v21.12 体检了三块版面，状态页徽记行从未做横向体检）。现改按徽记数派生：
+// 可用宽 = 面板右缘 570 − 起点 190 − 预留 60（最宽徽记「✓ 试炼场」实宽 ≈47px + 13px 余量），
+// n=5 → 80（第 5 格 x=510，右缘 ≈557 ≤570，余量 ≥13px）；n≤4 → min(88, …)=88 与旧布局逐值一致；
+// n≥6 自动收紧不复发（与 v21.12 travelFootY 同一「派生化防回归」族，新增徽记忘记调行距也不会再压出）。
+export function progressSpacing(n) {
+  const X0 = 190, RIGHT = 570, RESERVE = 60;
+  return Math.min(88, Math.floor((RIGHT - X0 - RESERVE) / Math.max(1, (n || 1) - 1)));
+}
+
 export function drawStatus(){
   const hero = S.G;
   drawWorld(); panel(70,28,500,424,'— 状态 —');
@@ -103,7 +116,8 @@ export function drawStatus(){
   // v7.4: 下一技能提示同步补 MP（与已学技能行同一来源）
   text(sx?`📖 下一技能：${sx.name}（Lv.${sx.lv} · 还差 ${sx.remain} 经验${sxd&&sxd.mp?` · ${sxd.mp} MP`:''}）`:'✨ 已习得全部技能',110,396,'12px',sx?'#62c6ff':'#7d93a3');
   text('冒险进度：',110,412,'bold 13px','#ffd24a');
-  adventureProgress(hero).forEach(([nm,dn],i)=>text((dn?'✓':'✗')+' '+nm,190+i*88,412,'12px',dn?'#4cd964':'#5a6a78'));
+  const prog=adventureProgress(hero);
+  prog.forEach(([nm,dn],i)=>text((dn?'✓':'✗')+' '+nm,190+i*progressSpacing(prog.length),412,'12px',dn?'#4cd964':'#5a6a78'));
   const {main,sides}=questLines(hero);
   text('主线：'+main,110,434,'11px','#e8eef1');
   text((sides[0] ? ('支线：'+sides[0]) : '支线：暂无')+'   ·  J 任务日志',110,450,'11px',sides[0]?'#a8ff8a':'#7d93a3');
