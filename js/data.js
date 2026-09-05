@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.21';
+const GAME_VERSION = 'v21.22';
 
 const T=32;
 
@@ -948,8 +948,9 @@ const PERFECTION_GOLD = 999;   // 成就「记忆守护者」图鉴全收集的�
 // 描述文案（d「累计开启 N 个宝箱」）、进度条（prog「X/N」）三处同读此源——宝箱开启计数此前只存在
 // hero.chests（world.onChestStep 的开箱坐标 Set，坐标键 "x,y"；newGame/restoreChests/resetRun 均归一为
 // Set），全库没有任何成就/文案引用过「开了几个箱」这一探勘深度指标；v19.47 小地图暖金让「扫箱」可规划以来，
-// 全图可开启宝箱共 11 个（潮灯镇 2 + 雾语林 3 + 星井矿脉 2 + 洞窟宝藏 4），访遍村落/林/矿约半数箱即达成、
-// 属中期可达的常规目标（无需进矿脉深处/回廊），故单设此常量（与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL /
+// 全图可开启宝箱总数由下方 chestTotal() 从 MAPS 逐图派生（潮灯镇 2 + 雾语林 3 + 星井矿脉 2+4(领主后显形)
+// + 无字回廊 1 = 12；v21.19 加入回廊遗物宝箱后旧注释「11 个」脱节，本次数据化收口），访遍村落/林/矿
+// 约半数箱即达成、属中期可达的常规目标（无需进矿脉深处/回廊），故单设此常量（与 RICH_GOLD / SCHOLAR_GOAL / LUCKY_GOAL /
 // HUNT_GOAL / LVL5_GOAL / LVL10_GOAL / FIRSTBLOOD_GOAL 同一「成就阈值数据化」家族——v18.5 收口
 // firstblood 时该家族数值型门槛已全部收口，本次是该家族第一条「全新门槛」，沿用同一单源模式）
 const TREASURE_GOAL = 6;   // 成就「开箱寻宝」需累计开启的宝箱个数
@@ -959,6 +960,21 @@ const TREASURE_GOAL = 6;   // 成就「开箱寻宝」需累计开启的宝箱�
 // new Set 还原），此处防御性兼容数组/缺失形态：Set 读 size、数组读 length、缺失计 0，绝无第二套口径；
 // 纯只读计数，不改任何状态
 function chestCount(g){ const c=(g&&g.chests)||{}; return (typeof c.size==='number') ? c.size : ((c&&typeof c.length==='number')?c.length:0); }
+
+// 全图宝箱总数（单一数据源·纯函数）：逐图数 MAPS rows 中的 'C' 瓦片 + 洞窟宝藏 2×2（CAVE_TREASURE，
+// 领主后 revealCaveTreasure 显形）——此前「11 个」只写死在 TREASURE_GOAL 的注释里（v19.47），
+// v21.19 加入无字回廊遗物宝箱后总数已变 12（镇2+林3+矿2+宝藏4+廊1），注释口径静默脱节；数据化后
+// 加/删任一宝箱只改 MAPS 一处，状态页「已开 X/全图 N」自动跟随，绝无第二套总数口径
+// （与 chestCount / TREASURE_GOAL 同一「宝箱计数数据化」体系）。
+// 注意：总数含领主后显形的星砂宝箱（4 只）——与 README「全图第 12 只」口径一致，为可达上限。
+function chestTotal(){
+  let n = 0;
+  for (const def of Object.values(MAPS)) {
+    for (const row of (def.rows || [])) for (const ch of row) if (ch === 'C') n++;
+  }
+  n += (CAVE_TREASURE || []).length;
+  return n;
+}
 
 // —— 药水恢复量（POTION_ 生命药水 / ELIXIR_ 高级灵药）—— 结算·战斗预览·商店文案三处唯一真源
 // 药水背包上限（POTION_CAP = 99）：商店购买拦截判定（shop.js）、背包已满提示文案、商店列表「现有X/99」、
@@ -1545,6 +1561,6 @@ export {
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
-  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount,
+  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal,
   SND_KEY, sndPrefToState, sndPrefToString,
 };

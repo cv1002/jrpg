@@ -88,16 +88,17 @@ const hudSrc = await (async () => {
 ok('hud.js 常驻 🔊/🔇 指示原样（s-snd 与 S.SND 派生未动）',
   hudSrc.includes("set('s-snd'") && hudSrc.includes("S.SND ? '🔊' : '🔇'"));
 
-// —— README 同步守护（tests 树收录 smoke_v2121_sndpersist + 冒烟十七件套口径、十六件套清除）——
+// —— README 同步守护（tests 树收录 smoke_v2121_sndpersist + 冒烟/件套口径存在；v21.22 起不再以件数断言，
+// 承 v21.7 去硬化惯例：件数随版本递增，数字写死必然脱节——实件数由新版冒烟守护 README 口径）——
 const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-    return txt.includes('smoke_v2121_sndpersist') && txt.includes('十七件套') && !txt.includes('十六件套')
+    return txt.includes('smoke_v2121_sndpersist') && txt.includes('冒烟') && txt.includes('件套')
       && txt.includes('静音偏好记忆');
   } catch { return false; }
 })();
-ok('README 已同步（tests 树收录 smoke_v2121_sndpersist + 冒烟十七件套口径、十六件套清除 + 静音偏好记录）', readmeOk);
+ok('README 已同步（tests 树收录 smoke_v2121_sndpersist + 冒烟/件套口径存在 + 静音偏好记录）', readmeOk);
 
 // —— 上一版（v2120）README 守护已去硬化（承 v21.7 惯例：件数随版本递增，数字写死必然脱节）——
 const v2120Ok = await (async () => {

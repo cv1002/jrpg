@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -104,7 +104,11 @@ export function drawStatus(){
   // v19.72 状态页资源总览追加宝箱计数（信息透明·纯显示）：v19.40 补齐蘑菇后资源行仍缺「已开几个宝箱」——
   // 宝箱是探索深度指标（成就「开箱寻宝」阈值 ${TREASURE_GOAL}），玩家按 I 看状态时理应一眼看到进度；
   // 计数同源于 data.js chestCount(hero) / TREASURE_GOAL，与成就判定/图鉴累计掉落同源，纯显示零结算。
-  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
+  // v21.22 分母改读 chestTotal()（全图宝箱总数单一数据源）：此前只标「X/6」成就进度，玩家不知道全图
+  // 一共几只箱、还剩几只没开——扫箱规划（v19.47 小地图暖金）缺全图总量这块拼图；现并列「已开 X/全图 N」
+  // 与「成就 X/M」双口径，去掉「6/12 像开关 12 只」的歧义（6 是成就目标、12 是全图总数，各自与
+  // TREASURE_GOAL / chestTotal() 同源，调任一阈值只改 data.js 一处）。纯显示零结算，行宽 estW 预算内。
+  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   hero.skills.forEach((s,i)=>{
     const sd=SKILL_DATA[s];
