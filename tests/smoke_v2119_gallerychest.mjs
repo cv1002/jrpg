@@ -74,16 +74,17 @@ const estW = (s, size) => {
 const wR2 = estW(rowChest && rowChest[2], 12);
 ok('r[2] 扩写后估算宽 ≤470（面板内）', wR2 > 0 && wR2 <= 470, `≈${wR2.toFixed(0)}`);
 
-// —— README 同步守护（实件数由本版守护：十五件套）——
+// —— README 同步守护（v21.7 去硬化惯例：件数随版本递增，数字写死必然脱节——本次 15→16 即触发其失败，
+// 原「十五件套/十四件套」断言降级为「冒烟/件套」存在性，实件数由最新版冒烟（smoke_v2120）守护 README 口径）——
 const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-    return txt.includes('smoke_v2119_gallerychest') && txt.includes('十五件套') && !txt.includes('十四件套')
+    return txt.includes('smoke_v2119_gallerychest') && txt.includes('冒烟') && txt.includes('件套')
       && txt.includes('无字回廊') && txt.includes('遗物宝箱');
   } catch { return false; }
 })();
-ok('README 已同步（tests 树收录 smoke_v2119_gallerychest + 冒烟十五件套口径、十四件套清除 + 无字回廊条目含遗物宝箱）', readmeOk);
+ok('README 已同步（tests 树收录 smoke_v2119_gallerychest + 冒烟/件套口径存在 + 无字回廊条目含遗物宝箱）', readmeOk);
 
 // —— 上一版（v2118）README 守护已去硬化（承 v21.7 惯例：件数随版本递增，数字写死必然脱节）——
 // 注：v2118 头部注释/去硬化说明里仍会提到旧字面量（历史口径），故只守护「守护表达式」不再写死件数
