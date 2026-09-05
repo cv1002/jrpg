@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.22';
+const GAME_VERSION = 'v21.23';
 
 const T=32;
 
@@ -1427,6 +1427,23 @@ function codexTag(name) {
   return bits.join(' · ');
 }
 
+// v21.23 三 Boss 变身/机制预览派生（单一数据源）：帮助页「试炼进阶」新增三行与战斗画面「二段变身线 / 变身增益 /
+// 敌方招数一览」（view/drawBattle.js）及变身结算（enemyAI.js enemyAct）同读 SPECIES 三 Boss 的 phase2 与 acts——
+// Boss 机制此前只出现在战斗内角标/战报里（变身线 ·HP<130、变身：攻+7 防+3 回15%、⛔治愈封印），战前翻遍帮助页
+// （战前知识中枢 v21.2/v21.14/v21.15 主线）对「血过半现真身回血 / 洞窟领主石甲 / 终焉之神封印治愈」一无所知；
+// 现在调 Boss 数值只改 data.js 一处、帮助页自动跟随，绝无第二套口径（与 GOLEM_SHIELD_ACT / RUSH_RECOVER /
+// HEAVY_MULT 同一「行招表/变身数据化」体系，仅本文件内使用、不导出）。
+const BOSS_P2 = {
+  demon: SPECIES['幽冥魔王'].phase2,
+  cave:  SPECIES['洞窟领主'].phase2,
+  true:  SPECIES['终焉之神'].phase2,
+};
+// 洞窟领主石甲层数上限（与 drawBattle 招数一览「至多N层」同读 acts 的 shield 招）
+const BOSS_SHIELD_MAX = ((SPECIES['洞窟领主'].acts || []).find(a => a.type === 'shield') || {}).maxShield || 0;
+// 终焉之神祸乱形态是否封印治愈（与 enemyAI 变身赋 forbid、drawBattle「⛔ 治愈封印」同源）
+const BOSS_TRUE_FORBID = ((SPECIES['终焉之神'].phase2.forbid) || []).includes('heal');
+const phaseBoost = (p) => `攻+${p.atk} 防+${p.def} 回血${Math.round((p.heal || 0) * 100)}%HP`;
+
 const HELP_PAGES=[
   [
     ['移动 / 传送门','W A S D / 方向键 · 踩上传送门自动进入'],
@@ -1511,6 +1528,17 @@ const HELP_PAGES=[
     ['重整旗鼓','被强敌击败后按 B 原地再战；R 重开 · T 回标题'],
     ['快速旅行','已到访地图可在菜单 T 中瞬移，省去往返跑图'],
     ['蘑菇宝箱','灯长支线进行中，未开的宝箱会在小地图上金光脉动'],
+    // v21.23 帮助页「试炼进阶」补三 Boss 机制预览（信息透明·战前知识中枢收口，承 v21.2 精英出没预览 /
+    // v21.15 高级灵药配方补全同主线）：三 Boss 的 变身/石甲/封印治愈 此前只在战斗画面出现（变身线角标 /
+    // 变身增益 / ⛔治愈封印 / 敌方招数一览），战前翻遍四页帮助页一无所知——第一次面对 幽冥魔王/洞窟领主/
+    // 终焉之神 前无法预习「血过半会现真身+回血」「洞窟领主要防石甲」「终焉之神祸乱形态封印治愈」；
+    // 三行全部由 BOSS_P2 / BOSS_SHIELD_MAX / BOSS_TRUE_FORBID 派生（与 enemyAI 结算、drawBattle 标注同读
+    // SPECIES.phase2/acts），调 Boss 数值只改 data.js 一处发布自动跟随，零裸字面量。行数 6→9（仍 ≤10，
+    // drawHelp sp=34 档不变；r[2] 仅试炼三连战+终焉之神两行 → 末行基线 80+9*34+2*16=418 不触页脚 452）。
+    ['幽冥魔王','血量过半现出真身：' + phaseBoost(BOSS_P2.demon)],
+    ['洞窟领主','石甲（至多' + BOSS_SHIELD_MAX + '层）· 血量过半现出真身：' + phaseBoost(BOSS_P2.cave)],
+    ['终焉之神','血量过半进入祸乱形态：' + phaseBoost(BOSS_P2.true),
+      BOSS_TRUE_FORBID ? '祸乱形态封印治愈技能（喝药不受影响）' : ''],
   ],
 ];
 

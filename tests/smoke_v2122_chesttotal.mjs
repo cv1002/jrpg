@@ -6,7 +6,7 @@
 // data.js chestTotal() 纯函数（MAPS 'C' 瓦片 + CAVE_TREASURE 派生，单一数据源），状态页资源行改并列
 // 「已开 X/全图 N · 成就 X/M」双口径。本冒烟守护：版本锚点、chestTotal 导出/逐图正确性/与 v21.19 十二只
 // 口径恒等、TREASURE_GOAL 未动、状态行新表达式与宽度预算、data.js 陈年「11 个」注释已除、README 同步
-// （十八件套 + 宝箱总数口径）、上一版（v2121）README 守护已按 v21.7 惯例去硬化。
+// （宝箱总数口径）、上一版（v2121）README 守护已按 v21.7 惯例去硬化。
 import { GAME_VERSION, MAPS, CAVE_TREASURE, TREASURE_GOAL, chestCount, chestTotal } from '../js/data.js';
 
 let n = 0, failed = 0;
@@ -76,16 +76,18 @@ const dataSrc = await (async () => { try { return (await import('node:fs')).read
 ok('data.js 不再含陈年「宝箱共 11 个」字面量（v21.19 后脱节的旧口径）', !dataSrc.includes('宝箱共 11 个'));
 ok('data.js 含 chestTotal 定义与「单一数据源」注释', dataSrc.includes('function chestTotal()') && dataSrc.includes('全图宝箱总数（单一数据源'));
 
-// —— README 同步守护（tests 树收录 smoke_v2122_chesttotal + 冒烟十八件套口径、十七件套清除 + 宝箱总数口径）——
+// —— README 同步守护（tests 树收录 smoke_v2122_chesttotal + 冒烟/件套口径存在 + chestTotal 宝箱总数口径；
+// v21.23 去硬化（承 v21.7 惯例）：原「件数数字」写死——件数随版本递增必然脱节，实件数由最新版冒烟
+// （smoke_v2123）守护 README 口径——）
 const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-    return txt.includes('smoke_v2122_chesttotal') && txt.includes('十八件套') && !txt.includes('十七件套')
+    return txt.includes('smoke_v2122_chesttotal') && txt.includes('冒烟') && txt.includes('件套')
       && txt.includes('chestTotal');
   } catch { return false; }
 })();
-ok('README 已同步（tests 树收录 smoke_v2122_chesttotal + 冒烟十八件套口径、十七件套清除 + chestTotal 宝箱总数口径）', readmeOk);
+ok('README 已同步（tests 树收录 smoke_v2122_chesttotal + 冒烟/件套口径存在 + chestTotal 宝箱总数口径）', readmeOk);
 
 // —— 上一版（v2121）README 守护已去硬化（承 v21.7 惯例：件数随版本递增，数字写死必然脱节）——
 const v2121Ok = await (async () => {

@@ -49,7 +49,9 @@ const LINE_MAX = 470, R2_MAX = 470;
 // —— 帮助页总数与「试炼进阶」页结构守护 ——
 ok('帮助页仍 4 页（操作/地图指南/魔物状态/试炼进阶）', HELP_PAGES.length === 4);
 const page3 = HELP_PAGES[3];
-ok('试炼进阶页仍 6 行（拆分不增行，不触发 v19.59 页长自适应变化）', page3.length === 6, `实际 ${page3.length}`);
+// v21.23 行数 6→9（本页新增「幽冥魔王/洞窟领主/终焉之神」三行 Boss 机制预览，见 smoke_v2123_bosshelp）：
+// 仍 ≤10 → drawHelp 的 sp=34 页长自适应档不变；末行基线 80+9*34+2*16=418 不触页脚 452
+ok('试炼进阶页 9 行（原 6 行 + v21.23 三 Boss 机制预览 3 行，仍 ≤10 保持 sp=34 档）', page3.length === 9, `实际 ${page3.length}`);
 const rushRow = page3.find((r) => r[0] === '试炼三连战');
 ok('试炼三连战行存在且已拆 r[1]+r[2]', !!rushRow && rushRow.length === 3 && !!rushRow[2]);
 ok('r[1] 主行收连战/全胜/百炼成钢（关键词保留，v19.53 起口径）',
