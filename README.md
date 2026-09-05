@@ -100,7 +100,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check
@@ -126,7 +126,7 @@ my-jrpg/
 
 - `index.html` + `js/` — 游戏本体（ES Modules 模块化的 25 模块结构）
 - `start.command` / `start.sh` — 一键启动
-- `tests/` — 冒烟十三件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护）
+- `tests/` — 冒烟十四件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护）
 - `improve-plan.md` — 改进计划留档
 - `preview.png` — 运行截图
 

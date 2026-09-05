@@ -131,16 +131,17 @@ const spritesOk = await (async () => {
 })();
 ok('sprites.js 已含 mark pick 分支（矿镐程序化绘制）', spritesOk);
 
-// —— README 同步守护（v21.7 去硬化惯例：新件数由本版守护，上一版降级为存在性断言）——
+// —— README 同步守护（v21.7 去硬化惯例：件数随版本递增，数字写死必然脱节——本次 13→14 即触发其失败，
+// 原「十三件套/十二件套」断言降级为「冒烟/件套」存在性，实件数由最新版冒烟（smoke_v2118）守护 README 口径）——
 const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
     return txt.includes('老矿工') && txt.includes('smoke_v2117_miner') &&
-      txt.includes('十三件套') && !txt.includes('十二件套');
+      txt.includes('冒烟') && txt.includes('件套');
   } catch { return false; }
 })();
-ok('README 已同步（矿脉条目含老矿工 + tests 树收录 smoke_v2117_miner + 冒烟十三件套口径、十二件套清除）', readmeOk);
+ok('README 已同步（矿脉条目含老矿工 + tests 树收录 smoke_v2117_miner + 冒烟/件套口径存在）', readmeOk);
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);
