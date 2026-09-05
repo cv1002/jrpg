@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.10';
+const GAME_VERSION = 'v21.11';
 
 const T=32;
 
@@ -1406,7 +1406,14 @@ const HELP_PAGES=[
     ['毒蛇中毒','毒蛇有 ' + Math.round(POISON_CHANCE * 100) + '% 概率使你中毒：每回合扣血（约' + Math.round(POISON_PCT * 100) + '%最大HP）持续 ' + POISON_TURNS + ' 回合'],
     ['中毒自救','治愈术可解毒；中毒不夺行动，也可速战或喝药'],
     ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲；弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
-    ['石心魔像·石甲','血量低至 ' + Math.round((GOLEM_SHIELD_ACT.hpBelow || 0) * 100) + '% 后凝结石甲（至多 ' + GOLEM_SHIELD_ACT.maxShield + ' 层）：每层使下一次攻击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
+    // v21.11 帮助页「魔物状态」页三行越界修复（体验打磨·排版，承 v19.59 操作页排版修复先例）：
+    // 本页三行 14px 实测 x 终点 578/632/649，超出面板右缘 570——「宝箱掉落」行已达画布右缘 640 之外，
+    // 末尾「%药水」字样被画布整体裁掉（玩家从 H 页根本读不到完整掉率）；修复为：石甲行文案压缩
+    // 「下一次攻击」→「下一击」（语义逐字等价，-40% 仍由 SHIELD_MULT 派生）、战斗掉落与宝箱掉落两行
+    // 拆 r[1] 主行 + r[2] 次级行（drawHelp 已支持 r[2]，v19.59 战斗行同款；全部数值仍由 DROP_*/CHEST_*
+    // 常量派生，零新增字面量）；修复后三行实测 554/486/420 + r2 115/226，全部落在面板内侧。
+    // 行数不变（10 行，sp=34 档），r[2] 各 +16px 后末行 y≈418 仍不触页脚 452。
+    ['石心魔像·石甲','血量低至 ' + Math.round((GOLEM_SHIELD_ACT.hpBelow || 0) * 100) + '% 后凝结石甲（至多 ' + GOLEM_SHIELD_ACT.maxShield + ' 层）：每层使下一击伤害 -' + Math.round((1 - SHIELD_MULT) * 100) + '%'],
     // v21.2 帮助页「魔物状态」补两种精英的出没/守门信息（信息透明·战前知识中枢收口）：此前 H 页只有
     // 石心魔像的「石甲」机制行，两种精英「在哪遇见/多稀有/打它用什么属性」的信息只存在于图鉴（B）——
     // 而图鉴要已遭遇/已讨伐才揭示，玩家进雾语林/无字回廊之前从任何界面都看不到精英的出没条件与弱点
@@ -1417,8 +1424,8 @@ const HELP_PAGES=[
     ['石心魔像·出没','雾语林 Lv.' + ELITE_GATE_LV + ' 起 · 约' + Math.round(ELITE_CHANCE * 100) + '% 精英 · ' + (SPECIES['石心魔像'].tag || '')],
     ['残焰魔像','无字回廊守门 · 弱' + ELEM_NAME[SPECIES['残焰魔像'].weak] + '抗' + (ELEM_NAME[SPECIES['残焰魔像'].resist] || '') + ' · ' + ((NPCS[QUESTS.side_ember.npc] && NPCS[QUESTS.side_ember.npc].name) || '守名者') + '委托'],
     ['高级灵药','酿造或掉落获得 🧪：可同时恢复 HP/MP，战斗 [3] 自动优先使用'],
-    ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水 · ' + Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
-    ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币(' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + ')·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水；城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
+    ['战斗掉落','胜利后约 ' + Math.round((DROP_EQUIP + DROP_POTION + DROP_MUSHROOM + DROP_ELIXIR) * 100) + '% 触发随机掉落：' + Math.round(DROP_EQUIP * 100) + '% 装备或+' + DROP_GOLD + '金 · ' + Math.round(DROP_POTION * 100) + '% 药水', Math.round(DROP_MUSHROOM * 100) + '% 蘑菇 · ' + Math.round(DROP_ELIXIR * 100) + '% 高级灵药'],
+    ['宝箱掉落','开箱掉落：雾语林 ' + Math.round(CHEST_MUSHROOM * 100) + '%蘑菇·' + Math.round((1 - CHEST_MUSHROOM) * CHEST_GOLD * 100) + '%金币（' + CHEST_GOLD_BASE + '+级×' + CHEST_GOLD_PER_LV + '）·' + Math.round((1 - CHEST_MUSHROOM) * (1 - CHEST_GOLD) * 100) + '%药水', '城镇/矿脉 ' + Math.round(CHEST_GOLD * 100) + '%金币·' + Math.round((1 - CHEST_GOLD) * 100) + '%药水'],
     ['魔物强度','记忆图鉴（B）可查看已遇魔物兵力与弱点，战前先看威胁预警'],
   ],
   [
