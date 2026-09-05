@@ -99,7 +99,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check
@@ -125,7 +125,7 @@ my-jrpg/
 
 - `index.html` + `js/` — 游戏本体（ES Modules 模块化的 25 模块结构）
 - `start.command` / `start.sh` — 一键启动
-- `tests/` — 冒烟七件套（npm test 串跑；v21.11 起含帮助页宽度预算）
+- `tests/` — 冒烟八件套（npm test 串跑；v21.12 起含快速旅行页脚防重叠预算）
 - `improve-plan.md` — 改进计划留档
 - `preview.png` — 运行截图
 

@@ -385,6 +385,15 @@ export function drawHelp(){
   text(`第 ${S.helpPage+1}/${HELP_PAGES.length} 页   ·   ← → 翻页   ·   H/Esc 关闭`,320,452,'12px','#7d93a3','center');
 }
 
+// v21.12 快速旅行页脚基线（单一公式，绘制与冒烟同源）：末行标题 baseline = 110+(n-1)*52，
+// 描述行 = 标题+19，页脚再下移 35px（n=4 → 320）。此前页脚硬编码 270：TRAVEL_LIST 第 4 条目的地
+// （无字回廊）加入后末行 baseline 被推到 266（16px 字形底 267），页脚 12px 字形顶 261 —— 实测重叠 6px，
+// 页脚还被夹在末行标题与描述之间（描述 baseline 285）。改为派生后：页脚字形顶 311、底 320，
+// 与描述底 286 相隔 25px、距 panel 底 380 富余 60px。调行距/条目数只改此处，冒烟同步跟随。
+export function travelFootY(n) {
+  return 110 + (n - 1) * 52 + 19 + 35;
+}
+
 export function drawTravel(){
   const hero = S.G;
   drawWorld(); panel(120,60,400,320,'🧭 快速旅行');
@@ -396,7 +405,7 @@ export function drawTravel(){
     if(unlocked&&desc) text(desc,180,110+i*52+19,'11px','#7d93a3');
     if(unlocked&&hint) text(hint,478,110+i*52,'bold 11px','#ffd24a','right');
   });
-  text('↑↓ 选择  ·  Enter 传送  ·  Esc 取消',320,270,'12px','#7d93a3','center');
+  text('↑↓ 选择  ·  Enter 传送  ·  Esc 取消',320,travelFootY(TRAVEL_LIST.length),'12px','#7d93a3','center');
 }
 
 const PAUSE_ITEMS = [
