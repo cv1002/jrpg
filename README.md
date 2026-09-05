@@ -31,7 +31,7 @@
 | `C` | 成就一览（全部 22 项进度，↑↓ 滚动） |
 | `T` | 快速旅行（已到访地图瞬移；也可在 `Esc` 菜单里选「快速旅行」） |
 | `H` | 操作说明（`←→` 翻页，含地图指南） |
-| `M` | 静音/开声（音效 + 音乐；HUD 常驻 🔊/🔇 指示当前状态） |
+| `M` | 静音/开声（音效 + 音乐；HUD 常驻 🔊/🔇 指示当前状态，静音偏好记忆、刷新页面保留） |
 | 标题 `1/2/3` | 选择存档槽，`L` 读档，`R` 重开新档（**连按两次 R 确认执行**——防误触：`Esc` 返回标题时进行中的冒险仍在内存，误按一次不会丢档） |
 | 阵亡 `B/R/T` | 强敌战败后 `B` 重整旗鼓（回到战前状态再战）· `R` 重开新档 · `T` 回标题 |
 | 战斗中 `↑↓` | 回看战斗记录（战报超出一屏时右下角显示 `新 N 条 · ↓ 回最新`，随战报追加实时提示） |
@@ -100,7 +100,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow + smoke_v2119_gallerychest + smoke_v2120_helprush（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow + smoke_v2119_gallerychest + smoke_v2120_helprush + smoke_v2121_sndpersist（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check
@@ -126,7 +126,7 @@ my-jrpg/
 
 - `index.html` + `js/` — 游戏本体（ES Modules 模块化的 25 模块结构）
 - `start.command` / `start.sh` — 一键启动
-- `tests/` — 冒烟十六件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护，v21.19 起含无字回廊遗物宝箱落位/帮助页与 README 口径守护，v21.20 起含帮助页「试炼进阶」页「试炼三连战」行 r[2] 拆分修复与地图指南/试炼进阶两页全页行宽巡检守护）
+- `tests/` — 冒烟十七件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护，v21.19 起含无字回廊遗物宝箱落位/帮助页与 README 口径守护，v21.20 起含帮助页「试炼进阶」页「试炼三连战」行 r[2] 拆分修复与地图指南/试炼进阶两页全页行宽巡检守护，v21.21 起含音频开关（M 静音）偏好持久化守护——存储键/编码单一数据源 + load/save 真实读写 S.SND + main.js 启动恢复与切换落盘接入 + HUD 常驻指示存在性）
 - `improve-plan.md` — 改进计划留档
 - `preview.png` — 运行截图
 

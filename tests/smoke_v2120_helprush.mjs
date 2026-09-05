@@ -92,16 +92,16 @@ ok('试炼进阶页其余 5 行关键词全在（试炼碑/双徽记/重整旗�
   page3.find((r) => r[0] === '快速旅行')[1].includes('瞬移') &&
   page3.find((r) => r[0] === '蘑菇宝箱')[1].includes('金光脉动'));
 
-// —— README 同步守护（tests 树收录 smoke_v2120_helprush + 十六件套口径、十五件套清除）——
+// —— README 同步守护（tests 树收录 smoke_v2120_helprush + 冒烟/件套口径存在；v21.21 起不再以件数断言，
+// 承 v21.7 去硬化惯例：件数随版本递增，数字写死必然脱节——实件数由新版冒烟守护 README 口径）——
 const readmeOk = await (async () => {
   try {
     const fs = await import('node:fs');
     const txt = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
-    return txt.includes('smoke_v2120_helprush') && txt.includes('十六件套') && !txt.includes('十五件套')
-      && !txt.includes('十四件套');
+    return txt.includes('smoke_v2120_helprush') && txt.includes('冒烟') && txt.includes('件套');
   } catch { return false; }
 })();
-ok('README 已同步（tests 树收录 smoke_v2120_helprush + 冒烟十六件套口径、十五件套清除）', readmeOk);
+ok('README 已同步（tests 树收录 smoke_v2120_helprush + 冒烟/件套口径存在）', readmeOk);
 
 // —— 上一版（v2119）README 守护已去硬化（承 v21.7 惯例：件数随版本递增，数字写死必然脱节）——
 // 注：v2119 头部注释/对 v2118 的守护块里仍会提到旧字面量（历史口径），故只守护「本版 README 守护表达式」

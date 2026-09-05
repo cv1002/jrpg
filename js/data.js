@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.20';
+const GAME_VERSION = 'v21.21';
 
 const T=32;
 
@@ -425,6 +425,14 @@ const XP_INIT = 20;
 // 展示口径绝无第二套数值（与 INN_PRICE / BREW_GOLD / POTION_PRICE 同一「经济数据化」体系）
 const START_GOLD = 30;    // 新档开局金币
 const START_POTIONS = 3;  // 新档开局生命药水
+
+// 音频开关持久化（单一数据源·纯函数）：main.js 启动恢复与 M 键切换落盘同读此源，audio.loadSndPref/
+// saveSndPref 是仅有的两个读写方——此前 S.SND 只活在内存：M 静音后刷新页面即回到有声（HUD 有
+// 🔊/🔇 常驻指示却留不住偏好）。存储值 '1'(开)/'0'(关)，键名与 jrpg_saveN 存档键同一命名族；启动恢复
+// 读不到/未知值一律按默认开（state.js SND:true 同口径）。改默认值只动 state.js 一处、改编码只动这里一处。
+const SND_KEY = 'jrpg_snd';
+function sndPrefToState(raw) { return raw !== '0'; }
+function sndPrefToString(on) { return on ? '1' : '0'; }
 
 // 灼烧每回合扣血比例（单一数据源）：enemyAct 的灼烧结算 max(2, round(hpMax×此值)) 与
 // 战斗画面角标「每回合 -N血」、火焰斩技能提示「约N%最大HP」同读此源——
@@ -1538,4 +1546,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount,
+  SND_KEY, sndPrefToState, sndPrefToString,
 };

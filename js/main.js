@@ -2,7 +2,7 @@
 // main.js —— 入口：goto + 场景按键表
 // ============================================================
 import { S, curMap } from './state.js';
-import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
+import { ac, startBgm, stopBgm, resumeBgm, SFX, loadSndPref, saveSndPref } from './audio.js';
 import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
@@ -302,9 +302,13 @@ const screens = {
 };
 
 if (typeof window !== 'undefined') {
+  // v21.21 启动恢复音频偏好（体验打磨）：M 静音状态此前刷新即失忆、回到有声，现从 localStorage
+  // 恢复（读 data.js SND_KEY 单一数据源，'0'=静音其余=开；读取失败静默按默认开，不阻塞启动）。
+  loadSndPref();
   window.addEventListener('keydown', (e) => {
     if (e.key === 'm' || e.key === 'M') {
       S.SND = !S.SND;
+      saveSndPref();
       if (S.SND) resumeBgm();
       else stopBgm();
       renderHUD();

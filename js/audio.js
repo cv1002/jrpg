@@ -2,6 +2,18 @@
 // audio.js —— Web Audio 音效 / BGM
 // ============================================================
 import { S, curMap } from './state.js';
+import { SND_KEY, sndPrefToState, sndPrefToString } from './data.js';
+
+// v21.21 音频开关持久化（体验打磨·承「信息透明」主线里的偏好记忆缺口）：S.SND 此前只活在内存——
+// M 静音后刷新页面即回到有声（HUD 有 🔊/🔇 常驻指示却留不住偏好）。启动恢复与切换落盘只经这两函数，
+// 存储键/编码由 data.js SND_KEY/sndPrefToState/sndPrefToString 单一数据源提供；localStorage 读写
+// 失败（隐私模式/禁用）时静默降级为内存态，绝不影响游戏运行，也不在模块顶层执行任何副作用。
+export function loadSndPref() {
+  try { S.SND = sndPrefToState(localStorage.getItem(SND_KEY)); } catch (e) {}
+}
+export function saveSndPref() {
+  try { localStorage.setItem(SND_KEY, sndPrefToString(S.SND)); } catch (e) {}
+}
 
 function ac() {
   if (!S.AC) {
