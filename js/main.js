@@ -6,7 +6,7 @@ import { ac, startBgm, stopBgm, resumeBgm, SFX } from './audio.js';
 import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
-import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame } from './core.js';
+import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame, titleResetCheck } from './core.js';
 import { stayInn } from './shop.js';
 import { goto } from './scene.js';
 import { render, openSkillMenu, drawTitle, drawCreate, drawWorld, PAUSE_ITEMS } from './view/index.js';
@@ -156,6 +156,10 @@ const screens = {
     onKey(e) {
       ac();
       if (!S.bgmTimer && S.SND) startBgm('title');
+      // v21.16 标题页 R 重开防误触（承 v21.6 快速旅行防误触主线）：resetRun 是破坏性重置——Esc→返回标题
+      // 后 S.G 仍是进行中的冒险，误按一次 R 会零确认丢档；现改「两按确认」（core.titleResetCheck 纯判定，
+      // TITLE_RESET_CONFIRM_MS 同源于 data.js）——非 R 键立即解除武装，提示停留时长与确认窗口同长。
+      if (e.key !== 'r' && e.key !== 'R') S.titleResetArm = 0;
       // 标题按 1..SAVE_SLOTS 或 ←/→（亦可 A/D）选择存档槽（读 data.js SAVE_SLOTS，加档位只改常量一处）
       if (/^[1-9]$/.test(e.key) && Number(e.key) <= SAVE_SLOTS) { S.curSaveSlot = Number(e.key); SFX.select(); }
       else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { S.curSaveSlot = (S.curSaveSlot % SAVE_SLOTS) + 1; SFX.select(); }
@@ -171,7 +175,16 @@ const screens = {
         // 与 v19.65 存档预览摘要、状态页信息同源，零数值变化。
         boxMsg(`💾 读取槽 ${S.curSaveSlot}：${S.G.name} Lv.${S.G.level} · ${MAPS[S.G.map].name} · ${S.G.gold} 金`, EVENT_MSG_MS);
       } else if (e.key === 'r' || e.key === 'R') {
-        resetRun();
+        // v21.16 两按确认：首次仅武装+提示，窗口内再按 R 才执行 resetRun（提示与窗口同长，玩家看到提示
+        // 即窗口有效）；执行后武装清零，需重新两按（不连发）；非 R 键已在上方解除武装。
+        const st = titleResetCheck(S.titleResetArm || 0, Date.now(), true);
+        S.titleResetArm = st.arm;
+        if (st.fire) {
+          resetRun();
+        } else {
+          SFX.cancel();
+          boxMsg('🔁 再按一次 R 确认重开新档（当前冒险进度将丢弃）', EVENT_MSG_MS);
+        }
       }
     },
   },

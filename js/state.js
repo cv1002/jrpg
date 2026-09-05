@@ -50,6 +50,8 @@ export const S = {
   battleQ: [],
   battleAdvancing: false,
   battleTimer: null,
+  // v21.16 标题页 R 重开两按确认的武装时间戳（0=未武装；main.js title.onKey 读写，core.titleResetCheck 判定）
+  titleResetArm: 0,
 };
 
 // 当前地图唯一真相是 G.map（loadMap 负责同步）；curMap() 供全层读取——

@@ -94,7 +94,9 @@ const readmeOk = await (async () => {
     return txt.includes('酿造 ' + BREW_MUSHROOMS + ' 菇+10 金→灵药') &&
       !txt.includes('酿造 3 菇+10 金') &&
       txt.includes('smoke_v2115_elixir') &&
-      txt.includes('十一件套');
+      // v21.16 去硬化（承 v21.7 惯例）：原断言『件套』数字写死为「十一件套」，件数随版本递增必然脱节；
+      // 改为只守护「冒烟 / 件套」存在性，实件数由最新版冒烟（smoke_v2116）守护 README 十二件套口径
+      txt.includes('冒烟') && txt.includes('件套');
   } catch { return false; }
 })();
 ok('README 数值速查「酿 X 菇+10 金」已与 BREW_MUSHROOMS 同源（3 菇口径清除）且 tests/ 清单已同步', readmeOk);

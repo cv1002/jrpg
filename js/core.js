@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, DIFFS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -322,6 +322,17 @@ function load() {
   }
 }
 
+// 标题页 R 重开防误触状态机（v21.16·纯函数·零副作用）：resetRun 是破坏性重置（新档直接覆盖当前冒险），
+// 而标题页按 R 此前零确认即执行——玩家从 Esc 菜单「返回标题」时当前冒险仍挂在 S.G 上，误按一次 R 就
+// 丢档（v21.6 快速旅行防误触同一「破坏性操作两段触发」家族）。现改为「两按确认」：首次按 R 仅武装
+// （返回 { arm: now, fire:false }），TITLE_RESET_CONFIRM_MS 内再按 R 才 fire=true 并解除武装；任一非 R 键
+// （isR=false）立即解除武装；超时后再按重新武装（不会连发、不会漏发）。纯函数可单测（smoke_v2116）。
+function titleResetCheck(armT, now, isR) {
+  if (!isR) return { arm: 0, fire: false };
+  if (armT && now - armT <= TITLE_RESET_CONFIRM_MS) return { arm: 0, fire: true };
+  return { arm: now, fire: false };
+}
+
 function resetRun() {
   const name = S.G ? S.G.name : DEFAULT_NAME;
   const diff = S.G ? S.G.diff : 0;
@@ -369,5 +380,5 @@ export {
   saveKey, hasSlot, hasSave, slotPreview, saveGame, load, resetRun, retryBoss,
   takePotion, usePotion, questObjective, questLines, adventureProgress,
   brewNow, chiefPages, openTalk, talkNext, doTravel, beginAdventure,
-  applyAchievements,
+  applyAchievements, titleResetCheck,
 };
