@@ -69,7 +69,8 @@ console.log('— v21.32 世界画面可交互对象上下文提示 E 键口径 �
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.31', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 32)));
-ok("data.js GAME_VERSION 为 'v21.32'", GAME_VERSION === 'v21.32', GAME_VERSION);
+ok("data.js GAME_VERSION 已越过 v21.32（版本锚点去硬化——v21.7 惯例：精确值由当前版本冒烟守护）",
+  !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 33)), GAME_VERSION);
 
 // —— 源级落位：faceHint 交互类提示全部改 ⏎/E，旧单键 ⏎ 标签零残留，踩踏类提示逐字未动 ——
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -109,8 +110,8 @@ probe('面向名字石碑绘「⏎/E 读碑 · 名字石碑」', 5, 2, 'U', '⏎
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2132_facesign + 冒烟二十八件套口径、二十七件套清除）',
-  readme.includes('smoke_v2132_facesign') && readme.includes('二十八件套') && !readme.includes('二十七件套'));
+ok('README 已同步（tests 树收录 smoke_v2132_facesign + 冒烟/件套口径存在；件数去硬化——v21.7 惯例：实件数由后续版本冒烟守护）',
+  readme.includes('smoke_v2132_facesign') && readme.includes('冒烟') && readme.includes('件套'));
 ok('README 面向提示句已同步 ⏎/E 双键口径',
   readme.includes('⏎/E 对话·名字') && readme.includes('⏎/E 商店/旅馆/酿造') && readme.includes('v21.32'));
 ok('package.json 已收录 smoke_v2132_facesign（npm test 串跑第 28 份）',

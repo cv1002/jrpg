@@ -11,7 +11,10 @@
 // v21.32 世界画面可交互对象上下文提示 E 键口径收尾：v21.29 给大地图加了 E 与 Enter 同效交互（README/
 // H 页/教程三处口径同步后），world 画面 faceHint 的面向提示（对话/商店/旅馆/酿造/读碑）仍只画「⏎」——
 // 交互入口已是双键，提示却仍只认一个符号；视图层改画「⏎/E」（drawWorld.js faceHint，纯显示零结算）。
-const GAME_VERSION = 'v21.32';
+// v21.33 标题页 L 读空槽静默反馈：L 在 load() 返回 false（空槽/读取失败）时原条件整体落空、毫无反馈——
+// 标题页唯一静默键；main.js 补 else-if 分支一句 EVENT_MSG_MS 短提示（「槽 N 还没有存档，按 Enter 开始
+// 新的冒险吧」），load() 路径与存档读取逐字不动（纯反馈零结算）。
+const GAME_VERSION = 'v21.33';
 
 const T=32;
 

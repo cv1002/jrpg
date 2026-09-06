@@ -174,6 +174,15 @@ const screens = {
         // 玩家想确认读到了哪个角色/进度/身上多少金币仍需再按 I 看状态页。现在直接读 S.G 的 name/level/map/gold，
         // 与 v19.65 存档预览摘要、状态页信息同源，零数值变化。
         boxMsg(`💾 读取槽 ${S.curSaveSlot}：${S.G.name} Lv.${S.G.level} · ${MAPS[S.G.map].name} · ${S.G.gold} 金`, EVENT_MSG_MS);
+      } else if (e.key === 'l' || e.key === 'L') {
+        // v21.33 标题页 L 读空槽静默反馈（体验打磨·反馈，承 v21.16 标题页 R 两按确认「标题页每个按键
+        // 都该有反应」同族）：`(键===L) && load()` 在 load() 返回 false（该槽无存档/读取失败）时整个条件
+        // 落空——标题页 1-3 选槽 / ←→ / Enter / L / R 七个输入里唯一「按下毫无反应」的静默键（选槽有
+        // SFX.select、Enter 进创建页、R 有两按确认提示）；现补一句短提示（EVENT_MSG_MS 小事件档，与标题页
+        // R 确认提示同族），load() 判定与读取路径逐字不动：有档仍走既有分支（v19.86 读档摘要原样），
+        // 无档给出「按 Enter 开始新的冒险」的下一步引导——纯反馈零结算，行为只差这一句提示。
+        SFX.cancel();
+        boxMsg(`💤 槽 ${S.curSaveSlot} 还没有存档，按 Enter 开始新的冒险吧。`, EVENT_MSG_MS);
       } else if (e.key === 'r' || e.key === 'R') {
         // v21.16 两按确认：首次仅武装+提示，窗口内再按 R 才执行 resetRun（提示与窗口同长，玩家看到提示
         // 即窗口有效）；执行后武装清零，需重新两按（不连发）；非 R 键已在上方解除武装。
