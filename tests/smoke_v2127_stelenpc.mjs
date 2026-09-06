@@ -100,8 +100,8 @@ ok('data.js 试炼碑位置行以 NPCS.sentinel.name 派生（无裸「（可问
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2127_stelenpc + 冒烟二十三件套口径、二十二件套清除）',
-  readme.includes('smoke_v2127_stelenpc') && readme.includes('二十三件套') && !readme.includes('二十二件套'));
+ok('smoke_v2127 的 README 守护表达式已去硬化（v21.7 惯例：不再以「二十三件套」「二十二件套」断言件数，实件数由本版冒烟守护）',
+  readme.includes('smoke_v2127_stelenpc') && readme.includes('冒烟') && readme.includes('件套'));
 ok('README 试炼碑句已补「H 页试炼碑位置行可问守碑人」口径', readme.includes('H 页「试炼碑位置」行补守碑人指路'));
 ok('package.json 已收录 smoke_v2127_stelenpc（npm test 串跑第 23 份）',
   pkg.includes('smoke_v2127_stelenpc.mjs'));
