@@ -57,8 +57,8 @@ ok('world.js startRush 分支未动（双徽记判定不变）', wSrc.includes('
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const s2125 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2125_rushreward.mjs'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2126_trialstep + 冒烟二十二件套口径、二十一件套清除）',
-  readme.includes('smoke_v2126_trialstep') && readme.includes('二十二件套') && !readme.includes('二十一件套'));
+ok('README 已同步（tests 树收录 smoke_v2126_trialstep + 冒烟/件套口径存在（件数递增是预期事件，v21.27 起由新版冒烟守护实件数））',
+  readme.includes('smoke_v2126_trialstep') && readme.includes('冒烟') && readme.includes('件套'));
 ok('README 试炼碑状态标签句已补「按已得徽记实时提示」口径', readme.includes('按已得徽记实时提示还差哪枚'));
 ok('package.json 已收录 smoke_v2126_trialstep（npm test 串跑第 22 份）',
   pkg.includes('smoke_v2126_trialstep.mjs'));
