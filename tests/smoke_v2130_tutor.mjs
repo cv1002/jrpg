@@ -64,11 +64,10 @@ function ok(name, cond, extra) {
 
 console.log('— v21.30 新手教程提示 E 键口径同步 冒烟 —');
 
-// —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v21.29 ——
+// —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v21.29（版本号随递增由最新版冒烟守护，此处不钉死）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.29', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 30)));
-ok("data.js GAME_VERSION 为 'v21.30'", GAME_VERSION === 'v21.30', GAME_VERSION);
 
 // —— 源级落位：教程行已改 Enter/E对话，旧口径字面量清零，TUTOR_MSG_MS 沿用 ——
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -122,9 +121,9 @@ ok("KEY 仍无 'e' 映射（不与移动键冲突）", !KEY['e'] && !KEY['E']);
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2130_tutor + 冒烟二十六件套口径、二十五件套清除）',
-  readme.includes('smoke_v2130_tutor') && readme.includes('二十六件套') && !readme.includes('二十五件套'));
-ok('package.json 已收录 smoke_v2130_tutor（npm test 串跑第 26 份）',
+ok('README 已同步（tests 树收录 smoke_v2130_tutor + 冒烟/件套口径存在；件数去硬化——v21.7 惯例：实件数由后续版本冒烟守护）',
+  readme.includes('smoke_v2130_tutor') && readme.includes('冒烟') && readme.includes('件套'));
+ok('package.json 已收录 smoke_v2130_tutor（npm test 串跑）',
   pkg.includes('smoke_v2130_tutor.mjs'));
 const s2129 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2129_ekey.mjs'), 'utf8');
 ok('smoke_v2129 的 README 守护表达式已去硬化（v21.7 惯例：不再以「二十五件套」断言件数，实件数由本版冒烟守护）',

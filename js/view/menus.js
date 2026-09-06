@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -387,7 +387,10 @@ export function drawJournal(){
 }
 
 export function drawHelp(){
-  drawWorld(); panel(70,28,500,424,'— 操作说明 —');
+  // v21.31 面板标题随页切换：此前硬编码「— 操作说明 —」，翻到地图指南/魔物状态/试炼进阶页时标题
+  // 仍是操作说明（标题与页内容脱节）；现改读 data.js HELP_TITLES（与 HELP_PAGES 一一对应、单一数据源，
+  // 页数增减自动跟随），`|| '操作说明'` 仅兜底越界索引；纯显示零结算，行内容/行数/页脚/翻页逐字未动。
+  drawWorld(); panel(70,28,500,424,'— ' + (HELP_TITLES[S.helpPage] || '操作说明') + ' —');
   const P=HELP_PAGES[S.helpPage];
   // v19.59 帮助页排版修复（操作说明页 14 行在固定 34px 行距下最后两行 y=488/522 落在画布 480 之下、
   // 盖住页脚——玩家看不到「战斗/存档槽」两行）：行距按页长自适应——>10 行长页收紧到 25px（14 行
