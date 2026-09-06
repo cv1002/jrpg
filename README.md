@@ -100,7 +100,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow + smoke_v2119_gallerychest + smoke_v2120_helprush + smoke_v2121_sndpersist + smoke_v2122_chesttotal + smoke_v2123_bosshelp + smoke_v2124_sentinel（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow + smoke_v2119_gallerychest + smoke_v2120_helprush + smoke_v2121_sndpersist + smoke_v2122_chesttotal + smoke_v2123_bosshelp + smoke_v2124_sentinel + smoke_v2125_rushreward（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check
@@ -126,7 +126,7 @@ my-jrpg/
 
 - `index.html` + `js/` — 游戏本体（ES Modules 模块化的 25 模块结构）
 - `start.command` / `start.sh` — 一键启动
-- `tests/` — 冒烟二十件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护，v21.19 起含无字回廊遗物宝箱落位/帮助页与 README 口径守护，v21.20 起含帮助页「试炼进阶」页「试炼三连战」行 r[2] 拆分修复与地图指南/试炼进阶两页全页行宽巡检守护，v21.21 起含音频开关（M 静音）偏好持久化守护——存储键/编码单一数据源 + load/save 真实读写 S.SND + main.js 启动恢复与切换落盘接入 + HUD 常驻指示存在性，v21.22 起含全图宝箱总数数据化（chestTotal 逐图派生 12 只）与状态页「已开 X/全图 N · 成就 X/M」双口径守护，v21.23 起含帮助页「试炼进阶」三 Boss 机制预览守护——幽冥魔王/洞窟领主/终焉之神 的 变身/石甲/封印治愈 三行全由 SPECIES.phase2/acts 派生、宽度与页长派生预算、原 6 行零回归，v21.24 起含试炼碑旁新 NPC 守碑人守护——数据层落位/全局坐标防撞/台词由 RUSH_* 试炼常量调用期派生（随等级重算赏金）/trueBoss 彩蛋/既有 NPC 契约零回归）
+- `tests/` — 冒烟二十一件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护，v21.19 起含无字回廊遗物宝箱落位/帮助页与 README 口径守护，v21.20 起含帮助页「试炼进阶」页「试炼三连战」行 r[2] 拆分修复与地图指南/试炼进阶两页全页行宽巡检守护，v21.21 起含音频开关（M 静音）偏好持久化守护——存储键/编码单一数据源 + load/save 真实读写 S.SND + main.js 启动恢复与切换落盘接入 + HUD 常驻指示存在性，v21.22 起含全图宝箱总数数据化（chestTotal 逐图派生 12 只）与状态页「已开 X/全图 N · 成就 X/M」双口径守护，v21.23 起含帮助页「试炼进阶」三 Boss 机制预览守护——幽冥魔王/洞窟领主/终焉之神 的 变身/石甲/封印治愈 三行全由 SPECIES.phase2/acts 派生、宽度与页长派生预算、原 6 行零回归，v21.24 起含试炼碑旁新 NPC 守碑人守护——数据层落位/全局坐标防撞/台词由 RUSH_* 试炼常量调用期派生（随等级重算赏金）/trueBoss 彩蛋/既有 NPC 契约零回归，v21.25 起含帮助页「试炼进阶」试炼三连战行通关赏金守护——r[2] 次行追加由 RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生的赏金公式（150+等级×20金）、r[1] 逐字未动/行数不变（9 行 sp=34 档）/全页行宽与页长派生预算/其余 8 行零回归 + README 与 package.json 同步口径守护）
 - `improve-plan.md` — 改进计划留档
 - `preview.png` — 运行截图
 

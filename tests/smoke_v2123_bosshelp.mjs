@@ -5,7 +5,7 @@
 // （v21.2/v21.14/v21.15 主线）四页都查不到——玩家第一次面对 Boss 前无法预习「血过半现真身+回血 /
 // 洞窟领主要防石甲 / 终焉之神祸乱形态封印治愈」；本版在「试炼进阶」页新增三行（6→9 行），全部从
 // SPECIES.phase2 / acts 派生（同 enemyAI 变身结算、drawBattle 变身线/增益/招数一览同源），零裸字面量。
-import { GAME_VERSION, HELP_PAGES, SPECIES, RUSH_RECOVER } from '../js/data.js';
+import { GAME_VERSION, HELP_PAGES, SPECIES, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -96,9 +96,9 @@ ok('drawHelp 页长派生：sp=34 档且末行基线 418 ≤440（页脚 452 前
 // —— 零回归守护：原 6 行关键词未误动 ——
 const p3keys = ['试炼碑位置', '双徽记条件', '试炼三连战', '重整旗鼓', '快速旅行', '蘑菇宝箱'];
 ok('原 6 行关键词全在（试炼碑/双徽记/试炼三连战/重整旗鼓/快旅/蘑菇宝箱）', p3keys.every((k) => !!row(k)));
-ok('试炼三连战行 r[1]+r[2] 未动（RUSH_RECOVER 派生 35%HP/50%MP 逐字不变）',
+ok('试炼三连战行 r[1] 未动（连战/全胜/百炼成钢逐字不变）+ r[2] v21.25 起追加通关赏金（RUSH 常量派生，回血部分逐字不变）',
   row('试炼三连战')[1] === '连战三名最强 Boss，全胜获「百炼成钢」' &&
-  row('试炼三连战')[2] === '每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP');
+  row('试炼三连战')[2] === '每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金');
 ok('其余三页行数未动（操作 14 / 地图指南 5 / 魔物状态 10）',
   HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 5 && HELP_PAGES[2].length === 10);
 

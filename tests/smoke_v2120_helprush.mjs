@@ -8,7 +8,7 @@
 // 既有 r[2] 通路，基线 +18）收「每胜一关回血35%HP/50%MP」——全部信息逐字保留、RUSH_RECOVER 派生不变、
 // 行数不变（仍 6 行、sp=34 档）、末行基线 266 不触页脚 452，其余五行与其余三页逐字不动；并把此前无巡检
 // 的两页全页行宽巡检纳入常驻冒烟（防将来加长行再犯）。
-import { GAME_VERSION, HELP_PAGES, RUSH_RECOVER } from '../js/data.js';
+import { GAME_VERSION, HELP_PAGES, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -58,8 +58,8 @@ ok('r[1] 主行收连战/全胜/百炼成钢（关键词保留，v19.53 起口�
   !!rushRow && rushRow[1].includes('连战三名最强 Boss') && rushRow[1].includes('全胜获「百炼成钢」'), rushRow && rushRow[1]);
 ok('r[1] 主行不再含回血比例（已移 r[2]，单行 478.6 越界消除）',
   !!rushRow && !rushRow[1].includes('回血') && !rushRow[1].includes('%HP'), rushRow && rushRow[1]);
-ok('r[2] 次行回血比例由 RUSH_RECOVER 派生（35%HP/50%MP 逐字同源）',
-  !!rushRow && rushRow[2] === '每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP',
+ok('r[2] 次行回血比例由 RUSH_RECOVER 派生（35%HP/50%MP 逐字同源）+ v21.25 起追加通关赏金（RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生，逐字同源）',
+  !!rushRow && rushRow[2] === '每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金',
   rushRow && rushRow[2]);
 
 // —— 宽度预算 ——
