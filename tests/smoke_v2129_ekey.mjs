@@ -146,8 +146,8 @@ ok('data.js 含 v21.29 注释（大地图 E 键交互别名说明）', dSrc.incl
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2129_ekey + 冒烟二十五件套口径、二十四件套清除）',
-  readme.includes('smoke_v2129_ekey') && readme.includes('二十五件套') && !readme.includes('二十四件套'));
+ok('README 已同步（tests 树收录 smoke_v2129_ekey；件套计数改由后续版本冒烟统一守护）',
+  readme.includes('smoke_v2129_ekey') && readme.includes('冒烟') && readme.includes('件套'));
 ok("README 快速上手表已同步（Enter / E 行）", readme.includes('`Enter` / `E`'));
 ok('package.json 已收录 smoke_v2129_ekey（npm test 串跑第 25 份）',
   pkg.includes('smoke_v2129_ekey.mjs'));

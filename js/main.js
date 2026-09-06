@@ -219,7 +219,10 @@ const screens = {
         renderHUD();
         if (!S.G.tutDone) {
           S.G.tutDone = true;
-          boxMsg('💡 教程：WASD移动 · Enter对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音', TUTOR_MSG_MS);
+          // v21.30 教程提示口径收尾：E 与 Enter 同效（v21.29 交互别名）——README 快速上手表与
+          // H 页「对话 / 确认」行 v21.29 已同步「Enter / E」，教程行是「三处只写 Enter」的最后一处漏网
+          // （承 v21.14/v21.18「功能存在就必须能看到入口」主线）；TUTOR_MSG_MS 沿用不变。
+          boxMsg('💡 教程：WASD移动 · Enter/E对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音', TUTOR_MSG_MS);
         } else {
           boxMsg('踏上旅途！去把灯芯讨回来！', STRONG_MSG_MS);
         }
