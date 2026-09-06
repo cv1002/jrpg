@@ -111,8 +111,8 @@ ok('其余三页行数未动（操作 14 / 地图指南 5 / 魔物状态 10）',
 // —— README / package.json 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2125_rushreward + 冒烟二十一件套口径、二十件套清除）',
-  readme.includes('smoke_v2125_rushreward') && readme.includes('二十一件套') && !readme.includes('二十件套'));
+ok('README 已同步（tests 树收录 smoke_v2125_rushreward + 冒烟/件套口径存在（件数递增是预期事件，v21.26 起由新版冒烟守护实件数））',
+  readme.includes('smoke_v2125_rushreward') && readme.includes('冒烟') && readme.includes('件套'));
 ok('package.json 已收录 smoke_v2125_rushreward（npm test 串跑第 21 份）',
   pkg.includes('smoke_v2125_rushreward.mjs'));
 

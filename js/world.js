@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -301,8 +301,10 @@ function onTrueCrystal(x, y, hero) {
 }
 
 function onTrialStele(x, y, hero) {
+  // v21.26 未解锁提示进度即时（信息透明）：未集齐双徽记时按 hero.bossDefeated / hero.caveBoss 实时
+  // 报「已得/所差」，名字与文案全由 data.js trialSteleHint 派生（单一数据源）；0 枚与原文案逐字一致
   if (hero.bossDefeated && hero.caveBoss) startRush();
-  else bind.boxMsg('…试炼碑需要两枚徽记（幽冥魔王 + 洞窟领主）。', NARR_MSG_MS);
+  else bind.boxMsg(trialSteleHint(hero), NARR_MSG_MS);
 }
 
 // 踩格处理表：onStep 查表分发，默认走遇敌槽

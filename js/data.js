@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.25';
+const GAME_VERSION = 'v21.26';
 
 const T=32;
 
@@ -1152,6 +1152,22 @@ function sentinelPages(hero) {
   ];
 }
 
+// 试炼碑未解锁提示（v21.26 信息透明·进度即时，承 v19.72 宝箱进度 / v21.22 宝箱双口径同主线）：onTrialStele
+// 在未集齐双徽记时调用——此前只有一句静态「…试炼碑需要两枚徽记（幽冥魔王 + 洞窟领主）。」，玩家先击败
+// 其中一位 Boss 后再踩碑，提示依旧不告诉他「已经拿到几枚、还差哪一枚」（得翻 I 状态页或 J 日志自查）；
+// 现按 hero.bossDefeated / hero.caveBoss 实时派生，两位 Boss 名读 BOSS / CAVE_BOSS 单一数据源（调名只改
+// 一处），0 枚时输出与原文案逐字一致（零显示变化），1 枚时指明已得【X】与所差【Y】并附 (1/2) 实时计数。
+// 纯函数零副作用，双徽记已集齐时返回 ''（调用方 startRush 分支不引用）。
+function trialSteleHint(hero) {
+  const have = [];
+  if (hero && hero.bossDefeated) have.push(BOSS.name);
+  if (hero && hero.caveBoss) have.push(CAVE_BOSS.name);
+  if (have.length === 0) return '…试炼碑需要两枚徽记（' + BOSS.name + ' + ' + CAVE_BOSS.name + '）。';
+  if (have.length === 2) return '';
+  const miss = have[0] === BOSS.name ? CAVE_BOSS.name : BOSS.name;
+  return '…还差一枚徽记：你已得【' + have[0] + '】的徽记，去击败【' + miss + '】吧。（' + have.length + '/2）';
+}
+
 const BESTIARY_TARGET=['史莱姆','野狼','骷髅兵','哥布林','毒蛇','雾灵','树精','石魔像','石心魔像','幽冥魔王','洞窟领主','终焉之神','残焰魔像'];
 
 // 记忆碎片（单一数据源）：强敌战败掉落（battle.winBattle 按 enemy 名归一查找），
@@ -1633,6 +1649,6 @@ export {
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
-  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal,
+  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal, trialSteleHint,
   SND_KEY, sndPrefToState, sndPrefToString,
 };
