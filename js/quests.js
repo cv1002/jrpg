@@ -250,5 +250,8 @@ export function npcQuestPages(hero, npcId) {
     }
     return pick;
   }
+  // v21.24 函数型 lines（守碑人）：台词由 data.js RUSH_* 试炼常量派生，调用期求值并以 hero 当前等级
+  // 实时计算（赏金随等级）；静态 NPC 仍走下方数组直返，行为逐字不变。
+  if (typeof ent.lines === 'function') return ent.lines(hero);
   return ent.lines;
 }

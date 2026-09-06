@@ -4,7 +4,7 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
-const GAME_VERSION = 'v21.23';
+const GAME_VERSION = 'v21.24';
 
 const T=32;
 
@@ -132,6 +132,7 @@ const MAPS={
       { x: 3, y: 1, ty: 'NPC' },    // 井巫（入口点破）
       { x: 2, y: 3, ty: 'NPC' },    // 老矿工（v21.17 新 NPC·入口矿道旁；坐标可行走且未被他图占用）
       { x: 17, y: 11, ty: 'NPC' },  // 星砂车夫（矿车区）
+      { x: 17, y: 12, ty: 'NPC' },  // 守碑人（v21.24 新 NPC·试炼碑旁；坐标可行走且未被他图占用）
       { x: 12, y: 11, ty: 'SB' },   // 终焉水晶（双徽记开门 → 无字回廊）
       { x: 18, y: 12, ty: 'TRIAL' },
     ],
@@ -257,6 +258,8 @@ const NPC_SPOTS = {
   '3,1': 'sage',
   // 老矿工（v21.17 新 NPC）：星井矿脉入口矿道旁——NPC_SPOTS 键为全局坐标（跨地图共用），(2,3) 未被他图占用
   '2,3': 'miner',
+  // 守碑人（v21.24 新 NPC）：星井矿脉试炼碑旁——(17,12) 未被他图占用（17,11 为星砂车夫，左右不撞）
+  '17,12': 'sentinel',
   '17,11': 'cartman',
   // 无字回廊名字石碑（STELE 瓦片，interact 读碑；内容与 FRAGMENTS 同源）
   '5,1': 'stele1',
@@ -364,6 +367,15 @@ const NPCS={
   ], after:[
     ['老矿工：矿洞里亮堂了。我挖了一辈子星砂，','头一回觉得，这灯是给所有记得路的人点的。','[Enter] 继续'],
     ['老矿工：雾散了，矿车还能跑十年。','下来歇歇脚，喝口井水再走。 [Enter] 结束'],
+  ]},
+  // 守碑人（v21.24 新 NPC·纯闲聊，无任务）：星井矿脉试炼碑旁——全图唯一「关键地标旁没有人在场守望」的空洞
+  // （祭坛/水晶/回廊各有 NPC 指路，唯独试炼场只有 H 页与碑上刻字）；台词由 sentinelPages() 从
+  // RUSH_RECOVER / RUSH_BASE_GOLD / RUSH_GOLD_PER_LV / RUSH_BOSSES 派生（试炼恢复/赏金/三连战阵容
+  // 单一数据源，调试炼数值只改 data.js 一处、碑旁对话自动跟随；npcQuestPages 对函数型 lines 调用期求值，
+  // 见 quests.js 一处分支），trueBoss 后走 after 彩蛋（npcQuestPages 同源读取）。
+  sentinel:{name:'守碑人', mark:'staff', lines: sentinelPages, after:[
+    ['守碑人：三场都胜了。碑光熄灭的那一瞬，我以为它会像镇上的灯一样亮一整夜——','结果它只是把三道刻痕照得更深了。 [Enter] 继续'],
+    ['守碑人：刻痕深一分，忘掉的东西就少一分。','老朽守碑守到灯都亮了，值了。','去吧，记得把名字带回来。 [Enter] 结束'],
   ]},
 };
 
@@ -1113,6 +1125,32 @@ const RUSH_BOSSES=[
   withSpecies({...CAVE_BOSS_BASE,xp:60,gold:0,isRush:true}),
   withSpecies({...TRUE_BOSS_BASE,xp:90,gold:0,isRush:true}),
 ];
+
+// 守碑人台词（v21.24）：由试炼数值唯一真源派生——RUSH_RECOVER（关间恢复比例）、RUSH_BASE_GOLD /
+// RUSH_GOLD_PER_LV（通关赏金公式，与 rules.rushReward 同式）、RUSH_BOSSES（三连战阵容，与战斗横幅
+// 「第 N/3 关」、帮助页「试炼三连战」同源）；调试炼数值只改本文件对应常量一处，碑旁对话自动跟随，
+// 绝无第二套口径（与 HELP_PAGES 派生同族）。调用期求值（npcQuestPages 对函数型 lines 分支），
+// 模块顶层零副作用；hero 可为空（按 Lv.1 展示）。
+function sentinelPages(hero) {
+  const names = RUSH_BOSSES.map((b) => b.name);
+  const hpPct = Math.round(RUSH_RECOVER.hp * 100);
+  const mpPct = Math.round(RUSH_RECOVER.mp * 100);
+  const lv = Math.max(1, (hero && hero.level) || 1);
+  const reward = RUSH_BASE_GOLD + lv * RUSH_GOLD_PER_LV;
+  return [
+    [
+      `守碑人：这方石碑比矿脉里的石头磨得还亮——三道刻痕：${names.join('、')}。`,
+      `碑光在每胜一关的间隙，替你恢复 ${hpPct}%HP/${mpPct}%MP；三关尽破，赏金 ${reward} 金（随你等级水涨船高）。`,
+      '老朽守在碑旁，只记一句：先凑齐两枚徽记，碑才会醒——细则都在 H 页「试炼进阶」里。',
+      '[Enter] 继续',
+    ],
+    [
+      `守碑人：那三位的招数，碑上都刻着——${names[0]}血过半现真身；${names[1]}石甲加身；${names[2]}入祸乱形态后，治愈术会被封印。`,
+      '灵药省着点：碑光恢复的是血和蓝，不是你的药瓶。去吧，打完回来陪老朽喝一盏。',
+      '[Enter] 结束',
+    ],
+  ];
+}
 
 const BESTIARY_TARGET=['史莱姆','野狼','骷髅兵','哥布林','毒蛇','雾灵','树精','石魔像','石心魔像','幽冥魔王','洞窟领主','终焉之神','残焰魔像'];
 

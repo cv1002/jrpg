@@ -12,7 +12,7 @@ const DIR_ROW = { D: 0, R: 2, U: 4, L: 6 };
 const NPC_SHEET = {
   chief: 'mwChief', villager: 'mwVillager', adventurer: 'mwAdventurer',
   sage: 'mwSage', hunter: 'mwHunter', cartman: 'mwCartman',
-  guard: 'mwSage',
+  guard: 'mwSage', sentinel: 'mwSage',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
