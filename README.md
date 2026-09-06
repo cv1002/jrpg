@@ -21,7 +21,7 @@
 | 按键 | 功能 |
 |---|---|
 | `W A S D` / 方向键 | 移动（**按住连走**、行走中换向自动预输入；踩上传送门自动进入下张地图） |
-| `Enter` | 对话 / 确认 / 进入界面 |
+| `Enter` / `E` | 对话 / 确认 / 进入界面（大地图 `E` 与 `Enter` 同效：对话/商店/旅馆/酿造/祭坛/传送门） |
 | `Esc` | 大地图打开菜单（继续/状态/日志/图鉴/成就/快速旅行/存档/帮助/返回标题）；菜单/对话里取消返回 |
 | `P` | 存档（当前槽；也可在菜单里选「存档」） |
 | `F` | 喝药（优先高级灵药；满状态时不浪费） |
@@ -100,7 +100,7 @@ my-jrpg/
 │   ├── battle.js           # 回合队列/玩家指令/结算编排
 │   ├── enemyAI.js          # 敌方行为表挑选与回合执行
 │   └── view/               # canvas / atlas / tiles / sprites / hud / drawWorld / drawBattle / menus
-├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow + smoke_v2119_gallerychest + smoke_v2120_helprush + smoke_v2121_sndpersist + smoke_v2122_chesttotal + smoke_v2123_bosshelp + smoke_v2124_sentinel + smoke_v2125_rushreward + smoke_v2126_trialstep + smoke_v2127_stelenpc + smoke_v2128_mapstele（npm test 串跑）
+├── tests/                  # 全量冒烟：smoke.mjs + smoke_v1965_playtime + smoke_v510_freeze + smoke_v216_travel + smoke_v219_transform + smoke_v2110_msgqueue + smoke_v2111_helpwidth + smoke_v2112_travelfoot + smoke_v2113_progress + smoke_v2114_helpblog + smoke_v2115_elixir + smoke_v2116_titlereset + smoke_v2117_miner + smoke_v2118_titlerow + smoke_v2119_gallerychest + smoke_v2120_helprush + smoke_v2121_sndpersist + smoke_v2122_chesttotal + smoke_v2123_bosshelp + smoke_v2124_sentinel + smoke_v2125_rushreward + smoke_v2126_trialstep + smoke_v2127_stelenpc + smoke_v2128_mapstele + smoke_v2129_ekey（npm test 串跑）
 ├── improve-plan.md         # 架构与系统改进计划
 ├── start.command / start.sh
 ├── package.json            # npm test / npm run check
@@ -126,7 +126,7 @@ my-jrpg/
 
 - `index.html` + `js/` — 游戏本体（ES Modules 模块化的 25 模块结构）
 - `start.command` / `start.sh` — 一键启动
-- `tests/` — 冒烟二十四件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护，v21.19 起含无字回廊遗物宝箱落位/帮助页与 README 口径守护，v21.20 起含帮助页「试炼进阶」页「试炼三连战」行 r[2] 拆分修复与地图指南/试炼进阶两页全页行宽巡检守护，v21.21 起含音频开关（M 静音）偏好持久化守护——存储键/编码单一数据源 + load/save 真实读写 S.SND + main.js 启动恢复与切换落盘接入 + HUD 常驻指示存在性，v21.22 起含全图宝箱总数数据化（chestTotal 逐图派生 12 只）与状态页「已开 X/全图 N · 成就 X/M」双口径守护，v21.23 起含帮助页「试炼进阶」三 Boss 机制预览守护——幽冥魔王/洞窟领主/终焉之神 的 变身/石甲/封印治愈 三行全由 SPECIES.phase2/acts 派生、宽度与页长派生预算、原 6 行零回归，v21.24 起含试炼碑旁新 NPC 守碑人守护——数据层落位/全局坐标防撞/台词由 RUSH_* 试炼常量调用期派生（随等级重算赏金）/trueBoss 彩蛋/既有 NPC 契约零回归，v21.25 起含帮助页「试炼进阶」试炼三连战行通关赏金守护——r[2] 次行追加由 RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生的赏金公式（150+等级×20金）、r[1] 逐字未动/行数不变（9 行 sp=34 档）/全页行宽与页长派生预算/其余 8 行零回归 + README 与 package.json 同步口径守护，v21.26 起含试炼碑未解锁提示进度即时守护——trialSteleHint 纯函数按 bossDefeated/caveBoss 实时派生「已得/所差」徽记（0 枚与原文案逐字一致、名字由 BOSS/CAVE_BOSS 单一数据源派生、双徽记返回 '' 契约）、world.js 调用面与源级零裸字面量守护 + smoke_v2125 README 守护去硬化，v21.27 起含试炼碑位置行守碑人指路守护——H 页「试炼进阶」「试炼碑位置」行补「可问守碑人」短指针（NPC 名读 NPCS.sentinel.name 单一数据源派生、行数不变仍 9 行（sp=34 档）、r[1] 估算宽 ≤470 面板预算、其余 8 行与其余三页零回归），v21.28 起含地图指南星井矿脉行试炼碑入口守护——「地图指南」星井矿脉行补「试炼碑（可问守碑人）」短指针（NPC 名读 NPCS.sentinel.name 单一数据源派生、行数不变仍 5 行、行宽 ≈446.6 ≤470 面板预算、其余四行与其余三页零回归 + smoke_v2127 README 守护去硬化）
+- `tests/` — 冒烟二十五件套（npm test 串跑；v21.13 起含状态页徽记行距派生预算，v21.14 起含帮助页战斗日志回看可发现性守护，v21.15 起含帮助页高级灵药配方/恢复数值派生与 README 酿造配方口径守护，v21.16 起含标题页 R 重开两按确认状态机全路径与帮助页/README 口径守护，v21.17 起含老矿工 NPC 数据/阶段选段/矿脉落位与「无泉水」地图事实守护，v21.18 起含标题页 R 重开提示行可发现性与宽度预算守护，v21.19 起含无字回廊遗物宝箱落位/帮助页与 README 口径守护，v21.20 起含帮助页「试炼进阶」页「试炼三连战」行 r[2] 拆分修复与地图指南/试炼进阶两页全页行宽巡检守护，v21.21 起含音频开关（M 静音）偏好持久化守护——存储键/编码单一数据源 + load/save 真实读写 S.SND + main.js 启动恢复与切换落盘接入 + HUD 常驻指示存在性，v21.22 起含全图宝箱总数数据化（chestTotal 逐图派生 12 只）与状态页「已开 X/全图 N · 成就 X/M」双口径守护，v21.23 起含帮助页「试炼进阶」三 Boss 机制预览守护——幽冥魔王/洞窟领主/终焉之神 的 变身/石甲/封印治愈 三行全由 SPECIES.phase2/acts 派生、宽度与页长派生预算、原 6 行零回归，v21.24 起含试炼碑旁新 NPC 守碑人守护——数据层落位/全局坐标防撞/台词由 RUSH_* 试炼常量调用期派生（随等级重算赏金）/trueBoss 彩蛋/既有 NPC 契约零回归，v21.25 起含帮助页「试炼进阶」试炼三连战行通关赏金守护——r[2] 次行追加由 RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生的赏金公式（150+等级×20金）、r[1] 逐字未动/行数不变（9 行 sp=34 档）/全页行宽与页长派生预算/其余 8 行零回归 + README 与 package.json 同步口径守护，v21.26 起含试炼碑未解锁提示进度即时守护——trialSteleHint 纯函数按 bossDefeated/caveBoss 实时派生「已得/所差」徽记（0 枚与原文案逐字一致、名字由 BOSS/CAVE_BOSS 单一数据源派生、双徽记返回 '' 契约）、world.js 调用面与源级零裸字面量守护 + smoke_v2125 README 守护去硬化，v21.27 起含试炼碑位置行守碑人指路守护——H 页「试炼进阶」「试炼碑位置」行补「可问守碑人」短指针（NPC 名读 NPCS.sentinel.name 单一数据源派生、行数不变仍 9 行（sp=34 档）、r[1] 估算宽 ≤470 面板预算、其余 8 行与其余三页零回归），v21.28 起含地图指南星井矿脉行试炼碑入口守护——「地图指南」星井矿脉行补「试炼碑（可问守碑人）」短指针（NPC 名读 NPCS.sentinel.name 单一数据源派生、行数不变仍 5 行、行宽 ≈446.6 ≤470 面板预算、其余四行与其余三页零回归 + smoke_v2127 README 守护去硬化），v21.29 起含大地图 E 键交互别名守护——world 场景 E/Enter 同效调用 interact（screens.world.onKey 分派运行期实证 + 源级落位 + HELP_PAGES 操作说明「对话 / 确认」行与 README 快速上手表同步口径 + smoke_v2128 README 守护去硬化）
 - `improve-plan.md` — 改进计划留档
 - `preview.png` — 运行截图
 

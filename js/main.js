@@ -247,6 +247,9 @@ const screens = {
   world: {
     onKey(e) {
       if (e.key === 'Enter') { interact(); return; }
+      // v21.29 交互别名（体验打磨·可发现性）：E 与 Enter 同效（对话/商店/旅馆/酿造/祭坛/传送门），
+      // 与 README 快速上手表、帮助页「对话 / 确认」行同口径；KEY 无 'e' 映射、不与移动键冲突。
+      if (e.key === 'e' || e.key === 'E') { interact(); return; }
       if (e.key === 'p' || e.key === 'P') { saveGame(); return; }
       if (isEsc(e)) {
         S.pauseSel = 0;

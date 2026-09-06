@@ -104,8 +104,8 @@ ok('data.js 星井矿脉行以 NPCS.sentinel.name 派生（无裸「（可问守
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2128_mapstele + 冒烟二十四件套口径、二十三件套清除）',
-  readme.includes('smoke_v2128_mapstele') && readme.includes('二十四件套') && !readme.includes('二十三件套'));
+ok('README 已同步（tests 树收录 smoke_v2128_mapstele + 冒烟口径已去硬化：实件数由后续版本冒烟守护，v21.7 惯例）',
+  readme.includes('smoke_v2128_mapstele') && readme.includes('冒烟') && readme.includes('件套'));
 ok('README 系统清单已补「地图指南星井矿脉行补试炼碑入口」口径', readme.includes('地图指南」星井矿脉行补试炼碑入口'));
 ok('package.json 已收录 smoke_v2128_mapstele（npm test 串跑第 24 份）',
   pkg.includes('smoke_v2128_mapstele.mjs'));
