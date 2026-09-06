@@ -68,7 +68,8 @@ console.log('— v21.31 帮助页面板标题随页切换 冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.30', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 31)));
-ok("data.js GAME_VERSION 为 'v21.31'", GAME_VERSION === 'v21.31', GAME_VERSION);
+ok("data.js GAME_VERSION 已越过 v21.31（版本锚点去硬化——v21.7 惯例：精确值由当前版本冒烟守护）",
+  !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 32)), GAME_VERSION);
 
 // —— 数据层：HELP_TITLES 与 HELP_PAGES 一一对应 ——
 ok('HELP_TITLES 已导出且为数组', Array.isArray(HELP_TITLES) && HELP_TITLES.length === HELP_PAGES.length,
@@ -122,8 +123,8 @@ ok('帮助页既有行关键词全在（零回归抽样）',
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2131_helptitle + 冒烟二十七件套口径、二十六件套清除）',
-  readme.includes('smoke_v2131_helptitle') && readme.includes('二十七件套') && !readme.includes('二十六件套'));
+ok('README 已同步（tests 树收录 smoke_v2131_helptitle + 冒烟/件套口径存在；件数去硬化——v21.7 惯例：实件数由后续版本冒烟守护）',
+  readme.includes('smoke_v2131_helptitle') && readme.includes('冒烟') && readme.includes('件套'));
 ok('package.json 已收录 smoke_v2131_helptitle（npm test 串跑第 27 份）',
   pkg.includes('smoke_v2131_helptitle.mjs'));
 const s2130 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2130_tutor.mjs'), 'utf8');

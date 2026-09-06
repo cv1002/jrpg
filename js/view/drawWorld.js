@@ -148,15 +148,21 @@ const ALTAR_TAG = [
 function faceHint() {
   if (!S.G || S.scene !== 'world') return;
   const { x, y, tile } = facingCell();
+  // v21.32 面向提示 E 键口径收尾（体验打磨·可发现性，承 v21.29 大地图 E 交互别名 / v21.30 教程行同口径）：
+  // v21.29 起 Enter 与 E 同效调用 interact（NPC/商店/旅馆/酿造/读碑/祭坛/传送门），README 快速上手表、
+  // H 页「对话 / 确认」行、新手教程三处都已同步为 Enter/E——唯独本提示（世界画面玩家正盯着的那一行）仍只
+  // 画「⏎」：玩家按提示按 ⏎ 之外、按文档用 E 时，面前提示与真实输入对不上号；现把交互类提示统一改为
+  // 「⏎/E」（符号口径与「Enter / E」逐字同源，踩踏类提示——喷泉/宝箱/祭坛/试炼碑/传送门——仍是踩上触发、
+  // 不改）。纯显示零结算：不影响 interact/onStep/任何判定与数值。
   let lab = null;
   if (tile === TY.NPC) {
     const nid = NPC_SPOTS[x + ',' + y];
     const nm = (nid && NPCS[nid]) ? NPCS[nid].name : '';
-    lab = nm ? ('⏎ 对话 · ' + nm) : '⏎ 对话';
-  } else if (tile === TY.SHOP) lab = '⏎ 商店';
-  else if (tile === TY.INN) lab = '⏎ 旅馆';
-  else if (tile === TY.BREW) lab = '⏎ 酿造';
-  else if (tile === TY.STELE) lab = '⏎ 读碑 · 名字石碑';
+    lab = nm ? ('⏎/E 对话 · ' + nm) : '⏎/E 对话';
+  } else if (tile === TY.SHOP) lab = '⏎/E 商店';
+  else if (tile === TY.INN) lab = '⏎/E 旅馆';
+  else if (tile === TY.BREW) lab = '⏎/E 酿造';
+  else if (tile === TY.STELE) lab = '⏎/E 读碑 · 名字石碑';
   else if (tile === TY.FOUNTAIN) {
     const fh = S.G;
     const needHp = Math.max(0, (fh ? fh.hpMax : 0) - (fh ? fh.hp : 0));
