@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN, FX_ENEMY, FX_HERO } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_PCT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN, FX_ENEMY, FX_HERO } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -135,7 +135,13 @@ export function enemyAct(deps) {
     }
     if (enemy.poison && Math.random() < enemy.poison) {
       hero.poison = POISON_TURNS;
-      S.blog.push(`☠️ ${hero.name} 中了【毒】！每回合扣血，持续 ${hero.poison} 回合`);
+      // v21.49 中毒瞬间反馈追加每回合扣血数（信息透明·纯显示）：HUD 中毒角标（drawBattle
+      // 「每回合 -N血」）、帮助页「约N%最大HP」、中毒 tick 战报（v21.8 带伤害值与剩余 HP）三端
+      // 都有量化，唯独中招这一刻只报「每回合扣血」——玩家想确认「这毒每回合到底掉多少」仍需
+      // 等首次 tick 或翻帮助页；现按 tick 同式 max(DOT_MIN, round(hpMax×POISON_PCT)) 同读
+      // POISON_PCT/DOT_MIN 单一数据源（hero.hpMax 战斗中不变，预估值与后续 tick 实扣逐值相等）。
+      // 零结算变化。
+      S.blog.push(`☠️ ${hero.name} 中了【毒】！每回合 -${Math.max(DOT_MIN, Math.round(hero.hpMax * POISON_PCT))} HP，持续 ${hero.poison} 回合`);
     }
     setTimeout(() => { hero.hurt = 0; }, HIT_FB_MS);
   }

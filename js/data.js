@@ -72,7 +72,13 @@
 // 祸乱形态「封印治愈」对汲光击同样生效（battle.skillForbidden 把 drain 招并入 heal 封印口径，
 // 技能菜单 ⛔封印 标注同步），不钻 Boss 机制的空子。旧档兼容：migrateQuests 读档按等级补学
 // 漏学技能（Lv≥9 老存档自动补领，与 seen/fragments 兜底同族）。
-const GAME_VERSION = 'v21.48';
+// v21.49 新增：中毒瞬间战报追加「每回合 -N HP」（信息透明·纯显示）——enemyAI 施毒文案此前只报
+// 「每回合扣血，持续 N 回合」，而 HUD 中毒角标（drawBattle「每回合 -N血」）、帮助页「约N%最大HP」、
+// 中毒 tick 战报（v21.8 带伤害值）三端都有量化，唯独中招这一刻没有；现按 tick 同式
+// max(DOT_MIN, round(hpMax×POISON_PCT)) 在读出回合数的同一行补每回合扣血数（hero.hpMax 战斗中不变，
+// 预估值与后续 tick 实扣逐值相等），与 POISON_PCT/DOT_MIN 单一数据源同读——调中毒强度只改
+// data.js 一处，角标/帮助页/施毒文案/tick 结算四端自动跟随。零结算零数值零存档变化。
+const GAME_VERSION = 'v21.49';
 
 const T=32;
 
