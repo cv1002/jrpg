@@ -36,7 +36,11 @@
 // v21.39 新增：帮助页翻页入口口径——drawHelp 页脚「← → 翻页」与 README H 行「←→ 翻页」都未点名
 // main.js help.onKey 实际接受的 A/D 别名（与标题页选槽 A/D 同族），页脚补「(A/D亦可)」、README H 行
 // 补「A/D 亦可」，纯文字口径、零行为变化。
-const GAME_VERSION = 'v21.39';
+// v21.40 新增：无泉水/旅店图进图补给提醒——world.transition 对无免费恢复点的图（由 hasRecoveryPoint
+// 对 MAPS 数据实扫：rows 含 'F'(喷泉)/'I'(旅店) 瓦片或 extras 含 FOUNTAIN/INN；当前 cave/gallery
+// 恒 false）追加「没有泉水/旅店 · 出发前请补给」提醒（承 v21.17 老矿工「矿脉没有泉水/旅店」同口径，
+// 传送门/出口/快速旅行/水晶开门四条入口统一生效），纯显示、零结算零行为。
+const GAME_VERSION = 'v21.40';
 
 const T=32;
 
@@ -462,6 +466,18 @@ const LEVEL_GROWTH = {
   atk: baseStats(2).atk - baseStats(1).atk,
   def: baseStats(2).def - baseStats(1).def,
 };
+
+// v21.40 免费恢复点判定（单一数据源）：某图是否有泉水/旅店（自由恢复点）直接由 MAPS 数据实扫——
+// rows 里的 'F'(喷泉)/'I'(旅店) 字面瓦片或 extras 里的 FOUNTAIN/INN（雾语林营地泉 12,9 即 extras；
+// 潮灯镇 rows 含 F 与 I）。world.transition 的「无泉水/旅店 · 出发前请补给」进图提醒同读此源——
+// 当前 cave/gallery 恒 false（全图唯二无恢复点的图，与 v21.17 老矿工「矿脉没有泉水/旅店」逐字同源），
+// 以后给某图加泉水/旅店只改 MAPS 一处、提醒自动消失，绝无第二套口径。
+export function hasRecoveryPoint(def) {
+  if (!def) return false;
+  const rows = Array.isArray(def.rows) ? def.rows.join('') : '';
+  if (rows.includes('F') || rows.includes('I')) return true;
+  return (def.extras || []).some((e) => e.ty === 'FOUNTAIN' || e.ty === 'INN');
+}
 
 // 技能领悟表（单一数据源）：各等级领悟技能全表——含 1 级起始技能『火焰斩』。
 // hero.checkSkills 的升级领悟与 core.newGame 建档起始技能（skills:[learnsAt(1)]）同读此源；

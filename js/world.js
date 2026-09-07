@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -378,6 +378,13 @@ function transition(name) {
     bind.boxMsg(`⚠️ 前方【${MAPS[name].name}】的魔物远强于你（推荐 Lv.${rec} · 当前 Lv.${S.G.level}），先补给再战！`, NARR_MSG_MS);
   } else {
     bind.boxMsg(`进入了【${MAPS[curMap()].name}】`, SHORT_MSG_MS);
+  }
+  // v21.40 无泉水/旅店图进图补给提醒（信息透明·纯显示，承 v21.17 老矿工「矿脉没有泉水/旅店」/v21.36
+  // 叙事同口径：把「这图没有免费恢复点」从 NPC 台词搬到入口决策点——cave/gallery 是全图唯二无泉水/旅店
+  // 的图（hasRecoveryPoint 由 MAPS rows/extras 数据实扫，单一数据源，加泉水提醒自动消失），无论等级
+  // 是否达标，进入即提醒补给；传送门/出口/快速旅行/水晶开门四条入口全走本函数统一生效，纯显示零结算。
+  if (!hasRecoveryPoint(MAPS[name])) {
+    bind.boxMsg(`⚠️ ${MAPS[name].name}没有泉水/旅店 · 出发前请补给！`, NARR_MSG_MS);
   }
 }
 

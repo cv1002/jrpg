@@ -100,7 +100,8 @@ ok('README H 行旧口径「（`←→` 翻页，含地图指南）」零残留'
   !!hRow && !hRow.includes('`←→` 翻页') && !hRow.includes('←→` 翻页'));
 ok('README H 行「含地图指南」保留', !!hRow && hRow.includes('含地图指南'));
 ok('README tests 树收录 smoke_v2139_helpkey', readme.includes('smoke_v2139_helpkey'));
-ok('README 件套口径为三十五件套（三十四件套清除）', readme.includes('三十五件套') && readme.includes('三十四件套清除'));
+ok('README 件套口径存在性（v21.7 去硬化惯例：不再以「三十五件套/三十四件套清除」断言精确件数，实件数由 v21.40 冒烟守护「三十六件套」）',
+  readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.39 守护描述（帮助页翻页 A/D 口径同步）', readme.includes('v21.39'));
 
 // —— main.js 翻页分派源级落位（与运行期分派同源、零回归）——
