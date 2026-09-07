@@ -652,7 +652,12 @@ export function drawDead(){
     // 「是否需要先回旅馆/酿造」。现在直接读 hero.item / hero.potion2 / hero.mushrooms，零结算变化。
     text(`身上余粮：🍖 生命药水 ${hero.item} 瓶 · 🧪 高级灵药 ${hero.potion2 || 0} 瓶 · 🍄 魔法蘑菇 ${hero.mushrooms || 0} 株`,CV.width/2,264,'13px','#e8eef1','center');
     const bossDeath=!!(hero._bossRetry && hero._bossRetry.bossId && hero._bossRetry.bossId!=='rush');
-    text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，用记忆图鉴(B)查看魔物强度后再战。',CV.width/2,292,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
+    // v21.41 战败提示图鉴入口口径修正（信息透明·口径一致，承 v21.29-32/v21.38-40「同一功能所有入口
+    // 口径一致」主线）：普通战败分支原写「用记忆图鉴(B)查看魔物强度后再战」——但 dead 画面的 B 实际
+    // 绑定 retryBoss（main.js dead.onKey：强敌战败=重整旗鼓、普通战败/试炼 rush=无反应），图鉴入口
+    // 只在世界画面（world.onKey 的 B → codex）；且 codex.onKey 关闭走 backWorld——从 dead 场景打开图鉴
+    // 再关会错回 world，故此处只如实标注入口（「图鉴在世界画面按 B 打开」），不绑 B→图鉴，纯文字零行为。
+    text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，再战前先用记忆图鉴看清魔物强度（图鉴在世界画面按 B 打开）。',CV.width/2,292,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
   }
   text('按 R 重新开始本次冒险',CV.width/2,332,'15px','#7d93a3','center');
   text('按 T 返回标题画面',CV.width/2,362,'15px','#7d93a3','center');

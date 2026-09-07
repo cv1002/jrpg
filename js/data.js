@@ -36,11 +36,11 @@
 // v21.39 新增：帮助页翻页入口口径——drawHelp 页脚「← → 翻页」与 README H 行「←→ 翻页」都未点名
 // main.js help.onKey 实际接受的 A/D 别名（与标题页选槽 A/D 同族），页脚补「(A/D亦可)」、README H 行
 // 补「A/D 亦可」，纯文字口径、零行为变化。
-// v21.40 新增：无泉水/旅店图进图补给提醒——world.transition 对无免费恢复点的图（由 hasRecoveryPoint
-// 对 MAPS 数据实扫：rows 含 'F'(喷泉)/'I'(旅店) 瓦片或 extras 含 FOUNTAIN/INN；当前 cave/gallery
-// 恒 false）追加「没有泉水/旅店 · 出发前请补给」提醒（承 v21.17 老矿工「矿脉没有泉水/旅店」同口径，
-// 传送门/出口/快速旅行/水晶开门四条入口统一生效），纯显示、零结算零行为。
-const GAME_VERSION = 'v21.40';
+// v21.41 新增：战败画面图鉴入口口径修正——drawDead 普通战败提示「用记忆图鉴(B)查看魔物强度后再战」
+// →「再战前先用记忆图鉴看清魔物强度（图鉴在世界画面按 B 打开）」（dead 画面的 B 实际绑定 retryBoss：
+// 强敌战败=重整旗鼓、普通战败/试炼=无反应；codex.onKey 关闭走 backWorld——从 dead 打开图鉴再关会错
+// 回 world，故纯文字修正、不绑 B→图鉴）。承 v21.29-32/v21.38-40 口径一致主线，零行为变化。
+const GAME_VERSION = 'v21.41';
 
 const T=32;
 

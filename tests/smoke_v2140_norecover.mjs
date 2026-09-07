@@ -114,7 +114,8 @@ ok('README T 行存在', !!tRow);
 ok('README T 行已补「无泉水/旅店」补给提醒口径', !!tRow && tRow.includes('无泉水/旅店') && tRow.includes('出发前请补给'));
 ok('README 系统清单快速旅行条目含补给提醒', readme.includes('进图时 `world.transition` 统一提示'));
 ok('README tests 树收录 smoke_v2140_norecover', readme.includes('smoke_v2140_norecover'));
-ok('README 件套口径为三十六件套（三十五件套清除）', readme.includes('三十六件套') && readme.includes('三十五件套清除'));
+ok('README 件套口径存在性（v21.7 去硬化惯例：不再以「三十六件套/三十五件套清除」断言精确件数，实件数由 v21.41 冒烟守护「三十七件套」）',
+  readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.40 守护描述（无泉水/旅店图进图补给提醒）', readme.includes('v21.40 起含无泉水/旅店图进图补给提醒守护'));
 
 // —— package.json 收录 ——
