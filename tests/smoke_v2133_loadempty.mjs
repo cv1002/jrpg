@@ -70,7 +70,10 @@ console.log('— v21.33 标题页 L 读空槽静默反馈 冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.32', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 33)));
-ok("data.js GAME_VERSION 为 'v21.33'", GAME_VERSION === 'v21.33', GAME_VERSION);
+// v21.34 去硬化（v21.7 惯例）：原「data.js GAME_VERSION 逐字等 v21.33」是「一次性」锚点——版本递增到
+// v21.34 后必然失败；改单调界（已越过 v21.33），精确值由 v21.34 冒烟守护。
+ok('data.js GAME_VERSION 已越过 v21.33（版本锚点去硬化——v21.7 惯例：精确值由当前版本冒烟守护）',
+  !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 33)), GAME_VERSION);
 
 // —— 源级落位：main.js 标题页 L 补空槽 else-if 分支（提示文案 + EVENT_MSG_MS 同源 + v21.33 注释）——
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -132,8 +135,8 @@ ok('R 两按确认零回归：首按仍仅武装+提示，不误触 resetRun',
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README 已同步（tests 树收录 smoke_v2133_loadempty + 冒烟二十九件套口径、二十八件套清除）',
-  readme.includes('smoke_v2133_loadempty') && readme.includes('二十九件套') && !readme.includes('二十八件套'));
+ok('README 已同步（tests 树收录 smoke_v2133_loadempty + 冒烟/件套口径存在；件数去硬化——v21.7 惯例：实件数由后续版本冒烟守护）',
+  readme.includes('smoke_v2133_loadempty') && readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.33 守护描述（标题页 L 空槽反馈）', readme.includes('v21.33'));
 ok('package.json 已收录 smoke_v2133_loadempty（npm test 串跑第 29 份）',
   pkg.includes('smoke_v2133_loadempty.mjs'));

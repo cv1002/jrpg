@@ -14,7 +14,12 @@
 // v21.33 标题页 L 读空槽静默反馈：L 在 load() 返回 false（空槽/读取失败）时原条件整体落空、毫无反馈——
 // 标题页唯一静默键；main.js 补 else-if 分支一句 EVENT_MSG_MS 短提示（「槽 N 还没有存档，按 Enter 开始
 // 新的冒险吧」），load() 路径与存档读取逐字不动（纯反馈零结算）。
-const GAME_VERSION = 'v21.33';
+// v21.34 README 升级经验曲线口径修正（文档·数值口径）：README 数值速查「升级经验」行原写闭式幂
+// `round(20 × 1.42^(lv-1))` 并示例 Lv11→12 需 667，而 hero.grantXp 的真实结算是**链式**逐级
+// `round(上一级 × 1.42)`（XP_INIT=20 起，每级四舍五入后累积）——闭式幂与链式自 Lv7→8 起漂移
+// （闭式 164 vs 链式 163）、Lv11→12 闭式 667 vs 链式 662；本版把 README 行改为链式口径（含逐级值），
+// 结算数据（XP_INIT/XP_GROW/grantXp）逐字不动。
+const GAME_VERSION = 'v21.34';
 
 const T=32;
 
