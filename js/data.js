@@ -28,7 +28,10 @@
 // v21.36 新增：潮灯镇水塘南岸风味 NPC「掌灯阿婆」（NPC_SPOTS '14,8'，全局坐标未被他图占用；台词走
 // linesByStage 按主线旗标选段：默认/夺回灯芯(bossDefeated)/回廊开启(galleryOpen)，trueBoss 后 after 彩蛋，
 // 与巡灯人/守碑人同款既有机制——纯内容、零结算、零新逻辑）。
-const GAME_VERSION = 'v21.36';
+// v21.37 新增：图鉴「已遭遇」计数化——hero.seen 由 v19.41 的布尔升级为计数（battle.startBattle 每次进战
+// key 值 +1），图鉴已遭遇行由写死的「已遭遇 ✕0」改为真实撞见次数「已遭遇 ✕N」（与讨伐行 ✕N 同族）；
+// 旧档布尔 true 经图鉴侧 |0 归一为 1，零存档格式变化、零结算影响。
+const GAME_VERSION = 'v21.37';
 
 const T=32;
 

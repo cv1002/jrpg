@@ -95,10 +95,13 @@ function startBattle(enemyDef) {
   // 明明亲身撞见过却显示「从没遇到」；记下后图鉴对已遭遇未讨伐者揭示名字与出没地，
   // 兵力/弱点仍在讨伐后才显示（不剧透）。名字经 canonicalName 归一（真身→本体，与 bestiary 同口径），
   // 纯追加字段零结算变化（逃跑成功率/掉落/经验均不受影响）。
+  // v21.37 已遭遇计数化（信息透明·纯状态）：v19.41 只记布尔「撞见过」→ 图鉴侧显示写死的「✕0」，
+  // 玩家刷某怪多次（含逃跑/战败反复撞见）却永远看不到一个数字——现改为计数（每次进战 +1），
+  // 与 bestiary 讨伐计数同族；旧档布尔 true 由图鉴侧 |0 归一为 1（至少撞见一次），零存档格式变化。
   {
     const _seenKey = canonicalName(S.enemy.name);
-    if (S.G.seen) S.G.seen[_seenKey] = true;
-    else S.G.seen = { [_seenKey]: true };
+    if (S.G.seen) S.G.seen[_seenKey] = (S.G.seen[_seenKey] || 0) + 1;
+    else S.G.seen = { [_seenKey]: 1 };
   }
   S.enemy.hpMax = enemyDef.hpMax || enemyDef.hp;
   S.G.defending = false;

@@ -158,7 +158,10 @@ export function drawCodex(){
   const names=Object.keys(hero.bestiary||{});
   // v19.41 图鉴「已遭遇」揭示（信息透明·纯显示）：rows 增补 seen（hero.seen，battle.startBattle 进战即记，
   // 与 bestiary 同经 canonicalName 归一）——已遭遇未讨伐的敌人不再伪装成「从没遇到」，见 r.seen 分支
-  const rows=BESTIARY_TARGET.map(n=>({n,got:!!(hero.bestiary||{})[n],seen:!!((hero.seen||{})[n])}));
+  // v21.37 已遭遇计数（信息透明·纯显示）：v19.41 起 seen 是布尔、图鉴却标写死的「已遭遇 ✕0」——计数与
+  // 事实对不上（撞见 3 次仍 ✕0）；现 battle 侧计数（每次进战 +1）、图鉴标真实 ✕N（与讨伐行 ✕N 同族）。
+  // seenCt 经 |0 归一：旧档布尔 true → 1（至少撞见一次），undefined/0 → 0，零结算零存档格式变化。
+  const rows=BESTIARY_TARGET.map(n=>({n,got:!!(hero.bestiary||{})[n],seen:!!((hero.seen||{})[n]),seenCt:((hero.seen||{})[n])|0}));
   if(names.length===0){
     text('尚未击败任何敌人。',320,170,'16px','#ffd24a','center');
     text('前往雾语林的草丛，开始你的冒险吧！',320,200,'14px','#7d93a3','center');
@@ -178,7 +181,7 @@ export function drawCodex(){
           text(nm,120,y,'15px','#8fa8b8');
           const nmw=CTX.measureText(nm).width;
           text('（'+whereFind(n)+'）',128+nmw,y,'12px','#5f8aa8');
-          text('已遭遇 ✕0',420,y,'14px','#8fa8b8','right');
+          text(`已遭遇 ✕${r.seenCt}`,420,y,'14px','#8fa8b8','right');
           text('⚠️ 尚未讨伐 · 兵力待收复',124,y+16,'11px','#7d93a3');
         } else {
           text('❓ ？？？',120,y,'15px','#5a6a78'); text('未讨伐',420,y,'14px','#4b5a66','right');

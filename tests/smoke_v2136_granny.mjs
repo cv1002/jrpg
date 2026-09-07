@@ -152,8 +152,8 @@ ok('sprites.js NPC_SHEET 已映射 granny→mwSage（长者袍，守名者/守�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2136_granny', readme.includes('smoke_v2136_granny'));
-ok('README 件套口径为三十二件套（三十一件套清除）',
-  readme.includes('三十二件套') && readme.includes('三十一件套清除'));
+ok('README 件套口径存在性（v21.7 去硬化惯例：不再断言精确件数「三十二件套/三十一件套清除」，实件数由 v21.37 冒烟守护「三十三件套」）',
+  readme.includes('冒烟') && readme.includes('件套') && readme.includes('npm test 串跑'));
 ok('README 含 v21.36 守护描述（潮灯镇掌灯阿婆）',
   readme.includes('v21.36 起含潮灯镇掌灯阿婆'));
 ok('README 地图/系统清单含「掌灯阿婆」', readme.includes('掌灯阿婆'));
