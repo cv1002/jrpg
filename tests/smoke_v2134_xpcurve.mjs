@@ -69,7 +69,8 @@ console.log('— v21.34 README 升级经验曲线链式口径 冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.33', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 34)));
-ok("data.js GAME_VERSION 为 'v21.34'", GAME_VERSION === 'v21.34', GAME_VERSION);
+// v21.35 按 v21.7 惯例去硬化：精确版本锚点由最新版冒烟（smoke_v2135）守护；本版只守「已越过 v21.34」单调界
+ok("data.js GAME_VERSION 已越过 v21.34（精确值由 v21.35 冒烟守护）", !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 35)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../js/data.js'), 'utf8');
 ok('data.js 含 v21.34 注释（链式口径说明）', dSrc.includes('v21.34'));
 
@@ -118,8 +119,8 @@ ok('README 升级经验行含链式全表关键值（Lv1→2 20 / Lv7→8 163 / 
 ok('README 旧行「Lv11→12 需 667」错误示例已清零（链式行不再以 667 作值）', !readme.includes('需 667'));
 ok('README 升级节奏参考行仍与链式一致（Lv11→12 约 7.0 场 = 662/96）', readme.includes('Lv11→12 约 7.0 场'));
 ok('README tests 树收录 smoke_v2134_xpcurve', readme.includes('smoke_v2134_xpcurve'));
-ok('README 件套口径为三十件套（二十九件套清除）',
-  readme.includes('三十件套') && !readme.includes('二十九件套'));
+ok('README 件套口径存在（v21.35 起按 v21.7 惯例去硬化：件数由最新版冒烟守护，本版只守「冒烟/件套」存在性）',
+  readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.34 守护描述（升级经验链式口径）', readme.includes('v21.34'));
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('package.json 已收录 smoke_v2134_xpcurve（npm test 串跑第 30 份）',
