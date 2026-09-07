@@ -94,7 +94,8 @@ ok('README 标题行旧口径「选择存档槽，`L` 读档」零残留（v21.4
   !!titleRow && !titleRow.includes('选择存档槽，`L` 读档') && !titleRow.includes('选择存档槽，`L` 读档，`R` 重开新档'));
 ok('README 标题行 L 读档/R 重开新档（两按确认）逐字保留', !!titleRow && titleRow.includes('`L` 读档') && titleRow.includes('连按两次 R 确认执行') && titleRow.includes('误按一次不会丢档'));
 ok('README tests 树收录 smoke_v2138_titleslotkey', readme.includes('smoke_v2138_titleslotkey'));
-ok('README 件套口径为三十四件套（三十三件套清除）', readme.includes('三十四件套') && readme.includes('三十三件套清除'));
+ok('README 件套口径存在性（v21.7 去硬化惯例：不再以「三十四件套/三十三件套清除」断言精确件数，实件数由 v21.39 冒烟守护「三十五件套」）',
+  readme.includes('冒烟') && readme.includes('件套') && readme.includes('件套清除）'));
 ok('README 含 v21.38 守护描述（←/→ 选槽口径同步）', readme.includes('v21.38'));
 
 // —— main.js 标题分派源级落位（与运行期分派同源）——

@@ -406,7 +406,11 @@ export function drawHelp(){
     if (r[2]) { text(r[2], 100, y + 18, '12px', '#7d93a3'); y += 16; }
     y += sp;
   });
-  text(`第 ${S.helpPage+1}/${HELP_PAGES.length} 页   ·   ← → 翻页   ·   H/Esc 关闭`,320,452,'12px','#7d93a3','center');
+  // v21.39 帮助页翻页入口口径（可发现性·承 v21.29-32/v21.38「同一功能所有入口口径一致」主线）：
+  // main.js help.onKey 的翻页分派本就双入口——ArrowRight/ArrowLeft 与 d/D/a/A（与标题页选槽
+  // v21.4 A/D 别名同族），页脚却只写「← → 翻页」，README H 行亦然——按 README 标题行（v21.38）
+  // 「A/D 亦可」的如实口径补全，读 H 翻页的玩家一眼知道 ←/→ 或 A/D 都能翻；纯文字零逻辑。
+  text(`第 ${S.helpPage+1}/${HELP_PAGES.length} 页   ·   ←/→ 翻页(A/D亦可)   ·   H/Esc 关闭`,320,452,'12px','#7d93a3','center');
 }
 
 // v21.12 快速旅行页脚基线（单一公式，绘制与冒烟同源）：末行标题 baseline = 110+(n-1)*52，
