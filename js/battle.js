@@ -205,7 +205,10 @@ function doAttack() {
 
 function skillForbidden(skillName, skill, enemy) {
   if (!enemy.forbid) return false;
-  if (skill.kind === 'heal' && enemy.forbid.includes('heal')) return true;
+  // v21.48 汲回招并入 heal 封印口径：汲光击（drain）边打边回血，本质含治疗效果——
+  // 终焉之神祸乱形态「封印治愈」若只封 kind==='heal'，汲光击会钻机制空子绕过招牌封印；
+  // 此处 drain 招与治愈同封（技能菜单 ⛔封印 标注同源，drawBattle.js 同口径）。
+  if ((skill.kind === 'heal' || skill.drain) && enemy.forbid.includes('heal')) return true;
   return !!(skillName && enemy.forbid.includes(skillName));
 }
 
@@ -260,6 +263,15 @@ function doSkill(skillName) {
     if (skill.breakShield && (enemy.shield || 0) > 0) {
       enemy.shield = Math.max(0, enemy.shield - skill.breakShield);
       note += '（石甲碎裂）';
+    }
+    // v21.48 汲回结算（汲光击 drain）：把本次伤害 ×drain 汲回为 HP，单次上限 drainCap×hpMax
+    // （data.js DRAIN_PCT/DRAIN_HP_CAP 单一数据源），再钳制到实际可回量——满血时如实报
+    // 「汲回 0 HP」（与 v19.97 治愈术报理论量+当前 HP 的口径同族，血量条/HUD 同源可见）。
+    if (skill.drain) {
+      const cap = Math.round(hero.hpMax * (skill.drainCap || 1));
+      const dr = Math.min(hero.hpMax - hero.hp, Math.min(cap, Math.round(dmg * skill.drain)));
+      hero.hp += dr;
+      note += `（汲回 ${dr} HP）`;
     }
     if (elemMult(skill, enemy) > 1) note += '（弱点）';
     if (elemMult(skill, enemy) < 1) note += '（抗性）';

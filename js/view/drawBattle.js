@@ -124,14 +124,18 @@ export function drawSkillMenu() {
   const sel = Math.max(0, Math.min(hero.skills.length - 1, S.skillSel || 0));
   hero.skills.forEach((s, i) => {
     const skill = SKILL_DATA[s];
-    const banned = !!(enemy && enemy.forbid && ((skill.kind === 'heal' && enemy.forbid.includes('heal')) || enemy.forbid.includes(s)));
+    // v21.48 行距 36→34（排版·六招容量）：v21.48 新增 Lv9 汲光击后技能至多 6 招——原 36px 行距下
+    // 第 6 招提示行基线 356 与页脚「当前 MP」368 字面几乎相触（≈1px）；收紧到 34 后第 6 招
+    // 提示行 346、页脚/按键行 368/394 逐字未动，光标底条 rr 高 32 留 2px 行隙，1-5 招视觉节奏基本不变。
+    const ROW_SP = 34;
+    const banned = !!(enemy && enemy.forbid && (((skill.kind === 'heal' || skill.drain) && enemy.forbid.includes('heal')) || enemy.forbid.includes(s))); // v21.48：drain 汲回招与治愈同封（battle.skillForbidden 同口径）
     const ok = hero.mp >= skill.mp && !banned;
     const col = !ok ? '#7d93a3' : (skill.kind === 'heal' ? '#8ff0a0' : '#e8eef1');
     // 光标高亮（纯显示·与 shop/travel/pause 同款 rgba(255,210,74,.15) 底条 + ▶）
     const focus = i === sel;
     if (focus) {
       CTX.fillStyle = 'rgba(255,210,74,.15)';
-      rr(162, 148 + i * 36, 320, 32, 6);
+      rr(162, 148 + i * ROW_SP, 320, 32, 6);
       CTX.fill();
     }
     let prev = '';
@@ -139,14 +143,14 @@ export function drawSkillMenu() {
     if (skill.kind === 'heal') prev = ' +' + Math.round(hero.hpMax * skill.heal) + 'HP' + (skill.cleanse ? ' ·解毒' : '') + (hero.charge ? ' ·蓄力保留' : '');
     else prev = ' ≈' + skillEstimate(hero, enemy, skill) + '伤';
     const hint = skill.hint ? (' · ' + skill.hint) : '';
-    text(`${focus ? '▶ ' : '  '}[${i + 1}] ${s}${prev}${banned ? '  ⛔封印' : (ok ? '' : '  ⛔')}`, 170, 160 + i * 36, '14px', col);
+    text(`${focus ? '▶ ' : '  '}[${i + 1}] ${s}${prev}${banned ? '  ⛔封印' : (ok ? '' : '  ⛔')}`, 170, 160 + i * ROW_SP, '14px', col);
     // MP 消耗标注（信息透明）：蓝=够用 红=不足 灰=被封印；右对齐独立列，不挤占技能名/伤害预览
-    text(`MP ${skill.mp}`, 474, 160 + i * 36, 'bold 12px', banned ? '#7d93a3' : (hero.mp >= skill.mp ? '#62c6ff' : '#e14b3f'), 'right');
-    text(hint, 188, 176 + i * 36, '11px', '#7d93a3');
+    text(`MP ${skill.mp}`, 474, 160 + i * ROW_SP, 'bold 12px', banned ? '#7d93a3' : (hero.mp >= skill.mp ? '#62c6ff' : '#e14b3f'), 'right');
+    text(hint, 188, 176 + i * ROW_SP, '11px', '#7d93a3');
     // v14.2 技能 MP 不足「还差 N」口径（信息透明·纯显示）：红色 MP 行下方再补短缺口数，
     // 一眼看清差几点 MP 才能放这招、不必心算——与 MP 行 / skill.mp 判定同源；封印与够用时均不显示，
     // 右对齐 474 与 hint 左起 188 各行最长 hint（≈165px→至353）无重叠，只展示不参与结算
-    if (!banned && hero.mp < skill.mp) text(`⛔ 还差 ${skill.mp - hero.mp} MP`, 474, 176 + i * 36, 'bold 11px', '#e14b3f', 'right');
+    if (!banned && hero.mp < skill.mp) text(`⛔ 还差 ${skill.mp - hero.mp} MP`, 474, 176 + i * ROW_SP, 'bold 11px', '#e14b3f', 'right');
   });
   text(`当前 MP：${hero.mp}/${hero.mpMax}${hero.charge ? `  · 蓄力×${CHARGE_MULT}` : ''}`, 320, 368, '13px', '#7d93a3', 'center');
   text('[↑↓]选择  [Enter]施放  [数字键]快捷  [Esc]取消', 320, 394, '13px', '#7d93a3', 'center');

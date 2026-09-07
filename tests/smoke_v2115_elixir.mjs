@@ -28,8 +28,8 @@ ok('魔物状态页行数仍为 10（只改 r[1] 文字、不增行，不触发 
   page.length === 10, `实际 ${page.length}`);
 const keys = page.map((r) => r[0]);
 ok('魔物状态页关键词不重复', new Set(keys).size === keys.length);
-ok('魔物状态页无 r[2] 行误动（战斗掉落/宝箱掉落 r[2] 仍各 1 处）',
-  page.filter((r) => r && r.length > 2).length === 2);
+ok('魔物状态页无 r[2] 行误动（技能克制/战斗掉落/宝箱掉落 r[2] 各 1 处——v21.48 技能克制行拆 r[1]+r[2] 补「汲光回血」，计数 2→3 由 smoke_v2148 守护）',
+  page.filter((r) => r && r.length > 2).length === 3);
 
 // —— 高级灵药行 ——
 const row = page.find((r) => r[0] === '高级灵药');

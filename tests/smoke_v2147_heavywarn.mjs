@@ -155,7 +155,9 @@ ok('运行期：Lv12 遭遇残焰魔像 → 仍报「明显强于你」（重击
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2147_heavywarn', readme.includes('smoke_v2147_heavywarn'));
-ok('README 件套口径为四十三件套（四十二件套清除）', readme.includes('四十三件套（四十二件套清除）'));
+ok('README 件套口径为存活性断言（v21.48 起件数由本版冒烟守护：四十四件套（四十三件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（四十二件套清除）'));
 ok('README 含 v21.47 守护描述（威胁预警重击线守护）', readme.includes('威胁预警重击线守护'));
 
 // —— package.json 收录 ——

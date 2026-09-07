@@ -1,7 +1,7 @@
 // ============================================================
 // quests.js —— 任务状态机（日志由 QUESTS + 旗标推导；兼容旧档 G.quest）
 // ============================================================
-import { QUESTS, NPCS } from './data.js';
+import { QUESTS, NPCS, learnsAt } from './data.js';
 
 function flagsOn(hero, unlockOn) {
   if (!unlockOn) return true;
@@ -28,6 +28,15 @@ export function migrateQuests(hero) {
     else if (hero.quest >= 3) quests.side_mushroom = 'done';
   }
   if (hero.caveBoss && quests.side_cart == null) quests.side_cart = 'active';
+  // v21.48 旧档技能补齐（存档兼容·与上方 seen/fragments 兜底同族）：技能领悟表新增条目
+  // （如 v21.48 的 Lv9 汲光击）前已达标的老存档，hero.checkSkills 只在升级瞬间触发、永不回头——
+  // 读档（core.load → migrateQuests）按当前等级补学漏掉的技能，老档自动补领新招；
+  // 新档（core.newGame → migrateQuests，skills 已含 learnsAt(1)）与升级路径均幂等零变化。
+  if (!Array.isArray(hero.skills)) hero.skills = [];
+  for (let lv = 1; lv <= (hero.level || 1); lv++) {
+    const sk = learnsAt(lv);
+    if (sk && !hero.skills.includes(sk)) hero.skills.push(sk);
+  }
   syncQuestInt(hero);
   return hero;
 }

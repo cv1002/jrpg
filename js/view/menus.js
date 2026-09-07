@@ -113,7 +113,10 @@ export function drawStatus(){
   hero.skills.forEach((s,i)=>{
     const sd=SKILL_DATA[s];
     // v7.4: 技能行补齐 MP 消耗（与战斗技能菜单同源 SKILL_DATA.mp，信息透明·状态页可规划消费）
-    text(`· ${s}${sd&&sd.hint?'（'+sd.hint+'）':''}${sd&&sd.mp?` · ${sd.mp} MP`:''}`,120,308+i*16,'12px','#e8eef1');
+    // v21.48 行距 16→14（排版·六招容量，承 v2.8「状态页垂直空间占满需先压缩」惯例）：v21.48 新增
+    // Lv9 汲光击后技能至多 6 招——原 16px 行距第 6 行基线 388 与「📖 下一技能」396（12px 字顶 ≈387）
+    // 相触；收紧到 14 后第 6 行基线 378（字底 ≈381），与 396 行留 6px 净隙，其余各行逐字未动。
+    text(`· ${s}${sd&&sd.hint?'（'+sd.hint+'）':''}${sd&&sd.mp?` · ${sd.mp} MP`:''}`,120,308+i*14,'12px','#e8eef1');
   });
   const sx=skillXpHint(hero);
   const sxd=sx?SKILL_DATA[sx.name]:null;
