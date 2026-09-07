@@ -108,7 +108,14 @@ const screens = {
   },
   talk: {
     onKey(e) {
-      if (e.key === 'Enter') talkNext();
+      // v21.43 对话翻页补 E 键别名（体验打磨·口径收尾，承 v21.29 大地图 E 交互别名 / v21.30 教程行 /
+      // v21.32 面向提示同一「Enter/E 同效」主线）：v21.29-32 已把 README 快速上手表、H 页「对话 / 确认」行、
+      // 教程提示、世界画面面向提示全部同步成「Enter / E」——但玩家按文档进入对话之后，对话进行中的
+      // 每一页 talk.onKey 仍只认 Enter：按 E 想继续/翻页毫无反应（v21.16/v21.33「每个按键都该有反应」
+      // 同族的「文档写的键按了没反应」）；现 E 与 Enter 完全同路径调用 talkNext——本页打字机未打完时
+      // 补全本页、打完则翻页、末页则结束对话回 world，三种状态与 Enter 逐字同行为；isEsc 分支逐字未动，
+      // KEY 无 'e' 映射（不与移动键冲突）、world 交互 E 分派零回归。纯入口、零结算、零数据变化。
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') talkNext();
       else if (isEsc(e)) backWorld();
     },
   },

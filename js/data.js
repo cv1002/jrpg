@@ -45,7 +45,9 @@
 // 返回/关闭），标题页按 Enter 误入创建页后无退路（只能开始新档或进游戏再用菜单回标题）；
 // main.js create.onKey 补 `isEsc(e) → goto('title')`，drawCreate 提示行末补「Esc 返回」。
 // 承 v21.16/v21.33「每个按键都该有反应」与「Esc 语义全场景一致」主线，纯入口零结算（不动建档逻辑）。
-const GAME_VERSION = 'v21.42';
+// v21.43 新增：对话翻页补 E 键别名——talk.onKey 的 e/E 与 Enter 同路径调用 talkNext（v21.29-32
+// 「Enter/E 同效」口径收尾：进入对话后按 E 补全/翻页/结束对话与 Enter 零行为差），纯入口零结算。
+const GAME_VERSION = 'v21.43';
 
 const T=32;
 

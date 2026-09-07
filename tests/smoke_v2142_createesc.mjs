@@ -7,8 +7,8 @@
 // S.createDiff 保留（再进创建页仍是刚才的选择）。纯入口、零建档逻辑变化、零结算。
 // 本冒烟守护：版本锚点、main.js 源级 Esc 处理 + 既有创建键零回归、menus.js 源级新提示 + 旧提示零残留、
 // 运行期 title→create→Esc→title 往返实证（createName/createDiff 保留）、↑↓/←→/A/D/W/S 选择零回归、
-// drawCreate 渲染实证（新行含 Esc 返回）、world Esc→pause 零回归、README 同步（tests 树/三十八件套
-// （三十七件套清除）/v21.42 守护描述/快速上手表创建页行）、package.json 收录、smoke_v2141 件套断言
+// drawCreate 渲染实证（新行含 Esc 返回）、world Esc→pause 零回归、README 同步（tests 树/件套口径
+// （v21.43 起存活性断言）/v21.42 守护描述/快速上手表创建页行）、package.json 收录、smoke_v2141 件套断言
 // 去硬化确认（v21.7 惯例）。
 import { S } from '../js/state.js';
 import { GAME_VERSION, HERO_NAMES, DIFFS } from '../js/data.js';
@@ -110,7 +110,8 @@ ok('drawCreate 旧口径提示行（Enter 出发 后直接逗号接面宽参数�
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2142_createesc', readme.includes('smoke_v2142_createesc'));
-ok('README 件套口径为三十八件套（三十七件套清除）', readme.includes('三十八件套') && readme.includes('三十七件套清除'));
+ok('README 件套口径为存活性断言（v21.7 惯例：改「冒烟/件套」存在性口径，实件数由 v21.43 冒烟守护）',
+  readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.42 守护描述（创建角色页 Esc 返回）', readme.includes('创建角色页 Esc 返回守护'));
 ok('README 快速上手表含创建页行（Esc/返回标题/不会建档）', readme.includes('创建页') && readme.includes('返回标题') && readme.includes('Esc') && readme.includes('不会建档'));
 
