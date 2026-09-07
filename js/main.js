@@ -63,6 +63,11 @@ const screens = {
     onKey(e) {
       if (e.key === 'j' || e.key === 'J' || isEsc(e)) backWorld();
       else if (e.key === 'i' || e.key === 'I') goto('status');
+      // v21.45 任务日志滚动（与图鉴/成就同款 ↑↓ 滚动；内容未超可视区时滚动为 0、按了也不越界——drawJournal 绘制期钳制）
+      else onArrow(e,
+        () => { S.journalScroll++; SFX.select(); },
+        () => { S.journalScroll--; SFX.select(); }
+      );
     },
   },
   codex: {

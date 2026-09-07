@@ -51,7 +51,10 @@
 // 按住 Shift 生效（main.js keydown/keyup/blur 三处 setRun 分支，早退不落入任何 scene.onKey）；
 // 遇敌/踩踏/传送/插值全走既有 move→S.walk 通道（dur 改由 runHeld 派生，每步仍按 dangerAt 结算遇敌槽——
 // 只快「走」不跳「结算」）。H 页「移动 / 传送门」行与 README 上手表/教程行同步 Shift 口径。
-const GAME_VERSION = 'v21.44';
+// v21.45 新增：任务日志（J）滚动——drawJournal 内容超可视区时 ↑↓ 可滚（state.js S.journalScroll，与
+// codexScroll/achScroll 同族；「可接」支线卡/记忆碎片不再被 clip 静默裁掉，页脚补「↑↓ 滚动浏览（还有 N 条）」），
+// main.js journal.onKey 分派 ↑↓（onArrow 同款），v21.7 既有冒烟集零回归。
+const GAME_VERSION = 'v21.45';
 
 const T=32;
 

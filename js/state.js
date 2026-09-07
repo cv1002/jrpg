@@ -30,6 +30,7 @@ export const S = {
   helpPage: 0,
   codexScroll: 0,
   achScroll: 0,
+  journalScroll: 0,   // v21.45 任务日志（J）滚动偏移：内容超可视区时 ↑↓ 可滚（drawJournal 绘制期钳制）
   travelSel: 0,
   curNpc: null,
   talkPages: [],

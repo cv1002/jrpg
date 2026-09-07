@@ -289,13 +289,14 @@ function cardStroke(status) {
   return 'rgba(58,86,112,.45)';
 }
 
-function drawQuestCard(e, hero, x, y, w, yMax) {
+function drawQuestCard(e, hero, x, y, w) {
   const col = QST_COL[e.status] || '#e8eef1';
   const hot = e.status === 'active' || e.status === 'turnin' || e.status === 'offer';
   const showWhere = !!(e.where && e.status !== 'locked' && e.status !== 'done');
   const rw = e.kind === 'side' ? rewardHint(hero, e) : '';
   const h = e.status === 'done' ? 34 : e.status === 'locked' ? 50 : (showWhere || rw ? 70 : 54);
-  if (y + h > yMax) return 0;
+  // v21.45 起不再以 yMax 提前 return 0：日志改用「全量条目 + CTX.translate(-scroll)」整页绘制（drawJournal），
+  // 视口外的卡由外层 clip 裁掉（滚动后仍可见），这里的提前截断会让滚动中的下方条目永远画不出来。
   rr(x, y, w, h, 8);
   CTX.fillStyle = cardFill(e.status);
   CTX.fill();
@@ -351,42 +352,68 @@ export function drawJournal(){
   }
   const cx = 86;
   const cw = 468;
-  const yMax = 418;
-  let y = 66;
+  const yMax = 418;          // 可视区底（clip 内）
+  const top = 66;            // 内容起始基线
+  const viewH = yMax - top;  // 可视内容高度 352
+  // v21.45 任务日志滚动（信息透明·可发现性）：图鉴/成就都有 ↑↓ 滚动（codex/achScroll），日志是唯一没有的
+  // 多分区面板——一旦内容超出可视区（开局 6 条支线 + 4 行碎片即超），drawQuestCard 的 yMax 提前截断会让
+  // 「可接」支线卡被静默裁掉、碎片区整段不画（v21.45 前 星砂之约/旧灯卫的名字/石壳里的记忆/残焰的安息
+  // 在开局日志里完全看不见）。现改为：先按原布局规则排出全量条目高度序列（头/卡/碎片统一 h），
+  // 滚动偏移 S.journalScroll（state.js 注册，与 codexScroll/achScroll 同族）绘制期钳制到
+  // [0, totalH-viewH]，绘制时 CTX.translate(0,-scroll) 整页上移——clip 只裁视口外的内容，
+  // 滚动后下方条目自然进入视口；页脚按 codex 同款口径补「↑↓ 滚动浏览（还有 N 条）」。
+  const cardH = (e) => (e.status === 'done' ? 34 : e.status === 'locked' ? 50 : 70);
+  const items = [];
+  if (mains.length) {
+    items.push({ kind: 'head', label: '主线', color: '#ffd24a', h: 12 });
+    for (const e of mains) items.push({ kind: 'card', e, h: cardH(e) + 8 }); // +8 = drawQuestCard 的间距步距（原 y += drawQuestCard 返回值 h+8）
+    items.push({ kind: 'gap', h: 6 });
+  }
+  if (sides.length) {
+    items.push({ kind: 'head', label: '支线', color: '#a8ff8a', h: 12 });
+    for (const e of sides) items.push({ kind: 'card', e, h: cardH(e) + 8 });
+    items.push({ kind: 'gap', h: 6 });
+  }
+  items.push({ kind: 'head', label: '记忆碎片', color: '#8fd0ff', h: 16 });
+  for (const f of FRAGMENTS) items.push({ kind: 'frag', f, h: 16 });
+  const totalH = items.reduce((a, it) => a + it.h, 0);
+  const maxScroll = Math.max(0, totalH - viewH);
+  if (typeof S.journalScroll !== 'number' || S.journalScroll < 0) S.journalScroll = 0;
+  if (S.journalScroll > maxScroll) S.journalScroll = maxScroll; // 越界钳制（逻辑同 codex/ach 的绘制期钳制）
+  const scroll = S.journalScroll;
   CTX.save();
   CTX.beginPath();
   CTX.rect(78, 54, 484, yMax - 54);
   CTX.clip();
-  if (mains.length) {
-    drawSectionHead('主线', cx, y, '#ffd24a');
-    y += 12;
-    mains.forEach((e) => { y += drawQuestCard(e, hero, cx, y, cw, yMax); });
-    y += 6;
-  }
-  if (sides.length && y + 24 < yMax) {
-    drawSectionHead('支线', cx, y, '#a8ff8a');
-    y += 12;
-    sides.forEach((e) => { y += drawQuestCard(e, hero, cx, y, cw, yMax); });
-  }
-  // 记忆碎片（data.js FRAGMENTS 单一数据源）：强敌首胜掉落，未收集灰占位不剧透
-  if (y + 24 < yMax) {
-    y += 6;
-    drawSectionHead('记忆碎片', cx, y, '#8fd0ff');
-    y += 16;
-    for (const f of FRAGMENTS) {
-      if (y + 15 > yMax) break;
-      const got = (hero.fragments || []).includes(f.id);
+  CTX.translate(0, -scroll);
+  let y = top;
+  for (const it of items) {
+    if (it.kind === 'head') {
+      drawSectionHead(it.label, cx, y, it.color);
+    } else if (it.kind === 'card') {
+      drawQuestCard(it.e, hero, cx, y, cw);
+    } else if (it.kind === 'frag') {
+      // 记忆碎片（data.js FRAGMENTS 单一数据源）：强敌首胜掉落，未收集灰占位不剧透
+      const got = (hero.fragments || []).includes(it.f.id);
       if (got) {
-        text('🕯️ ' + f.name, cx + 6, y, 'bold 12px', '#cfe8ff');
-        text(ellipsize(f.text, '11px', cw - 150), cx + 150, y, '11px', '#8aa0b0');
+        text('🕯️ ' + it.f.name, cx + 6, y, 'bold 12px', '#cfe8ff');
+        text(ellipsize(it.f.text, '11px', cw - 150), cx + 150, y, '11px', '#8aa0b0');
       } else {
         text('🕯️ ？？？', cx + 6, y, '12px', '#4a5a66');
       }
-      y += 16;
     }
+    y += it.h;
   }
   CTX.restore();
-  text('按 J / Esc 关闭', 320, 432, '12px', '#7d93a3', 'center');
+  // 页脚「还有 N 条」：视口底以下仍未滚到的条目数（卡 + 碎片行计数，头/间隔不计）——codex 同款口径
+  const viewBottom = scroll + viewH;
+  let remain = 0;
+  let acc = 0;
+  for (const it of items) {
+    acc += it.h;
+    if (acc > viewBottom && (it.kind === 'card' || it.kind === 'frag')) remain++;
+  }
+  text(`按 J / Esc 关闭${remain > 0 ? `   ·   ↑↓ 滚动浏览（还有 ${remain} 条）` : ''}`, 320, 432, '12px', '#7d93a3', 'center');
 }
 
 export function drawHelp(){
