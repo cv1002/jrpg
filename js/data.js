@@ -78,7 +78,14 @@
 // max(DOT_MIN, round(hpMax×POISON_PCT)) 在读出回合数的同一行补每回合扣血数（hero.hpMax 战斗中不变，
 // 预估值与后续 tick 实扣逐值相等），与 POISON_PCT/DOT_MIN 单一数据源同读——调中毒强度只改
 // data.js 一处，角标/帮助页/施毒文案/tick 结算四端自动跟随。零结算零数值零存档变化。
-const GAME_VERSION = 'v21.49';
+// v21.50 新增：灼烧命中瞬间战报追加「灼烧 N 回合·每回合 -N HP」（信息透明·纯显示）——battle.js
+// doSkill 的火焰斩上火文案此前只报「（灼烧）」，而 HUD 灼烧角标（drawBattle「🔥 灼烧 N · 每回合 -N血」）、
+// 灼烧 tick 战报（v21.8「灼烧令…受到 N 点伤害」）、技能 hint（「灼烧2回合·每回合约-4%最大HP」）三端
+// 早已量化，唯独命中这一刻没有；现按 tick 同式 max(DOT_MIN, round(hpMax×BURN_PCT)) 补每回合烧血数
+// （enemy.hpMax 战斗中不变，预估值与后续 tick 实扣逐值相等），回合数读赋值后的 enemy.burn（灼烧可叠加，
+// 与角标「灼烧 N」同一份源），与 BURN_PCT/DOT_MIN 单一数据源同读——调灼烧强度只改 data.js 一处，
+// 战报/角标/tick 结算三端自动跟随（承 v21.49 中毒施毒文案同一补法）。零结算零数值零存档变化。
+const GAME_VERSION = 'v21.50';
 
 const T=32;
 

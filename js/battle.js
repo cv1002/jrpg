@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -258,7 +258,19 @@ function doSkill(skillName) {
   enemy.def = skillDefUsed(skill, enemy);
   attackMove((dmg) => {
     let note = '';
-    if (skill.burn) { enemy.burn = (enemy.burn || 0) + skill.burn; note += '（灼烧）'; }
+    if (skill.burn) {
+      enemy.burn = (enemy.burn || 0) + skill.burn;
+      // v21.50 灼烧命中瞬间战报量化（信息透明·纯显示）：灼烧链条的 tick 结算（enemyAI
+      // 「灼烧令…受到 N 点伤害」）、HUD 角标（drawBattle「🔥 灼烧 N · 每回合 -N血」）、
+      // 技能 hint（「灼烧2回合·每回合约-4%最大HP」）三端早已量化，唯独火焰斩命中上火的
+      // 这一刻只报「（灼烧）」——玩家花 4MP 放火，想确认「这灼烧每回合到底烧多少、还要烧几回合」
+      // 仍需等首次 tick 或瞄角标；现按 tick 同式 max(DOT_MIN, round(hpMax×BURN_PCT)) 补每回合
+      // 烧血数（enemy.hpMax 战斗中不变，预估值与后续 tick 实扣逐值相等，非「约」），回合数读
+      // 赋值后的 enemy.burn（灼烧可叠加——连放两发叠到 4 回合时如实报 4，与角标「灼烧 N」同一份源）。
+      // BURN_PCT/DOT_MIN 单一数据源同读，调灼烧强度只改 data.js 一处、战报/角标/tick 三端自动跟随。
+      // 零结算变化（enemy.burn 赋值与原行逐值同式）。
+      note += `（灼烧 ${enemy.burn} 回合·每回合 -${Math.max(DOT_MIN, Math.round(enemy.hpMax * BURN_PCT))} HP）`;
+    }
     if (skill.skip && Math.random() < skill.skip) { enemy.skipNext = true; note += '（冻结！）'; }
     if (skill.breakShield && (enemy.shield || 0) > 0) {
       enemy.shield = Math.max(0, enemy.shield - skill.breakShield);
