@@ -174,7 +174,9 @@ try {
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2145_journalscroll', readme.includes('smoke_v2145_journalscroll'));
-ok('README 件套口径为四十一件套（四十件套清除）', readme.includes('四十一件套（四十件套清除）'));
+ok('README 件套口径为存活性断言（v21.46 起件数由本版冒烟守护：四十二件套（四十一件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（四十件套清除）'));
 ok('README 含 v21.45 守护描述（任务日志滚动守护）', readme.includes('v21.45 起含任务日志滚动守护'));
 ok('README 快速上手表 J 行含 ↑↓ 滚动口径', readme.includes('`J`') && readme.includes('↑↓ 滚动浏览'));
 

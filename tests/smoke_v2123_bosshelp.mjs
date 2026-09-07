@@ -96,9 +96,10 @@ ok('drawHelp 页长派生：sp=34 档且末行基线 418 ≤440（页脚 452 前
 // —— 零回归守护：原 6 行关键词未误动 ——
 const p3keys = ['试炼碑位置', '双徽记条件', '试炼三连战', '重整旗鼓', '快速旅行', '蘑菇宝箱'];
 ok('原 6 行关键词全在（试炼碑/双徽记/试炼三连战/重整旗鼓/快旅/蘑菇宝箱）', p3keys.every((k) => !!row(k)));
-ok('试炼三连战行 r[1] 未动（连战/全胜/百炼成钢逐字不变）+ r[2] v21.25 起追加通关赏金（RUSH 常量派生，回血部分逐字不变）',
+ok('试炼三连战行 r[1] 未动（连战/全胜/百炼成钢逐字不变）+ r[2] v21.25 起追加通关赏金（RUSH 常量派生，回血部分逐字不变）+ v21.46 起追加试炼推荐等级（RUSH_REC_LV 派生）',
   row('试炼三连战')[1] === '连战三名最强 Boss，全胜获「百炼成钢」' &&
-  row('试炼三连战')[2] === '每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金');
+  row('试炼三连战')[2].startsWith('每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金') &&
+  row('试炼三连战')[2].includes('建议Lv.'));
 ok('其余三页行数未动（操作 14 / 地图指南 5 / 魔物状态 10）',
   HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 5 && HELP_PAGES[2].length === 10);
 

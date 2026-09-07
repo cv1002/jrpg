@@ -58,8 +58,8 @@ const mpPct = Math.round(RUSH_RECOVER.mp * 100);
 ok('真源健全：恢复比例/赏金基数均为正数', RUSH_RECOVER.hp > 0 && RUSH_RECOVER.mp > 0 && RUSH_BASE_GOLD > 0 && RUSH_GOLD_PER_LV > 0);
 ok(`r[1] 主行未动（连战/全胜/百炼成钢逐字不变，${RUSH_BASE_GOLD}+等级×${RUSH_GOLD_PER_LV} 金不在主行）`,
   rushRow[1] === '连战三名最强 Boss，全胜获「百炼成钢」' && !rushRow[1].includes('金'), rushRow[1]);
-ok(`r[2] 次行由 RUSH_RECOVER + RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生（回收 ${hpPct}%HP/${mpPct}%MP · 赏金 ${RUSH_BASE_GOLD}+等级×${RUSH_GOLD_PER_LV}金 逐字同源）`,
-  rushRow[2] === `每胜一关回血${hpPct}%HP/${mpPct}%MP · 全胜另得${RUSH_BASE_GOLD}+等级×${RUSH_GOLD_PER_LV}金`, rushRow[2]);
+ok(`r[2] 次行由 RUSH_RECOVER + RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生（回收 ${hpPct}%HP/${mpPct}%MP · 赏金 ${RUSH_BASE_GOLD}+等级×${RUSH_GOLD_PER_LV}金 逐字同源）且含 v21.46 试炼推荐等级后缀`,
+  rushRow[2].startsWith(`每胜一关回血${hpPct}%HP/${mpPct}%MP · 全胜另得${RUSH_BASE_GOLD}+等级×${RUSH_GOLD_PER_LV}金`) && rushRow[2].includes('建议Lv.'), rushRow[2]);
 ok('r[2] 含「等级×」公式表述（与 rules.rushReward 同式：固定部分+随等级加成）',
   rushRow[2].includes('全胜另得') && rushRow[2].includes('等级×') && rushRow[2].includes('金'));
 ok('r[1] 主行不再含回血比例（承 v21.20 拆分口径）', !rushRow[1].includes('回血') && !rushRow[1].includes('%HP'));

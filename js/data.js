@@ -52,9 +52,13 @@
 // 遇敌/踩踏/传送/插值全走既有 move→S.walk 通道（dur 改由 runHeld 派生，每步仍按 dangerAt 结算遇敌槽——
 // 只快「走」不跳「结算」）。H 页「移动 / 传送门」行与 README 上手表/教程行同步 Shift 口径。
 // v21.45 新增：任务日志（J）滚动——drawJournal 内容超可视区时 ↑↓ 可滚（state.js S.journalScroll，与
-// codexScroll/achScroll 同族；「可接」支线卡/记忆碎片不再被 clip 静默裁掉，页脚补「↑↓ 滚动浏览（还有 N 条）」），
+// codexScroll/achScroll 同族；「可接」支线卡/记忆碎片不再被 clip 静默裁掉，页脚补「↑↓ 滚动浏览（还有 N 条）」，
 // main.js journal.onKey 分派 ↑↓（onArrow 同款），v21.7 既有冒烟集零回归。
-const GAME_VERSION = 'v21.45';
+// v21.46 新增：试炼推荐等级标注（信息透明收口）——RUSH_REC_LV = max(RUSH_BOSSES 各关 SPECIES[].lv) 单一数据源
+// 派生（8/7/12 → 12），守碑人台词 / 试炼碑标签 / H 页「试炼进阶」三端同读；试炼是全游戏唯一「战前知识中枢
+// 未标推荐等级」的最重挑战（v20.6 实测 Lv11 约 42% / Lv12 约 100% 通关，此前玩家只能从碑上阵容末位
+// 「终焉之神Lv12」自行推断），现显式标注、调任一 Boss 的 lv 只改 SPECIES 一处、各方自动跟随，零裸字面量。
+const GAME_VERSION = 'v21.46';
 
 const T=32;
 
@@ -1211,6 +1215,13 @@ const RUSH_BOSSES=[
   withSpecies({...TRUE_BOSS_BASE,xp:90,gold:0,isRush:true}),
 ];
 
+// 试炼推荐等级（v21.46 新增·单一数据源）：三连战阵容读 RUSH_BOSSES，各关推荐等级与祭坛 ⚠Lv /
+// enemyLv / 碑上阵容标签同读 SPECIES[].lv（真身/普通同名归一）——试炼是全游戏唯一「战前知识中枢未标
+// 推荐等级」的最重挑战（v20.6 实测 Lv11 约 42% / Lv12 约 100% 通关，此前玩家只能从碑上阵容末位
+// 「终焉之神Lv12」自行推断）；现 max(...) 派生为显式「建议Lv.N」（当前 8/7/12 → 12），守碑人台词 /
+// 试炼碑标签 / H 页三端同读，调任一 Boss 的 lv 只改 SPECIES 一处、各方自动跟随，零裸字面量。
+const RUSH_REC_LV = Math.max(...RUSH_BOSSES.map(b => (SPECIES[b.name] && SPECIES[b.name].lv) || 1));
+
 // 守碑人台词（v21.24）：由试炼数值唯一真源派生——RUSH_RECOVER（关间恢复比例）、RUSH_BASE_GOLD /
 // RUSH_GOLD_PER_LV（通关赏金公式，与 rules.rushReward 同式）、RUSH_BOSSES（三连战阵容，与战斗横幅
 // 「第 N/3 关」、帮助页「试炼三连战」同源）；调试炼数值只改本文件对应常量一处，碑旁对话自动跟随，
@@ -1226,6 +1237,7 @@ function sentinelPages(hero) {
     [
       `守碑人：这方石碑比矿脉里的石头磨得还亮——三道刻痕：${names.join('、')}。`,
       `碑光在每胜一关的间隙，替你恢复 ${hpPct}%HP/${mpPct}%MP；三关尽破，赏金 ${reward} 金（随你等级水涨船高）。`,
+      `这碑的阵仗，是按 ${RUSH_REC_LV} 级刻的——没到 ${RUSH_REC_LV} 级，碑光可护不住你。`,
       '老朽守在碑旁，只记一句：先凑齐两枚徽记，碑才会醒——细则都在 H 页「试炼进阶」里。',
       '[Enter] 继续',
     ],
@@ -1688,7 +1700,12 @@ const HELP_PAGES=[
     // 查不到；现追加以 RUSH_BASE_GOLD + RUSH_GOLD_PER_LV 派生的「150+等级×20金」，调试炼赏金只改 data.js
     // 一处、H 页/守碑人/成就页/结算四端同步，绝无第二套口径（零裸字面量）；行数不变仍 9（r[2] 追加不增行，
     // sp=34 档不变），12px 次行 estW ≈276.5 ≤470 面板预算，末行基线 418 仍不触页脚 452。
-    ['试炼三连战','连战三名最强 Boss，全胜获「百炼成钢」','每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金'],
+    // v21.46 试炼三连战行 r[2] 追加推荐等级（信息透明·H 页知识中枢收口，承 v21.25 同族）：H 页四页是
+    // 「战前知识中枢」，试炼作为全游戏最重挑战此前只有机制/恢复/赏金，独缺「该练到多少级再来」——碑上
+    // 阵容末位（终焉之神Lv12）是唯一线索，玩家需自行推断；现追加由 RUSH_REC_LV 派生的「建议Lv.N」
+    // （与守碑人台词/碑上标签同读同一常量，调任一 Boss 的 lv 只改 data.js 一处、三端同步，零裸字面量）；
+    // r[2] 追加不增行（行数不变仍 9、sp=34 档不变），12px 次行 estW ≈322 ≤470 面板预算（v21.11 口径）。
+    ['试炼三连战','连战三名最强 Boss，全胜获「百炼成钢」','每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金 · 建议Lv.' + RUSH_REC_LV],
     ['重整旗鼓','被强敌击败后按 B 原地再战；R 重开 · T 回标题'],
     ['快速旅行','已到访地图可在菜单 T 中瞬移，省去往返跑图'],
     ['蘑菇宝箱','灯长支线进行中，未开的宝箱会在小地图上金光脉动'],
@@ -1757,7 +1774,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 export {
   GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
-  SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, BESTIARY_TARGET,
+  SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal, trialSteleHint,
   SND_KEY, sndPrefToState, sndPrefToString,

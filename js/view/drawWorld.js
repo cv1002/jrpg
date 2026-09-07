@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -465,7 +465,10 @@ export function drawWorld() {
         // 只在进入试炼战后的战斗预览里才显示（drawBattle 读同源 rushReward），玩家在碑前做「值不值得开打」
         // 决策时它仍是黑盒；现与阵容同挂在碑上、同读 rules.rushReward(玩家当前等级) 单一数据源（与
         // battle.winBattle 结算 / drawBattle 战斗预览逐字同源，随等级实时显示）。只读不改、零结算变化。
-        const lab = ready ? `⚔️ 试炼三连战 ${roster}` : '试炼·未解锁';
+        // v21.46 碑上标签补「建议Lv.N」（信息透明收口·承 v19.52/v19.60）：此前阵容（各关 Lv）与赏金都上了碑，
+        // 唯独「该练到多少级再来」仍是黑盒——末位「终焉之神Lv12」的推断留给玩家；现追加由 RUSH_REC_LV 派生的
+        // 显式推荐等级（与守碑人台词/H 页同读同一常量，调任一 Boss 的 lv 只改 data.js 一处、三端同步）。
+        const lab = ready ? `⚔️ 试炼三连战 ${roster} · 建议Lv.${RUSH_REC_LV}` : '试炼·未解锁';
         const lx = x * T - c.x + T / 2;
         const ly = y * T - c.y;
         CTX.font = 'bold 12px sans-serif';

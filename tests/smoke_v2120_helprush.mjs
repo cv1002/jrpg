@@ -58,8 +58,9 @@ ok('r[1] 主行收连战/全胜/百炼成钢（关键词保留，v19.53 起口�
   !!rushRow && rushRow[1].includes('连战三名最强 Boss') && rushRow[1].includes('全胜获「百炼成钢」'), rushRow && rushRow[1]);
 ok('r[1] 主行不再含回血比例（已移 r[2]，单行 478.6 越界消除）',
   !!rushRow && !rushRow[1].includes('回血') && !rushRow[1].includes('%HP'), rushRow && rushRow[1]);
-ok('r[2] 次行回血比例由 RUSH_RECOVER 派生（35%HP/50%MP 逐字同源）+ v21.25 起追加通关赏金（RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生，逐字同源）',
-  !!rushRow && rushRow[2] === '每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金',
+ok('r[2] 次行回血比例由 RUSH_RECOVER 派生（35%HP/50%MP 逐字同源）+ v21.25 起追加通关赏金（RUSH_BASE_GOLD/RUSH_GOLD_PER_LV 派生，逐字同源）+ v21.46 起追加试炼推荐等级（RUSH_REC_LV 派生）',
+  !!rushRow && rushRow[2].startsWith('每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金') &&
+  rushRow[2].includes('建议Lv.'),
   rushRow && rushRow[2]);
 
 // —— 宽度预算 ——
