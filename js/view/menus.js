@@ -573,7 +573,10 @@ export function drawCreate(){
   // 每级成长（信息透明·纯显示）：与 hero.grantXp 升级结算同源于 baseStats 推导的 LEVEL_GROWTH——
   // 此前成长数值只在胜利横幅一闪而过，创建页一眼看清「每升一级得到什么」
   CTX.fillText(`每级成长：HP+${LEVEL_GROWTH.hp} · MP+${LEVEL_GROWTH.mp} · 攻+${LEVEL_GROWTH.atk} · 防+${LEVEL_GROWTH.def}`,CV.width/2,408);
-  CTX.fillText('← → 选择姓名     ↑ ↓ 选择难度    Enter 出发！',CV.width/2,432);
+  // v21.42 创建页补 Esc 返回（体验打磨·可发现性）：create.onKey 新补 `isEsc(e) → goto('title')`
+  //（此前创建页是无 Esc 处理的唯一场景，误入无退路是「看不见的入口」）；提示行如实补「Esc 返回」，
+  // 与 H 页「菜单 / 取消」行 Esc 语义、dead 画面 T 回标题同口径，纯显示零结算。
+  CTX.fillText('← → 选择姓名     ↑ ↓ 选择难度    Enter 出发！    Esc 返回',CV.width/2,432);
 }
 
 export function drawTitle(){

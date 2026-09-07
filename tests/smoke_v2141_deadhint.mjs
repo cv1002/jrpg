@@ -107,7 +107,8 @@ ok('main.js codex.onKey 关闭走 backWorld（从 dead 进图鉴再关会错回 
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2141_deadhint', readme.includes('smoke_v2141_deadhint'));
-ok('README 件套口径为三十七件套（三十六件套清除）', readme.includes('三十七件套') && readme.includes('三十六件套清除'));
+ok('README 件套口径存在性（v21.7 去硬化惯例：不再以「三十七件套/三十六件套清除」断言精确件数，实件数由 v21.42 冒烟守护「三十八件套」）',
+  readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.41 守护描述（战败画面图鉴入口口径）', readme.includes('v21.41 起含战败画面图鉴入口口径守护'));
 ok('README 战败复盘口径同步（普通怪提示看清魔物强度·图鉴入口在世界画面按 B）',
   readme.includes('普通怪提示回村补给并看清魔物强度') && readme.includes('图鉴入口在世界画面按 B'));

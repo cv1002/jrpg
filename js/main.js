@@ -199,6 +199,15 @@ const screens = {
   },
   create: {
     onKey(e) {
+      // v21.42 创建页补 Esc 返回标题（体验打磨·反馈，承 v21.16/v21.33「每个按键都该有反应」与
+      // 「Esc 语义全场景一致」主线）：screens 里 title 是根场景（无返回需求），create 是唯一
+      // 没有任何 Esc 处理的场景——其余 shop/inn/brew/status/journal/codex/ach/help/travel/talk/
+      // pause/world/battle 全部有 Esc 语义（返回/关闭）。标题页按 Enter 误入创建页后无退路：
+      // 只能 Enter 出发开始新档，或进游戏后经 Esc 菜单「返回标题」绕一圈。现补
+      // `isEsc(e) → goto('title')`（与 dead.onKey T 回标题同构；标题 BGM 自 title→create 起
+      // 仍在播，goto('title') 即无缝返回，无需 startBgm 重启）。S.createName/S.createDiff 保留
+      //（再进创建页仍是刚才的选择）。纯入口、零建档逻辑变化、零结算。
+      if (isEsc(e)) { goto('title'); return; }
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
         S.createName = (S.createName + 1) % HERO_NAMES.length;
         SFX.select();

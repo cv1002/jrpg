@@ -40,7 +40,12 @@
 // →「再战前先用记忆图鉴看清魔物强度（图鉴在世界画面按 B 打开）」（dead 画面的 B 实际绑定 retryBoss：
 // 强敌战败=重整旗鼓、普通战败/试炼=无反应；codex.onKey 关闭走 backWorld——从 dead 打开图鉴再关会错
 // 回 world，故纯文字修正、不绑 B→图鉴）。承 v21.29-32/v21.38-40 口径一致主线，零行为变化。
-const GAME_VERSION = 'v21.41';
+// v21.42 新增：创建角色页（create）补 Esc 返回标题——create 是 screens 里唯一没有 Esc 处理的场景
+// （其余 shop/inn/brew/status/journal/codex/ach/help/travel/talk/pause/world/battle 全部有 Esc 语义：
+// 返回/关闭），标题页按 Enter 误入创建页后无退路（只能开始新档或进游戏再用菜单回标题）；
+// main.js create.onKey 补 `isEsc(e) → goto('title')`，drawCreate 提示行末补「Esc 返回」。
+// 承 v21.16/v21.33「每个按键都该有反应」与「Esc 语义全场景一致」主线，纯入口零结算（不动建档逻辑）。
+const GAME_VERSION = 'v21.42';
 
 const T=32;
 
