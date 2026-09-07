@@ -13,6 +13,8 @@ const NPC_SHEET = {
   chief: 'mwChief', villager: 'mwVillager', adventurer: 'mwAdventurer',
   sage: 'mwSage', hunter: 'mwHunter', cartman: 'mwCartman',
   guard: 'mwSage', sentinel: 'mwSage',
+  // 掌灯阿婆（v21.36 新 NPC）：复用长者袍造型（与守名者/守碑人同款），跨图不重名
+  granny: 'mwSage',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',

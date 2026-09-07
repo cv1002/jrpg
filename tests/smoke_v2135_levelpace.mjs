@@ -66,11 +66,12 @@ function ok(name, cond, extra) {
 
 console.log('— v21.35 README 升级节奏参考 Lv1→2 场数口径 冒烟 —');
 
-// —— 版本锚点：格式合法 + 逐字等于 v21.35 ——
+// —— 版本锚点：格式合法 + 已越过 v21.35（v21.36 起精确值由 v21.36 冒烟守护，v21.7 去硬化惯例）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.34', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 35)));
-ok("data.js GAME_VERSION 为 'v21.35'", GAME_VERSION === 'v21.35', GAME_VERSION);
+ok('data.js GAME_VERSION 已越过 v21.35（版本锚点去硬化——v21.7 惯例：精确值由 v21.36 冒烟守护）',
+  !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 36)), GAME_VERSION);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.35 注释（Lv1→2 场数口径说明）', dSrc.includes('v21.35'));
@@ -126,8 +127,8 @@ ok('README 含 v21.35 复核注记（Lv5→6 ≈2.1 / Lv9→10 ≈5.1 / Lv11→1
   readme.includes('Lv5→6 ≈2.1') && readme.includes('Lv9→10 ≈5.1') && readme.includes('Lv11→12 ≈7.0'));
 ok('README 数值速查「据 v21.35 代码实测整理」', readme.includes('据 v21.35 代码实测整理'));
 ok('README tests 树收录 smoke_v2135_levelpace', readme.includes('smoke_v2135_levelpace'));
-ok('README 件套口径为三十一件套（三十件套清除）',
-  readme.includes('三十一件套') && !readme.includes('三十件套'));
+ok('README 件套口径存在（存在性口径——v21.7 去硬化惯例：实件数由 v21.36 冒烟守护）',
+  readme.includes('冒烟') && readme.includes('件套'));
 ok('README 含 v21.35 守护描述（升级节奏参考 Lv1→2 场数口径）', readme.includes('v21.35 起含升级节奏参考 Lv1→2 场数口径守护'));
 
 // —— package.json 收录 ——
