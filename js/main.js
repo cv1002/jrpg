@@ -5,7 +5,7 @@ import { S, curMap } from './state.js';
 import { ac, startBgm, stopBgm, resumeBgm, SFX, loadSndPref, saveSndPref } from './audio.js';
 import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
-import { interact, move, loadMap, holdStep, setHeldDir } from './world.js';
+import { interact, move, loadMap, holdStep, setHeldDir, setRun } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame, titleResetCheck } from './core.js';
 import { stayInn } from './shop.js';
 import { goto } from './scene.js';
@@ -247,7 +247,7 @@ const screens = {
           // v21.30 教程提示口径收尾：E 与 Enter 同效（v21.29 交互别名）——README 快速上手表与
           // H 页「对话 / 确认」行 v21.29 已同步「Enter / E」，教程行是「三处只写 Enter」的最后一处漏网
           // （承 v21.14/v21.18「功能存在就必须能看到入口」主线）；TUTOR_MSG_MS 沿用不变。
-          boxMsg('💡 教程：WASD移动 · Enter/E对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音', TUTOR_MSG_MS);
+          boxMsg('💡 教程：WASD移动/Shift奔跑 · Enter/E对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音', TUTOR_MSG_MS);
         } else {
           boxMsg('踏上旅途！去把灯芯讨回来！', STRONG_MSG_MS);
         }
@@ -346,13 +346,21 @@ if (typeof window !== 'undefined') {
       boxMsg(S.SND ? '🔊 音效与音乐开启' : '🔇 静音', SHORT_MSG_MS);
       return;
     }
+    // v21.44 按住 Shift 奔跑（体验打磨·操作手感）：Shift 键进/出各设一个 setRun 分支——与 M 静音 handler 同
+    // 位置（screen 分派之前，全场景通用）；Shift 不落到任何 scene.onKey（KEY 无 Shift 映射、无场景消费），
+    // 早退零行为影响；keyup 侧在 KEY 检查前先清 run（防止 Shift 与其他键组合被 KEY 分支误吞）；窗口失焦
+    // （Alt-Tab 等）时 keyup 可能不派发，补 blur 兜底——与 heldDirs 的「松开方向键即移除」同一防粘滞口径。
+    if (e.key === 'Shift') { setRun(true); return; }
     const screen = screens[S.scene];
     if (screen && screen.onKey) screen.onKey(e);
   });
-  // 按住连走：松开方向键时从按住集合移除（world.holdStep 按节拍消费）
+  // 按住连走：松开方向键时从按住集合移除（world.holdStep 按节拍消费）；
+  // v21.44 Shift 松开/窗口失焦时清奔跑态（keyup 先于 KEY 检查——Shift 是修饰键不属于 KEY 表）
   window.addEventListener('keyup', (e) => {
+    if (e.key === 'Shift') { setRun(false); return; }
     if (KEY[e.key]) setHeldDir(KEY[e.key], false);
   });
+  window.addEventListener('blur', () => setRun(false));
 }
 
 loadMap('village');

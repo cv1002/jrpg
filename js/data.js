@@ -47,7 +47,11 @@
 // 承 v21.16/v21.33「每个按键都该有反应」与「Esc 语义全场景一致」主线，纯入口零结算（不动建档逻辑）。
 // v21.43 新增：对话翻页补 E 键别名——talk.onKey 的 e/E 与 Enter 同路径调用 talkNext（v21.29-32
 // 「Enter/E 同效」口径收尾：进入对话后按 E 补全/翻页/结束对话与 Enter 零行为差），纯入口零结算。
-const GAME_VERSION = 'v21.43';
+// v21.44 新增：按住 Shift 奔跑——world.js 的 WALK_MS=180 是唯一移动节拍，本版新增 RUN_MS=115（约 1.57×）
+// 按住 Shift 生效（main.js keydown/keyup/blur 三处 setRun 分支，早退不落入任何 scene.onKey）；
+// 遇敌/踩踏/传送/插值全走既有 move→S.walk 通道（dur 改由 runHeld 派生，每步仍按 dangerAt 结算遇敌槽——
+// 只快「走」不跳「结算」）。H 页「移动 / 传送门」行与 README 上手表/教程行同步 Shift 口径。
+const GAME_VERSION = 'v21.44';
 
 const T=32;
 
@@ -1578,7 +1582,10 @@ const phaseBoost = (p) => `攻+${p.atk} 防+${p.def} 回血${Math.round((p.heal 
 
 const HELP_PAGES=[
   [
-    ['移动 / 传送门','W A S D / 方向键 · 踩上传送门自动进入'],
+    // v21.44 移动行补 Shift 奔跑口径（体验打磨·可发现性·承 v21.29-32「同一功能所有入口口径一致」主线：
+    // world.js 新增按住 Shift 加速（RUN_MS=115），H 页作为战前知识中枢的操作总清单须与 README/
+    // 教程行同口径——「功能存在就必须能看到入口」；行宽估算 ≈448.5 ≤470 手算预算，行数不变仍 14）
+    ['移动 / 传送门','W A S D / 方向键 · 按住 Shift 奔跑(更快) · 踩上传送门自动进入'],
     // v21.29 大地图 E 键交互别名（体验打磨·可发现性·承 v21.14/v21.18「功能存在就必须能看到入口」主线）：
     // main.js world.onKey 新增 E 与 Enter 同效调用 interact（对话/商店/旅馆/酿造/祭坛/传送门…），
     // 本行同步标注——H 页是战前知识中枢的操作总清单（v21.14 确立），新按键与 README 快速上手表同口径。

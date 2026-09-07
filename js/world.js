@@ -20,6 +20,15 @@ import { applyAchievements } from './hero.js';
 import { setSideQuest } from './quests.js';
 
 const WALK_MS = 180;
+// v21.44 按住 Shift 奔跑（体验打磨·操作手感）：WALK_MS=180 是单文件时代沿用至今的唯一移动节拍——此前没有任何
+// 「加速移动」入口（README/H 页/教程只写 WASD 按住连走）；四张地图 20×14 起、矿脉/回廊走廊密集，纯步行横穿
+// 一张图约 50-70 步（≈10-13 秒）。本版新增按住 Shift 加速（RUN_MS=115，约 1.57×，与蓄力/暴击同属「可叠加的
+// 操作红利」档位）。时序/遇敌口径逐字不动：每步仍按 dangerAt 结算遇敌槽（加速只快「走」、不跳「结算」，
+// 每步遭遇率不变——跑图只是更快撞到怪而不是跳过怪）；行走动画/插值/预输入/传送/踩踏全走既有 move→S.walk
+// 通道（dur 改由 runHeld 派生，零新通道）；SFX.step 节拍随走速自然变快（脚步更快是奔跑的正常听感）。
+const RUN_MS = 115;
+let runHeld = false;
+export function setRun(on) { runHeld = !!on; }
 
 // 'G' 高草（危险格）坐标集：loadMap 建图时同步建立
 const gCells = new Set();
@@ -164,7 +173,7 @@ function move(dx, dy) {
   const oy = hero.y;
   hero.x = nx;
   hero.y = ny;
-  S.walk = { ox, oy, nx, ny, t0: Date.now(), dur: WALK_MS };
+  S.walk = { ox, oy, nx, ny, t0: Date.now(), dur: runHeld ? RUN_MS : WALK_MS };
   SFX.step();
   S.anim = null;
   onStep(nx, ny);
@@ -391,6 +400,6 @@ function transition(name) {
 export {
   loadMap, MBounds, at, move, useGate, useExit, onStep, dangerAt,
   interact, transition, CAVE_TREASURE, revealCaveTreasure,
-  applyVictoryWorld, walking, WALK_MS, portalDest,
+  applyVictoryWorld, walking, WALK_MS, RUN_MS, portalDest,
   holdStep, setHeldDir, clearHeld, STEP_HANDLERS,
 };

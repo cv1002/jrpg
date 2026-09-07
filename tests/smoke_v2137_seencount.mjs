@@ -128,8 +128,8 @@ ok('图鉴页脚记忆收录零回归（1/13 种讨伐——bestiary 只记了�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2137_seencount', readme.includes('smoke_v2137_seencount'));
-ok('README 件套口径存在性（v21.7 去硬化惯例：不再断言精确件数「三十三件套/三十二件套清除」，实件数由 v21.38 冒烟守护「三十四件套」）',
-  readme.includes('冒烟三十') && readme.includes('件套清除）') && !readme.includes('includes(\'三十三件套\')'));
+ok('README 件套口径存在性（v21.7 去硬化惯例：不再断言精确件数「三十三件套/三十二件套清除」，实件数由最新版冒烟守护——v21.44 起为四十件套）',
+  readme.includes('冒烟') && readme.includes('件套清除）') && !readme.includes('includes(\'三十三件套\')'));
 ok('README 含 v21.37 守护描述（图鉴已遭遇计数化）', readme.includes('v21.37'));
 ok('README 系统清单已同步「已遭遇 ✕N」计数口径', readme.includes('已遭遇 ✕N'));
 ok('package.json 已收录 smoke_v2137_seencount（npm test 串跑第 33 份）',

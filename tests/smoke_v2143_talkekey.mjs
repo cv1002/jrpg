@@ -170,7 +170,10 @@ try {
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2143_talkekey', readme.includes('smoke_v2143_talkekey'));
-ok('README 件套口径为三十九件套（三十八件套清除）', readme.includes('三十九件套') && readme.includes('三十八件套清除'));
+ok('README 件套口径为存在性断言（v21.44 起件数由本版冒烟守护：四十件套（三十九件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('三十九件套（三十八件套清除）') &&
+  !readme.includes('三十八件套'));
 ok('README 含 v21.43 守护描述（对话翻页 E 键别名守护）', readme.includes('对话翻页 E 键别名守护'));
 ok('README 快速上手表 Enter/E 行含对话内同效口径（对话进行中 E 同效继续/翻页）',
   readme.includes('`Enter` / `E`') && readme.includes('对话进行中') && readme.includes('同效'));
