@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -40,6 +40,18 @@ function threatWarn() {
   let threat = enemy.isElite ? 1 : 0;
   if (enemy.hpMax > playerHit * 5) threat = Math.max(threat, 1);
   if (enemyHit * 2 >= hero.hpMax) threat = Math.max(threat, 2);
+  // v21.47 威胁预警补「重击线」（信息透明·预警名副其实）：通用分支此前只按普攻估算 enemyHit——
+  // 残焰魔像（acts 40% 重击）在 Lv10 推荐装备下一发重击 99 点（占满血 108 的 92%，v20.9 设计声明），
+  // 普攻线 52×2=104 < 108 只报「有些棘手」；洞窟领主（acts 20% 重击）重击 48×2=96 ≥ Lv7 满血 87，
+  // 普攻线同样失灵——「两击即死」的威胁只报「此敌有些棘手」，玩家按错误预期硬打被一发送走。
+  // 现对持有 heavy 招的敌人按真实重击倍率（HEAVY_MULT，与 enemyAI 未变身重击结算同源）再判一次
+  // 两击线：残焰魔像/洞窟领主 →「明显强于你」；无 heavy 招的普通怪/石心魔像（attack/shield）逐字不变，
+  // 零结算零数值变化（threatWarn 纯显示，仅进战 blog 文案）。
+  const hasHeavy = (enemy.acts || []).some((a) => a.type === 'heavy');
+  if (hasHeavy) {
+    const heavyHit = cmdDmg(enemy.atk, hero.defMax, HEAVY_MULT, false);
+    if (heavyHit * 2 >= hero.hpMax) threat = Math.max(threat, 2);
+  }
   if (threat >= 2) return ' ⚠️ 强敌：它明显强于你，小心应对！';
   if (threat === 1) return ' ⚠️ 此敌有些棘手，量力而行。';
   return '';

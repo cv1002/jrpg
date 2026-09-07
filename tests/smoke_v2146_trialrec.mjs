@@ -193,7 +193,9 @@ try {
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2146_trialrec', readme.includes('smoke_v2146_trialrec'));
-ok('README 件套口径为四十二件套（四十一件套清除）', readme.includes('四十二件套（四十一件套清除）'));
+ok('README 件套口径为存活性断言（v21.47 起件数由本版冒烟守护：四十三件套（四十二件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（四十一件套清除）'));
 ok('README 含 v21.46 守护描述（试炼推荐等级标注守护）', readme.includes('试炼推荐等级标注守护'));
 ok('README 星井矿脉行守碑人/系统清单含「建议Lv.12」推荐等级口径', readme.includes('建议Lv.12') && readme.includes('守碑人'));
 
