@@ -104,7 +104,9 @@ ok('DIFF_SCALE 契约（困难倍率 hp×1.35 攻×1.15 防×1.12——「逆风
 const achHard = ACH_LIST.find((a) => a.id === 'hardtrue');
 ok('ACH_LIST 含 hardtrue「逆风行灯」且 id 唯一',
   !!achHard && achHard.name === '逆风行灯' && ACH_LIST.filter((a) => a.id === 'hardtrue').length === 1);
-ok('ACH_LIST 由 24 → 25 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 25, String(ACH_LIST.length));
+// v21.73 随新现实更新：aegis 成就入列（ACH_LIST 25→26），精确总数移交 smoke_v2173 守护，
+// 本件改存活性口径 >= 25（承 v21.68 对 smoke_v2159/smoke_v2164 同款处理先例）。
+ok('ACH_LIST 由 24 → 25 项（v21.68 新增一项；v21.73 起精确总数由新版冒烟守护，本件存活性口径 >= 25）', ACH_LIST.length >= 25, String(ACH_LIST.length));
 ok('hardtrue 成就无 r 字段（与 lvl5/lvl10/memoir/skills 同款纯里程碑，逆风走完本身就是奖励）',
   !!achHard && !('r' in achHard));
 ok('hardtrue 成就无 prog 字段（与 boss/cave/trueboss/rush 同款纯布尔里程碑，双因子布尔无计数可报）',
@@ -187,8 +189,10 @@ ok('README 件套口径为存活性断言（v21.69 起件数由新版冒烟守�
   !readme.includes('（六十三件套清除）'));
 ok('README 含 v21.68 守护描述（新成就「逆风行灯」（困难模式通关里程碑）守护）',
   readme.includes('新成就「逆风行灯」（困难模式通关里程碑）守护'));
-ok('README 成就口径「25 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 25 项进度') && readme.includes('**25 项成就**'));
+// v21.73 随新现实更新：README 成就口径由「25 项」双处递增为「26 项」双处（aegis 成就入列），
+// 本件断言同步递增（承 v21.68 对 smoke_v2159 README pin 同款处理先例）。
+ok('README 成就口径「26 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 26 项进度') && readme.includes('**26 项成就**'));
 ok('package.json 已收录 smoke_v2168_hardtrue（npm test 串跑第 64 份）', pkg.includes('smoke_v2168_hardtrue.mjs'));
 const s2167 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2167_boneafter.mjs'), 'utf8');
 ok('smoke_v2167 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',
@@ -197,8 +201,8 @@ ok('smoke_v2167 的 README 件套口径断言已去硬化（存活性口径落�
 const s2159 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2159_skillach.mjs'), 'utf8');
 ok('smoke_v2159 的 ACH_LIST 精确计数断言已随新现实更新（===24 零残留，>=24 存活性口径落位）',
   s2159.includes('ACH_LIST.length >= 24') && !s2159.includes('ACH_LIST.length === 24'));
-ok('smoke_v2159 的 README 成就口径断言已随新现实更新（「24 项」pin 零残留，「25 项」双处落位）',
-  s2159.includes("readme.includes('成就一览（全部 25 项进度')") && !s2159.includes("readme.includes('**24 项成就**')"));
+ok('smoke_v2159 的 README 成就口径断言已随新现实更新（「25 项」pin 零残留，「26 项」双处落位）',
+  s2159.includes("readme.includes('成就一览（全部 26 项进度')") && !s2159.includes('**25 项成就**'));
 const s2164 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2164_achname.mjs'), 'utf8');
 ok('smoke_v2164 的 ACH_LIST 精确计数断言已随新现实更新（===24 零残留，>=24 存活性口径落位）',
   s2164.includes('ACH_LIST.length >= 24') && !s2164.includes('ACH_LIST.length === 24'));

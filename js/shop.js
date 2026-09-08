@@ -96,6 +96,12 @@ export function buyArmor(name) {
     hero.armor = name;
     SFX.shop();
     applyStats(hero);
+    // v21.73 防具购买当场判定成就（反馈不迟到）：buyWeapon 早已在结算后 applyAchievements
+    // （legend「黎明归剑」当场解锁），buyArmor 此前漏接——v21.73 新成就「龙鳞加身」（装备最强
+    // 铠甲 BEST_ARMOR）的唯一来源就是本函数（rollDrop 装备档只到锁子甲），不当场判定就要等
+    // 下一场战斗胜利的 applyAchievements 才解锁；承 world.js 开箱当场判定同一惯例。
+    // applyAchievements 幂等（已解锁不重报、perfection 不重复加奖），零结算零数值变化。
+    applyAchievements();
     // v19.75 防具购买反馈追加剩余金币（信息透明·纯显示）：同武器购买，零结算变化。
     bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${defBefore !== null ? ` · 防御 ${defBefore}→${hero.defMax}` : ''}）`);
     bind.renderHUD();

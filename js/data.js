@@ -230,7 +230,14 @@
 // 「强敌首胜会掉记忆、集齐有真结局差分」，只能在掉落瞬间的报文里偶遇；本行补齐规则/枚数/
 // 回看入口（枚数由 FRAGMENTS.length 派生，调碎片只改本文件一处），插入三 Boss 机制行之前
 // （行数 9→10，仍 ≤10 保 sp=34 档；无 r[2]，本页 r[2] 数仍 2）。纯文字零逻辑零结算零存档变化。
-const GAME_VERSION = 'v21.72';
+// v21.73 新成就「龙鳞加身」（最强铠甲里程碑，ACH_LIST 25→26）——装备向里程碑的空白补齐：
+// 武器端「黎明归剑」（legend：装备圣光之剑）早有里程碑，防具端四件铠甲却没有任何对应纪念，
+// 玩家攒钱买下最强铠甲这一刻毫无反馈。目标铠甲读 BEST_ARMOR 单一数据源（ARMORS 最大防御
+// 派生，增删铠甲/调防自动跟随）；判定读既有 hero.armor 存档字段，零新计数/零新状态/零迁移；
+// 无 r 无 prog 纯里程碑。解锁时机：shop.buyArmor 结算当场 applyAchievements（本版补齐——
+// buyWeapon 早已当场判定、buyArmor 此前漏接；最强铠甲唯一来源即商店，rollDrop 装备档只到
+// 锁子甲），承 world.js 开箱当场判定「反馈不迟到」同一惯例。
+const GAME_VERSION = 'v21.73';
 
 const T=32;
 
@@ -659,6 +666,11 @@ const ARMORS={
   '锁子甲':{def:8,price:180},
   '龙鳞甲':{def:13,price:480},
 };
+
+// 最强铠甲名（单一数据源）：由 ARMORS 防御值最大者派生——成就「龙鳞加身」（v21.73）的目标
+// 铠甲同读此源，未来增删铠甲或调整防御只改 ARMORS 一处、成就自动跟随，绝无第二套口径。
+// （ARMORS 声明在 ACH_LIST 之前，此处引用无 TDZ 暂死区问题——与 v21.68「困难」字面量处境不同。）
+const BEST_ARMOR = Object.keys(ARMORS).reduce((a, b) => (ARMORS[b].def > ARMORS[a].def ? b : a));
 
 function baseStats(lv) {
   return { hpMax: 38 + lv * 7, mpMax: 12 + lv * 4, atk: 7 + lv * 2, def: 3 + lv * 2 };
@@ -1867,6 +1879,18 @@ const ACH_LIST=[
   // 弹「🔓 成就解锁：【逆风行灯】」），反馈不迟到；普通档通关的玩家另开困难槽通关仍可解锁，
   // 成就页（C）25 项自此含一枚「必须换难度」的终极目标。
   {id:'hardtrue', name:'逆风行灯', d:'以困难模式击败终焉之神', ok:g=>!!(g.trueBoss && g.diff===1)},
+  // 龙鳞加身（v21.73 新成就·最强铠甲里程碑）：装备向里程碑的空白补齐——武器端「黎明归剑」
+  // （legend：装备圣光之剑）早有里程碑，防具端四件铠甲（布衣/皮甲/锁子甲/龙鳞甲）却没有任何
+  // 对应纪念：玩家攒钱买下最强铠甲这一刻毫无反馈。目标铠甲读 BEST_ARMOR 单一数据源
+  // （ARMORS 最大防御派生——增删铠甲/调防自动跟随，绝无第二套口径）；判定读既有 hero.armor
+  // 存档字段（newGame 建档「布衣」、buyArmor/rollDrop 换装写定、applyStats 同源），
+  // 零新计数/零新状态/零迁移（旧档无 armor 字段时 undefined !== BEST_ARMOR 不误解锁）；
+  // 无 r 无 prog 纯里程碑（与 legend 不同：最强铠甲商店有售、非掉落奖励，同 lvl5/lvl10/memoir/
+  // skills/hardtrue 纯里程碑家族）。解锁时机：shop.buyArmor 结算当场 applyAchievements
+  // （本版补齐——buyWeapon 早已当场判定、buyArmor 此前漏接；最强铠甲唯一来源就是商店，
+  // rollDrop 装备档只到锁子甲，不当场判定就要等下一场胜利才解锁，承 world.js 开箱当场判定
+  // 「反馈不迟到」同一惯例）；winBattle 六处 applyAchievements 通路保持零回归兜底。
+  {id:'aegis', name:'龙鳞加身', d:`装备最强铠甲「${BEST_ARMOR}」（防+${ARMORS[BEST_ARMOR].def}）`, ok:g=>g.armor===BEST_ARMOR},
 ];
 
 function codexTag(name) {
@@ -2095,7 +2119,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal, trialSteleHint,
