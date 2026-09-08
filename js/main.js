@@ -273,8 +273,27 @@ const screens = {
   },
   win: {
     onKey(e) {
+      // v21.70 胜利画面 R 重开补两按确认（防误触·承 v21.16 标题页同族、v21.6 旅行「破坏性操作两段触发」
+      // 家族）：win 场景是「灯芯回来了」结算屏——本局不自动存档（saveGame 仅 P/菜单手动触发），
+      // 此前 R 单击即 resetRun 丢整个未存档的胜利战果（圣光之剑/等级/金币全在内存），与 v21.16 修掉的
+      // 标题页同款「一键丢档」漏网（dead 场景 R 维持单击——战败语境下重开是显式三选一的常态出口，
+      // 且 _bossRetry 快照已保底可 B 再战；胜利语境无此保底）。现复用 core.titleResetCheck 纯状态机 +
+      // S.titleResetArm + data.js TITLE_RESET_CONFIRM_MS（三处单一数据源，与标题页逐字同构）：首次按 R
+      // 仅武装+提示，窗口内再按 R 才执行；任一非 R 键（含 Enter 去尾声）立即解除武装，不会连发不会漏发。
+      // Enter→ending 分支逐字未动，纯入口层改动、零结算零存档变化。
+      if (e.key !== 'r' && e.key !== 'R') S.titleResetArm = 0;
       if (e.key === 'Enter') goto('ending');
-      else if (e.key === 'r' || e.key === 'R') resetRun();
+      else if (e.key === 'r' || e.key === 'R') {
+        // 两按确认：与标题页 R 分支逐字同构（提示文案同口径，承 v21.16）
+        const st = titleResetCheck(S.titleResetArm || 0, Date.now(), true);
+        S.titleResetArm = st.arm;
+        if (st.fire) {
+          resetRun();
+        } else {
+          SFX.cancel();
+          boxMsg('🔁 再按一次 R 确认重开新档（当前冒险进度将丢弃）', EVENT_MSG_MS);
+        }
+      }
     },
   },
   world: {

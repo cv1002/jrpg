@@ -203,7 +203,11 @@ ok('运行期：drawTalk 渲染真结局档不抛错', renderTalk(hDoneTrue) ===
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2169_chiefdone', readme.includes('smoke_v2169_chiefdone'));
-ok('README 件套口径为六十五件套（六十四件套清除）', readme.includes('六十五件套（六十四件套清除）'));
+// v21.70 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（六十四件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.70 起件数由新版冒烟守护：六十六件套（六十五件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（六十四件套清除）'));
 ok('README 含 v21.69 守护描述（灯长通关差分对话守护）',
   readme.includes('灯长通关差分对话守护'));
 ok('package.json 已收录 smoke_v2169_chiefdone（npm test 串跑第 65 份）', pkg.includes('smoke_v2169_chiefdone.mjs'));

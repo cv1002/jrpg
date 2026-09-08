@@ -208,7 +208,16 @@
 // bossDefeated（灯芯讨回·井仍低鸣，与 main_demon.done「镇上的灯重新亮了——可井还在低鸣」
 // 同口径）/ trueBoss（井也不鸣·名字回灯，与 main_true.done「记忆回到镇上」同口径）。
 // talkPagesOf 对函数页调用期求值（与本支线 active 函数页同机制），零判定/零奖励/零存档变化。
-const GAME_VERSION = 'v21.69';
+// v21.70 体验打磨：胜利画面 R 重开补两按确认（防误触，承 v21.16 标题页同族「破坏性操作两段触发」
+// 家族）——win 场景是击败幽冥魔王的结算屏，本局不自动存档（saveGame 仅 P/暂停菜单手动触发），
+// 此前 R 单击即 resetRun 丢掉整个未存档的胜利战果（圣光之剑/等级/金币全在内存），是 v21.16 修掉的
+// 标题页同款「一键丢档」的漏网场景（dead 场景 R 维持单击：战败语境下重开是显式三选一的常态出口，
+// 且 _bossRetry 快照保底可 B 再战，胜利语境无此保底）。main.js win.onKey 复用 core.titleResetCheck
+// 纯状态机 + state.js S.titleResetArm + 本文件 TITLE_RESET_CONFIRM_MS 单一数据源（与标题页逐字同构）：
+// 首次按 R 仅武装+提示、窗口内再按 R 才执行、任一非 R 键（含 Enter 去尾声）立即解除武装；
+// drawWin 页脚同步「按 R 重开新档(连按两次)」（与标题页提示行同口径）。Enter→ending 逐字未动，
+// 纯入口层改动，零结算零存档变化。
+const GAME_VERSION = 'v21.70';
 
 const T=32;
 

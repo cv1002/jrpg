@@ -714,7 +714,10 @@ export function drawWin(){
   CTX.fillStyle='#a8ff8a'; CTX.font='bold 14px sans-serif';
   CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}`,CV.width/2,362);
   CTX.fillStyle='#7d93a3'; CTX.font='14px sans-serif';
-  CTX.fillText('按 Enter 观看尾声 · 按 R 重新开始',CV.width/2,380);
+  // v21.70 胜利画面 R 重开提示补「连按两次」（可发现性·与 main.js win.onKey 两按确认、标题页提示行
+  // 「R 重开新档(连按两次)」同口径，承 v21.18「按键提示必须如实反映防误触口径」主线）：win 的 R 自
+  // 本版起为两段触发，页脚仍写单击口径会让玩家以为提示过期/失效；只改文案，字号/基线/颜色逐字未动。
+  CTX.fillText('按 Enter 观看尾声 · 按 R 重开新档(连按两次)',CV.width/2,380);
 }
 bind.drawWin=drawWin;
 
