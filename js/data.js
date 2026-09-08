@@ -195,7 +195,11 @@
 // 回灯下」的主题与终焉之神被打败（名字归还）天然同脉——通关后再访，拾骨人亲口点破
 // 「矿道里像有人挨个点名」；未通关档保持原页逐字不变。talkPagesOf 对函数型 done 页
 // 调用期求值（与 side_stone/side_bone 的函数型 active 页同机制），零判定/零奖励/零存档变化。
-const GAME_VERSION = 'v21.67';
+// v21.68 新内容：新成就「逆风行灯」（困难模式通关里程碑，ACH_LIST 24→25）——难度向里程碑的
+// 空白补齐：主线三关（boss/cave/trueboss）、试炼（rush）、收集向（perfection/chests/allquests/
+// memoir/skills）都有里程碑，唯独建档时自选「困难」走完全程没有任何纪念。判定读既有
+// hero.trueBoss 与 hero.diff（DIFFS 下标）两个存档字段，零新计数/零新状态/零结算变化。
+const GAME_VERSION = 'v21.68';
 
 const T=32;
 
@@ -1806,6 +1810,21 @@ const ACH_LIST=[
   // 无 r 字段（与 lvl5/lvl10/memoir 同款纯里程碑，成长本身即奖励）；解锁时机：winBattle 的
   // grantXp（checkSkills 领悟）→ applyAchievements 同一场胜利即时解锁，反馈不迟到。
   {id:'skills', name:'诸技通明', d:`领悟全部 ${Object.keys(LEARN_AT).length} 个技能`, ok:g=>Object.values(LEARN_AT).every(s=>(g.skills||[]).includes(s)), prog:g=>`${Object.values(LEARN_AT).filter(s=>(g.skills||[]).includes(s)).length}/${Object.values(LEARN_AT).length}`},
+  // 逆风行灯（v21.68 新成就·困难模式通关里程碑）：难度向里程碑的空白补齐——主线三关
+  // （boss/cave/trueboss）、试炼（rush）、收集向（perfection/chests/allquests/memoir/skills）
+  // 都有里程碑，唯独「困难模式」这一建档自选的最高挑战没有任何纪念：选了困难的玩家顶着
+  // 魔物 HP×1.35/攻×1.15/防×1.12（DIFF_SCALE 单一数据源）走完全程，通关时与普通档毫无分别。
+  // 判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss，击败即「走完全程」的终极口径）与
+  // hero.diff（DIFFS 下标：建档 createDiff 写定、core.js initGame `S.G.diff = diff || 0`、
+  // resetRun 沿用同槽）两个存档字段——(g.diff===1) 即 DIFFS[1]「困难」档；描述文案的
+  // 「困难」二字为字面量（DIFFS 在本文件尾部声明，ACH_LIST 求值时 DIFFS 尚在 TDZ 暂死区，
+  // 无法引用——此处刻意保留字面量，与 DIFFS[1] 的一致性由 smoke_v2168 钉死守护，改难度名
+  // 时冒烟即红）。旧档兼容：无 diff 字段（undefined）→ ===1 为 false 不误解锁，零迁移；
+  // 无 r 字段（与 lvl5/lvl10/memoir/skills 同款纯里程碑，逆风走完本身就是奖励）；
+  // 解锁时机：winBattle → applyAchievements 同一场胜利即时解锁（困难档击败终焉之神当场
+  // 弹「🔓 成就解锁：【逆风行灯】」），反馈不迟到；普通档通关的玩家另开困难槽通关仍可解锁，
+  // 成就页（C）25 项自此含一枚「必须换难度」的终极目标。
+  {id:'hardtrue', name:'逆风行灯', d:'以困难模式击败终焉之神', ok:g=>!!(g.trueBoss && g.diff===1)},
 ];
 
 function codexTag(name) {

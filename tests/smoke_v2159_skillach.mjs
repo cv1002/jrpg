@@ -100,7 +100,10 @@ ok('六招全部存在于 SKILL_DATA（领悟表与技能数据一致，无悬�
 const achSkills = ACH_LIST.find((a) => a.id === 'skills');
 ok('ACH_LIST 含 skills「诸技通明」且 id 唯一',
   !!achSkills && achSkills.name === '诸技通明' && ACH_LIST.filter((a) => a.id === 'skills').length === 1);
-ok('ACH_LIST 由 23 → 24 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 24, String(ACH_LIST.length));
+// v21.68 随新现实更新：hardtrue 成就入列（ACH_LIST 24→25），精确总数移交 smoke_v2168 守护，
+// 本件改存活性口径 >= 24（承 v21.59 对 smoke_v2152「===23 → >=23」同款先例）。
+ok('ACH_LIST 由 23 → 24 项（v21.59 新增一项；v21.68 起精确总数由新版冒烟守护，本件存活性口径 >= 24）',
+  ACH_LIST.length >= 24, String(ACH_LIST.length));
 ok('skills 成就无 r 字段（与 lvl5/lvl10/memoir 同款纯里程碑，成长本身即奖励）',
   !!achSkills && !('r' in achSkills));
 ok('skills 成就描述由 LEARN_AT 派生（「领悟全部 6 个技能」，数量非裸字面量）',
@@ -178,8 +181,10 @@ ok('README 件套口径为存活性断言（v21.60 起件数由新版冒烟守�
   !readme.includes('（五十四件套清除）'));
 ok('README 含 v21.59 守护描述（新成就「诸技通明」（技能全领悟里程碑）守护）',
   readme.includes('新成就「诸技通明」（技能全领悟里程碑）守护'));
-ok('README 成就口径「24 项」双处同步（快速上手表 C 键行 + 图鉴&成就行；历史守护描述里的「23 项」叙事为留档，不属当前口径）',
-  readme.includes('成就一览（全部 24 项进度') && readme.includes('**24 项成就**'));
+// v21.68 随新现实更新：README 成就口径由「24 项」双处递增为「25 项」双处（hardtrue 成就入列），
+// 承 v21.59 对「23 项」双处的同款更新；历史守护描述里的「23/24 项」叙事为留档，不属当前口径。
+ok('README 成就口径「25 项」双处同步（快速上手表 C 键行 + 图鉴&成就行；历史守护描述里的「23/24 项」叙事为留档，不属当前口径）',
+  readme.includes('成就一览（全部 25 项进度') && readme.includes('**25 项成就**'));
 ok('package.json 已收录 smoke_v2159_skillach（npm test 串跑第 55 份）', pkg.includes('smoke_v2159_skillach.mjs'));
 const s2158 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2158_shieldblock.mjs'), 'utf8');
 ok('smoke_v2158 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',

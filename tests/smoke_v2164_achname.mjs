@@ -107,7 +107,10 @@ const achP = ACH_LIST.find((a) => a.id === 'perfection');
 ok('ACH_LIST perfection 条目契约（名=记忆守护者 · r 含奖励 · ok/prog 函数）',
   !!achP && achP.name === '记忆守护者' && typeof achP.r === 'string' && achP.r.includes(String(PERFECTION_GOLD)) &&
   typeof achP.ok === 'function' && typeof achP.prog === 'function');
-ok('ACH_LIST 总数契约 24 项（v21.59 起）', ACH_LIST.length === 24, String(ACH_LIST.length));
+// v21.68 随新现实更新：hardtrue 成就入列（ACH_LIST 24→25），精确总数移交 smoke_v2168 守护，
+// 本件改存活性口径 >= 24（承 v21.59 对 smoke_v2152「===23 → >=23」同款先例）。
+ok('ACH_LIST 总数契约 >= 24 项（v21.59 起 24 项；v21.68 起精确总数由新版冒烟守护，本件存活性口径）',
+  ACH_LIST.length >= 24, String(ACH_LIST.length));
 ok('常量契约（PERFECTION_GOLD=999 / LVL5_GOAL=5 / CODEX_MSG_MS=4200 / ACH_MSG_MS=3200）',
   PERFECTION_GOLD === 999 && LVL5_GOAL === 5 && CODEX_MSG_MS === 4200 && ACH_MSG_MS === 3200);
 ok('BESTIARY_TARGET 契约 13 种（perfection 判定所读）', BESTIARY_TARGET.length === 13, String(BESTIARY_TARGET.length));

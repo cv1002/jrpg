@@ -180,7 +180,11 @@ ok('运行期：drawTalk 渲染通关档不抛错', renderTalk(hDoneTrue) === nu
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2167_boneafter', readme.includes('smoke_v2167_boneafter'));
-ok('README 件套口径为六十三件套（六十二件套清除）', readme.includes('六十三件套（六十二件套清除）'));
+// v21.68 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（六十二件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.68 起件数由新版冒烟守护：六十四件套（六十三件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（六十二件套清除）'));
 ok('README 含 v21.67 守护描述（拾骨人通关后差分对话守护）',
   readme.includes('拾骨人通关后差分对话守护'));
 ok('package.json 已收录 smoke_v2167_boneafter（npm test 串跑第 63 份）', pkg.includes('smoke_v2167_boneafter.mjs'));
