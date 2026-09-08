@@ -332,10 +332,17 @@ function doItem() {
   bind.renderHUD();
   // v19.74 战斗用药反馈追加剩余数量（信息透明·纯显示）：与大地图 F 键喝药同源，
   // 直接读结算后的 hero.item / hero.potion2，让玩家连战中一眼知道灵药/药水库存。
+  // v21.65 喝药战报补恢复后 HP/MP 状态（信息透明·口径一致·纯显示）：恢复链条的
+  // 治愈术端（v19.97「（HP X/Y）」）、防御回蓝端（v19.96「（MP X/Y）」）、中毒/受击端
+  // （v21.8/v20.2「（我方 HP X/Y）」）早已报结算后状态，唯独喝药这一端只报恢复量与库存——
+  // 恢复量是上限钳制前的公式量（HP 95/100 喝药报「恢复 35」实际只回 5），玩家想确认
+  // 「回完现在多少血」仍需瞄 HUD；现按治愈术同式把结算后 HP（灵药含 MP）并入同一括号
+  // 句首，库存量保留——与大地图 usePotion 两端同式（承 v19.74 同源同改），读结算后的
+  // hero.hp/hpMax/mp/mpMax，零结算零数值零存档变化。
   S.blog.push(
     result.strong
-      ? `🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（高级灵药剩余 ${hero.potion2} 瓶）`
-      : `🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（药水剩余 ${hero.item} 瓶）`
+      ? `🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）`
+      : `🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）`
   );
   afterPlayer();
 }
