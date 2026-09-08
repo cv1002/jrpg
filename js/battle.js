@@ -368,7 +368,12 @@ function doFlee() {
     resumeBgm();
     return true;
   }
-  S.blog.push('❌ 逃脱失败！');
+  // v21.53 逃脱失败战报追加后果提示（信息透明·纯显示）：此前只报「❌ 逃脱失败！」——玩家按 4 失败后
+  // 往往没意识到这一回合已经让给敌方：Boss 气场分支早已明示「（本回合行动保留）」，普通失败分支恰恰是
+  // 「行动被消耗」却无任何提示，两分支缺一端对照口径。现补「（X 即将行动）」，与 afterPlayer 实际
+  // 推进 battleTurn 并编排 enemyAct 的结算一致；成功率口径仍由指令栏「约60%」承载（FLEE_SUCCESS
+  // 单一数据源），战报不重复标注。零结算零数值零存档变化（afterPlayer 回合推进与 600ms 敌方行动编排逐字未动）。
+  S.blog.push(`❌ 逃脱失败！（${enemy.name} 即将行动）`);
   SFX.cancel();
   afterPlayer();
 }
