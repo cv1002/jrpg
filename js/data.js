@@ -128,7 +128,14 @@
 // 唯独任意攻击打在石甲上的命中这一端缺数；现按 v21.56 防御格挡同式补「挡下 N 点」（N = 减伤
 // 前后差，SHIELD_MULT 单一数据源同读），保底 1 钳到时 N=0 保持原句逐字不变。
 // 纯显示零结算零数值零存档变化。
-const GAME_VERSION = 'v21.58';
+// v21.59 新内容：新成就「诸技通明」（技能全领悟里程碑，承 v20.4「灯火记忆」单成就先例）——
+// 收集向里程碑里 图鉴全收集（perfection）/宝箱（chests）/支线全清（allquests）/记忆碎片（memoir）
+// 都有纪念，唯独「领悟全部技能」是空白：LEARN_AT 共 6 招（Lv1/3/4/5/7/9），练到 Lv9 领悟最后一招
+// 「汲光击」时没有任何里程碑。判定/进度同读 LEARN_AT 单一数据源（与 checkSkills 升级领悟、
+// newGame 起始技能同一份表），未来增删技能成就自动跟随；读既有 hero.skills 存档字段，旧档零迁移。
+// 零新计数/零新状态/零新依赖/零结算变化（解锁走既有 unlockedAchievements→applyAchievements 通路，
+// winBattle 的 grantXp→checkSkills 领悟后同场胜利即时解锁）。
+const GAME_VERSION = 'v21.59';
 
 const T=32;
 
@@ -1722,6 +1729,15 @@ const ACH_LIST=[
   // 判定/日志/名字石碑同源；新档 core.newGame、旧档迁移 migrateQuests 均已兜底初始化），数量由
   // FRAGMENTS.length 推导不写死——未来增删碎片成就自动跟随。零新计数/零新状态/零新依赖/零结算变化。
   {id:'memoir', name:'灯火记忆', d:`集齐全部 ${FRAGMENTS.length} 枚记忆碎片`, ok:g=>FRAGMENTS.every(f=>(g.fragments||[]).includes(f.id)), prog:g=>`${(g.fragments||[]).length}/${FRAGMENTS.length}`},
+  // 诸技通明（v21.59 新成就·技能全领悟里程碑）：收集向里程碑的空白补齐——图鉴全收集（perfection）/
+  // 宝箱（chests）/支线全清（allquests）/记忆碎片（memoir）都有里程碑，唯独「领悟全部技能」没有：
+  // 玩家练到 Lv9 领悟最后一招「汲光击」时毫无纪念。判定/进度同读 LEARN_AT 单一数据源（与 hero.checkSkills
+  // 升级领悟、core.newGame 起始技能同一份表）——未来增删技能（LEARN_AT 增删一条）成就自动跟随，
+  // 绝无第二套口径；读的是既有 hero.skills 存档字段（newGame 播种 learnsAt(1)、v21.48 migrateQuests
+  // 读档按等级补学漏学技能），(g.skills||[]) 防御式读取与 (g.bestiary||{}) 同款，旧档零迁移零影响。
+  // 无 r 字段（与 lvl5/lvl10/memoir 同款纯里程碑，成长本身即奖励）；解锁时机：winBattle 的
+  // grantXp（checkSkills 领悟）→ applyAchievements 同一场胜利即时解锁，反馈不迟到。
+  {id:'skills', name:'诸技通明', d:`领悟全部 ${Object.keys(LEARN_AT).length} 个技能`, ok:g=>Object.values(LEARN_AT).every(s=>(g.skills||[]).includes(s)), prog:g=>`${Object.values(LEARN_AT).filter(s=>(g.skills||[]).includes(s)).length}/${Object.values(LEARN_AT).length}`},
 ];
 
 function codexTag(name) {

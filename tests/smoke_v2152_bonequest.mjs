@@ -133,7 +133,10 @@ ok('side_bone offer 页由 BONE_GOAL 派生（「帮我打 3 只」非裸字面�
 const achBone = ACH_LIST.find((a) => a.id === 'bone');
 ok('ACH_LIST 含 bone「亡骨还乡」且 id 唯一',
   !!achBone && achBone.name === '亡骨还乡' && ACH_LIST.filter((a) => a.id === 'bone').length === 1);
-ok('ACH_LIST 由 22 → 23 项（新增一项）', ACH_LIST.length === 23, String(ACH_LIST.length));
+// v21.59 随新现实更新（承 v21.48 smoke_v2115 r[2] 计数断言 2→3 先例）：skills 成就「诸技通明」
+// 入列后 ACH_LIST 总数 23→24——本断言守护「bone 新增一项入列」语义（bone 存在且总数不少于 23），
+// 精确总数移交当版冒烟（smoke_v2159 ===24）守护，不再在此硬编码。
+ok('ACH_LIST 含 bone 且总数 ≥23（v21.59 起精确总数由当版冒烟守护）', !!achBone && ACH_LIST.length >= 23, String(ACH_LIST.length));
 ok('bone 成就判定读 quests.side_bone（未做 false / 已做 true）',
   achBone.ok({ quests: {} }) === false && achBone.ok({ quests: { side_bone: 'done' } }) === true);
 // 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（6 → 7）
@@ -213,8 +216,10 @@ ok('README 件套口径为存活性断言（v21.53 起件数由新版冒烟守�
   !readme.includes('（四十七件套清除）'));
 ok('README 含 v21.52 守护描述（拾骨人新 NPC 与讨伐支线「未归的矿灯」守护）',
   readme.includes('拾骨人新 NPC 与讨伐支线「未归的矿灯」守护'));
-ok('README 星井矿脉条目含拾骨人 + 成就口径「23 项」双处同步',
-  readme.includes('拾骨人') && (readme.match(/23 项/g) || []).length >= 2);
+// v21.59 随新现实更新：README 成就口径由「23 项」双处递增为「24 项」双处（skills 成就入列），
+// 拾骨人条目事实不变——本断言守护「拾骨人 + 成就总数双处同步」语义，精确总数由 smoke_v2159 守护。
+ok('README 星井矿脉条目含拾骨人 + 成就口径随 v21.59 新现实为「24 项」双处同步',
+  readme.includes('拾骨人') && (readme.match(/24 项/g) || []).length >= 2);
 ok('package.json 已收录 smoke_v2152_bonequest（npm test 串跑第 48 份）', pkg.includes('smoke_v2152_bonequest.mjs'));
 const s2151 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2151_elitegolem.mjs'), 'utf8');
 ok('smoke_v2151 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',
