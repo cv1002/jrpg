@@ -66,8 +66,20 @@ export function enemyAct(deps) {
     enemy.phased = true;
     enemy.name = phase.name || (enemy.name + '·真身');
     if (phase.color) enemy.color = phase.color;
-    enemy.atk += (phase.atk || 0);
-    enemy.def += (phase.def || 0);
+    // v21.62 变身增益战报补确切攻防增幅（信息透明·纯显示）：变身链条的战前预告端
+    // （drawBattle 角标「变身：攻+N 防+N 回N%」v12.7 起读 enemy.phase2 同源派生）与帮助页端
+    // （「血量过半现出真身：攻+N 防+N 回血N%HP」phaseBoost 派生）两端早已量化，唯独变身
+    // 这一刻的战报只报「力量暴涨」与回血实数、攻防增幅无数字——玩家被真身新数值打崩，
+    // 想确认「攻防到底涨了多少」只能回忆开场角标或翻帮助页；现按角标同款 bits 口径补
+    // 「（攻+N 防+N）」（atkUp/defUp 与下方加算结算同读 phase.atk/phase.def 一份源——
+    // 原 `enemy.atk += (phase.atk || 0)` 的 `|| 0` 语义逐字保留，仅提升为 const 复用；
+    // 非零项才入列，与 drawBattle boostBits 同口径；全零为理论死代码（三 Boss phase2
+    // 均显式带 atk/def），保持原句「力量暴涨，」逐字不变）。调变身强度只改 data.js
+    // SPECIES[].phase2 一处、角标/帮助页/战报三端自动跟随。零结算零数值零存档变化。
+    const atkUp = phase.atk || 0;
+    const defUp = phase.def || 0;
+    enemy.atk += atkUp;
+    enemy.def += defUp;
     if (phase.forbid) enemy.forbid = phase.forbid;
     const heal = Math.round(enemy.hpMax * (phase.heal || PHASE2_HEAL_PCT));
     enemy.hp = Math.min(enemy.hpMax, enemy.hp + heal);
@@ -77,7 +89,11 @@ export function enemyAct(deps) {
     // 但变身（现出真身）的 HP 恢复仍只报恢复量——Boss 变身的这一口血是玩家最关心的一次回复（变身线/增益已常驻血条，
     // 唯独结算后精确血数没进战报）；直接读结算后（enemy.hp = Math.min(hpMax, hp + heal) 之后）的 enemy.hp / enemy.hpMax，
     // 与 v20.1「敌方 HP X/Y」同源同式；变身必回血且 hp>0（hp<=0 早已胜负结算），无需致死保护。零结算变化。
-    S.blog.push(`🌀 ${enemy.name} 现出真身！力量暴涨，HP 恢复 ${heal}！（敌方 HP ${enemy.hp}/${enemy.hpMax}）${phase.forbid && phase.forbid.includes('heal') ? ' 治愈被封印！' : ''}`);
+    const boostBits = [];
+    if (atkUp) boostBits.push(`攻+${atkUp}`);
+    if (defUp) boostBits.push(`防+${defUp}`);
+    const boostTxt = boostBits.length ? `（${boostBits.join(' ')}）` : '';
+    S.blog.push(`🌀 ${enemy.name} 现出真身！力量暴涨${boostTxt}，HP 恢复 ${heal}！（敌方 HP ${enemy.hp}/${enemy.hpMax}）${phase.forbid && phase.forbid.includes('heal') ? ' 治愈被封印！' : ''}`);
     hero.hurt = 0;
     S.battleBusy = false;
     bind.drawBattle();

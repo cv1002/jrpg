@@ -79,11 +79,14 @@ function ok(name, cond, extra) {
 console.log('— v21.61 领悟新技能战报补效果摘要（N MP · hint · 战斗中按 2 选用）冒烟 —');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-// —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.60 + 精确值由本版守护）——
+// —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.60；v21.62 起精确版本移交当版冒烟守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.60', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 61)), GAME_VERSION);
-ok('GAME_VERSION 精确为 v21.61（本版守护）', GAME_VERSION === 'v21.61', GAME_VERSION);
+// v21.62 去硬化（v21.7 惯例）：精确版本等值 pin 会让下一版 bump GAME_VERSION 时误红，
+// 移交当版冒烟守护，本件改「已越过本版」前向兼容存活性口径。
+ok('GAME_VERSION 已越过 v21.61（v21.62 起精确值由当版冒烟守护）',
+  !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 62)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.61 注释（领悟新技能战报补效果摘要说明）', dSrc.includes('v21.61 体验打磨：领悟新技能战报补效果摘要'));
 
@@ -192,7 +195,11 @@ ok('运行期：grantXp 集成档领悟报文带效果摘要（与直调 checkSk
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2161_skillhint', readme.includes('smoke_v2161_skillhint'));
-ok('README 件套口径为五十七件套（五十六件套清除）', readme.includes('五十七件套（五十六件套清除）'));
+// v21.62 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（五十六件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.62 起件数由新版冒烟守护：五十八件套（五十七件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（五十六件套清除）'));
 ok('README 含 v21.61 守护描述（领悟新技能战报效果摘要守护）',
   readme.includes('领悟新技能战报效果摘要守护'));
 ok('package.json 已收录 smoke_v2161_skillhint（npm test 串跑第 57 份）', pkg.includes('smoke_v2161_skillhint.mjs'));
