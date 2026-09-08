@@ -107,7 +107,18 @@ export function enemyAct(deps) {
     const heavy = act.type === 'heavy';
     const mult = heavy ? (enemy.phased ? HEAVY_MULT_PHASED : HEAVY_MULT) : 1;
     let dmg = cmdDmg(enemy.atk, hero.defMax, mult);
+    // v21.56 防御格挡命中战报补「挡下 N 点」（信息透明·纯显示）：防御链条的摆架势端
+    // （battle.doDefend「本回合受到的伤害减半」）、HUD 角标端（drawBattle「防御中 · 减伤50%」
+    // 由 DEFEND_MULT 派生）、受击预判端（drawBattle 预判行「防御后-N血」按 ×DEFEND_MULT 列值）
+    // 三端早已量化，唯独实际命中这一端只报「（被防御格挡！）」性质不报数值——玩家防御后挨一刀，
+    // 想确认「这一刀防御到底替我挡了多少」只能心算对照预判行；现补「挡下 N 点」
+    // （N = 减伤前 rawDmg − 减伤后 dmg，与 ×DEFEND_MULT 结算同读一份源）。保底 1 钳到时 N=0
+    // 不标数值，保持「（被防御格挡！）」逐字不变（承 v21.54 碎至 0 层不标剩余同口径）。
+    // 零结算零数值零存档变化（cmdDmg 调用与 max(1, round(×DEFEND_MULT)) 减伤式逐字未动，
+    // 只在其前/后各加一行取值与求差）。
+    const rawDmg = dmg;
     if (hero.defending) dmg = Math.max(1, Math.round(dmg * DEFEND_MULT));
+    const blocked = hero.defending ? rawDmg - dmg : 0;
     hero.hp -= dmg;
     bind.renderHUD();
     SFX.hurt();
@@ -119,7 +130,7 @@ export function enemyAct(deps) {
     // 含防御减伤/重击倍率）的 hero.hp / hero.hpMax，与 HUD 血条/状态页同源。致死一击（hero.hp<=0）
     // 不追加，避免与后续败北提示重复（同 v20.0 击杀时不追加敌方剩余 HP 的口径）。零数值变化。
     const hpSuffix = hero.hp > 0 ? `（我方 HP ${hero.hp}/${hero.hpMax}）` : '';
-    S.blog.push(`${heavy ? '💥' : '👹'} ${enemy.name} 攻击你，造成 ${dmg} 伤害！${hero.defending ? '（被防御格挡！）' : ''}${heavy && enemy.phased ? '（深渊之怒！）' : ''}${hpSuffix}`);
+    S.blog.push(`${heavy ? '💥' : '👹'} ${enemy.name} 攻击你，造成 ${dmg} 伤害！${hero.defending ? `（被防御格挡${blocked > 0 ? `，挡下 ${blocked} 点` : ''}！）` : ''}${heavy && enemy.phased ? '（深渊之怒！）' : ''}${hpSuffix}`);
     if (hero.defending && Math.random() < COUNTER_CHANCE) {
       const counter = Math.max(1, cmdDmg(hero.atkMax, enemy.def, COUNTER_MULT));
       enemy.hp = Math.max(0, enemy.hp - counter);

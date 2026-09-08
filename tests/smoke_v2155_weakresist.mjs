@@ -171,7 +171,11 @@ ok('运行期：灼烧 note 零回归（v21.50「灼烧 2 回合·每回合 -200
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2155_weakresist', readme.includes('smoke_v2155_weakresist'));
-ok('README 件套口径为五十一件套（五十件套清除）', readme.includes('五十一件套（五十件套清除）'));
+// v21.56 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（五十件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.56 起件数由新版冒烟守护：五十二件套（五十一件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（五十件套清除）'));
 ok('README 含 v21.55 守护描述（克制命中战报倍率量化守护）',
   readme.includes('克制命中战报倍率量化守护'));
 ok('package.json 已收录 smoke_v2155_weakresist（npm test 串跑第 51 份）', pkg.includes('smoke_v2155_weakresist.mjs'));
