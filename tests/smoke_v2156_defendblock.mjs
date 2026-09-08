@@ -187,7 +187,11 @@ const atkLine = (lines) => lines.find((l) => l.includes('攻击你')) || '';
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2156_defendblock', readme.includes('smoke_v2156_defendblock'));
-ok('README 件套口径为五十二件套（五十一件套清除）', readme.includes('五十二件套（五十一件套清除）'));
+// v21.57 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（五十一件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.57 起件数由新版冒烟守护：五十三件套（五十二件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（五十一件套清除）'));
 ok('README 含 v21.56 守护描述（防御格挡命中战报挡下点数守护）',
   readme.includes('防御格挡命中战报挡下点数守护'));
 ok('package.json 已收录 smoke_v2156_defendblock（npm test 串跑第 52 份）', pkg.includes('smoke_v2156_defendblock.mjs'));

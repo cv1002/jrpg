@@ -192,9 +192,17 @@ function doAttack() {
   const charged = !!hero.charge;
   if (charged) hero.charge = false;
   bind.burstEnemy(['#fff', '#e8d8c0', '#ffd24a'], crit ? 22 : 10);
+  // v21.57 暴击命中战报补确切倍率（信息透明·纯显示）：暴击链条的结算端（attackMove
+  // `isCrit ? CRIT_MULT : 1` 读 CRIT_MULT 单一数据源）与状态页端（menus.js「普攻N%暴击 ×N」
+  // 由 CRIT_RATE/CRIT_MULT 派生）两端早已量化，唯独命中战报这一端只报「（暴击！）」性质
+  // 不报倍率——玩家普攻暴击时想确认「这一击到底吃到了多少加成」只能翻到状态页；现按
+  // 状态页同口径补 ×N 倍率（CRIT_MULT 单一数据源同读，调暴击强度只改 data.js 一处、
+  // 结算/状态页/战报三端自动跟随）。零结算零数值零存档变化（crit 判定与 attackMove
+  // ×CRIT_MULT 结算逐字未动，只改 1 条 fmt 文案；暴击仅普攻可触发，技能 crit=false
+  // 不受影响）。
   attackMove(
     (dmg) => finishPlayer(
-      `${crit ? '💥' : '🗡️'} 你发动攻击，对 ${enemy.name} 造成 <dmg> 伤害${crit ? '（暴击！）' : ''}${charged ? '（蓄力爆发！）' : ''}！`,
+      `${crit ? '💥' : '🗡️'} 你发动攻击，对 ${enemy.name} 造成 <dmg> 伤害${crit ? `（暴击×${CRIT_MULT}！）` : ''}${charged ? '（蓄力爆发！）' : ''}！`,
       dmg
     ),
     null,
