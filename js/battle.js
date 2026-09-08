@@ -274,7 +274,14 @@ function doSkill(skillName) {
     if (skill.skip && Math.random() < skill.skip) { enemy.skipNext = true; note += '（冻结！）'; }
     if (skill.breakShield && (enemy.shield || 0) > 0) {
       enemy.shield = Math.max(0, enemy.shield - skill.breakShield);
-      note += '（石甲碎裂）';
+      // v21.54 击碎瞬间战报量化剩余层数（信息透明·纯显示）：石甲链条的另外两端早已报层数——
+      // 凝结端 enemyAI「（累计 N 层，所受伤害降低 X%）」、受击挡伤端 attackMove「（剩余 N 层）」，
+      // 唯独技能击碎这一端只报「（石甲碎裂）」不说还剩几层——玩家放陨石术想确认「这怪石甲
+      // 还剩几层、要不要再来一发」只能瞄右上角角标。现与 attackMove 挡伤端同口径：碎后仍有
+      // 余层时报「（石甲碎裂，剩余 N 层）」，碎至 0 层时保持「（石甲碎裂）」逐字不变（与
+      // attackMove 末层挡伤不标剩余同口径，敌甲角标随 shield=0 消失亦不再误导）。
+      // enemy.shield 读赋值后单一数据源，零结算零数值零存档变化。
+      note += `（石甲碎裂${enemy.shield > 0 ? `，剩余 ${enemy.shield} 层` : ''}）`;
     }
     // v21.48 汲回结算（汲光击 drain）：把本次伤害 ×drain 汲回为 HP，单次上限 drainCap×hpMax
     // （data.js DRAIN_PCT/DRAIN_HP_CAP 单一数据源），再钳制到实际可回量——满血时如实报

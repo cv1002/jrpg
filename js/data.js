@@ -100,7 +100,11 @@
 // 两分支缺一端对照口径；现与 afterPlayer 实际推进 battleTurn 并编排 enemyAct 的结算同口径。
 // 成功率仍由指令栏「约60%」承载（FLEE_SUCCESS 单一数据源），战报不重复标注；
 // 零结算零数值零存档变化。
-const GAME_VERSION = 'v21.53';
+// v21.54 体验打磨：陨石术击碎石甲战报补「剩余 N 层」（信息透明·纯显示）——battle.doSkill
+// breakShield 分支此前只报「（石甲碎裂）」不说还剩几层：石甲链条的凝结端（enemyAI「累计 N 层」）
+// 与受击挡伤端（attackMove「剩余 N 层」）早已报层数，唯独技能击碎这一端缺数；现与 attackMove
+// 同口径补剩余层数，碎至 0 层保持「（石甲碎裂）」逐字不变。纯显示零结算零数值零存档变化。
+const GAME_VERSION = 'v21.54';
 
 const T=32;
 
