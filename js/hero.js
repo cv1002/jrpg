@@ -120,7 +120,14 @@ export function applyAchievements() {
     const def = ACH_LIST.find((x) => x.id === id);
     if (id === 'perfection') {
       hero.gold += PERFECTION_GOLD;
-      bind.boxMsg(`🏆 图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！（剩余 ${hero.gold} 金）`, CODEX_MSG_MS);
+      // v21.64 图鉴全收集横幅补成就名【记忆守护者】（信息透明·口径一致·纯显示）：成就解锁链条的
+      // 横幅端 24 项里 23 项都报「🔓 成就解锁：【名】」（下方通用分支），唯独 perfection 的特别
+      // 庆贺横幅只报「图鉴收集完成！额外奖励…」——玩家集齐图鉴这一刻看不到自己解锁的成就叫什么，
+      // 事后翻成就页（C）才对得上「记忆守护者」是这一刻解锁的。现按通用分支同款口径在句首补
+      // 「成就解锁：【名】」，名读 ACH_LIST 单一数据源（def 上方已查，改名自动跟随，绝无第二套
+      // 口径），防御式回落 `def ? def.name : id` 与通用分支逐字同式；🏆 里程碑视觉与 CODEX_MSG_MS
+      // 更长档保留，加奖结算（hero.gold += PERFECTION_GOLD）逐字未动，零结算零数值零存档变化。
+      bind.boxMsg(`🏆 成就解锁：【${def ? def.name : id}】图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！（剩余 ${hero.gold} 金）`, CODEX_MSG_MS);
     } else {
       bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : ''}`, ACH_MSG_MS);
     }
