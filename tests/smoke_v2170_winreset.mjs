@@ -222,7 +222,9 @@ void origFill; void seen;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2170_winreset', readme.includes('smoke_v2170_winreset'));
-ok('README 件套口径为六十六件套（六十五件套清除）', readme.includes('六十六件套（六十五件套清除）'));
+ok('README 件套口径为存活性断言（v21.71 起件数由本版冒烟守护：六十七件套（六十六件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（六十五件套清除）'));
 ok('README 含 v21.70 守护描述（胜利画面 R 重开两按确认守护）',
   readme.includes('胜利画面 R 重开两按确认守护'));
 ok('README 快速上手表已收录胜利画面行（Enter 观看尾声 · R 连按两次）',

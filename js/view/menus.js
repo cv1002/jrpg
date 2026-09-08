@@ -350,7 +350,8 @@ export function drawJournal(){
   const sides = log.filter((e) => e.kind === 'side').sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9));
   if (!log.length) {
     text('没有进行中的任务。', 320, 200, '16px', '#ffd24a', 'center');
-    text('按 J / Esc 关闭', 320, 432, '12px', '#7d93a3', 'center');
+    // v21.71 空日志分支页脚同式补「I 状态页」互切提示（详注见下方有日志分支页脚）
+    text('按 J / Esc 关闭   ·   I 状态页', 320, 432, '12px', '#7d93a3', 'center');
     return;
   }
   const cx = 86;
@@ -416,7 +417,13 @@ export function drawJournal(){
     acc += it.h;
     if (acc > viewBottom && (it.kind === 'card' || it.kind === 'frag')) remain++;
   }
-  text(`按 J / Esc 关闭${remain > 0 ? `   ·   ↑↓ 滚动浏览（还有 ${remain} 条）` : ''}`, 320, 432, '12px', '#7d93a3', 'center');
+  // v21.71 页脚补「I 状态页」互切提示（可发现性·口径一致，承 v21.4 帮助页 A/D 别名 /
+  // v21.18「按键提示必须如实反映可用键」主线）：main.js journal.onKey 本就支持 `I` 直达状态页
+  // （与 status.onKey 的 `J` 直达日志双向互切），状态页页底也早已常驻「J 任务日志」提示
+  // （drawStatus 末行），唯独日志页两处页脚只写「按 J / Esc 关闭」——翻日志想对号属性时
+  // 无从知晓 I 可直切状态页。本分支与上方空日志分支同式补齐，双向互切口径自此成对。
+  // 纯文字零逻辑零结算；「按 J / Esc 关闭」与「↑↓ 滚动浏览（还有 N 条）」口径逐字保留。
+  text(`按 J / Esc 关闭${remain > 0 ? `   ·   ↑↓ 滚动浏览（还有 ${remain} 条）` : ''}   ·   I 状态页`, 320, 432, '12px', '#7d93a3', 'center');
 }
 
 export function drawHelp(){
