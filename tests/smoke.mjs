@@ -79,7 +79,7 @@ ok('冰打毒蛇有加成', elemMult(SKILL_DATA['冰霜击'],{weak:'ice'})===1.3
   const golem = codexStats('石魔像', 5);
   ok('石魔像强度 Lv5 = 71/18/15', golem.hp===71 && golem.atk===18 && golem.def===15);
   const elite = codexStats('石心魔像', 4);
-  ok('石心魔像强度 Lv4 = 98/24/23（精英公式）', elite.hp===98 && elite.atk===24 && elite.def===23);
+  ok('石心魔像强度 Lv4 = 98/20/23（精英公式，v21.51 攻击成长收口后）', elite.hp===98 && elite.atk===20 && elite.def===23);
   const boss = codexStats('幽冥魔王', 3);
   ok('幽冥魔王强度固定 140/15/6 且不随等级', boss.hp===BOSS.hp && boss.atk===BOSS.atk && boss.def===BOSS.def && codexStats('幽冥魔王',9).hp===BOSS.hp);
   ok('终焉之神真身名映射到基础强度', codexStats('终焉之神·祸乱形态',1).hp===TRUE_BOSS.hp);
