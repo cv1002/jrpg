@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -292,8 +292,16 @@ function doSkill(skillName) {
       hero.hp += dr;
       note += `（汲回 ${dr} HP）`;
     }
-    if (elemMult(skill, enemy) > 1) note += '（弱点）';
-    if (elemMult(skill, enemy) < 1) note += '（抗性）';
+    // v21.55 克制命中战报补确切倍率（信息透明·纯显示）：元素克制链条的结算端（rules.elemMult
+    // 读 ELEM_MULT 单一数据源）、帮助页「技能克制」行（「弱点伤害×1.35 · 抗性伤害×0.7」）、
+    // 图鉴 codexTag（「弱点·火×1.35 / 抗性·冰×0.7」）三端早已带确切倍率，唯独命中战报这一端
+    // 只报性质不报数值——玩家放技能命中时看到「（弱点）/（抗性）」，想确认「这一击到底吃到了
+    // 多少加成/被削了多少」仍需翻图鉴或帮助页。现按图鉴同口径补 ×N 倍率（读 ELEM_MULT 单一
+    // 数据源，调克制强度只改 data.js 一处、结算/帮助页/图鉴/战报四端自动跟随）。倍率值与
+    // elemMult 判定逐值同源（>1 恒为 ELEM_MULT.weak、<1 恒为 ELEM_MULT.resist，无第三档），
+    // 零结算零数值零存档变化（elemMult 两次调用逐字未动，只改 2 条 note 文案）。
+    if (elemMult(skill, enemy) > 1) note += `（弱点×${ELEM_MULT.weak}）`;
+    if (elemMult(skill, enemy) < 1) note += `（抗性×${ELEM_MULT.resist}）`;
     // v20.7 伤害技能施放反馈追加当前 MP（信息透明·纯显示）：v19.96 防御回蓝已报 MP、v19.97 治疗已报 HP、
     // v20.0 命中已报敌方剩余 HP，唯独「伤害技能扣蓝」后不报我方剩余 MP——玩家施法后想确认「还能不能再放一招」
     // 仍需瞄 HUD；直接读结算后的 hero.mp / hero.mpMax（line 202 已扣 skill.mp），与技能菜单/状态页 MP 显示
