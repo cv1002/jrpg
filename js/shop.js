@@ -35,7 +35,14 @@ export function buyPotion() {
     bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）`);
     bind.renderHUD();
   } else {
-    bind.boxMsg(`金币不足：生命药水需 ${POTION_PRICE} 金`);
+    // v21.63 金币不足拦截报差额（信息透明·纯显示）：v19.67 已带品名/价格，但玩家被拒时想确认
+    // 「兜里有多少、还差多少」仍需瞄 HUD 或按 I 看状态页——旅馆面板端 drawInn 红字
+    // 「（还差 N 金）」（menus.js）与 v19.69 酿造材料不足「（当前 A/B）」早已量化，唯独按下
+    // 确认这一刻的拦截弹条四处（药水/武器/防具/住店）都只报价格。现四处同式补
+    // 「（当前 N 金，还差 M 金）」：差额 = 价格 − hero.gold，与上方判定 `hero.gold >= price`
+    // 同读一份源（进入本分支差额恒正），调价只改 data.js 常量、面板/弹条两端自动跟随。
+    // 零结算零数值变化（拦截语义逐字未动：不扣款、不进货、SFX/return 路径不变）。
+    bind.boxMsg(`金币不足：生命药水需 ${POTION_PRICE} 金（当前 ${hero.gold} 金，还差 ${POTION_PRICE - hero.gold} 金）`);
   }
 }
 
@@ -74,7 +81,8 @@ export function buyWeapon(name) {
     bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${atkBefore !== null ? ` · 攻击 ${atkBefore}→${hero.atkMax}` : ''}）`);
     bind.renderHUD();
   } else {
-    bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
+    // v21.63 金币不足拦截报差额：同 buyPotion（差额 = price − hero.gold，本分支恒正）。
+    bind.boxMsg(`金币不足：${name} 需 ${price} 金（当前 ${hero.gold} 金，还差 ${price - hero.gold} 金）`);
   }
 }
 
@@ -92,7 +100,8 @@ export function buyArmor(name) {
     bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${defBefore !== null ? ` · 防御 ${defBefore}→${hero.defMax}` : ''}）`);
     bind.renderHUD();
   } else {
-    bind.boxMsg(`金币不足：${name} 需 ${price} 金`);
+    // v21.63 金币不足拦截报差额：同 buyPotion（差额 = price − hero.gold，本分支恒正）。
+    bind.boxMsg(`金币不足：${name} 需 ${price} 金（当前 ${hero.gold} 金，还差 ${price - hero.gold} 金）`);
   }
 }
 
@@ -108,7 +117,8 @@ export function stayInn() {
       // 玩家想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.75 装备购买同源。
       bind.boxMsg(`🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）`);
     } else {
-      bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金`);
+      // v21.63 金币不足拦截报差额：同 buyPotion；与 drawInn 面板红字「（还差 N 金）」同口径。
+      bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金（当前 ${hero.gold} 金，还差 ${INN_PRICE - hero.gold} 金）`);
     }
   } else {
     bind.boxMsg('你现在精神饱满。');
