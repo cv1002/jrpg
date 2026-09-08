@@ -15,6 +15,8 @@ const NPC_SHEET = {
   guard: 'mwSage', sentinel: 'mwSage',
   // 掌灯阿婆（v21.36 新 NPC）：复用长者袍造型（与守名者/守碑人同款），跨图不重名
   granny: 'mwSage',
+  // 拾骨人（v21.52 新 NPC）：复用长者袍造型（兜帽收殓人，与守名者/掌灯阿婆同款），跨图不重名
+  digger: 'mwSage',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',

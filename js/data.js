@@ -88,7 +88,13 @@
 // v21.51 数值平衡：精英「石心魔像」攻击成长 [12,3]→[12,2]（数值平衡·推荐等级名副其实——详见
 // ELITE_GOLEM 上方专项注释；hp/def/xp/gold/出没门槛/出没概率/石甲机制逐字未动，属性遇敌时现算、
 // 旧档零迁移）。
-const GAME_VERSION = 'v21.51';
+// v21.52 新内容：星井矿脉新 NPC「拾骨人」（南走廊北侧凹龛 (5,10)，全局坐标键未被他图占用）
+// + 讨伐支线「未归的矿灯」（side_bone：讨伐 BONE_GOAL 只骷髅兵）+ 单支线成就「亡骨还乡」——
+// 矿脉此前是四图中唯一没有讨伐采集型支线的地图（雾语林 side_mist/side_stone、无字回廊 side_ember、
+// 潮灯镇蘑菇委托），骷髅兵设定上正是「当年没能走出矿洞的矿工」，与全游「名字/记忆」主题同脉；
+// 无 unlockOn（拾骨人只在矿脉可达，接取时机天然正确，承 side_ember 守名者同款）；旧档零迁移
+// （cond 读既有 bestiary 计数，quests 字段缺失时 questStatus 自动落 offer）。
+const GAME_VERSION = 'v21.52';
 
 const T=32;
 
@@ -218,6 +224,7 @@ const MAPS={
       { x: 2, y: 3, ty: 'NPC' },    // 老矿工（v21.17 新 NPC·入口矿道旁；坐标可行走且未被他图占用）
       { x: 17, y: 11, ty: 'NPC' },  // 星砂车夫（矿车区）
       { x: 17, y: 12, ty: 'NPC' },  // 守碑人（v21.24 新 NPC·试炼碑旁；坐标可行走且未被他图占用）
+      { x: 5, y: 10, ty: 'NPC' },   // 拾骨人（v21.52 新 NPC·南走廊北侧凹龛；坐标为岩地可行走格、紧邻南走廊且未被他图占用）
       { x: 12, y: 11, ty: 'SB' },   // 终焉水晶（双徽记开门 → 无字回廊）
       { x: 18, y: 12, ty: 'TRIAL' },
     ],
@@ -309,6 +316,11 @@ const STONE_GOAL = 3;       // 守书记支线需带回的「石壳记痕」份�
 // 想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
 const EMBER_GOAL = 1;       // 守名者支线需带回的「残焰之证」份数（= 讨伐残焰魔像只数）
 
+// 骷髅兵讨伐目标（单一数据源）：拾骨人支线「未归的矿灯」需讨伐的骷髅兵只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL 同一「支线目标单一数据源」家族，
+// 想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
+const BONE_GOAL = 3;        // 拾骨人支线需讨伐的骷髅兵只数
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -356,6 +368,9 @@ const NPC_SPOTS = {
   '8,5': 'guard',
   // 掌灯阿婆（v21.36 新 NPC）：潮灯镇水塘南岸（14,8）——全局坐标键未被他图占用（14,7 为水面、14,9 为广场路，左右不撞）
   '14,8': 'granny',
+  // 拾骨人（v21.52 新 NPC）：星井矿脉南走廊北侧凹龛（5,10）——全局坐标键未被他图占用
+  // （全图 extras 扫描 (5,10) 仅此一处；北邻岩地、南贴南走廊 PATH，可面对面对话）
+  '5,10': 'digger',
 };
 
 const NPCS={
@@ -483,6 +498,14 @@ const NPCS={
   ], after:[
     ['掌灯阿婆：你看这塘水，倒映着整座镇子的灯。','名字找回来了，灯也亮了。','[Enter] 继续'],
     ['掌灯阿婆：那孩子叫阿灯。','他被忘掉的名字，现在刻在你心里了。','[Enter] 结束'],
+  ]},
+  // 拾骨人（v21.52 新 NPC·星井矿脉南走廊北侧凹龛 (5,10)）：支线「未归的矿灯」的发布者——
+  // 矿道里游荡的骷髅兵设定上是「当年没能走出矿洞的矿工」，与全游「名字/记忆」主题同脉。
+  // 任务页（offer/active/turnin/done 四态齐备）经 npcQuestPages 恒优先于下方静态 lines
+  // （承 guard/hunter「任务遮蔽闲聊」先例），lines 仅作兜底回退、正常流程不可达；mark:'hood'
+  // 由 view/sprites.js drawNpcMark 程序化绘制（贴图路径 NPC_SHEET 映射 digger→mwSage 长者袍）。
+  digger:{name:'拾骨人', mark:'hood', lines:[
+    ['拾骨人：矿道深处躺着的，都是没能走出来的人。','骨头散了，名字才回得了灯下。','[Enter] 结束'],
   ]},
 };
 
@@ -1579,6 +1602,50 @@ const QUESTS={
       ]],
     },
   },
+  // 拾骨人·未归的矿灯（v21.52 新支线）：讨伐 BONE_GOAL 只骷髅兵（bestiary 计数）——
+  // 星井矿脉此前是四图中唯一没有讨伐采集型支线的地图（雾语林 side_mist/side_stone、
+  // 无字回廊 side_ember、潮灯镇 side_mushroom）；与 side_mist / side_stone / side_ember
+  // 同一模式（无 unlockOn → 从开局即 offer，保留「接取→讨伐→交付」完整流程——拾骨人只在
+  // 矿脉南走廊可达，接取时机天然正确），阈值单一数据源 BONE_GOAL（判定/进度/目标文案/接取
+  // 对话同读），奖励 80 金 + 1 高级灵药——介于 side_stone（60 金+灵药，雾语林 Lv.3）与
+  // side_ember（100 金+灵药，无字回廊 Lv.10）之间，与矿脉（凶险之地·推荐 Lv.6）档次匹配；
+  // active 页按 hero 实时报进度（与 side_stone 同款函数页），骷髅兵弱火提示与图鉴
+  // codexTag「弱点·火×1.35」口径一致（MON_BASE 骷髅兵 weak:'fire' 单一数据源）。
+  side_bone:{
+    id:'side_bone', kind:'side', store:true, npc:'digger', giver:'digger',
+    cond:(g)=>(((g.bestiary||{})['骷髅兵'])||0) >= BONE_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['骷髅兵'])||0}/${BONE_GOAL} 只`,
+    name:'未归的矿灯', where:'星井矿脉',
+    obj:`讨伐 ${BONE_GOAL} 只矿洞里的【骷髅兵】`,
+    offer:'去星井矿脉找拾骨人，接下送亡骨回灯的委托',
+    turnin:'亡骨都安顿了！回矿脉找拾骨人',
+    done:'没能走出矿洞的人，名字都回灯下了。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '拾骨人：这些矿道里晃荡的骷髅兵……都是当年没能走出矿洞的兄弟。',
+        `骨头架子不散，名字就回不了灯下。帮我打 ${BONE_GOAL} 只——`,
+        '让他们别再这么站着挨饿了。',
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '拾骨人：骷髅兵怕火——火焰斩劈上去，骨头酥得快。',
+        `（已安顿 ${((hero.bestiary||{})['骷髅兵'])||0}/${BONE_GOAL} 只）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '拾骨人：都歇了……名字，我会一个个念给灯听。',
+        '这点谢礼拿去，路上照个亮。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:[[
+        '拾骨人：矿道安静了些。站着挨饿的兄弟少了，',
+        '灯镇的方向，又亮了一点。',
+        '（支线任务·已完成）',
+        '[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -1604,6 +1671,10 @@ const ACH_LIST=[
   // 同一「单支线成就」模式（读既有 g.quests.side_ember==='done'，交付侧 status 由 quests.setSideQuest 写定），
   // 零新计数/零新状态/零新依赖；无 r 字段（奖励在任务结算侧，同 cartman/mist/stone 惯例不重复标注）
   {id:'ember',      name:'残焰已熄', d:'完成守名者的嘱托（残焰魔像）', ok:g=>!!(g.quests&&g.quests.side_ember==='done')},
+  // 亡骨还乡（v21.52 新成就·拾骨人支线）：完成「未归的矿灯」——与 quest/cartman/names/mist/stone/ember
+  // 同一「单支线成就」模式（读既有 g.quests.side_bone==='done'，交付侧 status 由 quests.setSideQuest 写定），
+  // 零新计数/零新状态/零新依赖；无 r 字段（奖励在任务结算侧，同 cartman/mist/stone 惯例不重复标注）
+  {id:'bone',       name:'亡骨还乡', d:'完成拾骨人的委托（未归的矿灯）', ok:g=>!!(g.quests&&g.quests.side_bone==='done')},
   {id:'chests',     name:'开箱寻宝', d:`累计开启 ${TREASURE_GOAL} 个宝箱`, ok:g=>chestCount(g)>=TREASURE_GOAL, prog:g=>`${chestCount(g)}/${TREASURE_GOAL}`},
   // 灯火同心（v19.61 新成就·支线全收集）：完成全部支线任务——判定/描述/进度三处同源于 QUESTS 的
   // kind==='side' 列表（数量由数据推导、不写死）：未来增删支线（QUESTS 增删一条）成就自动跟随，
@@ -1832,7 +1903,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,

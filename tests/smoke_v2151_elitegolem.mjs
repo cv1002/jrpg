@@ -195,7 +195,11 @@ ok('石甲机制身份零回归：acts 仍 attack/shield 无 heavy（v3.26 机�
 // —— README / package.json 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2151_elitegolem', readme.includes('smoke_v2151_elitegolem'));
-ok('README 件套口径为四十七件套（四十六件套清除）', readme.includes('四十七件套（四十六件套清除）'));
+// v21.52 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（四十六件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.52 起件数由新版冒烟守护：四十八件套（四十七件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（四十六件套清除）'));
 ok('README 含 v21.51 守护描述（精英石心魔像攻击成长收口守护）', readme.includes('精英石心魔像攻击成长收口守护'));
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('package.json 已收录 smoke_v2151_elitegolem（npm test 串跑第 47 份）', pkg.includes('smoke_v2151_elitegolem.mjs'));
