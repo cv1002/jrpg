@@ -135,7 +135,15 @@
 // newGame 起始技能同一份表），未来增删技能成就自动跟随；读既有 hero.skills 存档字段，旧档零迁移。
 // 零新计数/零新状态/零新依赖/零结算变化（解锁走既有 unlockedAchievements→applyAchievements 通路，
 // winBattle 的 grantXp→checkSkills 领悟后同场胜利即时解锁）。
-const GAME_VERSION = 'v21.59';
+// v21.60 体验打磨：讨伐支线击杀进度战报（信息透明·纯显示）——battle.winBattle 在 bestiary
+// 计数结算前快照所有「进行中」condProg 支线的进度串，胜利/掉落/碎片结算落账后逐一对比：
+// 进度被本场击杀推进的支线补一条「📜 支线【名】讨伐进度 N/M」，条件达成转可交付的按 def.turnin
+// 补「目标达成（N/M）· 交付去向」（与日志 J/NPC 对话同读 condProg/turnin 一份源，绝无第二套口径）。
+// 此前击杀目标怪后只报金币/经验，玩家想确认「离交付还差几只」只能按 J 翻日志或跑回 NPC——
+// 承 v19.93「宝箱蘑菇带任务进度」同一「任务进度即时透明」主线。side_name（记忆碎片）按 id
+// 排除（v19.90 🕯️ 拾取报文已带 N/N 进度，避免双报）；未接取/已可交付/已完成支线不多报。
+// 零结算零数值零存档变化。
+const GAME_VERSION = 'v21.60';
 
 const T=32;
 

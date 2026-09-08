@@ -171,7 +171,11 @@ ok('成就页 drawAch 两态渲染不抛错（未解锁/已解锁，含 24 项�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2159_skillach', readme.includes('smoke_v2159_skillach'));
-ok('README 件套口径为五十五件套（五十四件套清除）', readme.includes('五十五件套（五十四件套清除）'));
+// v21.60 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（五十四件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.60 起件数由新版冒烟守护：五十六件套（五十五件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（五十四件套清除）'));
 ok('README 含 v21.59 守护描述（新成就「诸技通明」（技能全领悟里程碑）守护）',
   readme.includes('新成就「诸技通明」（技能全领悟里程碑）守护'));
 ok('README 成就口径「24 项」双处同步（快速上手表 C 键行 + 图鉴&成就行；历史守护描述里的「23 项」叙事为留档，不属当前口径）',

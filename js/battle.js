@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -12,6 +12,7 @@ import { hooks } from './hooks.js';
 import { goto } from './scene.js';
 import { takePotion, potionAvailability, applyAchievements, grantXp } from './hero.js';
 import { enemyAct } from './enemyAI.js';
+import { questStatus } from './quests.js';
 
 function startRush() {
   S.G.rushStage = 1;
@@ -492,6 +493,19 @@ function winBattle() {
   const enemy = S.enemy;
   hero.poison = 0;
   const bookName = canonicalName(enemy.name);
+  // v21.60 讨伐支线击杀进度战报（信息透明·纯显示）：四条讨伐采集型支线（side_mist/side_stone/
+  // side_ember/side_bone）的进度都读 bestiary 计数（condProg 单一数据源），但击杀目标怪后的胜利
+  // 战报只报金币/经验——玩家想确认「离交付还差几只」只能按 J 翻日志或跑回 NPC 对话；与 v19.93
+  // 「宝箱蘑菇带任务进度」同一「任务进度即时透明」主线。此处（bestiary 计数结算前）快照所有
+  // 「进行中」condProg 支线的进度串，待胜利结算后逐一对比补报（见下方碎片块后）。
+  // side_name（记忆碎片）排除：其进度只在下方碎片块推进，而 v19.90 🕯️ 拾取报文已带 N/N 进度，
+  // 快照时按 id 排除避免双报。零结算零数值零存档变化，只追加显示。
+  const questProgBefore = {};
+  for (const q of Object.values(QUESTS)) {
+    if (q.condProg && q.id !== 'side_name' && questStatus(hero, q.id) === 'active') {
+      questProgBefore[q.id] = q.condProg(hero);
+    }
+  }
   hero.bestiary[bookName] = (hero.bestiary[bookName] || 0) + 1;
   hero.totalWins++;
   if (enemy.isElite) {
@@ -542,6 +556,23 @@ function winBattle() {
     // 零结算变化，只追加显示当前已集齐段数。
     const fragCount = (hero.fragments || []).length;
     bind.boxMsg(`🕯️ 拾起一段记忆：【${frag.name}】（按 J 日志回看 · ${fragCount}/${FRAGMENTS.length} 段记忆已集齐）`, MEMORY_MSG_MS);
+  }
+
+  // v21.60 讨伐支线击杀进度战报（信息透明·纯显示，接上方结算前快照）：胜利/掉落/碎片结算
+  // 全部落账后，快照中进度串有变化的支线（= 本场击杀推进了它的 condProg 计数）补一条战报——
+  // 未集齐报「讨伐进度 N/M」（与日志 J、NPC active 页同读 condProg 一份源）；条件达成转可交付
+  // 的按 def.turnin 提示去向（与日志 turnin 条目同一份源）。已可交付（turnin）/未接取（offer）/
+  // 已完成（done）的支线不在快照内，不多报不刷屏。零结算零数值零存档变化。
+  for (const q of Object.values(QUESTS)) {
+    const before = questProgBefore[q.id];
+    if (before == null) continue;
+    const afterProg = q.condProg(hero);
+    if (afterProg === before) continue;
+    if (questStatus(hero, q.id) === 'turnin') {
+      bind.boxMsg(`📜 支线【${q.name}】目标达成（${afterProg}）· ${q.turnin}`, WIN_MSG_MS);
+    } else {
+      bind.boxMsg(`📜 支线【${q.name}】讨伐进度 ${afterProg}`, WIN_MSG_MS);
+    }
   }
   hooks.applyVictoryWorld(result);
 
