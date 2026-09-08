@@ -122,10 +122,16 @@ ok('side_bone cond/condProg 与 BONE_GOAL 同源（2 只不满足、3 只转可�
   qb.condProg({ bestiary: { '骷髅兵': 2 } }) === `2/${BONE_GOAL} 只`);
 ok('side_bone 奖励 80 金 + 1 高级灵药（介于 side_stone 60 与 side_ember 100 之间）',
   qb && qb.reward && qb.reward.gold === 80 && qb.reward.potion2 === 1 && !qb.reward.item);
-ok('side_bone 任务页四态齐备（offer/active/turnin/done）且每页 [Enter] 收尾',
-  qb && qb.talk && ['offer', 'turnin', 'done'].every((k) => Array.isArray(qb.talk[k]) &&
+// v21.67 随新现实更新（承 v21.58 smoke_v2154 / v21.66 smoke_v2163 先例）：done 页由静态数组升级为
+// hero.trueBoss 分档函数页（与 active 函数页同机制，talkPagesOf 调用期求值）——本断言由
+// 「Array.isArray(done)」改为「done 为函数页且两档求值均落 [Enter] 收尾的页组」；两档精确文案
+// 由 smoke_v2167 守护（未通关档与 v21.52 原页逐字一致、通关档新页）。
+ok('side_bone 任务页四态齐备（offer/turnin 静态页 + active/done 函数页）且每页 [Enter] 收尾',
+  qb && qb.talk && ['offer', 'turnin'].every((k) => Array.isArray(qb.talk[k]) &&
     qb.talk[k].every((pg) => Array.isArray(pg) && /\[Enter\]/.test(pg[pg.length - 1]))) &&
-  typeof qb.talk.active === 'function');
+  typeof qb.talk.active === 'function' && typeof qb.talk.done === 'function' &&
+  [qb.talk.done({}), qb.talk.done({ trueBoss: true })].every((pages) => Array.isArray(pages) &&
+    pages.every((pg) => Array.isArray(pg) && /\[Enter\]/.test(pg[pg.length - 1]))));
 ok('side_bone offer 页由 BONE_GOAL 派生（「帮我打 3 只」非裸字面量）',
   qb && qb.talk.offer[0].some((ln) => ln.includes(`${BONE_GOAL} 只`)));
 
