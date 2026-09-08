@@ -91,7 +91,7 @@ ok('data.js 含 v21.31 注释与 HELP_TITLES 定义', dSrc.includes('v21.31') &&
 
 // —— 运行期实证：四页逐一渲染，面板标题随页变化，页数/页脚/内容行零回归 ——
 const PAGE_TITLES = ['— 操作说明 —', '— 地图指南 —', '— 魔物状态 —', '— 试炼进阶 —'];
-const PAGE_COUNTS = [14, 5, 10, 9]; // v21.11/v21.23/v21.25/v21.27 巡检行数（追加文案不增行）
+const PAGE_COUNTS = [14, 5, 10, 10]; // v21.11/v21.23/v21.25/v21.27 巡检行数；v21.72 第 4 页新增「记忆碎片」行 9→10（见 smoke_v2172_helpfrag）
 try {
   for (let p = 0; p < HELP_PAGES.length; p++) {
     S.helpPage = p;

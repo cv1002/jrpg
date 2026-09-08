@@ -46,7 +46,8 @@ const LINE_MAX = 470;
 // —— 帮助页总数与「试炼进阶」页结构 ——
 ok('帮助页仍 4 页（操作/地图指南/魔物状态/试炼进阶）', HELP_PAGES.length === 4);
 const page3 = HELP_PAGES[3];
-ok('试炼进阶页 9 行（原 6 行 + v21.23 三 Boss 预览 3 行）', page3.length === 9, `实际 ${page3.length}`);
+// v21.72 起 9→10（新增「记忆碎片」行，见 smoke_v2172_helpfrag）：仍 ≤10 → sp=34 档不变
+ok('试炼进阶页 10 行（原 6 行 + v21.23 三 Boss 预览 3 行 + v21.72 记忆碎片 1 行）', page3.length === 10, `实际 ${page3.length}`);
 const row = (label) => page3.find((r) => r[0] === label);
 ok('三 Boss 行存在（幽冥魔王/洞窟领主/终焉之神）', !!row('幽冥魔王') && !!row('洞窟领主') && !!row('终焉之神'));
 
@@ -86,12 +87,13 @@ page3.forEach((r) => {
   if (w > LINE_MAX) { allOk3 = false; console.log('    <- 越界行:', r[0], Math.round(w)); }
   if (r[2] && estW(r[2], 12) > LINE_MAX) { allOk3 = false; console.log('    <- r2越界:', r[0]); }
 });
-ok('试炼进阶页全部 9 行估算宽 ≤470（含新增三行）', allOk3);
+ok('试炼进阶页全部行估算宽 ≤470（含新增三行；行数随版本递增由当版冒烟守护）', allOk3);
 
-// —— drawHelp 布局派生：9 行 ≤10 → sp=34 档；r[2] 2 行 → 末行基线 418 不触页脚 452 ——
+// —— drawHelp 布局派生：v21.72 起 10 行（记忆碎片行）≤10 → sp=34 档；r[2] 2 行 ——
+// 末行（终焉之神）基线 80+9*34+1*16=402（r[2] 只有一行在其之前）、其 r[2] 402+18=420 ≤440 不触页脚 452
 const sp = page3.length > 10 ? 25 : 34;
-const yEnd = 80 + page3.length * sp + page3.filter((r) => r[2]).length * 16;
-ok('drawHelp 页长派生：sp=34 档且末行基线 418 ≤440（页脚 452 前留白）', sp === 34 && yEnd === 418 && yEnd <= 440, `sp=${sp} yEnd=${yEnd}`);
+const yLast = 80 + (page3.length - 1) * sp + page3.slice(0, -1).filter((r) => r[2]).length * 16;
+ok('drawHelp 页长派生：sp=34 档且末行基线 402、其 r[2] 420 ≤440（页脚 452 前留白）', sp === 34 && yLast === 402 && yLast + 18 <= 440, `sp=${sp} yLast=${yLast}`);
 
 // —— 零回归守护：原 6 行关键词未误动 ——
 const p3keys = ['试炼碑位置', '双徽记条件', '试炼三连战', '重整旗鼓', '快速旅行', '蘑菇宝箱'];

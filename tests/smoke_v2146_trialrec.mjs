@@ -145,7 +145,7 @@ ok('r[2] 既有口径零回归（回血%HP/%MP · 赏金 150+等级×20金）',
   const wR2 = estW(rushRow[2], 12);
   ok('试炼三连战行 r[2] 估算宽 ≤470（v21.11 面板预算）', wR2 <= 470, `≈${wR2.toFixed(1)}`);
 }
-ok('试炼进阶页行数仍为 9（r[2] 追加不增行）', page3.length === 9, page3.length);
+ok('试炼进阶页行数 v21.72 起为 10（记忆碎片行增行；r[2] 追加不增行先例见 v21.46）', page3.length === 10, page3.length);
 ok('试炼进阶页 r[2] 仍 2 个（试炼三连战/终焉之神）',
   page3.filter((r) => r && r.length >= 3 && r[2]).length === 2, page3.filter((r) => r && r.length >= 3 && r[2]).length);
 

@@ -88,8 +88,8 @@ ok('地图指南页其余 4 行关键词全在（镇/林/回廊/通关之路逐�
   checks.every(([k, kws]) => { const r = page1.find((x) => x[0] === k); return !!r && kws.every((kw) => r[1].includes(kw)); }));
 
 // —— 其余三页零回归：行数未动 + v21.27 试炼碑指针保留 ——
-ok('其余三页行数未动（操作 14 / 魔物状态 10 / 试炼进阶 9）',
-  HELP_PAGES[0].length === 14 && HELP_PAGES[2].length === 10 && HELP_PAGES[3].length === 9);
+ok('其余三页行数未动（操作 14 / 魔物状态 10 / 试炼进阶 v21.72 起 10）',
+  HELP_PAGES[0].length === 14 && HELP_PAGES[2].length === 10 && HELP_PAGES[3].length === 10);
 const steleRow = HELP_PAGES[3].find((r) => r[0] === '试炼碑位置');
 ok('试炼进阶页试炼碑位置行 v21.27 指针保留（蓝色石碑 + 可问守碑人派生）',
   !!steleRow && steleRow[1].includes('蓝色石碑') && steleRow[1].includes('可问' + NPCS.sentinel.name));
