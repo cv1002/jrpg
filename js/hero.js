@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD, SYS_MSG_MS, ACH_MSG_MS, CODEX_MSG_MS } from './data.js';
+import { learnsAt, ACH_LIST, WEAPONS, ARMORS, SKILL_DATA, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD, SYS_MSG_MS, ACH_MSG_MS, CODEX_MSG_MS } from './data.js';
 import { unlockedAchievements, potionRestore, elixirRestore } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -43,7 +43,15 @@ export function checkSkills() {
   const skill = learnsAt(hero.level);
   if (skill && !hero.skills.includes(skill)) {
     hero.skills.push(skill);
-    bind.boxMsg(`🌟 领悟了新技能【${skill}】！`, SYS_MSG_MS);
+    // v21.61 领悟新技能战报补效果摘要（信息透明·纯显示）：技能效果链条的菜单端（drawBattle
+    // 技能列表每招带 hint 次行）与状态页端（menus「· 技能名（hint） · N MP」）两端早已量化，
+    // 唯独领悟这一刻只报名字——玩家升级瞬间最想确认「这招干什么、耗多少蓝」，只能事后按 2/I
+    // 翻菜单。现按状态页同式补「（N MP · hint · 战斗中按 2 选用）」，mp/hint 同读 SKILL_DATA
+    // 单一数据源（调技能只改 data.js 一处、菜单/状态页/领悟战报三端自动跟随，绝无第二套口径）。
+    // 防御式读取：SKILL_DATA 漏配时保持原句逐字不变不抛错（LEARN_AT 现 6 招均有配，由冒烟契约守护）。
+    // 零结算零数值零存档变化（push 与 includes 拦截逐字未动，只改 1 条文案 + import 接入）。
+    const sd = SKILL_DATA[skill];
+    bind.boxMsg(`🌟 领悟了新技能【${skill}】！${sd ? `（${sd.mp} MP · ${sd.hint} · 战斗中按 2 选用）` : ''}`, SYS_MSG_MS);
     SFX.levelup();
   }
 }

@@ -195,7 +195,8 @@ ok('运行期：side_name 排除——📜 支线【旧灯卫的名字】不双�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2160_questprog', readme.includes('smoke_v2160_questprog'));
-ok('README 件套口径为五十六件套（五十五件套清除）', readme.includes('五十六件套（五十五件套清除）'));
+ok('README 件套口径存活性（v21.7 去硬化惯例：旧精确表达式「（五十五件套清除）」零残留，实件数由当版冒烟守护）',
+  !readme.includes('（五十五件套清除）'));
 ok('README 含 v21.60 守护描述（讨伐支线击杀进度战报守护）',
   readme.includes('讨伐支线击杀进度战报守护'));
 ok('package.json 已收录 smoke_v2160_questprog（npm test 串跑第 56 份）', pkg.includes('smoke_v2160_questprog.mjs'));
