@@ -93,8 +93,10 @@ ok('battle.js 旧裸文案 note += \'（石甲碎裂）\' 源级零残留',
 // 石甲链条两端口径零回归（凝结端/挡伤端报层数逻辑逐字未动）
 const aiSrc = fs.readFileSync(path.join(ROOT, 'js/enemyAI.js'), 'utf8');
 ok('enemyAI 凝结端「累计 N 层」口径逐字零回归', aiSrc.includes('（累计 ${enemy.shield} 层，所受伤害降低'));
-ok('battle.js 受击挡伤端「剩余 N 层」口径逐字零回归（attackMove 未动）',
-  bSrc.includes('的石甲挡下了部分伤害！${enemy.shield > 0 ? `（剩余 ${enemy.shield} 层）`'));
+// v21.58 更新：attackMove 挡伤端战报插入「挡下 N 点」挡下点数（blocked 条件派生）——
+// 层数口径守护由整行模板改为锁定「（剩余 N 层）」子句（该子句逐字保留）。
+ok('battle.js 受击挡伤端「剩余 N 层」口径零回归（attackMove 层数子句逐字，v21.58 挡下点数插入后仍保留）',
+  bSrc.includes('！${enemy.shield > 0 ? `（剩余 ${enemy.shield} 层）` : \'\'}'));
 ok('battle.js 碎裂赋值结算逐字零回归（Math.max(0, enemy.shield - skill.breakShield) 未动）',
   bSrc.includes('enemy.shield = Math.max(0, enemy.shield - skill.breakShield);'));
 
@@ -132,8 +134,10 @@ const skillLine1 = r1.lines[r1.lines.length - 1] || '';
 ok('运行期：3 层档技能战报含「（石甲碎裂，剩余 1 层）」（新文案落位）',
   skillLine1.includes('（石甲碎裂，剩余 1 层）'), skillLine1);
 ok('运行期：3 层档 enemy.shield 归 1（挡伤 -1 + 击碎 -1 结算逐值未变）', r1.shieldAfter === 1, r1.shieldAfter);
-ok('运行期：3 层档挡伤行报「（剩余 2 层）」零回归（attackMove 口径未动）',
-  r1.lines.some((l) => l.includes('的石甲挡下了部分伤害！') && l.includes('（剩余 2 层）')), r1.lines.join(' | '));
+// v21.58 更新：挡伤行现按 blocked>0 派生「挡下 N 点」（…挡下了部分伤害，挡下 N 点！）——
+// 层数口径守护锁定「（剩余 2 层）」子句，前缀仅锁「的石甲挡下了部分伤害」主干。
+ok('运行期：3 层档挡伤行报「（剩余 2 层）」零回归（attackMove 层数口径未动，v21.58 挡下点数新现实）',
+  r1.lines.some((l) => l.includes('的石甲挡下了部分伤害') && l.includes('（剩余 2 层）')), r1.lines.join(' | '));
 ok('运行期：3 层档仍在战斗（敌人 5000 HP 未倒，afterPlayer 编排未中断）', r1.scene === 'battle', r1.scene);
 
 // 2 层档：attackMove 挡伤 2→1，breakShield 1→0（碎至 0 层保持「（石甲碎裂）」逐字，不标盾剩余——

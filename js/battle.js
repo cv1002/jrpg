@@ -433,9 +433,19 @@ function attackMove(fin, sfx, crit, mult) {
   const isCrit = !!crit;
   let dmg = Math.round(cmdDmg(hero.atkMax, enemy.def, 1, true) * (isCrit ? CRIT_MULT : 1) * (mult || 1));
   if ((enemy.shield || 0) > 0) {
+    // v21.58 石甲挡伤命中战报补「挡下 N 点」（信息透明·纯显示）：石甲链条的凝结端
+    // （enemyAI「累计 N 层，所受伤害降低 X%」）、击碎端（v21.54「石甲碎裂，剩余 N 层」）、
+    // HUD 角标端（🪨 石甲×N）三端早已量化，唯独任意攻击打在石甲上的命中这一端只报
+    // 「挡下了部分伤害」不报数值——玩家砍在有甲的怪上，想确认「这层甲到底挡了多少」
+    // 只能心算；现按 v21.56 防御格挡同式补「挡下 N 点」（N = 减伤前 rawDmg − 减伤后
+    // dmg，SHIELD_MULT 单一数据源同读），保底 1 钳到时 N=0 不标数值，保持原句逐字不变
+    // （承 v21.54 碎至 0 层不标剩余同口径）。零结算变化（shield-- 赋值与
+    // max(1, round(×SHIELD_MULT)) 减伤式逐字未动，只在其前/后各加一行取值与求差）。
+    const rawDmg = dmg;
     enemy.shield--;
     dmg = Math.max(1, Math.round(dmg * SHIELD_MULT));
-    S.blog.push(`🪨 ${enemy.name} 的石甲挡下了部分伤害！${enemy.shield > 0 ? `（剩余 ${enemy.shield} 层）` : ''}`);
+    const blocked = rawDmg - dmg;
+    S.blog.push(`🪨 ${enemy.name} 的石甲挡下了部分伤害${blocked > 0 ? `，挡下 ${blocked} 点` : ''}！${enemy.shield > 0 ? `（剩余 ${enemy.shield} 层）` : ''}`);
   }
   addFx(bind.CV.width / 2, FX_ENEMY.y, '-' + dmg, enemy.isBoss ? '#ff7b7b' : '#ffd24a', dmg >= BIG_DMG || isCrit);
   // 震屏触发（纯显示）：暴击或大额伤害（≥BIG_DMG，与浮字加粗同源阈值）
