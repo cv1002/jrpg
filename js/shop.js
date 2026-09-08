@@ -110,12 +110,22 @@ export function stayInn() {
   if (hero.hp < hero.hpMax || hero.mp < hero.mpMax) {
     if (hero.gold >= INN_PRICE) {
       hero.gold -= INN_PRICE;
+      const hpBefore = hero.hp;
+      const mpBefore = hero.mp;
       hero.hp = hero.hpMax;
       hero.mp = hero.mpMax;
       SFX.heal();
       // v19.76 旅馆住宿反馈追加剩余金币（信息透明·纯显示）：v19.67 已带价格，但大额恢复消费后
       // 玩家想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.75 装备购买同源。
-      bind.boxMsg(`🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）`);
+      // v21.66 住店结算报文补恢复量与结算后状态（信息透明·口径一致·纯显示）：住店恢复链条的
+      // 面板预览端（drawInn「今晚将恢复 HP +N MP +M」）与免费全恢复对照端（v19.94 清泉
+      // 「HP +N（X/Y）· MP +M（A/B）完全恢复！」）早已量化，唯独按下确认这一刻的结算报文
+      // 只报「HP/MP 恢复！」——玩家花 10 金睡一觉，想确认「到底回了多少、现在满没满」仍需瞄 HUD
+      // 或按 I 看状态页；现按清泉同式补「HP +N（X/Y）· MP +M（A/B）完全恢复！」（恢复量 =
+      // 结算前后差，与面板预览同读 hpMax-hp/mpMax-mp 一份源；进入本分支至少一项缺损，已满项
+      // 如实报 +0，与清泉同口径），v19.76 金币后缀保留。恢复结算（hero.hp/mp = hpMax/mpMax
+      // 满恢复）逐字未动，只在其前补两行取值——零结算零数值零存档变化。
+      bind.boxMsg(`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）`);
     } else {
       // v21.63 金币不足拦截报差额：同 buyPotion；与 drawInn 面板红字「（还差 N 金）」同口径。
       bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金（当前 ${hero.gold} 金，还差 ${INN_PRICE - hero.gold} 金）`);

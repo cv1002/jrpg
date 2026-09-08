@@ -115,7 +115,11 @@ ok('shop.js 扣款/加库存/恢复结算逐字零回归',
 ok('shop.js 成功/拦截分支其余文案逐字零回归（购买成功/装备了/睡了一晚/背包已满/精神饱满）',
   sSrc.includes('购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）') &&
   (sSrc.match(/装备了 \$\{name\}（-\$\{price\} 金，剩余 \$\{hero\.gold\} 金/g) || []).length === 2 &&
-  sSrc.includes('🌙 你美美地睡了一晚，HP/MP 恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）') &&
+  // v21.66 随新现实更新（承 v21.58 smoke_v2154 先例）：stayInn 成功报文整行已按清泉同式插入
+  // 恢复量与结算后状态「HP +N（X/Y）· MP +M（A/B）完全恢复！」，v19.76 金币后缀子句逐字保留——
+  // 锁前后两段子句，中段量化体由 smoke_v2166 精确守护。
+  sSrc.includes('🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}') &&
+  sSrc.includes('完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）') &&
   sSrc.includes('🎒 背包已满（药水上限 ${POTION_CAP} 瓶），先去用掉一些吧！') &&
   sSrc.includes('你现在精神饱满。'));
 
@@ -232,12 +236,14 @@ function runShop(hero, fn, ...args) {
     h.gold === 5 && h.hp === 30 && h.mp === 20);
 }
 
-// J 档：住店成功零回归——报文逐字（v19.76 口径）且扣款/恢复一致
+// J 档：住店成功——报文逐字（v21.66 新现实：恢复量与结算后状态已入列，承 v21.58 smoke_v2154
+// 随新现实更新先例：旧断言 pin 的「HP/MP 恢复！」系 v19.76 口径，v21.66 起该口径由
+// smoke_v2166 精确守护，本档同步更新为新现实逐字）且扣款/恢复一致
 {
   const h = mkHero({ gold: 10, hp: 30, hpMax: 60, mp: 10, mpMax: 20 });
   const m = runShop(h, stayInn);
-  ok('运行期：住店成功档报文逐字零回归「🌙 你美美地睡了一晚，HP/MP 恢复！（-10 金，剩余 0 金）」',
-    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP/MP 恢复！（-10 金，剩余 0 金）', m.join(' | '));
+  ok('运行期：住店成功档报文逐字（v21.66 新现实）「🌙 你美美地睡了一晚，HP +30（60/60）· MP +10（20/20）完全恢复！（-10 金，剩余 0 金）」',
+    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +30（60/60）· MP +10（20/20）完全恢复！（-10 金，剩余 0 金）', m.join(' | '));
   ok('运行期：住店成功档结算一致（gold 10→0 / hp 60 / mp 20 回满）',
     h.gold === 0 && h.hp === 60 && h.mp === 20);
 }
