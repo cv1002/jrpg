@@ -235,7 +235,11 @@ ok('成就页 drawAch 两态 + 第三页滚动渲染不抛错（未解锁/已解
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2173_aegis', readme.includes('smoke_v2173_aegis'));
-ok('README 件套口径为六十九件套（六十八件套清除）', readme.includes('六十九件套（六十八件套清除）'));
+// v21.74 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（六十八件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.74 起件数由新版冒烟守护：七十件套（六十九件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（六十八件套清除）'));
 ok('README 含 v21.73 守护描述（新成就「龙鳞加身」（最强铠甲里程碑）守护）',
   readme.includes('新成就「龙鳞加身」（最强铠甲里程碑）守护'));
 ok('README 成就口径「26 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',

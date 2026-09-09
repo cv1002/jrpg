@@ -674,7 +674,9 @@ export function drawStory(){
     text(STORY[i],60,334+i*22,['bold 16px','15px','15px','15px','bold 16px'][i], i===0?'#ffd24a':'#e8eef1');
     CTX.globalAlpha=1;
   }
-  boxMsg('按 Enter 继续',0);
+  // v21.74 页脚口径同步：story.onKey 补 E 键别名后，逐帧提示如实标注双键
+  // （承 v21.18/v21.70「按键提示必须如实反映可用键」主线）；瞬时消息（ms=0）机制逐字未动。
+  boxMsg('按 Enter / E 继续',0);
 }
 bind.drawStory=drawStory;
 

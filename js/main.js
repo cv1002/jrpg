@@ -239,7 +239,13 @@ const screens = {
   },
   story: {
     onKey(e) {
-      if (e.key !== 'Enter') return;
+      // v21.74 开场叙事翻页补 E 键别名（体验打磨·口径收尾，承 v21.29 大地图 E 交互别名 /
+      // v21.43 对话翻页 E 别名同一「Enter/E 同效」主线）：README 快速上手表与 H 页「对话 / 确认」行
+      // 早已承诺「Enter / E」，对话进行中（talk）v21.43 也已同效——但开场叙事页（STORY 五页）同为
+      // 「按确认键翻页」语境，story.onKey 此前仍只认 Enter：按 E 想翻页毫无反应（v21.16/v21.33/v21.43
+      // 同族的「文档写的键按了没反应」）。现 E 与 Enter 完全同路径：翻页 / 末页 goto('world') /
+      // 教程提示三状态零行为差；KEY 无 'e' 映射（不与移动键冲突）。纯入口、零结算、零数据变化。
+      if (e.key !== 'Enter' && e.key !== 'e' && e.key !== 'E') return;
       SFX.select();
       if (S.storyPage < STORY.length) {
         S.storyPage++;

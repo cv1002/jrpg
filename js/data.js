@@ -237,7 +237,15 @@
 // 无 r 无 prog 纯里程碑。解锁时机：shop.buyArmor 结算当场 applyAchievements（本版补齐——
 // buyWeapon 早已当场判定、buyArmor 此前漏接；最强铠甲唯一来源即商店，rollDrop 装备档只到
 // 锁子甲），承 world.js 开箱当场判定「反馈不迟到」同一惯例。
-const GAME_VERSION = 'v21.73';
+// v21.74 体验打磨：开场叙事页翻页补 E 键别名（口径收尾，承 v21.29 大地图 E 交互 /
+// v21.43 对话翻页 E 别名同一「Enter/E 同效」主线）——README 快速上手表与下方 H 页
+// 「对话 / 确认」行早已承诺「Enter / E」，对话进行中（talk.onKey）v21.43 已同效，唯独
+// 开场叙事页（STORY 五页）同为「按确认键翻页」语境却仍只认 Enter，按 E 毫无反应
+// （「文档写的键按了没反应」同族）；main.js story.onKey 补 e/E 与 Enter 同路径
+// （翻页/末页进 world/教程提示三状态零行为差），drawStory 逐帧提示与 STORY 末行
+// 「[ Enter / E ] 去把灯芯讨回来」同步如实标注双键。
+// 纯入口与提示文字，零结算零数据变化。
+const GAME_VERSION = 'v21.74';
 
 const T=32;
 
@@ -2089,7 +2097,7 @@ const STORY=[
   '潮灯镇靠记忆之灯活着：灯里燃着星砂，人们才记得归途。',
   '三夜前，广场的大灯熄了。雾从林子里漫进来，昨天开始消失。',
   '灯长说，雾语林祭坛上的【幽冥魔王】吞走了灯芯。',
-  '[ Enter ] 去把灯芯讨回来',
+  '[ Enter / E ] 去把灯芯讨回来',
 ];
 
 const ENDING=[
