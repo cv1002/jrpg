@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================
-# 勇者传说 · 一键启动（Linux / 通用终端版）
+# 潮灯记 · 一键启动（Linux / 通用终端版）
 # 用法：./start.sh   （或先 chmod +x start.sh）
 # 依赖：python3（系统自带）
 # ============================================================
@@ -17,13 +17,13 @@ for _ in $(seq 1 20); do
 done
 URL="http://localhost:$PORT/"
 
-python3 -m http.server "$PORT" &
+python3 -m http.server --bind 127.0.0.1 "$PORT" &
 SERVER_PID=$!
 trap 'kill $SERVER_PID 2>/dev/null' EXIT
 
 sleep 1
 echo ""
-echo "  🎮 勇者传说 · 已启动：$URL"
+echo "  🕯️ 潮灯记 · 已启动：$URL"
 echo "     （Ctrl+C 停止服务器）"
 echo ""
 if command -v open >/dev/null 2>&1; then open "$URL";

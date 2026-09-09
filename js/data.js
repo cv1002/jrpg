@@ -342,7 +342,13 @@
 // （menus.drawTravel 渲染 / core.doTravel 判定）仍直接 hero.visited.includes——旧档缺 visited
 // 字段时按 T 开旅行页即抛 TypeError；现 migrateQuests 读档兜底补 ['village']（与 seen/fragments/
 // skills 兜底同族）+ 两端防御式读取，零行为变化、零迁移判定改动。
-const GAME_VERSION = 'v21.89';
+// v21.90 启动脚本口径统一与默认仅本机绑定（体验打磨·口径一致·承 v21.29-32/v21.38-43「同一功能所有入口
+// 口径一致」主线）：v2.0 起游戏更名「潮灯记」，但 start.sh/start.command 的注释与启动回执仍写着
+// 「勇者传说」——玩家每次双击启动看到的名字与游戏内标题不符（唯一残留旧名入口）；且两脚本的
+// python3 -m http.server 默认绑定 0.0.0.0（局域网可访问）。现两脚本注释/回执统一为「潮灯记」、
+// 显式 `--bind 127.0.0.1` 仅本机可访问（README 手动命令同口径），improve-plan.md 留档标题同改。
+// 纯启动体验与安全加固，零游戏逻辑/零结算/零存档接触。
+const GAME_VERSION = 'v21.90';
 
 const T=32;
 
