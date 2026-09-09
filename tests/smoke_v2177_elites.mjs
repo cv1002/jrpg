@@ -217,27 +217,27 @@ S.G = null;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2177_elites', readme.includes('smoke_v2177_elites'));
-ok('README 件套口径为七十九件套（七十八件套清除）', readme.includes('七十九件套（七十八件套清除）'));
+ok('README 件套口径为八十件套（七十九件套清除）', readme.includes('八十件套（七十九件套清除）'));
 ok('README 含 v21.77 守护描述（新成就「精英猎手」（双精英讨伐里程碑）守护）',
   readme.includes('v21.77 起含新成就「精英猎手」（双精英讨伐里程碑'));
-ok('README 成就口径「29 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 29 项进度') && readme.includes('**29 项成就**'));
+ok('README 成就口径「30 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 30 项进度') && readme.includes('**30 项成就**'));
 ok('package.json 已收录 smoke_v2177_elites（npm test 串跑第 73 份）', pkg.includes('smoke_v2177_elites.mjs'));
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
 ok('smoke_v2176 的 ACH_LIST 精确计数断言已去硬化（===27 零残留，>=27 存活性口径落位）',
   s2176.includes('ACH_LIST.length >= 27') && !s2176.includes('ACH_LIST.length === 27'));
 ok('smoke_v2176 的 README 件套口径断言已随新现实更新（七十五件套 pin 零残留，七十六件套落位）',
-  s2176.includes('七十九件套（七十八件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
-ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，29 项双处落位）',
-  s2176.includes("readme.includes('成就一览（全部 29 项进度'") && !s2176.includes('全部 28 项进度'));
+  s2176.includes('八十件套（七十九件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
+ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，30 项双处落位）',
+  s2176.includes("readme.includes('成就一览（全部 30 项进度'") && !s2176.includes('全部 28 项进度'));
 const s2168 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2168_hardtrue.mjs'), 'utf8');
-ok('smoke_v2168 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，29 项双处落位）',
-  s2168.includes("readme.includes('成就一览（全部 29 项进度'") && !s2168.includes('全部 28 项进度'));
-ok('smoke_v2168 对 smoke_v2159 的 README pin 复查已随新现实更新（29 项双处落位）',
-  s2168.includes("s2159.includes(\"readme.includes('成就一览（全部 29 项进度')\")"));
+ok('smoke_v2168 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，30 项双处落位）',
+  s2168.includes("readme.includes('成就一览（全部 30 项进度'") && !s2168.includes('全部 28 项进度'));
+ok('smoke_v2168 对 smoke_v2159 的 README pin 复查已随新现实更新（30 项双处落位）',
+  s2168.includes("s2159.includes(\"readme.includes('成就一览（全部 30 项进度')\")"));
 const s2159 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2159_skillach.mjs'), 'utf8');
-ok('smoke_v2159 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，29 项双处落位）',
-  s2159.includes("readme.includes('成就一览（全部 29 项进度'") && !s2159.includes('全部 28 项进度'));
+ok('smoke_v2159 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，30 项双处落位）',
+  s2159.includes("readme.includes('成就一览（全部 30 项进度'") && !s2159.includes('全部 28 项进度'));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);

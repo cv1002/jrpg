@@ -298,7 +298,12 @@
 // 汲蓝招不含治疗——刻意不并入 heal 封印（与 drain 招不同，不钻「回血」空子），为终焉之神战
 // 保留一条被封印治愈后仍可运转的 MP 引擎（技能菜单 ⛔封印 与 skillForbidden 同口径零改动）。
 // 旧档兼容：migrateQuests 读档按等级补学（Lv≥11 老存档自动补领，与 v21.48 同族）。
-const GAME_VERSION = 'v21.83';
+// v21.84 新成就「灯燃长夜」（新内容·等级里程碑，承 lvl5/lvl10 两档先例）：成就版图的等级线此前
+// 只有 Lv5 独当一面 / Lv10 守灯者 两档，终局收尾段（Lv10-12）恰好是设计目标等级最高的空档——
+// 终焉之神 Lv12 是隐藏真 Boss、试炼三连战推荐等级 RUSH_REC_LV=12（三关 SPECIES[].lv 最大值派生），
+// 玩家「练到该到的等级」这个节点此前毫无印记；现补 Lv12 第三档，阈值读新常量 LVL12_GOAL
+// （判定/描述/进度三处同读一份源），零新计数/零新状态/零存档变化（读既有 hero.level）。
+const GAME_VERSION = 'v21.84';
 
 const T=32;
 
@@ -1332,6 +1337,11 @@ const HUNT_GOAL = 10;    // 成就「驱雾十战」需累计讨伐的魔物只�
 // 已预告 lvl5 的裸 5 与 lvl10 的裸 10 属下批对象、当时刻意保留；同为等级口径的两条一并收口，行为逐字不变）
 const LVL5_GOAL = 5;     // 成就「独当一面」需达到的等级
 const LVL10_GOAL = 10;   // 成就「守灯者」需达到的等级
+// v21.84 补 Lv12 档（新成就「灯燃长夜」·等级线第三档）：lvl5/lvl10 后等级线在 Lv10-12 的终局
+// 收尾段无第三档——终焉之神 Lv12 / 试炼推荐等级 RUSH_REC_LV=12 是设计上的「该到」等级，达标即此档；
+// 与 LVL5_GOAL/LVL10_GOAL 同一「成就阈值数据化」家族（判定/描述/进度三处同读一份源），
+// 零新计数/零新状态/零存档变化（读既有 hero.level，无等级上限故 13+ 级亦达标）。
+const LVL12_GOAL = 12;   // 成就「灯燃长夜」需达到的等级
 
 // 成就「初露锋芒」累计胜场阈值（单一数据源）：ACH_LIST 该条的判定（ok: totalWins >= FIRSTBLOOD_GOAL）、
 // 进度条（prog「X/N」）两处同读此源（描述 d「赢得第一场战斗」无数字，无需读数）——此前 1 硬编码在
@@ -1960,6 +1970,11 @@ const ACH_LIST=[
   {id:'lucky',      name:'幸运眷顾', d:`累计获得 ${LUCKY_GOAL} 次额外掉落`, ok:g=>(g.drops||0)>=LUCKY_GOAL, prog:g=>`${g.drops||0}/${LUCKY_GOAL}`},
   {id:'lvl5',       name:'独当一面', d:`等级达到 ${LVL5_GOAL} 级`, ok:g=>g.level>=LVL5_GOAL, prog:g=>`${g.level||1}/${LVL5_GOAL}`},
   {id:'lvl10',      name:'守灯者',   d:`等级达到 ${LVL10_GOAL} 级`, ok:g=>g.level>=LVL10_GOAL, prog:g=>`${g.level||1}/${LVL10_GOAL}`},
+  // 灯燃长夜（v21.84 新成就·等级里程碑）：等级线第三档——Lv12 是终焉之神等级与试炼推荐等级
+  // （RUSH_REC_LV=12）的「该到」档；判读既有 hero.level、与 lvl5/lvl10 同款（零新计数/零新状态/
+  // 零迁移），无 r 字段纯里程碑（承 lvl5/lvl10 同款惯例）；名取「灯燃长夜」——练到终局等级，
+  // 手里的灯足够亮、足以燃过无字回廊的长夜。
+  {id:'lvl12',      name:'灯燃长夜', d:`等级达到 ${LVL12_GOAL} 级`, ok:g=>g.level>=LVL12_GOAL, prog:g=>`${g.level||1}/${LVL12_GOAL}`},
   {id:'rich',       name:'小富翁',   d:`持有 ${RICH_GOLD} 金币`, ok:g=>g.gold>=RICH_GOLD, prog:g=>`${Math.floor(g.gold||0)}/${RICH_GOLD}`},
   {id:'scholar',    name:'记忆收藏家', d:`记忆图鉴收录 ${SCHOLAR_GOAL} 种魔物`, ok:g=>Object.keys(g.bestiary||{}).length>=SCHOLAR_GOAL, prog:g=>`${Object.keys(g.bestiary||{}).length}/${SCHOLAR_GOAL}`},
   {id:'quest',      name:'三株荧光', d:'完成灯长的支线任务', ok:g=>(g.quests&&g.quests.side_mushroom==='done')||g.quest>=3},
@@ -2286,7 +2301,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
