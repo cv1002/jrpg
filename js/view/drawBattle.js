@@ -276,6 +276,18 @@ export function drawBattle() {
         return s;
       });
       text(`敌方招数：${tags.join(' / ')}`, 620, 162, 'bold 11px', '#8fa8b8', 'right');
+    } else {
+      // v21.75 普通魔物「敌方特性」角标（信息透明·纯显示）：招数一览只覆盖持 acts 的 Boss/精英，
+      // 普通魔物在此槽位刻意留白（上注「无 acts 不显示避免噪音」）——但带 SPECIES tag 的普通怪
+      // （毒蛇「☠️ 会施毒 · 扣血N回合」/雾灵「❄️ 雾凝成冰」）的招牌机制在战斗内全程无一字提示：
+      // 图鉴 tag 要已讨伐才揭示、威胁预警只报强弱不报机制，第一次撞见毒蛇的玩家只有中招后才知道
+      // 它会施毒；现于同一槽位（620,162 右对齐、与招数一览同式同色）直读 SPECIES[canonicalName].tag
+      // 同源显示「敌方特性：…」——调特性文案只改 data.js SPECIES 一处，图鉴 codexTag / 帮助页
+      // 「石心魔像·出没」行 / 本角标三端自动跟随（零裸字面量）；无 tag 的普通怪（史莱姆/野狼/骷髅兵/
+      // 哥布林/树精/石魔像）保持留白零噪音；石甲/灼烧/冻结角标在 112-144 行，特性行 162 不与其重叠。
+      // 纯显示零结算零存档变化。
+      const spTag = (SPECIES[canonicalName(enemy.name)] || {}).tag;
+      if (spTag) text(`敌方特性：${spTag}`, 620, 162, 'bold 11px', '#8fa8b8', 'right');
     }
   }
   drawHero(BATTLE_HERO.x, BATTLE_HERO.y, 'R', hero.hurt ? { hurt: 1 } : null, BATTLE_SCALE);
