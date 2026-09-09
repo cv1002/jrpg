@@ -206,8 +206,14 @@ export function drawCodex(){
   }
   const total=names.reduce((a,n)=>a+hero.bestiary[n],0);
   const have=BESTIARY_TARGET.filter(n=>(hero.bestiary||{})[n]>=1).length;
+  // v21.78 图鉴页脚补「已遭遇 X/13」汇总（信息透明·纯显示）：v21.37 起每行已遭遇未讨伐者标真实「已遭遇 ✕N」，
+  // 但页脚只有「记忆收录 X/13（已讨伐种类）/累计讨伐（只数）」，没有「至少撞见过几种」的总数——玩家想知道
+  // 「还剩几种从没碰到过」只能逐行数 ❓ 或数「⚠️ 尚未讨伐」；现按 BESTIARY_TARGET 同源补一行汇总
+  // （与每行 seenCt 同读 hero.seen，真身经 canonicalName 归一与讨伐同口径），与上方「记忆收录」构成
+  // 「见过 vs 打过」双口径，一眼看出「见过 N 种、还差 M 种没撞见」。纯显示零结算零存档变化。
+  const met=BESTIARY_TARGET.filter(n=>((hero.seen||{})[n]|0)>0).length;
   text(`记忆收录：${have}/${BESTIARY_TARGET.length}`,320,404,'14px','#62c6ff','center');
-  text(`累计讨伐：${total}   ·   额外掉落：${hero.drops||0}`,320,426,'14px','#ffd24a','center');
+  text(`累计讨伐：${total}   ·   已遭遇：${met}/${BESTIARY_TARGET.length}   ·   额外掉落：${hero.drops||0}`,320,426,'14px','#ffd24a','center');
   const remain=names.length>0?(rows.length-(S.codexScroll+PAGE)):0;
   text(`按 B / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览（还有 ${remain} 种）`:''}`,320,448,'12px','#7d93a3','center');
 }
