@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -251,7 +251,15 @@ function slotPreview(slot) {
     // v19.64 存档预览补时间戳：saveGame 写入 savedAt，slotPreview 显示相对时间，方便多槽玩家一眼识别最新档
     // v19.65 存档预览补累计游玩时长：slotPreview 追加 ⏱HH:MM:SS，多槽时一眼区分「哪个档玩得更久」，
     // 与状态页/结算页 fmtTime 同源算法，纯显示零结算变化
-    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)}`;
+    // v21.79 存档预览补收集进度（信息透明·纯显示）：多存档槽时标题页此前只报 姓名/等级/金币/地图/进度/
+    // 难度/存档时间/时长——「这个档收集到哪了」却无一字，挑更完整的档继续只能进游戏逐页翻；现按
+    // 成就页/图鉴页/状态页同口径追加 成就N/M·图鉴N/M·宝箱N/M（推进性计数），与 ACH_LIST /
+    // BESTIARY_TARGET / chestCount·chestTotal 同一份单一数据源（chestCount 防御式兼容 Set/数组/缺失
+    // 三形态、旧档零迁移），绝无第二套口径；零结算零存档变化，仅追加显示
+    const achN = (hero.ach || []).length;
+    const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
+    const chestN = chestCount(hero);
+    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)} · 成就${achN}/${ACH_LIST.length}·图鉴${codexN}/${BESTIARY_TARGET.length}·宝箱${chestN}/${chestTotal()}`;
   } catch (e) {
     return null;
   }
