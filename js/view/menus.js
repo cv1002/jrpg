@@ -764,6 +764,16 @@ export function drawEnding(){
   const y0 = lines.length > 5 ? 146 : 166;
   lines.forEach((l,i)=>text(l,320,y0+i*step,'bold 16px','#e8eef1','center'));
   text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 记忆 ${(hero.fragments||[]).length}/${FRAGMENTS.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}`,320,346,'13px','#7d93a3','center');
-  text('按 Enter 返回标题',320,376,'13px','#7d93a3','center');
+  // v21.87 尾声战绩页补收集进度两件（信息透明·纯显示）：v19.49 战绩行（讨伐/成就/记忆/金币/时长）
+  // 已覆盖 run 总结屏的战果口径，但 v21.79 标题预览/v21.82 胜利画面确立的「收集进度三件套」
+  // （成就·图鉴·宝箱）在「按 Enter 观看尾声」这一刻仍缺 图鉴 N/13 与 宝箱 N/12——玩家站在这趟
+  // run 最后的总结屏上想「继续收集还是回标题」，一眼看不到图鉴/宝箱收到哪了；现与 slotPreview
+  // /drawWin 同读 BESTIARY_TARGET / chestCount·chestTotal 一份单一数据源（chestCount 三形态
+  // 防御式），绝无第二套口径；新增行 366、页脚 376→396 让位（文案逐字未动），战绩行/故事行零位移，
+  // 纯显示零结算零存档变化。
+  const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
+  const chestN = chestCount(hero);
+  text(`📕 图鉴 ${codexN}/${BESTIARY_TARGET.length} · 📦 宝箱 ${chestN}/${chestTotal()}`,320,366,'bold 13px','#7dd47f','center');
+  text('按 Enter 返回标题',320,396,'13px','#7d93a3','center');
 }
 bind.drawEnding=drawEnding;

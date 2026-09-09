@@ -321,7 +321,12 @@
 // lvl5/memoir 纯里程碑惯例）；解锁时机：brewNow 酿造成功当场 applyAchievements（承 v21.73
 // buyArmor 当场判定「反馈不迟到」惯例），零新状态/零结算/零存档格式变化（brews 随既有存档快照
 // 自动落盘）。
-const GAME_VERSION = 'v21.86';
+// v21.87 尾声战绩页补收集进度两件（体验打磨·信息透明·纯显示）：drawEnding（Enter 观看尾声的
+// run 总结屏）在 v19.49 战绩行之下补「📕 图鉴 N/M · 📦 宝箱 N/M」，与 v21.79 标题预览
+// slotPreview / v21.82 胜利画面 drawWin 同读 BESTIARY_TARGET / chestCount·chestTotal 一份
+// 单一数据源——收集三件套（成就·图鉴·宝箱）至此在 标题预览/胜利画面/尾声 三处 run 总结屏齐备；
+// 纯显示零结算零存档变化。
+const GAME_VERSION = 'v21.87';
 
 const T=32;
 
