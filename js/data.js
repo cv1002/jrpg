@@ -310,7 +310,18 @@
 // 结算）；现按 rushDone 分档：已通关 →「✅ 试炼三连战 · 已通关（可再战）」+「💰 再战通关奖 N 金
 // （随等级）」+ 面向提示「踩上再战」，未通关/未解锁档逐字零回归（改动全在 view/drawWorld.js，
 // data.js 仅版本号）。
-const GAME_VERSION = 'v21.85';
+// v21.86 新成就「灵药初成」（新内容·酿造线里程碑）：成就版图的酿造/灵药线此前全无纪念——30 项
+// 成就里没有任何一条关涉酿造或高级灵药（图鉴 perfection/支线 allquests/碎片 memoir/技能 skills/
+// 宝箱 allchests/等级 lvl5·lvl10·lvl12/装备 legend·aegis/难度 hardtrue/精英 elites 各线都有
+// 里程碑，唯独这条「采蘑菇 → 酿造锅 → 高级灵药」的自选系统链没有），玩家第一次酿出灵药这一刻
+// 毫无回响；现补第一档（ELIXIR_GOAL=1 纯里程碑，承 firstblood「第一场」同款）：判定/进度同读新
+// 常量 ELIXIR_GOAL（与 FIRSTBLOOD_GOAL/LVL5_GOAL 同一「成就阈值数据化」家族，改门槛只改
+// data.js 一处自动跟随），计数读 core.brewNow 新写入的 hero.brews 防御式计数（(g.brews||0)，
+// 旧档无此字段=0 不误解锁、零迁移，承 v19.41 seen 同款）；无 r 字段（奖励在酿造产物本身，同
+// lvl5/memoir 纯里程碑惯例）；解锁时机：brewNow 酿造成功当场 applyAchievements（承 v21.73
+// buyArmor 当场判定「反馈不迟到」惯例），零新状态/零结算/零存档格式变化（brews 随既有存档快照
+// 自动落盘）。
+const GAME_VERSION = 'v21.86';
 
 const T=32;
 
@@ -1359,6 +1370,14 @@ const LVL12_GOAL = 12;   // 成就「灯燃长夜」需达到的等级
 // 当时刻意保留其裸 1，本次收口「初露锋芒」后全库 ACH_LIST 数值型门槛收口完毕）
 const FIRSTBLOOD_GOAL = 1;   // 成就「初露锋芒」需累计赢得的战斗场数
 
+// 成就「灵药初成」酿造瓶数阈值（单一数据源·v21.86）：ACH_LIST 该条的判定（ok: g.brews >= ELIXIR_GOAL）
+// 与进度（prog「X/N」）两处同读此源——酿造瓶数此前只存在于 core.brewNow 的 potion2 库存（灵药瓶数，
+// 含任务奖励/掉落来源，不代表「酿造」行为），成就若按 potion2 判定会把「任务送的灵药」误记为酿造；
+// 故新增 hero.brews 防御式计数（只由 brewNow 写入，旧档无此字段=0 不误解锁零迁移），单设此常量
+// （与 FIRSTBLOOD_GOAL / LVL5_GOAL / TREASURE_GOAL 同一「成就阈值数据化」家族——本家族第一条
+// 「酿造行为」全新门槛，沿用同一单源模式，首瓶即达标、承 firstblood「第一场」同款）
+const ELIXIR_GOAL = 1;     // 成就「灵药初成」需酿造出的高级灵药瓶数
+
 // 成就「记忆守护者」图鉴全收集金币奖励（单一数据源）：hero.applyAchievements 的专享奖励
 // 结算（gold += PERFECTION_GOLD）与解锁横幅文案（「额外奖励 N 金币」）两处同读此源——
 // 此前 999 硬编码在 hero.js 同一分支内两处互不相关（发奖数额与横幅文案数额）：想调奖励
@@ -2076,6 +2095,15 @@ const ACH_LIST=[
   // quests.setSideQuest 写定），零新计数/零新状态/零新依赖；无 r 字段（奖励在任务结算侧，
   // 同 cartman/mist/stone 惯例不重复标注）
   {id:'grain', name:'护粮安民', d:'完成粮铺掌柜的委托（护粮的委托）', ok:g=>!!(g.quests&&g.quests.side_grain==='done')},
+  // 灵药初成（v21.86 新成就·酿造线里程碑）：酿造/高级灵药线的第一档——30 项成就里此前没有任何
+  // 一条关涉酿造或灵药（采蘑菇→酿造锅→高级灵药是条自选系统链，玩家第一次酿出灵药毫无回响）；
+  // 判定/进度同读 ELIXIR_GOAL 一份源（与 firstblood/LVL5_GOAL 同一「成就阈值数据化」家族），
+  // 计数读 core.brewNow 写入的 hero.brews 防御式计数（(g.brews||0)，旧档无此字段=0 不误解锁、
+  // 零迁移，承 v19.41 seen 同款——成就只认「酿造」行为，不把任务奖励/掉落的灵药误记为酿造）；
+  // 无 r 字段（奖励在酿造产物本身，同 lvl5/memoir 纯里程碑惯例），prog 同式 X/N（与 lvl5 同族
+  // 不钳制）；解锁时机：brewNow 酿造成功当场 applyAchievements（承 v21.73 buyArmor 当场判定
+  // 「反馈不迟到」惯例，下一场战斗胜利的 applyAchievements 通路同样兜底）。
+  {id:'brew', name:'灵药初成', d:'酿造出第一瓶高级灵药', ok:g=>(g.brews||0)>=ELIXIR_GOAL, prog:g=>`${g.brews||0}/${ELIXIR_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -2308,7 +2336,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,

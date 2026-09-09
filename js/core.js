@@ -105,6 +105,16 @@ function brewNow() {
   hero.mushrooms -= BREW_MUSHROOMS;
   hero.gold -= BREW_GOLD;
   hero.potion2++;
+  // v21.86 新成就「灵药初成」（酿造线里程碑·反馈不迟到）：酿造链此前全无成就纪念（30 项成就里
+  // 没有任何一条关涉酿造/灵药），玩家第一次酿出高级灵药这一刻毫无回响；现按 v21.73 buyArmor
+  // 当场判定同款（承 world.js 开箱当场判定「反馈不迟到」惯例），酿造成功当场 applyAchievements——
+  // 判定读本函数写入的 hero.brews 防御式计数（(g.brews||0)，旧档无此字段=0 不误解锁、零迁移，
+  // 承 v19.41 seen 同款），ELIXIR_GOAL 单一数据源在 data.js；applyAchievements 幂等（已解锁
+  // 不重报、不重复触发横幅），零结算零数值零存档格式变化（brews 随既有存档快照自动落盘/读回）。
+  // potion2 库存结算（含任务奖励/掉落来源）逐字未动——成就只认「酿造」行为，不把「任务送的
+  // 灵药」误记为酿造。
+  hero.brews = (hero.brews || 0) + 1;
+  applyAchievements();
   SFX.levelup();
   bind.renderHUD();
   // v19.70 酿造成功反馈追加剩余材料（信息透明·纯显示）：v19.69 已补齐材料不足时的差额提示，

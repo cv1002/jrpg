@@ -81,7 +81,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.83', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 84)), GAME_VERSION);
 ok('data.js 含 v21.84 注释（新成就「灯燃长夜」说明）', dSrc.includes('v21.84 新成就「灯燃长夜」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.84', dSrc.includes("const GAME_VERSION = 'v21.85';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.84', dSrc.includes("const GAME_VERSION = 'v21.86';"));
 
 // —— LVL12_GOAL 常量（与 LVL5_GOAL/LVL10_GOAL 同族：判定/描述/进度三处同读）——
 ok('LVL12_GOAL===12 且已从 data.js 导出（与 LVL5_GOAL/LVL10_GOAL 同档）',
@@ -91,7 +91,7 @@ ok('LVL12_GOAL===12 且已从 data.js 导出（与 LVL5_GOAL/LVL10_GOAL 同档�
 const ach = ACH_LIST.find((a) => a.id === 'lvl12');
 ok('ACH_LIST 含 lvl12「灯燃长夜」且 id 唯一',
   !!ach && ach.name === '灯燃长夜' && ACH_LIST.filter((a) => a.id === 'lvl12').length === 1);
-ok('ACH_LIST 由 29 → 30 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 30, String(ACH_LIST.length));
+ok('ACH_LIST 由 30 → 31 项（新增一项，精确总数由 v21.86 守护，本件存活性口径）', ACH_LIST.length >= 30, String(ACH_LIST.length));
 ok('lvl12 无 r 字段且描述由 LVL12_GOAL 派生（「等级达到 12 级」非裸字面量）',
   !('r' in ach) && ach.d === `等级达到 ${LVL12_GOAL} 级`, ach && ach.d);
 ok('lvl12 等级线第三档与 lvl5/lvl10 同款零回归（d 同式派生 + prog 同式 X/N）',
@@ -156,10 +156,10 @@ ok('运行期：成就页第三页滚动渲染不抛错（30 项 PAGE=10 三页�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2184_lvl12', readme.includes('smoke_v2184_lvl12'));
-ok('README 件套口径为八十一件套（八十件套清除）', readme.includes('八十一件套（八十件套清除）'));
+ok('README 件套口径为八十二件套（八十一件套清除）', readme.includes('八十二件套（八十一件套清除）'));
 ok('README 含 v21.84 守护描述', readme.includes('v21.84 起含'));
-ok('README 成就口径「30 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 30 项进度') && readme.includes('**30 项成就**'));
+ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 31 项进度') && readme.includes('**31 项成就**'));
 ok('package.json 已收录 smoke_v2184_lvl12（npm test 串跑第 80 份）',
   pkg.includes('smoke_v2184_lvl12.mjs') && /smoke_v2183_mpsip\.mjs && node tests\/smoke_v2184_lvl12\.mjs/.test(pkg));
 
@@ -169,18 +169,18 @@ const suite78 = ['smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v21
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite78) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为八十一件套（八十件套清除）`,
-    src.includes('八十一件套（八十件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为八十二件套（八十一件套清除）`,
+    src.includes('八十二件套（八十一件套清除）'));
 }
 for (const nm of ['smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v21.85';"));
+    src.includes("const GAME_VERSION = 'v21.86';"));
 }
 for (const nm of ['smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 成就 pin 已随新现实更新（29 项 pin 零残留，30 项双处落位）`,
-    src.includes("readme.includes('成就一览（全部 30 项进度'") && !src.includes('**29 项成就**'));
+  ok(`${nm} 的 README 成就 pin 已随新现实更新（29 项 pin 零残留，31 项双处落位）`,
+    src.includes("readme.includes('成就一览（全部 31 项进度'") && !src.includes('**29 项成就**'));
 }
 const s2180 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2180_grain.mjs'), 'utf8');
 ok('smoke_v2180 的 ACH_LIST 精确计数断言已去硬化（===29 零残留，>=29 存活性口径落位）',
