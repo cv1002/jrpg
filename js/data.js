@@ -337,7 +337,12 @@
 // slotPreview / v21.82 胜利画面 drawWin 同读 BESTIARY_TARGET / chestCount·chestTotal 一份
 // 单一数据源——收集三件套（成就·图鉴·宝箱）至此在 标题预览/胜利画面/尾声 三处 run 总结屏齐备；
 // 纯显示零结算零存档变化。
-const GAME_VERSION = 'v21.88';
+// v21.89 旧档 visited 兜底与旅行端防御式读取（存档兼容·韧性，承 v19.41 seen / v21.88 wander
+// (g.visited||[]) 同一「旧档零迁移、防御式读取」家族）：v21.88 成就端已防御，但 快速旅行 两端
+// （menus.drawTravel 渲染 / core.doTravel 判定）仍直接 hero.visited.includes——旧档缺 visited
+// 字段时按 T 开旅行页即抛 TypeError；现 migrateQuests 读档兜底补 ['village']（与 seen/fragments/
+// skills 兜底同族）+ 两端防御式读取，零行为变化、零迁移判定改动。
+const GAME_VERSION = 'v21.89';
 
 const T=32;
 

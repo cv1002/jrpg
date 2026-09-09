@@ -475,7 +475,7 @@ export function drawTravel(){
   const hero = S.G;
   drawWorld(); panel(120,60,400,320,'🧭 快速旅行');
   TRAVEL_LIST.forEach(([k,nm,desc,hint],i)=>{
-    const on=i===S.travelSel, unlocked=hero.visited.includes(k);
+    const on=i===S.travelSel, unlocked=(hero.visited||[]).includes(k);
     // 当前所在地标注（信息透明·纯显示）：绿色 📍 一眼看出自己在哪，避免误传送
     const here=k===curMap();
     text((on?'▶ ':'  ')+(unlocked?nm:'？？？ · 未探索')+(here?' 📍':''),180,110+i*52,'16px',on?'#ffd24a':(unlocked?'#e8eef1':'#7d93a3'));

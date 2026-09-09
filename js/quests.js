@@ -21,6 +21,13 @@ export function migrateQuests(hero) {
   // 逃跑/战败后图鉴也能揭示名字与出没地；旧档/新档都在此兜底为空对象，
   // 新增字段随 snapshotHero 全量快照自动持久化，零存档结构变更。
   if (!hero.seen) hero.seen = {};
+  // v21.89 旧档 visited 兜底（存档兼容·承上方 seen/fragments/skills 兜底同族）：快速旅行两端
+  // （menus.drawTravel 渲染 / core.doTravel 判定）直接读 hero.visited，旧档（含单文件时代读档）
+  // 可能无此字段——缺字段时按 T 开旅行页即抛 TypeError（v21.88 成就端已 (g.visited||[]) 防御、
+  // 旅行端是同一字段仅有的两处直接读）；现读档兜底为 ['village']（任何存档必然到访过起始村、
+  // 与 newGame 起始值逐字一致），零迁移判定改动、不误解锁「走遍四方」（其余三图仍须真实到访）、
+  // 既有含 visited 的存档逐字不动。
+  if (!Array.isArray(hero.visited)) hero.visited = ['village'];
   const quests = hero.quests;
   if (quests.side_mushroom == null) {
     if (hero.quest === 1) quests.side_mushroom = 'active';

@@ -125,7 +125,7 @@ function brewNow() {
 
 function doTravel() {
   const [key] = TRAVEL_LIST[S.travelSel];
-  if (!S.G.visited.includes(key)) {
+  if (!(S.G.visited||[]).includes(key)) {
     SFX.cancel();
     bind.boxMsg('尚未探索此地，先去找到入口吧。', EVENT_MSG_MS);
     return;
