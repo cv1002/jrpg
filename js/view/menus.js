@@ -728,11 +728,22 @@ export function drawWin(){
   const kills=Object.values(S.G.bestiary||{}).reduce((a,b)=>a+b,0);
   CTX.fillStyle='#a8ff8a'; CTX.font='bold 14px sans-serif';
   CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}`,CV.width/2,362);
+  // v21.82 胜利画面补收集进度两件（信息透明·纯显示）：v19.49 战绩行已有 成就 N/M（三件套之一），
+  // 但 v21.79 标题预览确立的「收集进度三件套」（成就·图鉴·宝箱）在「灯芯回来了」这一刻仍缺 图鉴 N/13
+  // 与宝箱 N/12——玩家站在这趟 run 的总结屏上想「继续收集还是 R 重开/Enter 尾声」，一眼看不到
+  // 图鉴/宝箱收到哪了；现与 slotPreview（v21.79）/成就页/图鉴页/状态页同读 BESTIARY_TARGET /
+  // chestCount·chestTotal 一份单一数据源，绝无第二套口径；页脚下移 380→396 让位（画布 640×480
+  // 垂直富余，主标题/怪物/战绩行全部零位移），纯显示零结算零存档变化。
+  const codexN = BESTIARY_TARGET.filter((n) => ((S.G.bestiary || {})[n] | 0) >= 1).length;
+  const chestN = chestCount(S.G);
+  CTX.fillStyle='#7dd47f'; CTX.font='bold 14px sans-serif';
+  CTX.fillText(`📕 图鉴 ${codexN}/${BESTIARY_TARGET.length} · 📦 宝箱 ${chestN}/${chestTotal()}`,CV.width/2,378);
   CTX.fillStyle='#7d93a3'; CTX.font='14px sans-serif';
   // v21.70 胜利画面 R 重开提示补「连按两次」（可发现性·与 main.js win.onKey 两按确认、标题页提示行
   // 「R 重开新档(连按两次)」同口径，承 v21.18「按键提示必须如实反映防误触口径」主线）：win 的 R 自
   // 本版起为两段触发，页脚仍写单击口径会让玩家以为提示过期/失效；只改文案，字号/基线/颜色逐字未动。
-  CTX.fillText('按 Enter 观看尾声 · 按 R 重开新档(连按两次)',CV.width/2,380);
+  // v21.82 页脚 y 380→396 让位给上方收集进度行（文案逐字未动）。
+  CTX.fillText('按 Enter 观看尾声 · 按 R 重开新档(连按两次)',CV.width/2,396);
 }
 bind.drawWin=drawWin;
 
