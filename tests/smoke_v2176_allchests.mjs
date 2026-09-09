@@ -124,7 +124,7 @@ ok('TREASURE_GOAL 仍 6 且 < chestTotal()（开箱寻宝半程档未动，语�
 const achAll6 = ACH_LIST.find((a) => a.id === 'allchests');
 ok('ACH_LIST 含 allchests「一箱不漏」且 id 唯一',
   !!achAll6 && achAll6.name === '一箱不漏' && ACH_LIST.filter((a) => a.id === 'allchests').length === 1);
-ok('ACH_LIST 由 26 → 27 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 27, String(ACH_LIST.length));
+ok('ACH_LIST 由 26 → 27 项（v21.77 起精确总数由新版冒烟守护，本件存活性口径 >= 27）', ACH_LIST.length >= 27, String(ACH_LIST.length));
 ok('allchests 成就无 r 字段（与 memoir/skills/aegis/hardtrue 同款纯里程碑——宝箱内容本身就是奖励）',
   !!achAll6 && !('r' in achAll6));
 ok('allchests 成就有 prog 字段（计数成就，与 chests/lucky/hunt10 同款实时进度）',
@@ -246,11 +246,13 @@ ok('成就页 drawAch 两态 + 第三页滚动渲染不抛错（未解锁/已解
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2176_allchests', readme.includes('smoke_v2176_allchests'));
-ok('README 件套口径为七十二件套（七十一件套清除）', readme.includes('七十二件套（七十一件套清除）'));
+ok('README 件套口径为七十三件套（七十二件套清除）', readme.includes('七十三件套（七十二件套清除）'));
 ok('README 含 v21.76 守护描述（新成就「一箱不漏」（全图宝箱全收集里程碑）守护）',
   readme.includes('新成就「一箱不漏」（全图宝箱全收集里程碑）守护'));
-ok('README 成就口径「27 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 27 项进度') && readme.includes('**27 项成就**'));
+// v21.77 随新现实更新：README 成就口径由「27 项」双处递增为「28 项」双处（elites 成就入列），
+// 本件断言同步递增（承 v21.73/v21.76 同款处理先例）。
+ok('README 成就口径「28 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 28 项进度') && readme.includes('**28 项成就**'));
 ok('package.json 已收录 smoke_v2176_allchests（npm test 串跑第 72 份）', pkg.includes('smoke_v2176_allchests.mjs'));
 const s2175 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2175_battletag.mjs'), 'utf8');
 ok('smoke_v2175 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',

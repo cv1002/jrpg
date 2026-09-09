@@ -262,7 +262,16 @@
 // 零新计数/零新状态/零迁移；无 r 字段（与 memoir/skills/aegis/hardtrue 同款纯里程碑——宝箱内容
 // 本身就是奖励）。解锁时机：world.onChestStep 开箱当场 applyAchievements（v19.51 既有通路），
 // 第 12 只落袋即解锁，反馈不迟到。
-const GAME_VERSION = 'v21.76';
+// v21.77 新成就「精英猎手」（双精英讨伐里程碑，ACH_LIST 27→28）——精英线里程碑补齐：全游戏仅有的
+// 两只「isElite」精英（雾语林精英石心魔像 ELITE_GOLEM / 无字回廊中段残焰魔像 EMBER_GOLEM）此前
+// 只有侧面纪念（石心魔像掉记忆碎片、残焰魔像挂守名者支线），成就页查无「精英猎手」这一档——对比
+// 图鉴（perfection）/支线（allquests）/碎片（memoir）/技能（skills）/宝箱（allchests）各线里程碑齐备，
+// 双精英本身也应有一枚「猎手」印记。判定/进度同读 ELITE_GOLEM/EMBER_GOLEM.name 与既有 hero.bestiary
+// 讨伐计数（与 perfection/condProg 同一份源——未来给精英改名只改 ELITE_GOLEM/EMBER_GOLEM 一处、
+// 成就描述/判定自动跟随，零裸字面量）；防御式 (g.bestiary||{})[name]||0 读取，旧档零迁移；无 r 字段
+// （纯里程碑——击杀本身即奖励：碎片/蘑菇/支线进度）。解锁时机：winBattle 击杀第二只精英当场
+// applyAchievements（既有「反馈不迟到」通路，bestiary 结算落账在前、判定在后）。
+const GAME_VERSION = 'v21.77';
 
 const T=32;
 
@@ -1926,6 +1935,15 @@ const ACH_LIST=[
   // 宝箱内容本身就是奖励）。解锁时机：world.onChestStep 开箱当场 applyAchievements（v19.51
   // 既有「反馈不迟到」通路），最后一只落袋即解锁。
   {id:'allchests', name:'一箱不漏', d:`开启全图全部 ${chestTotal()} 个宝箱`, ok:g=>chestCount(g)>=chestTotal(), prog:g=>`${chestCount(g)}/${chestTotal()}`},
+  // 精英猎手（v21.77 新成就·双精英讨伐里程碑）：全游戏仅有的两只 isElite 精英——雾语林随机精英
+  // 「石心魔像」（约 7% 撞见，掉记忆碎片、必掉蘑菇、石甲机制）与无字回廊中段祭坛「残焰魔像」
+  // （守名者支线目标）——此前成就版图里只有侧面纪念（碎片/支线），唯独没有「猎手」这一档；
+  // 判定/进度同读 ELITE_GOLEM/EMBER_GOLEM.name（与 withSpecies/图鉴/帮助页同一份精英数据源，
+  // 改精英名只改 data.js 一处、本成就自动跟随，绝无第二套口径）+ 既有 hero.bestiary 讨伐计数
+  // （与 perfection/condProg 同读一份源），零新计数/零新状态/零迁移；无 r 字段（与 memoir/skills/
+  // aegis/hardtrue 同款纯里程碑——击杀本身即奖励）。解锁时机：winBattle 既有 applyAchievements
+  // 通路，第二只精英落袋当场解锁、反馈不迟到。
+  {id:'elites', name:'精英猎手', d:`讨伐精英「${ELITE_GOLEM.name}」与「${EMBER_GOLEM.name}」`, ok:g=>((g.bestiary||{})[ELITE_GOLEM.name]||0)>=1 && ((g.bestiary||{})[EMBER_GOLEM.name]||0)>=1, prog:g=>`${(((g.bestiary||{})[ELITE_GOLEM.name]||0)>0?1:0)+(((g.bestiary||{})[EMBER_GOLEM.name]||0)>0?1:0)}/2`},
 ];
 
 function codexTag(name) {
