@@ -104,13 +104,13 @@ ok('battle.js bestiary 计数结算逐字零回归（hero.bestiary[bookName] +1 
 ok('battle.js 普通胜利文案「🏆 胜利！获得…（剩余 N 金）」逐字零回归（v19.80 口径未动）',
   bSrc.includes('🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）'));
 
-// —— 数据契约：四条讨伐支线 condProg/turnin/name 齐备（战报读取面单一数据源）——
-const HUNTS = ['side_mist', 'side_stone', 'side_ember', 'side_bone'];
-ok('四条讨伐支线均具 condProg/turnin/name（战报与日志/NPC 同读一份源）',
+// —— 数据契约：五条讨伐支线 condProg/turnin/name 齐备（战报读取面单一数据源；v21.80 side_grain 入列后随新现实更新）——
+const HUNTS = ['side_mist', 'side_stone', 'side_ember', 'side_bone', 'side_grain'];
+ok('五条讨伐支线均具 condProg/turnin/name（战报与日志/NPC 同读一份源）',
   HUNTS.every((id) => { const q = QUESTS[id]; return q && q.condProg && q.turnin && q.name; }));
-ok('side_name（记忆碎片）确有 condProg 且为唯一被排除者（双报排除面精确）',
+ok('side_name（记忆碎片）确有 condProg 且为唯一被排除者（双报排除面精确；v21.80 随新现实更新 5→6）',
   !!QUESTS.side_name && !!QUESTS.side_name.condProg &&
-  Object.values(QUESTS).filter((q) => q.condProg).length === 5);
+  Object.values(QUESTS).filter((q) => q.condProg).length === 6);
 
 // —— 运行期实证：winBattle 真实路径 + bind.boxMsg 捕获（承 v21.40 捕获桩法）——
 function mkHero(extra) {

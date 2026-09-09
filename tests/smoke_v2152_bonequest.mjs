@@ -145,10 +145,10 @@ ok('ACH_LIST 含 bone「亡骨还乡」且 id 唯一',
 ok('ACH_LIST 含 bone 且总数 ≥23（v21.59 起精确总数由当版冒烟守护）', !!achBone && ACH_LIST.length >= 23, String(ACH_LIST.length));
 ok('bone 成就判定读 quests.side_bone（未做 false / 已做 true）',
   achBone.ok({ quests: {} }) === false && achBone.ok({ quests: { side_bone: 'done' } }) === true);
-// 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（6 → 7）
+// 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（6 → 7 → 8，v21.80 side_grain 入列后随新现实更新）
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心支线分母自动跟随为 7（side_bone 入列，无需改 achievement 本体）',
-  achAll && achAll.prog({ quests: {} }) === '0/7' && achAll.d.includes('7 个支线'), achAll && achAll.prog({ quests: {} }));
+ok('灯火同心支线分母自动跟随为 8（side_grain 入列，无需改 achievement 本体；v21.80 随新现实更新）',
+  achAll && achAll.prog({ quests: {} }) === '0/8' && achAll.d.includes('8 个支线'), achAll && achAll.prog({ quests: {} }));
 ok('allquests 对只做 side_bone 的存档不误判完成',
   achAll.ok({ quests: { side_bone: 'done' } }) === false);
 

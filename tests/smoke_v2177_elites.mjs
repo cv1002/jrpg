@@ -118,7 +118,7 @@ ok('BESTIARY_TARGET 仍 13 种且含双精英（讨伐可及——精英击杀�
 const achEl = ACH_LIST.find((a) => a.id === 'elites');
 ok('ACH_LIST 含 elites「精英猎手」且 id 唯一',
   !!achEl && achEl.name === '精英猎手' && ACH_LIST.filter((a) => a.id === 'elites').length === 1);
-ok('ACH_LIST 由 27 → 28 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 28, String(ACH_LIST.length));
+ok('ACH_LIST 由 27 → 28 项（v21.80 起精确总数由新版冒烟守护，本件存活性口径 >= 28）', ACH_LIST.length >= 28, String(ACH_LIST.length));
 ok('elites 成就无 r 字段（与 memoir/skills/aegis/hardtrue/allchests 同款纯里程碑——击杀本身即奖励）',
   !!achEl && !('r' in achEl));
 ok('elites 成就有 prog 字段（双精英计数，与 chests/allchests 同款实时进度）',
@@ -151,10 +151,10 @@ const achEmber = ACH_LIST.find((a) => a.id === 'ember');
 ok('残焰已熄（ember 支线成就）零回归（仍判定 side_ember done，不受本成就影响）',
   !!achEmber && achEmber.name === '残焰已熄' && achEmber.ok({ quests: { side_ember: 'done' } }) === true && achEmber.ok({ bestiary: { '残焰魔像': 1 } }) === false);
 const achAllQuests = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母不受新成就影响（仍 0/7，非 0/8——elites 不是支线）',
-  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/7', achAllQuests && achAllQuests.prog({ quests: {} }));
-ok('QUESTS side 支线仍 7 条（elites 未入支线表）',
-  Object.values(QUESTS).filter((q) => q.kind === 'side').length === 7);
+ok('灯火同心（allquests）支线分母 v21.80 随新现实更新为 0/8（side_grain 是支线，elites 不是）',
+  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/8', achAllQuests && achAllQuests.prog({ quests: {} }));
+ok('QUESTS side 支线 8 条（v21.80 side_grain 入列，随新现实更新）',
+  Object.values(QUESTS).filter((q) => q.kind === 'side').length === 8);
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：双精英档新解锁含 elites；单档/空档不含',
@@ -217,27 +217,27 @@ S.G = null;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2177_elites', readme.includes('smoke_v2177_elites'));
-ok('README 件套口径为七十五件套（七十四件套清除）', readme.includes('七十五件套（七十四件套清除）'));
+ok('README 件套口径为七十六件套（七十五件套清除）', readme.includes('七十六件套（七十五件套清除）'));
 ok('README 含 v21.77 守护描述（新成就「精英猎手」（双精英讨伐里程碑）守护）',
   readme.includes('v21.77 起含新成就「精英猎手」（双精英讨伐里程碑'));
-ok('README 成就口径「28 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 28 项进度') && readme.includes('**28 项成就**'));
+ok('README 成就口径「29 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 29 项进度') && readme.includes('**29 项成就**'));
 ok('package.json 已收录 smoke_v2177_elites（npm test 串跑第 73 份）', pkg.includes('smoke_v2177_elites.mjs'));
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
 ok('smoke_v2176 的 ACH_LIST 精确计数断言已去硬化（===27 零残留，>=27 存活性口径落位）',
   s2176.includes('ACH_LIST.length >= 27') && !s2176.includes('ACH_LIST.length === 27'));
-ok('smoke_v2176 的 README 件套口径断言已随新现实更新（七十四件套 pin 零残留，七十五件套落位）',
-  s2176.includes('七十五件套（七十四件套清除）') && !s2176.includes('七十四件套（七十三件套清除）'));
-ok('smoke_v2176 的 README 成就 pin 已随新现实更新（27 项 pin 零残留，28 项双处落位）',
-  s2176.includes("readme.includes('成就一览（全部 28 项进度')") && !s2176.includes('全部 27 项进度'));
+ok('smoke_v2176 的 README 件套口径断言已随新现实更新（七十五件套 pin 零残留，七十六件套落位）',
+  s2176.includes('七十六件套（七十五件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
+ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，29 项双处落位）',
+  s2176.includes("readme.includes('成就一览（全部 29 项进度'") && !s2176.includes('全部 28 项进度'));
 const s2168 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2168_hardtrue.mjs'), 'utf8');
-ok('smoke_v2168 的 README 成就 pin 已随新现实更新（27 项 pin 零残留，28 项双处落位）',
-  s2168.includes("readme.includes('成就一览（全部 28 项进度')") && !s2168.includes('全部 27 项进度'));
-ok('smoke_v2168 对 smoke_v2159 的 README pin 复查已随新现实更新（28 项双处落位）',
-  s2168.includes("s2159.includes(\"readme.includes('成就一览（全部 28 项进度')\")"));
+ok('smoke_v2168 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，29 项双处落位）',
+  s2168.includes("readme.includes('成就一览（全部 29 项进度'") && !s2168.includes('全部 28 项进度'));
+ok('smoke_v2168 对 smoke_v2159 的 README pin 复查已随新现实更新（29 项双处落位）',
+  s2168.includes("s2159.includes(\"readme.includes('成就一览（全部 29 项进度')\")"));
 const s2159 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2159_skillach.mjs'), 'utf8');
-ok('smoke_v2159 的 README 成就 pin 已随新现实更新（27 项 pin 零残留，28 项双处落位）',
-  s2159.includes("readme.includes('成就一览（全部 28 项进度')") && !s2159.includes('全部 27 项进度'));
+ok('smoke_v2159 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，29 项双处落位）',
+  s2159.includes("readme.includes('成就一览（全部 29 项进度'") && !s2159.includes('全部 28 项进度'));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);

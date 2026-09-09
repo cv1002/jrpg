@@ -132,8 +132,8 @@ ok('既有 23 个成就 id 全部保留（零回归）',
    'trueboss', 'rush', 'perfection', 'legend', 'cartman', 'names', 'mist', 'stone', 'ember', 'bone',
    'chests', 'allquests', 'memoir'].every((id) => ACH_LIST.some((a) => a.id === id)));
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母不受新成就影响（仍 0/7，非 0/8——skills 不是支线）',
-  achAll && achAll.prog({ quests: {} }) === '0/7', achAll && achAll.prog({ quests: {} }));
+ok('灯火同心（allquests）支线分母 v21.80 随新现实更新为 0/8（side_grain 是支线，skills 不是）',
+  achAll && achAll.prog({ quests: {} }) === '0/8', achAll && achAll.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：六招俱全的 hero 新解锁含 skills；缺一招不含',
@@ -187,8 +187,8 @@ ok('README 含 v21.59 守护描述（新成就「诸技通明」（技能全领�
 // 本件断言同步递增（承 v21.73 同款处理先例）。
 // v21.77 随新现实更新：README 成就口径由「27 项」双处递增为「28 项」双处（elites 成就入列），
 // 本件断言同步递增（承 v21.76 同款处理先例）。
-ok('README 成就口径「28 项」双处同步（快速上手表 C 键行 + 图鉴&成就行；历史守护描述里的「23/24/25/26/27 项」叙事为留档，不属当前口径）',
-  readme.includes('成就一览（全部 28 项进度') && readme.includes('**28 项成就**'));
+ok('README 成就口径「29 项」双处同步（快速上手表 C 键行 + 图鉴&成就行；历史守护描述里的「23/24/25/26/27/28 项」叙事为留档，不属当前口径）',
+  readme.includes('成就一览（全部 29 项进度') && readme.includes('**29 项成就**'));
 ok('package.json 已收录 smoke_v2159_skillach（npm test 串跑第 55 份）', pkg.includes('smoke_v2159_skillach.mjs'));
 const s2158 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2158_shieldblock.mjs'), 'utf8');
 ok('smoke_v2158 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',

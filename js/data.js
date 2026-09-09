@@ -276,12 +276,15 @@
 // 「还剩几种从没碰到过」（❓ 未遭遇）只能逐行数；现页脚「累计讨伐」行并列补「已遭遇：N/13」
 // （menus.drawCodex，与每行 seenCt 同读 hero.seen 计数、BESTIARY_TARGET 同源派生，真身归一与讨伐同口径），
 // 「见过 vs 打过」双口径一眼可见。纯显示零结算零存档变化。
+// v21.80 新内容：潮灯镇新 NPC「粮铺掌柜」+ 讨伐支线「护粮的委托」（side_grain，GRAIN_GOAL 只哥布林）+
+// 单支线成就「护粮安民」（ACH_LIST 28→29）——承 v21.52 拾骨人新支线先例（数据层四件套 +
+// QUESTS 四态任务页 + 单支线成就 + 灯火同心自动跟随 8/8）；零新逻辑零新计数，全走既有通路。
 // v21.79 标题页存档预览补收集进度（体验打磨·信息透明，承 v19.45 难度/v19.64 时间戳/v19.65 时长同一
 // 「选槽前一眼看清」主线）：slotPreview 此前报 姓名/等级/金币/地图/进度/难度/存档时间/时长，唯独缺
 // 「这个档收集到哪了」——多槽玩家想挑更完整的档继续只能进游戏按 I/C/B 逐个翻；现末尾追加
 // 成就N/M·图鉴N/M·宝箱N/M（读写与成就页/图鉴页/状态页同读 ACH_LIST / BESTIARY_TARGET /
 // chestCount·chestTotal 一份源，防御式旧档兼容，纯显示零结算零存档变化）。
-const GAME_VERSION = 'v21.79';
+const GAME_VERSION = 'v21.80';
 
 const T=32;
 
@@ -337,6 +340,7 @@ const MAPS={
       { x: 2, y: 4, ty: 'NPC' },    // 井巫（民宅区南）
       { x: 10, y: 12, ty: 'BREW' }, // 酿造锅（广场南）
       { x: 14, y: 8, ty: 'NPC' },   // 掌灯阿婆（v21.36 新 NPC·水塘南岸风味角色；坐标为可行走格且未被他图占用）
+      { x: 15, y: 12, ty: 'NPC' },  // 粮铺掌柜（v21.80 新 NPC·镇南粮田西缘；坐标为可行走格且未被他图占用）
     ],
   },
   // 雾语林（v13.5 重排）：西入口 → 蛇形主路 → 中段营地（泉水+猎手）→ 北环路蘑菇宝箱 → 东祭坛，裂洞在祭坛南
@@ -508,6 +512,11 @@ const EMBER_GOAL = 1;       // 守名者支线需带回的「残焰之证」份�
 // 想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
 const BONE_GOAL = 3;        // 拾骨人支线需讨伐的骷髅兵只数
 
+// 哥布林讨伐目标（单一数据源）：粮铺掌柜支线「护粮的委托」需讨伐的哥布林只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL / BONE_GOAL 同一「支线目标单一数据源」
+// 家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
+const GRAIN_GOAL = 3;       // 粮铺掌柜支线需驱赶的哥布林只数
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -558,6 +567,9 @@ const NPC_SPOTS = {
   // 拾骨人（v21.52 新 NPC）：星井矿脉南走廊北侧凹龛（5,10）——全局坐标键未被他图占用
   // （全图 extras 扫描 (5,10) 仅此一处；北邻岩地、南贴南走廊 PATH，可面对面对话）
   '5,10': 'digger',
+  // 粮铺掌柜（v21.80 新 NPC）：潮灯镇镇南粮田西缘（15,12）——全局坐标键未被他图占用
+  // （全图 extras 扫描 (15,12) 仅 village 一处；西邻草地、东邻高草粮田，粮田边看庄稼）
+  '15,12': 'grainman',
 };
 
 const NPCS={
@@ -693,6 +705,15 @@ const NPCS={
   // 由 view/sprites.js drawNpcMark 程序化绘制（贴图路径 NPC_SHEET 映射 digger→mwSage 长者袍）。
   digger:{name:'拾骨人', mark:'hood', lines:[
     ['拾骨人：矿道深处躺着的，都是没能走出来的人。','骨头散了，名字才回得了灯下。','[Enter] 结束'],
+  ]},
+  // 粮铺掌柜（v21.80 新 NPC·潮灯镇镇南粮田西缘 (15,12)）：支线「护粮的委托」的发布者——
+  // 哥布林从雾里钻进镇子南边的庄稼（潮灯镇遇敌池限定四基础怪之一，bestiary 计数驱动），
+  // 与雾径猎手/拾骨人同为「讨伐采集型」支线模式。任务页（offer/active/turnin/done 四态齐备）
+  // 经 npcQuestPages 恒优先于下方静态 lines（承 guard/hunter「任务遮蔽闲聊」先例），lines 仅作
+  // 兜底回退；mark:'basket' 由 view/sprites.js drawNpcMark 程序化绘制（贴图路径 NPC_SHEET
+  // 映射 grainman→mwCartman 杂货商贩造型）。
+  grainman:{name:'粮铺掌柜', mark:'basket', lines:[
+    ['粮铺掌柜：镇南那片庄稼，是全年的口粮。','雾一散，粮仓就清静了。','[Enter] 结束'],
   ]},
 };
 
@@ -1857,6 +1878,51 @@ const QUESTS={
       ]],
     },
   },
+  // 粮铺掌柜·护粮的委托（v21.80 新支线）：讨伐 GRAIN_GOAL 只哥布林（bestiary 计数）——
+  // 潮灯镇此前只有灯长「采集型」（side_mushroom 蘑菇）与守书记「雾语林讨伐型」（side_stone）两条
+  // 支线，唯独镇子自家田里晃的「四基础怪」没有任何任务挂钩；哥布林是潮灯镇遇敌池限定怪
+  // （village.pool['史莱姆','野狼','哥布林','毒蛇'] 之一，Lv.1 即可撞见），接取→讨伐→交付
+  // 全流程在镇南粮田一圈内完成，是最贴近开荒期玩家的第一条讨伐支线；与 side_mist / side_stone /
+  // side_bone 同一「讨伐采集型支线」模式（无 unlockOn → 从开局即 offer，保留完整接取流程，
+  // 承 side_ember 同款），阈值单一数据源 GRAIN_GOAL（判定/进度/目标文案/接取对话同读），
+  // 奖励 50 金 + 1 生命药水——介于 side_mist（60 金+药水）之下、与开荒期档次匹配；active 页按
+  // hero 实时报进度（与 side_stone/side_bone 同款函数页），哥布林弱冰提示与图鉴
+  // codexTag「弱点·冰×1.35」口径一致（SPECIES 哥布林 weak:'ice' 单一数据源）。
+  side_grain:{
+    id:'side_grain', kind:'side', store:true, npc:'grainman', giver:'grainman',
+    cond:(g)=>(((g.bestiary||{})['哥布林'])||0) >= GRAIN_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['哥布林'])||0}/${GRAIN_GOAL} 只`,
+    name:'护粮的委托', where:'潮灯镇·镇南粮田',
+    obj:`讨伐 ${GRAIN_GOAL} 只偷粮的【哥布林】`,
+    offer:'去潮灯镇找粮铺掌柜，接下护粮的委托',
+    turnin:'粮田清静了！回镇找粮铺掌柜',
+    done:'哥布林赶回了雾里，镇南的庄稼保住了。',
+    reward:{ gold:50, item:1 },
+    talk:{
+      offer:[[
+        '粮铺掌柜：南边那片庄稼熟得正好，雾里却钻出哥布林，',
+        '一宿一宿地啃。粮食是全镇的底子——',
+        `替我把 ${GRAIN_GOAL} 只赶走，粮仓的灯就点得亮了。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '粮铺掌柜：哥布林就在镇南的高草里打转，',
+        `（已驱赶 ${((hero.bestiary||{})['哥布林'])||0}/${GRAIN_GOAL} 只）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '粮铺掌柜：可算清静了！今年粮仓堆得满，',
+        '灯油钱就有着落——这点心意，你拿着。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:[[
+        '粮铺掌柜：镇南的庄稼保住了。粮仓里的灯，',
+        '照着过冬的米面，也照着赶路的人。',
+        '（支线任务·已完成）',
+        '[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -1954,6 +2020,11 @@ const ACH_LIST=[
   // aegis/hardtrue 同款纯里程碑——击杀本身即奖励）。解锁时机：winBattle 既有 applyAchievements
   // 通路，第二只精英落袋当场解锁、反馈不迟到。
   {id:'elites', name:'精英猎手', d:`讨伐精英「${ELITE_GOLEM.name}」与「${EMBER_GOLEM.name}」`, ok:g=>((g.bestiary||{})[ELITE_GOLEM.name]||0)>=1 && ((g.bestiary||{})[EMBER_GOLEM.name]||0)>=1, prog:g=>`${(((g.bestiary||{})[ELITE_GOLEM.name]||0)>0?1:0)+(((g.bestiary||{})[EMBER_GOLEM.name]||0)>0?1:0)}/2`},
+  // 护粮安民（v21.80 新成就·粮铺掌柜支线）：完成「护粮的委托」——与 quest/cartman/names/mist/stone/
+  // ember/bone 同一「单支线成就」模式（读既有 g.quests.side_grain==='done'，交付侧 status 由
+  // quests.setSideQuest 写定），零新计数/零新状态/零新依赖；无 r 字段（奖励在任务结算侧，
+  // 同 cartman/mist/stone 惯例不重复标注）
+  {id:'grain', name:'护粮安民', d:'完成粮铺掌柜的委托（护粮的委托）', ok:g=>!!(g.quests&&g.quests.side_grain==='done')},
 ];
 
 function codexTag(name) {
@@ -2181,7 +2252,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
