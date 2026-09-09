@@ -170,16 +170,16 @@ ok('全撞见档「记忆收录：1/' + BESTIARY_TARGET.length + '」独立（�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2178_codexseen', readme.includes('smoke_v2178_codexseen'));
-ok('README 件套口径为八十八件套（八十七件套清除）', readme.includes('八十八件套（八十七件套清除）'));
+ok('README 件套口径为八十九件套（八十八件套清除）', readme.includes('八十九件套（八十八件套清除）'));
 ok('README 含 v21.78 守护描述（图鉴页脚已遭遇汇总）', readme.includes('v21.78'));
 ok('README 系统清单已同步「已遭遇 X/13」页脚口径', readme.includes('已遭遇 X/13'));
 ok('package.json 已收录 smoke_v2178_codexseen（npm test 串跑第 74 份）', pkg.includes('smoke_v2178_codexseen.mjs'));
 const s2177 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2177_elites.mjs'), 'utf8');
 ok('smoke_v2177 的 README 件套口径断言已随新现实更新（七十六件套落位，两代前 pin 七十四件套零残留）',
-  s2177.includes('八十八件套（八十七件套清除）') && !s2177.includes('七十四件套（七十三件套清除）'));
+  s2177.includes('八十九件套（八十八件套清除）') && !s2177.includes('七十四件套（七十三件套清除）'));
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
 ok('smoke_v2176 的 README 件套口径断言已随新现实更新（七十五件套 pin 零残留，七十六件套落位）',
-  s2176.includes('八十八件套（八十七件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
+  s2176.includes('八十九件套（八十八件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

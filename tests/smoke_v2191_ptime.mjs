@@ -43,7 +43,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.91 版本注释', dataSrc.includes('v21.91 新成就「长明不熄」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.91', dataSrc.includes("const GAME_VERSION = 'v21.92';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.91', dataSrc.includes("const GAME_VERSION = 'v21.93';"));
 ok('data.js 导出 PLAY_TIME_GOAL（export 块落位）', dataSrc.includes(', PLAY_TIME_GOAL, PERFECTION_GOLD'));
 
 // —— PLAY_TIME_GOAL 数据契约 ——
@@ -54,7 +54,7 @@ ok('PLAY_TIME_GOAL 声明为 3600 且注释含「60 分钟」口径', dataSrc.in
 const ach = ACH_LIST.find((a) => a.id === 'ptime');
 ok('ACH_LIST 含 ptime「长明不熄」且 id 唯一',
   !!ach && ach.name === '长明不熄' && ACH_LIST.filter((a) => a.id === 'ptime').length === 1);
-ok('ACH_LIST 由 32 → 33 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 33, String(ACH_LIST.length));
+ok('ACH_LIST 精确计数断言已去硬化（===33 → >=33 存活性口径，v21.93 起本版不再独占精确总数）', ACH_LIST.length >= 33, String(ACH_LIST.length));
 ok('ptime 描述由 PLAY_TIME_GOAL/60 派生（单一数据源，零裸字面量 60）',
   ach.d === `累计游玩 ${PLAY_TIME_GOAL / 60} 分钟`, ach.d);
 ok('ptime 判定/进度同读 PLAY_TIME_GOAL + hero.time 防御式 (g.time||0)',
@@ -200,11 +200,11 @@ ok('运行期：成就页末页滚动渲染不抛错（33 项 PAGE=10 四页）'
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树收录 smoke_v2191_ptime', readme.includes('smoke_v2191_ptime'));
-ok('README 件套口径为八十八件套（八十七件套清除）',
-  readme.includes('冒烟八十八件套（八十七件套清除）') && !readme.includes('冒烟八十七件套（八十六件套清除）'));
+ok('README 件套口径为八十九件套（八十八件套清除）',
+  readme.includes('冒烟八十九件套（八十八件套清除）') && !readme.includes('冒烟八十七件套（八十六件套清除）'));
 ok('README 含 v21.91 守护描述', readme.includes('v21.91 起含新成就「长明不熄」'));
 ok('README 成就口径「33 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 33 项进度') && readme.includes('**33 项成就**'));
+  readme.includes('成就一览（全部 34 项进度') && readme.includes('**34 项成就**'));
 ok('package.json 已收录 smoke_v2191_ptime（npm test 串跑第 87 份）',
   pkg.includes('smoke_v2191_ptime.mjs') && /smoke_v2190_launch\.mjs && node tests\/smoke_v2191_ptime\.mjs/.test(pkg));
 ok('CHANGELOG 含 v21.91 条目', changelog.includes('## v21.91 '));
@@ -217,8 +217,8 @@ const suite87 = ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'smo
   'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite87) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为八十八件套（八十七件套清除）`,
-    src.includes('八十八件套（八十七件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为八十九件套（八十八件套清除）`,
+    src.includes('八十九件套（八十八件套清除）'));
 }
 for (const nm of ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'smoke_v2188_wander.mjs',
   'smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs',
@@ -226,15 +226,15 @@ for (const nm of ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'sm
   'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.91`,
-    src.includes("const GAME_VERSION = 'v21.92';"));
+    src.includes("const GAME_VERSION = 'v21.93';"));
 }
 const achFiles = ['smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs',
   'smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs',
   'smoke_v2173_aegis.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs'];
 for (const nm of achFiles) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 成就 pin 已随新现实更新（32 项 pin 零残留，33 项双处落位）`,
-    src.includes("readme.includes('成就一览（全部 33 项进度'") && !src.includes('**32 项成就**'));
+  ok(`${nm} 的 README 成就 pin 已随新现实更新（33 项 pin 零残留，34 项双处落位）`,
+    src.includes("readme.includes('成就一览（全部 34 项进度'") && !src.includes('**33 项成就**'));
 }
 const s2188 = read('../tests/smoke_v2188_wander.mjs');
 ok('smoke_v2188 的 ACH_LIST 精确计数断言已去硬化（===32 零残留，>=32 存活性口径落位）',

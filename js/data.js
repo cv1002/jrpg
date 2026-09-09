@@ -368,7 +368,16 @@
 // 地）补红色预警行「⚠️ 目的地推荐 Lv.N · 你当前 Lv.M · 先补给再战！」——与 TRAVEL_LIST 提示派生 /
 // world.transition 进图预警 / 状态页推荐等级同读 MAPS.recLv 单一数据源，调门槛只改 MAPS 一处四端同步；
 // 纯显示零结算零存档变化。
-const GAME_VERSION = 'v21.92';
+// v21.93 新成就「驱雾百战」（讨伐线第二档里程碑，承 v21.91 成就版图逐线核对后「等级三档 lvl5·lvl10·lvl12
+// / 宝箱两档 chests·allchests 的第二档先例」）：v21.91 核对结论是「每条线都有印记」，但讨伐线至今只有
+// 第一档（hunt10 驱雾十战=10 只）——等级线有 5/10/12 三档、宝箱线有 6/12 两档，唯独伴随全场战斗的
+// totalWins 只有 10 只这一档，练到 Lv12 的玩家（累计讨伐已 100+）在「再来一场」处毫无纪念。现补第二档
+// （HUNT2_GOAL=100 只）：判定/进度/描述三处同读新常量 HUNT2_GOAL（与 HUNT_GOAL 同一「成就阈值
+// 数据化」家族——改门槛只改 data.js 一处自动跟随，零裸字面量），计数读既有 hero.totalWins 字段
+// （(g.totalWins||0) 防御式读取——旧档无此字段=0 不误解锁、零迁移，承 v19.41 seen 同款）；无 r 字段
+// 纯里程碑（与 memoir/skills/hardtrue 同款——百战本身就是奖励）；解锁时机：applyAchievements 既有
+// 通路（winBattle 后任意下一次判定点当场解锁，承 lvl12 同款——totalWins 为持续累积量，无需新判定点）。
+const GAME_VERSION = 'v21.93';
 
 const T=32;
 
@@ -1393,6 +1402,12 @@ const LUCKY_GOAL = 5;    // 成就「幸运眷顾」需累计获得的额外掉�
 // 当时刻意保留其裸 10；同计数源 firstblood 的裸 1 属再下批对象刻意保留）
 const HUNT_GOAL = 10;    // 成就「驱雾十战」需累计讨伐的魔物只数
 
+// 成就「驱雾百战」累计讨伐阈值（单一数据源，v21.93）：ACH_LIST 该条的判定（ok: totalWins >=
+// HUNT2_GOAL）、描述文案（d「累计讨伐 N 只魔物」）、进度条（prog「X/N」）三处同读此源——讨伐线既有
+// 第一档 hunt10，第二档沿用同一「多档里程碑」家族（等级线 lvl5/lvl10/lvl12、宝箱线 chests/allchests），
+// 调门槛只改此一处自动跟随（后续加第三档只增常量，不再动条目）；同计数源 totalWins 防御式读取。
+const HUNT2_GOAL = 100;  // 成就「驱雾百战」需累计讨伐的魔物只数（约 Lv12 练级途程内可达）
+
 // 成就「独当一面」/「守灯者」等级阈值（单一数据源）：ACH_LIST 这两条的判定
 // （ok: level >= LVL5_GOAL / LVL10_GOAL）、描述文案（d「等级达到 N 级」）、进度条（prog「X/N」）
 // 三处各同读其源——此前 5/10 硬编码在各自条目内三处互不相关（ok 判定、d 描述、prog 分母）：想调门槛
@@ -2176,6 +2191,13 @@ const ACH_LIST=[
   // ——守着灯的时间本身就是奖励）；解锁时机：applyAchievements 既有通路任意判定点当场解锁
   // （time 为持续累积量，无需新判定点，承 lvl12 同款）。
   {id:'ptime', name:'长明不熄', d:`累计游玩 ${PLAY_TIME_GOAL / 60} 分钟`, ok:g=>(g.time||0)>=PLAY_TIME_GOAL, prog:g=>`${Math.floor((g.time||0)/60)}/${PLAY_TIME_GOAL/60}`},
+  // 驱雾百战（v21.93 新成就·讨伐线第二档里程碑，承 等级三档 lvl5·lvl10·lvl12 / 宝箱两档 chests·allchests
+  // 多档先例）：讨伐线第一档 hunt10 之外补第二档——判定/进度/描述同读 HUNT2_GOAL 单一数据源（与 HUNT_GOAL
+  // 同一「成就阈值数据化」家族——调门槛只改 data.js 一处自动跟随，绝无第二套口径）；读既有 hero.totalWins
+  // 存档字段（winBattle 唯一写入点），(g.totalWins||0) 防御式读取（旧档无此字段=0 不误解锁、零迁移，
+  // 承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——百战本身就是奖励）；
+  // 解锁时机：applyAchievements 既有通路（winBattle 后任意下一次判定点当场解锁，承 lvl12 同款）。
+  {id:'hunt100', name:'驱雾百战', d:`累计讨伐 ${HUNT2_GOAL} 只魔物`, ok:g=>g.totalWins>=HUNT2_GOAL, prog:g=>`${g.totalWins||0}/${HUNT2_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -2408,7 +2430,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PLAY_TIME_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PLAY_TIME_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
