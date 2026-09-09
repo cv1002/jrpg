@@ -348,7 +348,20 @@
 // python3 -m http.server 默认绑定 0.0.0.0（局域网可访问）。现两脚本注释/回执统一为「潮灯记」、
 // 显式 `--bind 127.0.0.1` 仅本机可访问（README 手动命令同口径），improve-plan.md 留档标题同改。
 // 纯启动体验与安全加固，零游戏逻辑/零结算/零存档接触。
-const GAME_VERSION = 'v21.90';
+// v21.91 新成就「长明不熄」（新内容·游玩时长里程碑）：成就版图的进度线逐线核对——战斗
+// （firstblood/hunt10/lucky）、等级（lvl5·lvl10·lvl12）、金币（rich）、图鉴（scholar·perfection）、
+// 支线（八条单支线 + allquests）、Boss（boss/cave/trueboss/rush）、装备（legend/aegis）、碎片
+// （memoir）、技能（skills）、难度（hardtrue）、宝箱（chests·allchests）、精英（elites）、酿造
+// （brew）、探索（wander）各线都有印记，唯独「冒险时长」这条陪伴全程、随存档持久化的计时线
+// （main.js render 驱动 hero.time、状态 I/尾声/战绩页 ⏱ 同读一份源、slotPreview 随档显示）
+// 没有任何纪念：玩家在这颗灯下待满一小时，毫无回响。现补第一档（PLAY_TIME_GOAL=3600 秒
+// = 60 分钟纯里程碑）：判定/进度/描述三处同读新常量 PLAY_TIME_GOAL（与 FIRSTBLOOD_GOAL /
+// ELIXIR_GOAL 同一「成就阈值数据化」家族——改门槛只改 data.js 一处自动跟随，零裸字面量），
+// 计数读既有 hero.time 字段（(g.time||0) 防御式读取——旧档无此字段=0 不误解锁、零迁移，
+// 承 v19.41 seen 同款）；无 r 字段（与 memoir/lvl5/hardtrue 同款纯里程碑——守着灯的时间
+// 本身就是奖励）；解锁时机：applyAchievements 既有通路（winBattle/开箱/酿造/进图等任意
+// 下一次判定点当场解锁，承 lvl12 同款——time 为持续累积量，无需新判定点）。
+const GAME_VERSION = 'v21.91';
 
 const T=32;
 
@@ -1405,6 +1418,12 @@ const FIRSTBLOOD_GOAL = 1;   // 成就「初露锋芒」需累计赢得的战斗
 // 「酿造行为」全新门槛，沿用同一单源模式，首瓶即达标、承 firstblood「第一场」同款）
 const ELIXIR_GOAL = 1;     // 成就「灵药初成」需酿造出的高级灵药瓶数
 
+// 成就「长明不熄」累计游玩时长阈值（单一数据源，单位秒）：判定（ok）/描述（d 分钟数）/进度
+// （prog 分钟数）三处同读此源——改门槛只改 data.js 一处自动跟随，零裸字面量（承 v21.84
+// LVL12_GOAL / v21.86 ELIXIR_GOAL 同一「成就阈值数据化」家族）；计数读既有 hero.time
+// （main.js render 驱动、随存档快照持久化），(g.time||0) 防御式读取旧档零迁移。
+const PLAY_TIME_GOAL = 3600;   // 成就「长明不熄」需累计的游玩时长（秒）= 60 分钟
+
 // 成就「记忆守护者」图鉴全收集金币奖励（单一数据源）：hero.applyAchievements 的专享奖励
 // 结算（gold += PERFECTION_GOLD）与解锁横幅文案（「额外奖励 N 金币」）两处同读此源——
 // 此前 999 硬编码在 hero.js 同一分支内两处互不相关（发奖数额与横幅文案数额）：想调奖励
@@ -2141,6 +2160,15 @@ const ACH_LIST=[
   // aegis/hardtrue 同款纯里程碑——到访本身就是奖励）。解锁时机：world.transition 进图落账后
   // 当场 applyAchievements（承 v19.51 开箱当场判定「反馈不迟到」惯例），最晚一张图落账即解锁。
   {id:'wander', name:'走遍四方', d:`踏遍全部 ${Object.keys(MAPS).length} 张地图`, ok:g=>Object.keys(MAPS).every(m=>(g.visited||[]).includes(m)), prog:g=>`${Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length}/${Object.keys(MAPS).length}`},
+  // 长明不熄（v21.91 新成就·游玩时长里程碑）：成就版图逐线核对的最后一条空白——战斗/等级/金币/
+  // 图鉴/支线/Boss/装备/碎片/技能/难度/宝箱/精英/酿造/探索各线都有印记，唯独「冒险时长」这条
+  // 陪伴全程的计时线没有任何纪念：玩家在这颗灯下待满一小时毫无回响。判定/进度/描述同读
+  // PLAY_TIME_GOAL 单一数据源（与 rich/lvl5 同「阈值数据化」家族），计数读既有 hero.time
+  // （main.js render 驱动、随存档快照持久化），(g.time||0) 防御式读取——旧档无 time 字段=0
+  // 不误解锁、零迁移（承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款
+  // ——守着灯的时间本身就是奖励）；解锁时机：applyAchievements 既有通路任意判定点当场解锁
+  // （time 为持续累积量，无需新判定点，承 lvl12 同款）。
+  {id:'ptime', name:'长明不熄', d:`累计游玩 ${PLAY_TIME_GOAL / 60} 分钟`, ok:g=>(g.time||0)>=PLAY_TIME_GOAL, prog:g=>`${Math.floor((g.time||0)/60)}/${PLAY_TIME_GOAL/60}`},
 ];
 
 function codexTag(name) {
@@ -2373,7 +2401,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PLAY_TIME_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
