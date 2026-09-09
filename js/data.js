@@ -253,7 +253,16 @@
 // 「敌方特性：…」——调特性文案只改本文件 SPECIES 一处，图鉴 codexTag / 帮助页
 // 「石心魔像·出没」行 / 战斗角标三端同源自动跟随；无 tag 的普通怪保持留白零噪音。
 // 纯显示零结算零存档变化。
-const GAME_VERSION = 'v21.75';
+// v21.76 新成就「一箱不漏」（全图宝箱全收集里程碑，ACH_LIST 26→27）——宝箱线全收集档补齐：
+// 「开箱寻宝」（chests，TREASURE_GOAL=6）只是半程档，而图鉴（perfection）/支线（allquests）/
+// 碎片（memoir）/技能（skills）各线都有全收集里程碑，开遍全图 12 只宝箱（镇2+林3+矿2+星砂宝藏4+廊1，
+// chestTotal() 单一数据源，v21.22 数据化）的玩家却没有任何纪念；状态页「已开 X/全图 N」早已公示
+// 全图总量，成就页独缺这一档。判定/进度同读 chestCount/chestTotal 一份源（加/删宝箱只改 MAPS 一处、
+// 成就自动跟随，绝无第二套口径）；读既有 hero.chests 存档字段（Set/数组防御式兼容见 chestCount），
+// 零新计数/零新状态/零迁移；无 r 字段（与 memoir/skills/aegis/hardtrue 同款纯里程碑——宝箱内容
+// 本身就是奖励）。解锁时机：world.onChestStep 开箱当场 applyAchievements（v19.51 既有通路），
+// 第 12 只落袋即解锁，反馈不迟到。
+const GAME_VERSION = 'v21.76';
 
 const T=32;
 
@@ -1907,6 +1916,16 @@ const ACH_LIST=[
   // rollDrop 装备档只到锁子甲，不当场判定就要等下一场胜利才解锁，承 world.js 开箱当场判定
   // 「反馈不迟到」同一惯例）；winBattle 六处 applyAchievements 通路保持零回归兜底。
   {id:'aegis', name:'龙鳞加身', d:`装备最强铠甲「${BEST_ARMOR}」（防+${ARMORS[BEST_ARMOR].def}）`, ok:g=>g.armor===BEST_ARMOR},
+  // 一箱不漏（v21.76 新成就·全图宝箱全收集里程碑）：宝箱线全收集档补齐——「开箱寻宝」
+  // （chests，TREASURE_GOAL=6 半程档）之外，图鉴（perfection）/支线（allquests）/碎片（memoir）/
+  // 技能（skills）各线早有全收集里程碑，唯独开遍全图宝箱（chestTotal() 派生总量，v21.22 起
+  // 状态页「已开 X/全图 N」同源公示）没有纪念。判定/进度同读 chestCount/chestTotal 一份源
+  // （加/删宝箱只改 MAPS 一处、本成就自动跟随，绝无第二套口径）；读既有 hero.chests 存档字段
+  // （chestCount 防御式兼容 Set/数组/缺失），零新计数/零新状态/零迁移（旧档无 chests 字段时
+  // chestCount=0 < 12 不误解锁）；无 r 字段（与 memoir/skills/aegis/hardtrue 同款纯里程碑——
+  // 宝箱内容本身就是奖励）。解锁时机：world.onChestStep 开箱当场 applyAchievements（v19.51
+  // 既有「反馈不迟到」通路），最后一只落袋即解锁。
+  {id:'allchests', name:'一箱不漏', d:`开启全图全部 ${chestTotal()} 个宝箱`, ok:g=>chestCount(g)>=chestTotal(), prog:g=>`${chestCount(g)}/${chestTotal()}`},
 ];
 
 function codexTag(name) {

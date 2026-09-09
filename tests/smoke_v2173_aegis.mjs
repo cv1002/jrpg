@@ -111,7 +111,7 @@ ok('ARMORS 契约（四件铠甲，龙鳞甲 防13 价480——最佳即最贵�
 const achAegis = ACH_LIST.find((a) => a.id === 'aegis');
 ok('ACH_LIST 含 aegis「龙鳞加身」且 id 唯一',
   !!achAegis && achAegis.name === '龙鳞加身' && ACH_LIST.filter((a) => a.id === 'aegis').length === 1);
-ok('ACH_LIST 由 25 → 26 项（新增一项，精确总数由本版守护）', ACH_LIST.length === 26, String(ACH_LIST.length));
+ok('ACH_LIST 由 25 → 26 项（v21.73 新增一项；v21.76 起精确总数由新版冒烟守护，本件存活性口径 >= 26）', ACH_LIST.length >= 26, String(ACH_LIST.length));
 ok('aegis 成就无 r 字段（与 lvl5/lvl10/memoir/skills/hardtrue 同款纯里程碑——商店有售非掉落奖励）',
   !!achAegis && !('r' in achAegis));
 ok('aegis 成就无 prog 字段（与 legend/boss/cave/trueboss 同款纯布尔里程碑，单布尔无计数可报）',
@@ -242,8 +242,10 @@ ok('README 件套口径为存活性断言（v21.74 起件数由新版冒烟守�
   !readme.includes('（六十八件套清除）'));
 ok('README 含 v21.73 守护描述（新成就「龙鳞加身」（最强铠甲里程碑）守护）',
   readme.includes('新成就「龙鳞加身」（最强铠甲里程碑）守护'));
-ok('README 成就口径「26 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 26 项进度') && readme.includes('**26 项成就**'));
+// v21.76 随新现实更新：README 成就口径由「26 项」双处递增为「27 项」双处（allchests 成就入列），
+// 本件断言同步递增（承 v21.73 对 smoke_v2168/smoke_v2159 README pin 同款处理先例）。
+ok('README 成就口径「27 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 27 项进度') && readme.includes('**27 项成就**'));
 ok('package.json 已收录 smoke_v2173_aegis（npm test 串跑第 69 份）', pkg.includes('smoke_v2173_aegis.mjs'));
 const s2172 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2172_helpfrag.mjs'), 'utf8');
 ok('smoke_v2172 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',
@@ -252,11 +254,11 @@ ok('smoke_v2172 的 README 件套口径断言已去硬化（存活性口径落�
 const s2168 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2168_hardtrue.mjs'), 'utf8');
 ok('smoke_v2168 的 ACH_LIST 精确计数断言已随新现实更新（===25 零残留，>=25 存活性口径落位）',
   s2168.includes('ACH_LIST.length >= 25') && !s2168.includes('ACH_LIST.length === 25'));
-ok('smoke_v2168 的 README 成就口径断言已随新现实更新（「25 项」pin 零残留，「26 项」双处落位）',
-  s2168.includes("readme.includes('成就一览（全部 26 项进度')") && !s2168.includes("readme.includes('**25 项成就**')"));
+ok('smoke_v2168 的 README 成就口径断言已随新现实更新（「25 项」pin 零残留，「27 项」双处落位）',
+  s2168.includes("readme.includes('成就一览（全部 27 项进度')") && !s2168.includes("readme.includes('**25 项成就**')"));
 const s2159 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2159_skillach.mjs'), 'utf8');
-ok('smoke_v2159 的 README 成就口径断言已随新现实更新（「25 项」pin 零残留，「26 项」双处落位）',
-  s2159.includes("readme.includes('成就一览（全部 26 项进度')") && !s2159.includes("readme.includes('**25 项成就**')"));
+ok('smoke_v2159 的 README 成就口径断言已随新现实更新（「25 项」pin 零残留，「27 项」双处落位）',
+  s2159.includes("readme.includes('成就一览（全部 27 项进度')") && !s2159.includes("readme.includes('**25 项成就**')"));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);

@@ -188,7 +188,11 @@ ok('运行期：幽冥魔王战「敌方招数：」零回归（普攻 / 重击 
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2175_battletag', readme.includes('smoke_v2175_battletag'));
-ok('README 件套口径为七十一件套（七十件套清除）', readme.includes('七十一件套（七十件套清除）'));
+// v21.76 去硬化（v21.7 惯例）：件套精确计数移交当版冒烟守护，本件改存活性口径——
+// 仍含「冒烟/件套」且旧口径「（七十件套清除）」已清除。
+ok('README 件套口径为存活性断言（v21.76 起件数由新版冒烟守护：七十二件套（七十一件套清除））',
+  readme.includes('冒烟') && readme.includes('件套') &&
+  !readme.includes('（七十件套清除）'));
 ok('README 含 v21.75 守护描述（战斗画面普通魔物「敌方特性」角标守护）',
   readme.includes('v21.75 起含战斗画面普通魔物「敌方特性」角标守护'));
 ok('README 战斗段落同步「敌方特性」角标口径', readme.includes('敌方特性'));
