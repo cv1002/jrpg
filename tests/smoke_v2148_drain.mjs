@@ -91,7 +91,7 @@ ok('LEARN_AT 含 9 级条目「汲光击」（learnsAt(9) 派生）', learnsAt(9
 ok('LEARN_AT 其余等级零回归（1/3/4/5/7 逐字，8/10 为空）',
   learnsAt(1) === '火焰斩' && learnsAt(3) === '冰霜击' && learnsAt(4) === '治愈术' &&
   learnsAt(5) === '雷鸣' && learnsAt(7) === '陨石术' && learnsAt(8) === null && learnsAt(10) === null);
-ok('MAX_LEARN_LV 自动派生为 9（v17.7 单一数据源收口生效，新技能不再被提示漏扫）', MAX_LEARN_LV === 9);
+ok('MAX_LEARN_LV 自动派生为 11（v17.7 单一数据源收口生效 + v21.83 随 Lv11 星砂回响随新现实更新）', MAX_LEARN_LV === 11, String(MAX_LEARN_LV));
 const sk = SKILL_DATA['汲光击'];
 ok('SKILL_DATA[汲光击] 字段落位（mp9/×2.0/atk/光/drain/drainCap 由常量派生）',
   !!sk && sk.mp === 9 && sk.mult === 2.0 && sk.kind === 'atk' && sk.element === 'light' &&
@@ -114,12 +114,15 @@ ok('battle.js 汲回结算源级落位（上限→实际可回量双重钳制 + 
 const dbSrc = fs.readFileSync(path.join(ROOT, 'js/view/drawBattle.js'), 'utf8');
 ok('drawBattle.js 技能菜单封印标注与结算同口径（drain 同封）',
   dbSrc.includes("(skill.kind === 'heal' || skill.drain) && enemy.forbid.includes('heal')"));
-ok('drawBattle.js 技能菜单行距 36→34 落位（ROW_SP，六招容量）且旧 i*36 零残留',
-  dbSrc.includes('const ROW_SP = 34;') && dbSrc.includes('148 + i * ROW_SP') &&
+ok('drawBattle.js 技能菜单行距条件式落位（ROW_SP：≤6 招 34 / 7 招 29，HINT_DY 16/14，七招容量承 v21.48 先例）且旧 i*36 零残留',
+  dbSrc.includes('const ROW_SP = hero.skills.length > 6 ? 29 : 34;') &&
+  dbSrc.includes('const HINT_DY = hero.skills.length > 6 ? 14 : 16;') && dbSrc.includes('148 + i * ROW_SP') &&
   !dbSrc.includes('148 + i * 36') && !dbSrc.includes('160 + i * 36') && !dbSrc.includes('176 + i * 36'));
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
-ok('menus.js 状态页技能行距 16→14 落位（六招容量）且旧 308+i*16 零残留',
-  mSrc.includes('308+i*14') && !mSrc.includes('308+i*16'));
+ok('menus.js 状态页技能行距条件式落位（SKILL_ROW_SP：≤6 招 14 / 7 招 12 + 首行 302，七招容量）且旧 308+i*14 常量零残留',
+  mSrc.includes('const SKILL_ROW_SP = hero.skills.length > 6 ? 12 : 14;') &&
+  mSrc.includes('const SKILL_ROW_Y0 = hero.skills.length > 6 ? 302 : 308;') &&
+  mSrc.includes('SKILL_ROW_Y0+i*SKILL_ROW_SP') && !mSrc.includes('308+i*14'));
 const qSrc = fs.readFileSync(path.join(ROOT, 'js/quests.js'), 'utf8');
 ok('quests.js migrateQuests 旧档补学落位（learnsAt import + 按等级补齐循环）',
   /import\s*\{[^}]*\blearnsAt\b[^}]*\}\s*from\s*'\.\/data\.js'/.test(qSrc) && qSrc.includes('hero.skills.push(sk);'));

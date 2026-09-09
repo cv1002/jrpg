@@ -301,6 +301,16 @@ function doSkill(skillName) {
       hero.hp += dr;
       note += `（汲回 ${dr} HP）`;
     }
+    // v21.83 汲蓝结算（星砂回响 drainMp）：把本次伤害 ×drainMp 汲回为 MP，单次上限
+    // drainMpCap×mpMax（data.js DRAIN_MP_PCT/DRAIN_MP_CAP 单一数据源），再钳制到实际可回量——
+    // 满蓝时如实报「汲蓝 0 MP」（与汲光击「汲回 0 HP」同口径）。与 drain 招不同：不含治疗，
+    // 祸乱形态「封印治愈」刻意不封（skillForbidden 未并入，见 data.js GAME_VERSION 注释）。
+    if (skill.drainMp) {
+      const mcap = Math.round(hero.mpMax * (skill.drainMpCap || 1));
+      const dm = Math.min(hero.mpMax - hero.mp, Math.min(mcap, Math.round(dmg * skill.drainMp)));
+      hero.mp += dm;
+      note += `（汲蓝 ${dm} MP）`;
+    }
     // v21.55 克制命中战报补确切倍率（信息透明·纯显示）：元素克制链条的结算端（rules.elemMult
     // 读 ELEM_MULT 单一数据源）、帮助页「技能克制」行（「弱点伤害×1.35 · 抗性伤害×0.7」）、
     // 图鉴 codexTag（「弱点·火×1.35 / 抗性·冰×0.7」）三端早已带确切倍率，唯独命中战报这一端

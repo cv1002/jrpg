@@ -290,7 +290,15 @@
 // v21.82 胜利画面补收集进度两件（体验打磨·信息透明，承 v21.79 标题预览「收集进度三件套」同一主线）：
 // drawWin 战绩行（v19.49）已有 成就 N/M，独缺 图鉴/宝箱——「灯芯回来了」的 run 总结屏一眼看清
 // 这趟收集到哪了（与 slotPreview 同读 BESTIARY_TARGET / chestCount·chestTotal 一份源，零结算零存档）。
-const GAME_VERSION = 'v21.82';
+// v21.83 Lv11 新技能「星砂回响」（新内容·战斗机制，承 v21.48 汲光击先例）：领悟表自 Lv9 后
+// Lv10-12（终焉之神/试炼的高压收尾段）再无新招——Lv11 补全游戏首个「汲蓝」招：伤害 ×2.4 并把
+// 伤害的一半汲回为 MP（单次上限 25% 最大MP，DRAIN_MP_PCT/DRAIN_MP_CAP 单一数据源派生），与
+// 汲光击（汲回 HP）同族错位——边打边回的「打蓝循环」，对口陨石术 14MP/终焉之神的持久战；
+// 光元素恒 ×1 中性（无魔物弱/抗 'light'）。封印口径：祸乱形态「封印治愈」封的是治疗，
+// 汲蓝招不含治疗——刻意不并入 heal 封印（与 drain 招不同，不钻「回血」空子），为终焉之神战
+// 保留一条被封印治愈后仍可运转的 MP 引擎（技能菜单 ⛔封印 与 skillForbidden 同口径零改动）。
+// 旧档兼容：migrateQuests 读档按等级补学（Lv≥11 老存档自动补领，与 v21.48 同族）。
+const GAME_VERSION = 'v21.83';
 
 const T=32;
 
@@ -775,7 +783,7 @@ export function hasRecoveryPoint(def) {
 // 互不相关：想换起始技能/重命名初招要改两处、还极易只改领悟表漏改建档，新档会带一个
 // SKILL_DATA 里不存在的技能（技能菜单/状态页渲染空行）。收口后 起始技能与升级领悟 绝无第二套口径
 // （与 DEFAULT_NAME / SKIP_CHANCE / PHASE2_AT 同一「单一数据源收口」体系）
-const LEARN_AT = { 1: '火焰斩', 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术', 9: '汲光击' };
+const LEARN_AT = { 1: '火焰斩', 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术', 9: '汲光击', 11: '星砂回响' };
 function learnsAt(lv) { return LEARN_AT[lv] || null; }
 
 // 技能领悟等级上界（单一数据源）：由 LEARN_AT 最大领悟等级推导——hero.skillXpHint 的
@@ -852,6 +860,13 @@ const SKIP_CHANCE = 0.30;
 const DRAIN_PCT = 0.5;
 const DRAIN_HP_CAP = 0.25;
 
+// 星砂回响（v21.83）「汲蓝」比例与单次上限（单一数据源）：SKILL_DATA['星砂回响'] 的
+// drainMp/drainMpCap 字段、battle.doSkill 命中后的汲蓝结算（min(上限, 伤害×比例) 再钳制到
+// 实际可回量）、技能 hint「汲回伤害N%为MP·上限M%MP」三处同读此源——判定、提示绝无第二套口径
+// （与 DRAIN_PCT/DRAIN_HP_CAP / SKIP_CHANCE / BURN_PCT 同一「概率/比例数据化」体系）。
+const DRAIN_MP_PCT = 0.5;
+const DRAIN_MP_CAP = 0.25;
+
 const SKILL_DATA={
   '火焰斩':{mp:4,mult:1.8,kind:'atk',sfx:'fire',txt:'🗡️',element:'fire',burn:2,hint:'灼烧2回合·每回合约-' + Math.round(BURN_PCT * 100) + '%最大HP',colors:['#ff3b3b','#ff8a2c','#ffd24a']},
   '冰霜击':{mp:5,mult:2.2,kind:'atk',sfx:'ice',txt:'❄️',element:'ice',skip:SKIP_CHANCE,hint:Math.round(SKIP_CHANCE * 100) + '%冻结（跳过敌回合）',colors:['#5fd8ff','#9ff0ff','#3f8fe1']},
@@ -863,6 +878,14 @@ const SKILL_DATA={
   // 光元素恒 ×1 中性（无魔物弱/抗 'light'）；drain 招被 battle.skillForbidden 并入 heal 封印口径
   // （终焉之神祸乱形态「封印治愈」对它同样生效，技能菜单 ⛔封印 同步），不钻 Boss 机制空子。
   '汲光击':{mp:9,mult:2.0,kind:'atk',sfx:'ice',txt:'🕯️',element:'light',drain:DRAIN_PCT,drainCap:DRAIN_HP_CAP,hint:'汲回伤害' + Math.round(DRAIN_PCT * 100) + '%为HP·上限' + Math.round(DRAIN_HP_CAP * 100) + '%HP',colors:['#fff8dc','#ffedb0','#ffd24a']},
+  // 星砂回响（v21.83 新技能·Lv11 领悟）：全游戏首个「汲蓝」招——伤害 ×2.4（介于汲光击 2.0 与
+  // 雷鸣 2.8 之间，与汲取型技能同族定位：低倍率换续航），命中后把伤害的 DRAIN_MP_PCT(50%)
+  // 汲回为 MP，单次上限 DRAIN_MP_CAP(25%)×最大MP（随 mpMax 缩放后期不失控；与汲光击 DRAIN_HP_CAP
+  // 同式镜像——它边打边回蓝、与陨石术 14MP 高耗形成「打蓝循环」）。光元素恒 ×1 中性；
+  // 不含治疗 → 终焉之神祸乱形态「封印治愈」刻意不封它（skillForbidden 只并入 kind==='heal' 与
+  // drain 招，drainMp 招零改动保持可用——被封印治愈后仍有一条可运转的 MP 引擎，设计意图见
+  // GAME_VERSION 注释）。
+  '星砂回响':{mp:12,mult:2.4,kind:'atk',sfx:'ice',txt:'✨',element:'light',drainMp:DRAIN_MP_PCT,drainMpCap:DRAIN_MP_CAP,hint:'汲回伤害' + Math.round(DRAIN_MP_PCT * 100) + '%为MP·上限' + Math.round(DRAIN_MP_CAP * 100) + '%MP',colors:['#bfe3ff','#eaf7ff','#62c6ff']},
   '治愈术':{mp:5,heal:0.55,kind:'heal',sfx:'heal',txt:'💚',cleanse:true,hint:'恢复HP并解毒',colors:['#8ff0a0','#d8ffe0','#62ff8a']},
 };
 
@@ -2129,7 +2152,7 @@ const HELP_PAGES=[
     // r[1]（各元素机制枚举，≈313 ≤470）+ r[2]（弱点/抗性倍率规则，12px 次级灰 ≈150 ≤470，数值仍由
     // ELEM_MULT 派生零裸字面量）；行数不变仍 10（sp=34 档），本页 r[2] 数 2→3、末行基线 418→434
     // 仍不触页脚 452（smoke_v2115 的 r[2] 计数断言同步更新，由 smoke_v2148 守护）。
-    ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲 / 汲光回血','弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
+    ['技能克制','火灼烧 / 冰冻结 / 雷穿防 / 陨石碎甲 / 汲光回血 / 星砂回蓝','弱点伤害×' + ELEM_MULT.weak + ' · 抗性伤害×' + ELEM_MULT.resist],
     // v21.11 帮助页「魔物状态」页三行越界修复（体验打磨·排版，承 v19.59 操作页排版修复先例）：
     // 本页三行 14px 实测 x 终点 578/632/649，超出面板右缘 570——「宝箱掉落」行已达画布右缘 640 之外，
     // 末尾「%药水」字样被画布整体裁掉（玩家从 H 页根本读不到完整掉率）；修复为：石甲行文案压缩
@@ -2264,7 +2287,7 @@ const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L
 
 export {
   GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, LVL5_GOAL, LVL10_GOAL, FIRSTBLOOD_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
-  NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
+  NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal, trialSteleHint,
