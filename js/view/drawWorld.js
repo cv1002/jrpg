@@ -173,7 +173,11 @@ function faceHint() {
   else if (tile === TY.BOSS && !S.G.bossDefeated) lab = '踩上开战';
   else if (tile === TY.MB && (curMap() === 'gallery' || !S.G.caveBoss)) lab = '踩上开战';
   else if (tile === TY.SB && !S.G.trueBoss) lab = curMap() === 'gallery' ? '踩上开战' : '踩上开门';
-  else if (tile === TY.TRIAL && S.G.bossDefeated && S.G.caveBoss) lab = '踩上挑战';
+  // v21.85 试炼碑面向提示随 rushDone 分档（体验打磨·信息透明·状态如实）：碑上标签分档后，脚下方框
+  // 提示仍恒「踩上挑战」——已通关玩家面向碑看到「挑战」，踩上去却只是再打一遍（且仍发奖），
+  // 与「✅ 已通关（可再战）」标签口径不一致；现按同一份 S.G.rushDone 分档「踩上挑战 / 踩上再战」，
+  // 零结算零数值零存档变化（踏碑判定 onStep→onTrialStele 逐字未动）。
+  else if (tile === TY.TRIAL && S.G.bossDefeated && S.G.caveBoss) lab = S.G.rushDone ? '踩上再战' : '踩上挑战';
   else if (tile === TY.GATE) {
     // 传送门锁定判定（单一数据源）：与 world.usePortal 同读 MAPS[].portals.GATE.locked(g)——
     // 此前这里裸写「curMap()==='village' && S.G.bossDefeated」硬编码在视图层、与 usePortal 读表的
@@ -468,7 +472,17 @@ export function drawWorld() {
         // v21.46 碑上标签补「建议Lv.N」（信息透明收口·承 v19.52/v19.60）：此前阵容（各关 Lv）与赏金都上了碑，
         // 唯独「该练到多少级再来」仍是黑盒——末位「终焉之神Lv12」的推断留给玩家；现追加由 RUSH_REC_LV 派生的
         // 显式推荐等级（与守碑人台词/H 页同读同一常量，调任一 Boss 的 lv 只改 data.js 一处、三端同步）。
-        const lab = ready ? `⚔️ 试炼三连战 ${roster} · 建议Lv.${RUSH_REC_LV}` : '试炼·未解锁';
+        // v21.85 试炼碑通关后状态如实分档（体验打磨·信息透明·状态如实，承 v19.52 阵容预览 /
+        // v19.60 奖励预告 / v21.46 推荐等级 / 强敌祭坛「击败自动熄灭」同主线）：碑上标签此前只有
+        // 未解锁/可挑战默认档——玩家已通关试炼（hero.rushDone，「百炼成钢」落袋）后碑上仍挂
+        // 「⚔️ 试炼三连战 + 通关奖」的新挑战档，与祭坛击败熄灯、已开宝箱等同图状态展示口径不一致，
+        // 「还能不能再打/还能不能再拿奖」无从判断（battle.winBattle 试炼分支无 rushDone 守卫——
+        // 再战确实仍发全额通关奖，属既有设计行为，本版不改结算）；现按 rushDone 分档：已通关标
+        // 「✅ …已通关（可再战）」、奖励行标「💰 再战通关奖 …（随等级）」（如实注明重复性），
+        // 未通关档逐字零回归。纯显示零结算零数值零存档变化（只读 S.G.rushDone，与成就/徽记/守碑人
+        // 同读一份源）。
+        const lab = !ready ? '试炼·未解锁'
+          : (S.G.rushDone ? `✅ 试炼三连战 · 已通关（可再战）` : `⚔️ 试炼三连战 ${roster} · 建议Lv.${RUSH_REC_LV}`);
         const lx = x * T - c.x + T / 2;
         const ly = y * T - c.y;
         CTX.font = 'bold 12px sans-serif';
@@ -480,7 +494,11 @@ export function drawWorld() {
         CTX.textAlign = 'center';
         CTX.fillText(lab, lx, ly - 9);
         if (ready) {
-          const rewLab = `💰 通关奖 ${rushReward(S.G.level)} 金（随等级）`;
+          // v21.85 奖励行随 rushDone 分档：已通关档如实标注「再战」（winBattle 无 rushDone 守卫，
+          // 再战仍发全额通关奖——与状态标签同口径如实展示，不藏不误导）；未通关档逐字零回归。
+          const rewLab = (S.G.rushDone
+            ? `💰 再战通关奖 ${rushReward(S.G.level)} 金（随等级）`
+            : `💰 通关奖 ${rushReward(S.G.level)} 金（随等级）`);
           const rw = CTX.measureText(rewLab).width + 12;
           CTX.fillStyle = 'rgba(10,16,24,.88)';
           rr(lx - rw / 2, ly + 2, rw, 17, 4);
