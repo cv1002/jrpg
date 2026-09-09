@@ -395,6 +395,13 @@ function transition(name) {
   if (!hasRecoveryPoint(MAPS[name])) {
     bind.boxMsg(`⚠️ ${MAPS[name].name}没有泉水/旅店 · 出发前请补给！`, NARR_MSG_MS);
   }
+  // v21.88 探索线里程碑「走遍四方」反馈不迟到（承 v19.51 开箱当场判定「反馈不迟到」惯例）：
+  // transition 是全游戏唯一的 visited 写入点（传送门/出口/快速旅行/水晶开门四条入口全走本函数），
+  // 进图落账后、进场/补给提示之后当场 applyAchievements——最后一张图（通常是双徽记开门的无字回廊）
+  // 落账即解锁，不用等下一场胜利的 applyAchievements 通路；置于尾部让「进入了【X】/补给提醒」先报、
+  // 成就横幅随后（v21.10 消息队列按序完整可见）；applyAchievements 幂等（已解锁不重报、不重复横幅），
+  // 重复进图零噪音。
+  applyAchievements();
 }
 
 export {

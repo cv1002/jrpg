@@ -321,12 +321,23 @@
 // lvl5/memoir 纯里程碑惯例）；解锁时机：brewNow 酿造成功当场 applyAchievements（承 v21.73
 // buyArmor 当场判定「反馈不迟到」惯例），零新状态/零结算/零存档格式变化（brews 随既有存档快照
 // 自动落盘）。
+// v21.88 新成就「走遍四方」（探索线里程碑）：四张地图（潮灯镇/雾语林/星井矿脉/无字回廊）全部
+// 到访的探索里程碑——成就版图里 图鉴（perfection）/宝箱（chests·allchests）/支线（allquests）/
+// 碎片（memoir）/技能（skills）/装备（legend·aegis）/等级（lvl5·lvl10·lvl12）/难度（hardtrue）/
+// 精英（elites）/酿造（brew）各线都有印记，唯独「走遍大地图」这条每档冒险都必然穿过的探索线
+// 没有任何纪念：玩家第一次踏进无字回廊（双徽记开门）这一刻其实已经走完四图，却毫无回响。
+// 判定/进度同读 Object.keys(MAPS) 单一数据源（与 TRAVEL_LIST 四图一一对应——加/删地图只改
+// data.js 一处、本成就自动跟随，绝无第二套口径）+ 既有 hero.visited 到访记录（world.transition
+// 进图时 push，全游戏唯一写入点），(g.visited||[]) 防御式读取——旧档无 visited 字段=0 不误解锁、
+// 零迁移（承 v19.41 seen 同款）；无 r 字段（与 memoir/skills/aegis/hardtrue 同款纯里程碑——到访
+// 本身就是奖励）。解锁时机：world.transition 进图落账后当场 applyAchievements（承 v19.51 开箱
+// 当场判定「反馈不迟到」惯例，最晚一张图落账即解锁，不用等下一场胜利）。
 // v21.87 尾声战绩页补收集进度两件（体验打磨·信息透明·纯显示）：drawEnding（Enter 观看尾声的
 // run 总结屏）在 v19.49 战绩行之下补「📕 图鉴 N/M · 📦 宝箱 N/M」，与 v21.79 标题预览
 // slotPreview / v21.82 胜利画面 drawWin 同读 BESTIARY_TARGET / chestCount·chestTotal 一份
 // 单一数据源——收集三件套（成就·图鉴·宝箱）至此在 标题预览/胜利画面/尾声 三处 run 总结屏齐备；
 // 纯显示零结算零存档变化。
-const GAME_VERSION = 'v21.87';
+const GAME_VERSION = 'v21.88';
 
 const T=32;
 
@@ -2109,6 +2120,16 @@ const ACH_LIST=[
   // 不钳制）；解锁时机：brewNow 酿造成功当场 applyAchievements（承 v21.73 buyArmor 当场判定
   // 「反馈不迟到」惯例，下一场战斗胜利的 applyAchievements 通路同样兜底）。
   {id:'brew', name:'灵药初成', d:'酿造出第一瓶高级灵药', ok:g=>(g.brews||0)>=ELIXIR_GOAL, prog:g=>`${g.brews||0}/${ELIXIR_GOAL}`},
+  // 走遍四方（v21.88 新成就·探索线里程碑）：探索/旅行线的第一枚印记——成就版图逐线核对，
+  // 图鉴/宝箱/支线/碎片/技能/装备/等级/难度/精英/酿造各线都有里程碑，唯独「四张大地图全部到访」
+  // 这条主线推进必然穿过的探索线查无一条：玩家第一次踏进无字回廊（双徽记开门）这一刻其实已经
+  // 走完四图，却毫无回响。判定/进度同读 Object.keys(MAPS) 单一数据源（与 TRAVEL_LIST 四图一一
+  // 对应——加/删地图只改 data.js 一处、本成就自动跟随，绝无第二套口径）+ 既有 hero.visited
+  // 到访记录（world.transition 进图时 push，全游戏唯一写入点），(g.visited||[]) 防御式读取——
+  // 旧档无 visited 字段=0 不误解锁、零迁移（承 v19.41 seen 同款）；无 r 字段（与 memoir/skills/
+  // aegis/hardtrue 同款纯里程碑——到访本身就是奖励）。解锁时机：world.transition 进图落账后
+  // 当场 applyAchievements（承 v19.51 开箱当场判定「反馈不迟到」惯例），最晚一张图落账即解锁。
+  {id:'wander', name:'走遍四方', d:`踏遍全部 ${Object.keys(MAPS).length} 张地图`, ok:g=>Object.keys(MAPS).every(m=>(g.visited||[]).includes(m)), prog:g=>`${Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length}/${Object.keys(MAPS).length}`},
 ];
 
 function codexTag(name) {

@@ -148,7 +148,13 @@ try {
   transition('village');
   ok('进潮灯镇（有泉水/旅店）：只有「进入了【潮灯镇】」且零无补给提醒（不误报）',
     msgs.length === 1 && msgs[0].includes('进入了【潮灯镇】'), msgs.join(' | '));
-  ok('进雾语林（extras 泉水）：零无补给提醒（不误报）', (msgs.length = 0, transition('dungeon'), msgs.length === 1 && msgs[0].includes('进入了【雾语林】')), msgs.join(' | '));
+  msgs.length = 0;
+  transition('dungeon');
+  // v21.88 起 transition 尾部会当场 applyAchievements：此处（第 4 次进图）恰好四图到访，
+  // 「走遍四方」横幅随进场提示之后落位——断言前先滤掉成就横幅，只核对进场/补给口径本身
+  const caps = msgs.filter((t) => !t.includes('成就解锁'));
+  ok('进雾语林（extras 泉水）：零无补给提醒（不误报）',
+    caps.length === 1 && caps[0].includes('进入了【雾语林】'), msgs.join(' | '));
 } finally {
   bind.boxMsg = origBoxMsg;
 }
