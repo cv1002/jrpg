@@ -361,7 +361,14 @@
 // 承 v19.41 seen 同款）；无 r 字段（与 memoir/lvl5/hardtrue 同款纯里程碑——守着灯的时间
 // 本身就是奖励）；解锁时机：applyAchievements 既有通路（winBattle/开箱/酿造/进图等任意
 // 下一次判定点当场解锁，承 lvl12 同款——time 为持续累积量，无需新判定点）。
-const GAME_VERSION = 'v21.91';
+// v21.92 快速旅行目的地等级达标预警（体验打磨·信息透明·纯显示，承 v19.56 进图预警 / v19.89 状态页
+// 推荐等级 / v21.46 试炼推荐等级同一「难度透明」主线）：快速旅行列表的「推荐 Lv.X 起」提示与进图
+// 预警（v19.56，传送落地后才提示）都只陈述标准，玩家在旅行菜单上仍要自己心算「我 Lv.几、够不够」。
+// 现于 menus.drawTravel 选中行页脚区按 MAPS[k].recLv 与 hero.level 实时比对，未达标（且非当前所在
+// 地）补红色预警行「⚠️ 目的地推荐 Lv.N · 你当前 Lv.M · 先补给再战！」——与 TRAVEL_LIST 提示派生 /
+// world.transition 进图预警 / 状态页推荐等级同读 MAPS.recLv 单一数据源，调门槛只改 MAPS 一处四端同步；
+// 纯显示零结算零存档变化。
+const GAME_VERSION = 'v21.92';
 
 const T=32;
 

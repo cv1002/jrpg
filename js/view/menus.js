@@ -483,6 +483,17 @@ export function drawTravel(){
     if(unlocked&&hint) text(hint,478,110+i*52,'bold 11px','#ffd24a','right');
   });
   text('↑↓ 选择  ·  Enter 传送  ·  Esc 取消',320,travelFootY(TRAVEL_LIST.length),'12px','#7d93a3','center');
+  // v21.92 目的地等级达标预警（体验打磨·信息透明·纯显示）：列表提示（TRAVEL_LIST「推荐 Lv.X 起」）与
+  // 进图预警（v19.56，传送落地后才提示）都只陈述标准，旅行菜单上玩家仍要心算「我 Lv.几、够不够」；
+  // 现于选中行页脚区按 MAPS[k].recLv 与 hero.level 实时比对（与 TRAVEL_LIST 提示派生 / world.transition
+  // 进图预警 / 状态页推荐等级同读 MAPS.recLv 单一数据源，调门槛只改 MAPS 一处四端同步）——未达标且非
+  // 当前所在地（已在该图时由进图预警/状态页承载，避免「目的地」语义失真）补红色预警行；
+  // 地处安全区/已达标时不显示（village recLv=1 恒不触发），纯显示零结算零逻辑变化。
+  const selK = TRAVEL_LIST[S.travelSel] && TRAVEL_LIST[S.travelSel][0];
+  const selRec = (MAPS[selK] || {}).recLv;
+  if (hero && selK !== curMap() && selRec && hero.level < selRec) {
+    text(`⚠️ 目的地推荐 Lv.${selRec} · 你当前 Lv.${hero.level} · 先补给再战！`, 320, travelFootY(TRAVEL_LIST.length) + 24, '12px', '#ff5b5b', 'center');
+  }
 }
 
 const PAUSE_ITEMS = [
