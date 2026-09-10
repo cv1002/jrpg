@@ -32,8 +32,8 @@ console.log('— v21.99 金玉满堂金币线第二档里程碑冒烟 —');
 // —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v21.98 ——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.98', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v21.99', GAME_VERSION === 'v21.99', GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.99', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.0（随新现实由 v2200 冒烟守护）', GAME_VERSION === 'v22.0', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -44,7 +44,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.99 版本注释', dataSrc.includes('v21.99 新成就「金玉满堂」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.99', dataSrc.includes("const GAME_VERSION = 'v21.99';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.0', dataSrc.includes("const GAME_VERSION = 'v22.0';"));
 ok('data.js 仍保留 v21.98 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.98 胜利画面补存档入口'));
 ok('data.js 导出 RICH2_GOAL（export 块落位，与 RICH_GOLD 相邻）', dataSrc.includes('RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL'));
 
@@ -56,7 +56,7 @@ ok('RICH2_GOAL 声明为 1500 且注释含「金玉满堂」口径', dataSrc.inc
 const ach = ACH_LIST.find((a) => a.id === 'rich2');
 ok('ACH_LIST 含 rich2「金玉满堂」且 id 唯一',
   !!ach && ach.name === '金玉满堂' && ACH_LIST.filter((a) => a.id === 'rich2').length === 1);
-ok('ACH_LIST 精确总数 37 项（本版独占精确计数，36→37）', ACH_LIST.length === 37, String(ACH_LIST.length));
+ok('ACH_LIST 精确计数断言已去硬化（===37→>=37 存活性口径，承 v21.97 对 v2195 同款先例）', ACH_LIST.length >= 37, String(ACH_LIST.length));
 ok('rich2 描述由 RICH2_GOAL 派生（单一数据源，零裸字面量 1500）',
   ach.d === `持有 ${RICH2_GOAL} 金币`, ach.d);
 ok('rich2 判定/进度同读 RICH2_GOAL + gold 防御式（ok g.gold / prog (g.gold||0)）',
@@ -196,19 +196,19 @@ try {
   drawAch();
 } catch (e) { renderedPg4 = false; }
 S.achScroll = 0; S.scene = 'world';
-ok('运行期：成就页 drawAch 37 项渲染不抛错', rendered);
-ok('运行期：成就页末页滚动渲染不抛错（37 项 PAGE=10 四页）', renderedPg4);
+ok('运行期：成就页 drawAch 38 项渲染不抛错', rendered);
+ok('运行期：成就页末页滚动渲染不抛错（38 项 PAGE=10 四页）', renderedPg4);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树收录 smoke_v2199_rich2 且位于串尾（v2199 随新现实由当版冒烟守护）', readme.includes('smoke_v2198_winsave + smoke_v2199_rich2（npm test 串跑）'));
-ok('README 件套口径为九十五件套（九十四件套清除）',
-  readme.includes('冒烟九十五件套（九十四件套清除）') && !readme.includes('冒烟九十四件套（九十三件套清' + '除）'));
+ok('README tests 树收录 smoke_v2199_rich2 且位于串尾（v2199 随新现实由当版冒烟守护）', readme.includes('smoke_v2198_winsave + smoke_v2199_rich2 + smoke_v2200_stock（npm test 串跑）'));
+ok('README 件套口径为九十六件套（九十五件套清除）',
+  readme.includes('冒烟九十六件套（九十五件套清除）') && !readme.includes('冒烟九十五件套（九十四件套清' + '除）'));
 ok('README 含 v21.99 守护描述', readme.includes('v21.99 起含新成就「金玉满堂」'));
-ok('README 成就口径「37 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 37 项进度') && readme.includes('**37 项成就**') &&
-  !readme.includes('成就一览（全部 36 项进' + '度') && !readme.includes('**36 项成' + '就**'));
-ok('package.json 已收录 smoke_v2199_rich2（npm test 串跑第 95 份）',
-  pkg.includes('smoke_v2199_rich2.mjs') && /smoke_v2198_winsave\.mjs && node tests\/smoke_v2199_rich2\.mjs/.test(pkg));
+ok('README 成就口径「38 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
+  readme.includes('成就一览（全部 38 项进度') && readme.includes('**38 项成就**') &&
+  !readme.includes('成就一览（全部 37 项进' + '度') && !readme.includes('**37 项成' + '就**'));
+ok('package.json 已收录 smoke_v2199_rich2（npm test 串跑第 96 份）',
+  pkg.includes('smoke_v2199_rich2.mjs') && /smoke_v2199_rich2\.mjs && node tests\/smoke_v2200_stock\.mjs/.test(pkg));
 ok('CHANGELOG 含 v21.99 条目', changelog.includes('## v21.99 '));
 
 // —— 姊妹件套 pin 复查（v21.7 惯例：本版冒烟守护姊妹随新现实更新）——
@@ -222,8 +222,8 @@ const suite95 = ['smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v21
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite95) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十五件套（九十四件套清除）`,
-    src.includes('九十五件套（九十四件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十六件套（九十五件套清除）`,
+    src.includes('九十六件套（九十五件套清除）'));
 }
 const vers = ['smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2196_deadrecap.mjs',
   'smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs',
@@ -234,15 +234,15 @@ const vers = ['smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2196_
   'smoke_v2179_titlerecap.mjs'];
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.99`,
-    src.includes("const GAME_VERSION = 'v21.99';"));
+  ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.0`,
+    src.includes("const GAME_VERSION = 'v22.0';"));
 }
 for (const nm of ['smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2196_deadrecap.mjs',
   'smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs',
   'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v21.99`,
-    src.includes("GAME_VERSION === 'v21.99'"));
+  ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.0`,
+    src.includes("GAME_VERSION === 'v22.0'"));
 }
 const achFiles = ['smoke_v2197_lucky2.mjs', 'smoke_v2195_ptime2.mjs', 'smoke_v2193_hunt100.mjs',
   'smoke_v2191_ptime.mjs', 'smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs',
@@ -250,45 +250,45 @@ const achFiles = ['smoke_v2197_lucky2.mjs', 'smoke_v2195_ptime2.mjs', 'smoke_v21
   'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs'];
 for (const nm of achFiles) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 成就 pin 已随新现实更新为 37 项双处落位`,
-    src.includes("readme.includes('成就一览（全部 37 项进度'") && src.includes('**37 项成就**'));
+  ok(`${nm} 的 README 成就 pin 已随新现实更新为 38 项双处落位`,
+    src.includes("readme.includes('成就一览（全部 38 项进度'") && src.includes('**38 项成就**'));
 }
 const s2197 = read('../tests/smoke_v2197_lucky2.mjs');
 ok('smoke_v2197 的 ACH_LIST 精确计数断言已去硬化（===36 零残留，>=36 存活性口径落位）',
   s2197.includes('ACH_LIST.length >= 36') && !s2197.includes('ACH_LIST.length === 3' + '6'));
-// 旧代 pin 零残留：全部测试文件不得再含 v21.98 版本字面量 pin（拆串构造避免本文件扫描行自匹配）
-const OLD_GV = "const GAME_VERSION = 'v21.9" + "8';";
+// 旧代 pin 零残留：全部测试文件不得再含 v21.99 版本字面量 pin（拆串构造避免本文件扫描行自匹配）
+const OLD_GV = "const GAME_VERSION = 'v21.9" + "9';";
 let stale = [];
 for (const f of fs.readdirSync(new URL('../tests', import.meta.url))) {
   if (!/^smoke_.*\.mjs$/.test(f)) continue;
   const src = read(`../tests/${f}`);
   if (src.includes(OLD_GV)) stale.push(f);
 }
-ok('旧代 GAME_VERSION 字面量 pin 零残留（v21.98 全库清零）', stale.length === 0, stale.join(','));
+ok('旧代 GAME_VERSION 字面量 pin 零残留（v21.99 全库清零）', stale.length === 0, stale.join(','));
 let staleId = [];
 for (const f of fs.readdirSync(new URL('../tests', import.meta.url))) {
   if (!/^smoke_.*\.mjs$/.test(f)) continue;
   const src = read(`../tests/${f}`);
-  if (src.includes("GAME_VERSION === 'v21.9" + "8'")) staleId.push(f);
+  if (src.includes("GAME_VERSION === 'v21.9" + "9'")) staleId.push(f);
 }
-ok('旧代 GAME_VERSION 恒等 pin 零残留（===v21.98 全库清零）', staleId.length === 0, staleId.join(','));
+ok('旧代 GAME_VERSION 恒等 pin 零残留（===v21.99 全库清零）', staleId.length === 0, staleId.join(','));
 let staleSuite = [];
 for (const f of fs.readdirSync(new URL('../tests', import.meta.url))) {
   if (!/^smoke_.*\.mjs$/.test(f)) continue;
   const src = read(`../tests/${f}`);
-  if (src.includes('九十四件套（九十三件套清' + '除）')) staleSuite.push(f);
+  if (src.includes('九十五件套（九十四件套清' + '除）')) staleSuite.push(f);
 }
-ok('旧代件套 pin 零残留（九十四件套（九十三件套清' + '除）全库清零）', staleSuite.length === 0, staleSuite.join(','));
-// 旧代 README 成就正 pin 零残留：全部测试文件不得再含「全部 36 项进·度」或
-// 「readme.includes(『**36 项成就**』)」形态的正向 pin（拆串避免自匹配）
+ok('旧代件套 pin 零残留（九十五件套（九十四件套清' + '除）全库清零）', staleSuite.length === 0, staleSuite.join(','));
+// 旧代 README 成就正 pin 零残留：全部测试文件不得再含「全部 37 项进·度」或
+// 「readme.includes(『**37 项成就**』)」形态的正向 pin（拆串避免自匹配）
 let staleAch = [];
 for (const f of fs.readdirSync(new URL('../tests', import.meta.url))) {
   if (!/^smoke_.*\.mjs$/.test(f)) continue;
   const src = read(`../tests/${f}`);
-  const posPin = "readme.includes('**36 项成" + "就**'";
-  if (src.includes('全部 36 项进' + '度') || src.includes(posPin)) staleAch.push(f);
+  const posPin = "readme.includes('**37 项成" + "就**'";
+  if (src.includes('全部 37 项进' + '度') || src.includes(posPin)) staleAch.push(f);
 }
-ok('旧代 README 成就正 pin 零残留（36 项全库清零）', staleAch.length === 0, staleAch.join(','));
+ok('旧代 README 成就正 pin 零残留（37 项全库清零）', staleAch.length === 0, staleAch.join(','));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

@@ -34,6 +34,10 @@ export function buyPotion() {
     // hero.item / hero.gold，与 v19.74 喝药剩余量、v19.75/19.76/19.77 消费余额同源。
     bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）`);
     bind.renderHUD();
+    // v22.0 买药水当场判定成就（反馈不迟到，承 v21.73 buyArmor 先例）：applyAchievements 幂等（已解锁
+    // 不重报、perfection 不重复加奖），买满第 POTIONS_GOAL 瓶（成就「有备无患」= 持有 20 瓶）的瞬间即
+    // 解锁——此前要等下一场胜利/开箱等判定点才解锁，反馈迟到；零结算零数值变化，购买/扣款/加库存逐字未动。
+    applyAchievements();
   } else {
     // v21.63 金币不足拦截报差额（信息透明·纯显示）：v19.67 已带品名/价格，但玩家被拒时想确认
     // 「兜里有多少、还差多少」仍需瞄 HUD 或按 I 看状态页——旅馆面板端 drawInn 红字
