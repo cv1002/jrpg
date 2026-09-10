@@ -31,7 +31,7 @@ const menusSrc = read('../js/view/menus.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.82 版本注释', dataSrc.includes('v21.82 胜利画面补收集进度两件'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v21.97';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v21.98';"));
 
 // —— 源级落位：drawWin 新两件派生 + 既有战绩行/页脚逐字保留 ——
 const winBlock = (menusSrc.match(/export function drawWin\(\)\{[\s\S]*?\n\}/) || [''])[0];
@@ -45,8 +45,8 @@ ok('drawWin v19.49 战绩行逐字保留（累计讨伐/成就 N/M/时长）',
   winBlock.includes('`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}`'));
 ok('drawWin 收集行落位 y=378、页脚让位 y=396',
   winBlock.includes(",CV.width/2,378);") && winBlock.includes(",CV.width/2,396);"));
-ok('drawWin 页脚文案逐字未动（按 Enter 观看尾声 · 按 R 重开新档(连按两次)）',
-  winBlock.includes("按 Enter 观看尾声 · 按 R 重开新档(连按两次)"));
+ok('drawWin 页脚补 P 口径（按 Enter 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)，v21.98）',
+  winBlock.includes("按 Enter 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)"));
 ok('drawWin 旧页脚 y=380 零残留（页脚已让位 396，不重叠）',
   !winBlock.includes("(连按两次)',CV.width/2,380)"));
 ok('drawWin 主标题/等级行零回归（灯芯回来了/最终等级 逐字保留）',
@@ -152,7 +152,7 @@ ok('运行期：收集行落位「📕 图鉴 2/13 · 📦 宝箱 2/12」（与 
 ok('运行期：v19.49 战绩行逐字保留（累计讨伐 3 只 · 成就 1/29 · ⏱01:02:03）',
   CAPTURED.some((t) => t.includes(`累计讨伐 3 只 · 成就 1/${ACH_LIST.length} · ⏱️01:02:03`)));
 ok('运行期：页脚文案落位（按 Enter 观看尾声 · 按 R 重开新档(连按两次)）',
-  CAPTURED.some((t) => t.includes('按 Enter 观看尾声 · 按 R 重开新档(连按两次)')));
+  CAPTURED.some((t) => t.includes('按 Enter 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)')));
 ok('运行期：主标题/等级行零回归（灯芯回来了/最终等级 Lv.9 · 金币 777）',
   CAPTURED.some((t) => t.includes('灯 芯 回 来 了')) && CAPTURED.some((t) => t.includes('最终等级 Lv.9 · 金币 777')));
 
@@ -169,8 +169,8 @@ const readme = read('../README.md');
 const pkg = read('../package.json');
 ok('README 已同步（tests 树收录 smoke_v2182_winrecap + 冒烟/件套口径）',
   readme.includes('smoke_v2182_winrecap') && readme.includes('冒烟') && readme.includes('件套'));
-ok('README 件套口径已更新为九十三件套（九十二件套清除）',
-  readme.includes('冒烟九十三件套（九十二件套清除）') && !readme.includes('冒烟七十七件套（七十六件套清除）'));
+ok('README 件套口径已更新为九十四件套（九十三件套清除）',
+  readme.includes('冒烟九十四件套（九十三件套清除）') && !readme.includes('冒烟七十七件套（七十六件套清除）'));
 ok('README 含 v21.82 守护描述', readme.includes('v21.82 起含胜利画面收集进度守护'));
 ok('package.json 已收录 smoke_v2182_winrecap（第 78 份）', pkg.includes('tests/smoke_v2182_winrecap.mjs'));
 const s2181 = read('../tests/smoke_v2181_helpquickcast.mjs');
@@ -180,13 +180,13 @@ const s2178 = read('../tests/smoke_v2178_codexseen.mjs');
 const s2177 = read('../tests/smoke_v2177_elites.mjs');
 const s2176 = read('../tests/smoke_v2176_allchests.mjs');
 for (const [nm, src] of [['smoke_v2181', s2181], ['smoke_v2180', s2180], ['smoke_v2179', s2179], ['smoke_v2178', s2178], ['smoke_v2177', s2177], ['smoke_v2176', s2176]]) {
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十三件套（九十二件套清除）`,
-    src.includes('九十三件套（九十二件套清除）') && !src.includes('七十七件套（七十六件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十四件套（九十三件套清除）`,
+    src.includes('九十四件套（九十三件套清除）') && !src.includes('七十七件套（七十六件套清除）'));
 }
 ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2181.includes("const GAME_VERSION = 'v21.97';"));
+  s2181.includes("const GAME_VERSION = 'v21.98';"));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2179.includes("const GAME_VERSION = 'v21.97';"));
+  s2179.includes("const GAME_VERSION = 'v21.98';"));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

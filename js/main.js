@@ -288,6 +288,15 @@ const screens = {
       // 仅武装+提示，窗口内再按 R 才执行；任一非 R 键（含 Enter 去尾声）立即解除武装，不会连发不会漏发。
       // Enter→ending 分支逐字未动，纯入口层改动、零结算零存档变化。
       if (e.key !== 'r' && e.key !== 'R') S.titleResetArm = 0;
+      // v21.98 胜利画面补存档入口（体验打磨·存档闭环，承 v21.70/v21.16「win 场景出口口径」）：win 结算屏
+      // 此前只有 Enter（尾声）/R（重开）两个出口——saveGame 仅 P/菜单手动触发，而 win.onKey 无 P 分支、
+      // 暂停菜单在 win 场景不可达，击败幽冥魔王的战果（bossDefeated 徽记/圣光之剑/等级金币/成就收集进度）
+      // 无法落盘：回标题后 L 读档只能读回战前旧档，main_cave/main_gallery/main_true（均 unlockOn
+      // bossDefeated）与真结局（ENDING_TRUE）在自然流程上断链（尾声「井，还没有」明确承接后续）。现补
+      // P → saveGame（与 world.onKey P 逐字同款唯一入口，回执走 S.saveMsg 既有摘要）；P 存档后回标题按
+      // L 读档即可带着徽记继续星井矿脉/无字回廊/试炼之旅。Enter/R 分支与非 R 键解武装口径逐字未动，
+      // 纯入口层改动、零结算零存档格式变化。
+      if (e.key === 'p' || e.key === 'P') { saveGame(); return; }
       if (e.key === 'Enter') goto('ending');
       else if (e.key === 'r' || e.key === 'R') {
         // 两按确认：与标题页 R 分支逐字同构（提示文案同口径，承 v21.16）

@@ -125,8 +125,8 @@ ok('main.js dead.onKey 维持单击 R（本版只动 win 一处）',
 
 // —— 源级落位：drawWin 页脚口径同步 + 旧文案零残留 ——
 const vSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
-ok('drawWin 页脚已补「按 R 重开新档(连按两次)」（与标题页提示行同口径）',
-  vSrc.includes("按 Enter 观看尾声 · 按 R 重开新档(连按两次)"));
+ok('drawWin 页脚已补「按 R 重开新档(连按两次)」与「按 P 存档」（与标题页提示行/win.onKey 口径同源，v21.98 补 P）',
+  vSrc.includes("按 Enter 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)"));
 ok('drawWin 页脚旧单击口径零残留（「按 R 重新开始」于 win 页脚已清除）',
   !vSrc.includes('按 Enter 观看尾声 · 按 R 重新开始'));
 ok('drawDead 的 R 提示维持单击口径（「按 R 重新开始本次冒险」仍在，本版不动 dead）',
@@ -227,8 +227,8 @@ ok('README 件套口径为存活性断言（v21.71 起件数由本版冒烟守�
   !readme.includes('（六十五件套清除）'));
 ok('README 含 v21.70 守护描述（胜利画面 R 重开两按确认守护）',
   readme.includes('胜利画面 R 重开两按确认守护'));
-ok('README 快速上手表已收录胜利画面行（Enter 观看尾声 · R 连按两次）',
-  readme.includes('胜利画面 `Enter/R`') && readme.includes('`Enter` 观看尾声'));
+ok('README 快速上手表已收录胜利画面行（Enter 观看尾声 · P 存档 · R 连按两次，v21.98 补 P）',
+  readme.includes('胜利画面 Enter/P/R') && readme.includes('`Enter` 观看尾声') && readme.includes('`P` 存档'));
 ok('package.json 已收录 smoke_v2170_winreset（npm test 串跑第 66 份）',
   pkg.includes('smoke_v2170_winreset.mjs'));
 const s2169 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2169_chiefdone.mjs'), 'utf8');

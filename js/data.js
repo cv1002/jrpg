@@ -408,7 +408,17 @@
 // chestCount·chestTotal 一份单一数据源（BESTIARY_TARGET.filter 同式 + |0 归一、chestCount 三形态防御式、
 // 旧档零迁移），新增行 y=312（建议行 292 与 R 提示 332 之间、行间 20px ≥16 不触），其余行零位移，
 // 纯显示零结算零存档变化。
-const GAME_VERSION = 'v21.97';
+// v21.98 胜利画面补存档入口（体验打磨·存档闭环，承 v21.70 胜利画面 R 两按确认同一「win 场景出口口径」
+// 主线）：击败幽冥魔王后进入「灯芯回来了」结算屏（win），此屏此前只有 Enter 看尾声 / R 重开两个出口——
+// 本局战果（bossDefeated 徽记/圣光之剑/等级金币/成就与收集进度）不自动存档、saveGame 仅 P/菜单手动触发，
+// 而 win.onKey 无 P 分支、暂停菜单在 win 场景不可达：按 Enter 看尾声或 R 重开后回标题，L 读档只能读回
+// 战前旧档，所持徽记随内存蒸发——主线「星井之守/无字回廊/初灯的审判」（main_cave/main_gallery/main_true
+// 均 unlockOn bossDefeated）与真结局（ENDING_TRUE）在自然流程上断链（井巫「井底还在低鸣」/尾声「井，
+// 还没有」明确承接后续）。现补 win.onKey 的 P → saveGame（与 world/pause 同款唯一入口、回执复用
+// S.saveMsg 既有摘要）+ drawWin 页脚补「按 P 存档」+「💡 本局战果未自动存档」提示行——玩家在胜利瞬间
+// 把徽记写进当前槽，回标题按 L 读档即带着 bossDefeated 续玩矿脉/回廊/试炼；Enter/R/Esc 分支逐字未动，
+// 纯入口层零结算零存档格式变化。
+const GAME_VERSION = 'v21.98';
 
 const T=32;
 
