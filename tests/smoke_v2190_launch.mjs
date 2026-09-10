@@ -33,7 +33,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.90 版本注释', dataSrc.includes('v21.90 启动脚本口径统一与默认仅本机绑定'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.90', dataSrc.includes("const GAME_VERSION = 'v22.2';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.90', dataSrc.includes("const GAME_VERSION = 'v22.3';"));
 
 // —— start.sh 源级落位 ——
 ok('start.sh 注释统一为「潮灯记 · 一键启动」', shSrc.includes('潮灯记 · 一键启动'));
@@ -54,8 +54,8 @@ ok('improve-plan.md 旧名「勇者传说」零残留', !planSrc.includes('勇�
 // —— README / package.json 同步 ——
 ok('README 手动命令含 --bind 127.0.0.1 8000（与一键脚本同口径）', readme.includes('python3 -m http.server --bind 127.0.0.1 8000'));
 ok('README tests 树收录 smoke_v2190_launch', readme.includes('smoke_v2190_launch'));
-ok('README 件套口径为九十八件套（九十七件套清除）',
-  readme.includes('冒烟九十八件套（九十七件套清除）') && !readme.includes('冒烟八十五件套（八十四件套清除）'));
+ok('README 件套口径为九十九件套（九十八件套清除）',
+  readme.includes('冒烟九十九件套（九十八件套清除）') && !readme.includes('冒烟八十五件套（八十四件套清除）'));
 ok('README 含 v21.90 守护描述', readme.includes('v21.90 起含启动脚本口径守护'));
 ok('package.json 已收录 smoke_v2190_launch（npm test 串跑第 86 份）',
   pkg.includes('smoke_v2190_launch.mjs') && /smoke_v2189_visitedlegacy\.mjs && node tests\/smoke_v2190_launch\.mjs/.test(pkg));
@@ -70,13 +70,13 @@ const suite86 = ['smoke_v2189_visitedlegacy.mjs', 'smoke_v2188_wander.mjs', 'smo
   'smoke_v2176_allchests.mjs'];
 for (const nm of suite86) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十八件套（九十七件套清除）`,
-    src.includes('九十八件套（九十七件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十九件套（九十八件套清除）`,
+    src.includes('九十九件套（九十八件套清除）'));
 }
 for (const nm of ['smoke_v2189_visitedlegacy.mjs', 'smoke_v2188_wander.mjs', 'smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.90`,
-    src.includes("const GAME_VERSION = 'v22.2';"));
+    src.includes("const GAME_VERSION = 'v22.3';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);

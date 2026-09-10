@@ -217,7 +217,7 @@ S.G = null;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2177_elites', readme.includes('smoke_v2177_elites'));
-ok('README 件套口径为九十八件套（九十七件套清除）', readme.includes('九十八件套（九十七件套清除）'));
+ok('README 件套口径为九十九件套（九十八件套清除）', readme.includes('九十九件套（九十八件套清除）'));
 ok('README 含 v21.77 守护描述（新成就「精英猎手」（双精英讨伐里程碑）守护）',
   readme.includes('v21.77 起含新成就「精英猎手」（双精英讨伐里程碑'));
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
@@ -227,7 +227,7 @@ const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs')
 ok('smoke_v2176 的 ACH_LIST 精确计数断言已去硬化（===27 零残留，>=27 存活性口径落位）',
   s2176.includes('ACH_LIST.length >= 27') && !s2176.includes('ACH_LIST.length === 27'));
 ok('smoke_v2176 的 README 件套口径断言已随新现实更新（七十五件套 pin 零残留，七十六件套落位）',
-  s2176.includes('九十八件套（九十七件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
+  s2176.includes('九十九件套（九十八件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
 ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，31 项双处落位）',
   s2176.includes("readme.includes('成就一览（全部 38 项进度'") && !s2176.includes('全部 28 项进度'));
 const s2168 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2168_hardtrue.mjs'), 'utf8');

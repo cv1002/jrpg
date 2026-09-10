@@ -446,7 +446,14 @@
 // run 总结屏上无回声（尾声战绩行 v19.49 早有 记忆 N/N、状态页 v22.1 有 🕯️，唯独胜利屏缺）；现与
 // drawEnding/drawStatus/drawJournal 同读 hero.fragments / FRAGMENTS.length 一份单一数据源（(S.G.fragments||[])
 // 防御式旧档零迁移），纯显示零结算零存档变化（调整碎片只改 data.js FRAGMENTS 一处自动跟随）。
-const GAME_VERSION = 'v22.2';
+// v22.3 阵亡画面收集行补「🕯️ 记忆碎片 N/4」（体验打磨·信息透明，承 v22.1 状态页碎片 / v22.2 胜利画面碎片 /
+// v21.96 阵亡收集三件套同一主线）：碎片进度的常驻/总结屏逐屏核对——尾声战绩行 v19.49「记忆 N/N」、J 日志
+// 「记忆碎片」节、状态页资源行 v22.1 🕯️ N/4、胜利画面收集行 v22.2 🕯️ 记忆碎片 N/4 四端齐备，唯独 v21.96
+// 阵亡画面（drawDead）收集行（🏆 成就 / 📕 图鉴 / 📦 宝箱）仍无碎片——玩家倒在强敌面前判断「B 重整旗鼓 /
+// R 重开新档」时，真结局关键收集（FRAGMENTS 四枚强敌首胜掉落）在这块 run 战果屏上无回声；现与其余四端
+// 同读 hero.fragments / FRAGMENTS.length 一份单一数据源（(hero.fragments||[]) 防御式旧档零迁移），
+// 纯显示零结算零存档变化（调整碎片只改 data.js FRAGMENTS 一处自动跟随）。
+const GAME_VERSION = 'v22.3';
 
 const T=32;
 
