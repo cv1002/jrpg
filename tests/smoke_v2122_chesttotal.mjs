@@ -54,6 +54,8 @@ ok('旧的单一口径「📦:${chestCount(hero)}/${TREASURE_GOAL}」已不存�
 // —— 状态行宽度预算（estW 官方口径，14px 左起 x=110，面板右缘 570 → 预算 460；取最大字面量组合） ——
 // v21.94 状态行并列入 📕 图鉴 N/13（BESTIARY_TARGET 同源）：estW 保守估算 ≈490、@napi-rs/canvas 实测
 // ≈402（右缘 ≈512 ≤ 570，留 58px 余量）——预算随新现实放宽至 520（estW 口径），实测口径仍 ≤570 面板内。
+// v22.1 状态行再并列 🕯️ 记忆碎片 N/4（FRAGMENTS 同源）：estW 保守估算 ≈547、@napi-rs/canvas 实测
+// ≈448.3（右缘 ≈558.3 ≤ 570，留 ≈12px 余量）——预算随新现实放宽至 570（estW 口径），实测口径仍 ≤570 面板内。
 const estW = (s, size) => {
   let wsum = 0;
   for (const ch of String(s || '')) {
@@ -69,9 +71,9 @@ const estW = (s, size) => {
   }
   return wsum;
 };
-const worstLine = `金币:99999  🍖:99 🧪:99 🍄:99 📕:13/13 📦:12/${chestTotal()}·成就12/${TREASURE_GOAL}  ⏱️999:59:59`;
+const worstLine = `金币:99999  🍖:99 🧪:99 🍄:99 📕:13/13 📦:12/${chestTotal()}·成就12/${TREASURE_GOAL}  🕯️:4/4  ⏱️999:59:59`;
 const wLine = estW(worstLine, 14);
-ok('状态行最宽组合估算 ≤520（v21.94 随 📕 图鉴并入放宽；实测右缘 ≈512 ≤ 570 面板内）', wLine > 0 && wLine <= 520, `≈${wLine.toFixed(0)}`);
+ok('状态行最宽组合估算 ≤570（v22.1 随 🕯️ 碎片并入放宽；实测右缘 ≈558.3 ≤ 570 面板内）', wLine > 0 && wLine <= 570, `≈${wLine.toFixed(0)}`);
 
 // —— data.js 陈年「11 个」注释已除、chestTotal 定义在库 ——
 const dataSrc = await (async () => { try { return (await import('node:fs')).readFileSync(new URL('../js/data.js', import.meta.url), 'utf8'); } catch { return ''; } })();

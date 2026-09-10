@@ -434,7 +434,13 @@
 // 三处同读 POTIONS_GOAL 单一数据源、读既有 hero.item 存档字段（newGame 起始 START_POTIONS、
 // shop.buyPotion/开箱/掉落/任务奖励写定、喝药扣减，(g.item||0) 防御式读取旧档零迁移）、无 r 纯里程碑、
 // applyAchievements 既有通路当场解锁（另给 shop.buyPotion 成功分支补当场判定，承 v21.73 buyArmor 先例）。
-const GAME_VERSION = 'v22.0';
+// v22.1 状态页资源行补「🕯️ 记忆碎片 N/4」（体验打磨·信息透明，承 v21.94 资源行补图鉴同一主线）：
+// 资源总览行（金币/🍖/🧪/🍄/📕图鉴/📦宝箱·成就/⏱时长）是玩家按 I 看「这趟收集到哪了」的第一屏，
+// 唯独真结局关键收集「记忆碎片」（FRAGMENTS 四枚强敌首胜掉落、集齐触发真结局全记忆页）不在其中——
+// 碎片进度此前只在 J 日志「记忆碎片」节（未收集灰占位）与尾声战绩页可见，状态页一眼看不到还差几枚；
+// 现与 drawJournal/drawEnding 同读 hero.fragments / FRAGMENTS.length 一份单一数据源（(hero.fragments||[])
+// 防御式读取旧档零迁移），纯显示零结算零存档变化（调整碎片只改 data.js FRAGMENTS 一处自动跟随）。
+const GAME_VERSION = 'v22.1';
 
 const T=32;
 

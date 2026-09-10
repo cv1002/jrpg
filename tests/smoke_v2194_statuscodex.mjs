@@ -23,7 +23,7 @@ console.log('— v21.94 状态页资源行图鉴进度冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.93', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 94)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v21.94', GAME_VERSION === 'v22.0', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v21.94', GAME_VERSION === 'v22.1', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -35,7 +35,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.94 版本注释', dataSrc.includes('v21.94 状态页资源行补图鉴进度'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.94', dataSrc.includes("const GAME_VERSION = 'v22.0';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.94', dataSrc.includes("const GAME_VERSION = 'v22.1';"));
 ok('data.js 仍保留 v21.93 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.93 新成就「驱雾百战」'));
 
 // —— 源级落位：drawStatus 图鉴派生与资源行并入 ——
@@ -45,10 +45,13 @@ ok('drawStatus 派生图鉴数（与 slotPreview/drawWin/drawEnding 同式：BES
   statusBlock.includes('const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;'));
 ok('资源行并入 📕 图鉴 N/13（BESTIARY_TARGET.length 单一数据源分母）',
   statusBlock.includes('📕:${codexN}/${BESTIARY_TARGET.length}'));
-ok('资源行既有段逐字保留（金币/🍖/🧪/🍄/📦 双口径/⏱）',
-  statusBlock.includes('金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}'));
-ok('资源行旧行（无 📕）零残留',
-  !statusBlock.includes('金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:'));
+ok('资源行并入 🕯️ 记忆碎片 N/4（FRAGMENTS.length 单一数据源分母，v22.1 随新现实）',
+  statusBlock.includes('🕯️:${fragN}/${FRAGMENTS.length}'));
+ok('资源行既有段逐字保留（金币/🍖/🧪/🍄/📦 双口径/🕯️/⏱）',
+  statusBlock.includes('金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  🕯️:${fragN}/${FRAGMENTS.length}  ⏱️${fmtTime(hero.time)}'));
+ok('资源行旧行（无 📕/无 🕯️）零残留',
+  !statusBlock.includes('金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:') &&
+  !statusBlock.includes('·成就${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}'));
 ok('drawStatus 资源行仍在 y=264（行位零回归）', statusBlock.includes(",110,264,'14px');"));
 
 // —— 与 core.js slotPreview / drawWin / drawEnding 同式互证：同一份单一数据源 ——
@@ -75,12 +78,12 @@ const estW = (s, size) => {
   }
   return wsum;
 };
-const worstRow = `金币:99999  🍖:99 🧪:99 🍄:99 📕:13/13 📦:12/${chestTotal()}·成就12/${TREASURE_GOAL}  ⏱️999:59:59`;
+const worstRow = `金币:99999  🍖:99 🧪:99 🍄:99 📕:13/13 📦:12/${chestTotal()}·成就12/${TREASURE_GOAL}  🕯️:4/4  ⏱️999:59:59`;
 const wRow = estW(worstRow, 14);
-ok('资源行最宽组合 estW 估算 ≤520（面板内余量口径，v21.94 随 📕 并入放宽）',
-  wRow > 0 && wRow <= 520, `≈${wRow.toFixed(0)}`);
-ok('资源行起点 110 + estW 估算 ≤ 600（保守估算口径；@napi-rs/canvas 实测宽 ≈402、右缘 ≈512 ≤ 570 面板内）',
-  110 + wRow <= 600, `right≈${(110 + wRow).toFixed(0)}`);
+ok('资源行最宽组合 estW 估算 ≤570（面板内余量口径，v22.1 随 🕯️ 碎片并入再放宽；@napi-rs 实测右缘 ≈558.3 ≤ 570）',
+  wRow > 0 && wRow <= 570, `≈${wRow.toFixed(0)}`);
+ok('资源行起点 110 + estW 估算 ≤ 670（保守估算口径；@napi-rs/canvas 实测宽 ≈448.3、右缘 ≈558.3 ≤ 570 面板内）',
+  110 + wRow <= 670, `right≈${(110 + wRow).toFixed(0)}`);
 
 // —— 运行期实证（DOM 桩 + main.js 装载 + drawStatus 渲染捕获） ——
 const noop = () => {};
@@ -186,7 +189,7 @@ ok('运行期：资源行 📕 与 📦/成就/⏱ 同段共存（收集三件�
 
 // —— README / package.json / CHANGELOG 同步 ——
 ok('README 已同步（tests 树收录 smoke_v2194_statuscodex + 九十件套口径）',
-  readme.includes('smoke_v2194_statuscodex') && readme.includes('九十六件套（九十五件套清除）'));
+  readme.includes('smoke_v2194_statuscodex') && readme.includes('九十七件套（九十六件套清除）'));
 ok('README 含 v21.94 守护描述', readme.includes('v21.94 起含状态页资源行图鉴进度守护'));
 ok('README 不含旧「八十九件套（八十八件套清除）」旧口径', !readme.includes('冒烟八十九件套（八十八件套清除）'));
 ok('package.json 已收录 smoke_v2194_statuscodex（npm test 串跑第 90 份）',
@@ -203,8 +206,8 @@ const suite90 = ['smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs', 'smoke
   'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite90) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十六件套（九十五件套清除）`,
-    src.includes('九十六件套（九十五件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为九十七件套（九十六件套清除）`,
+    src.includes('九十七件套（九十六件套清除）'));
 }
 for (const nm of ['smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs', 'smoke_v2191_ptime.mjs',
   'smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'smoke_v2188_wander.mjs',
@@ -213,7 +216,7 @@ for (const nm of ['smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs', 'smok
   'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.94`,
-    src.includes("const GAME_VERSION = 'v22.0';"));
+    src.includes("const GAME_VERSION = 'v22.1';"));
 }
 // 旧代 GAME_VERSION 字面量 pin 零残留（v21.93 全库清零；拼接避免本文件自匹配）
 const STALE_GV = "const GAME_VERSION = 'v21.9" + "3';";

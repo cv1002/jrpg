@@ -114,8 +114,15 @@ export function drawStatus(){
   // drawEnding 同读 BESTIARY_TARGET 一份单一数据源（|0 归一防御式，旧布尔 bestiary 零迁移），补
   // 「📕 图鉴 N/13」。纯显示零结算零存档变化；行宽实测（@napi-rs/canvas 14px 最宽组合）≈512 ≤ 面板
   // 右缘 570（smoke_v2122 预算断言随新现实更新）。
+  // v22.1 资源行补记忆碎片计数（体验打磨·信息透明，承 v21.94 同一主线）：资源总览行有 金币/🍖/🧪/🍄/
+  // 📕图鉴/📦宝箱·成就/⏱时长，唯独真结局关键收集「记忆碎片」缺席——碎片进度此前只在 J 日志「记忆碎片」
+  // 节（未收集灰占位）与尾声战绩页可见，状态页一眼看不到还差几枚；现与 drawJournal/drawEnding 同读
+  // hero.fragments / FRAGMENTS.length 一份单一数据源（(hero.fragments||[]) 防御式旧档零迁移），补
+  // 「🕯️ 记忆碎片 N/4」。纯显示零结算零存档变化；行宽实测（@napi-rs/canvas 14px 最宽组合）≈558 ≤ 面板
+  // 右缘 570（smoke_v2122/v2194/v2201 预算断言随新现实更新）。
   const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
-  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
+  const fragN = (hero.fragments || []).length;
+  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  🕯️:${fragN}/${FRAGMENTS.length}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   // v21.83 七招容量（承 v21.48 行距 16→14 先例）：Lv11 领悟第 7 招「星砂回响」后行距 14→12、
   // 首行 308→302 双收——≤6 招时逐字保持 v21.48 布局（条件式，零回归）；7 招时末行基线 380
