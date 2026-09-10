@@ -440,7 +440,13 @@
 // 碎片进度此前只在 J 日志「记忆碎片」节（未收集灰占位）与尾声战绩页可见，状态页一眼看不到还差几枚；
 // 现与 drawJournal/drawEnding 同读 hero.fragments / FRAGMENTS.length 一份单一数据源（(hero.fragments||[])
 // 防御式读取旧档零迁移），纯显示零结算零存档变化（调整碎片只改 data.js FRAGMENTS 一处自动跟随）。
-const GAME_VERSION = 'v22.1';
+// v22.2 胜利画面收集行补「🕯️ 记忆碎片 N/4」（体验打磨·信息透明，承 v22.1 状态页碎片 / v21.82 胜利画面
+// 收集两件同一主线）：drawWin 自 v21.82 起有 📕图鉴/📦宝箱 两件收集进度，但「灯芯回来了」这一刻恰是
+// 幽冥魔王首胜掉落「碎片·灯卫的誓」（battle.winBattle 强敌首胜掉落分支）的瞬间——刚捡起的碎片却在这块
+// run 总结屏上无回声（尾声战绩行 v19.49 早有 记忆 N/N、状态页 v22.1 有 🕯️，唯独胜利屏缺）；现与
+// drawEnding/drawStatus/drawJournal 同读 hero.fragments / FRAGMENTS.length 一份单一数据源（(S.G.fragments||[])
+// 防御式旧档零迁移），纯显示零结算零存档变化（调整碎片只改 data.js FRAGMENTS 一处自动跟随）。
+const GAME_VERSION = 'v22.2';
 
 const T=32;
 

@@ -777,8 +777,14 @@ export function drawWin(){
   // 垂直富余，主标题/怪物/战绩行全部零位移），纯显示零结算零存档变化。
   const codexN = BESTIARY_TARGET.filter((n) => ((S.G.bestiary || {})[n] | 0) >= 1).length;
   const chestN = chestCount(S.G);
+  // v22.2 胜利画面收集行补「🕯️ 记忆碎片 N/4」（信息透明·纯显示，承 v22.1 状态页 / v19.49 尾声战绩行同一
+  // 主线）：drawWin 的收集行 v21.82 起只有 图鉴/宝箱 两件——但「灯芯回来了」正是幽冥魔王首胜掉落
+  // 「碎片·灯卫的誓」的瞬间（battle.winBattle 强敌首胜掉落分支），刚捡起的真结局关键收集在这块 run
+  // 总结屏上无回声；现与 drawEnding/drawStatus/drawJournal 同读 (S.G.fragments||[]).length /
+  // FRAGMENTS.length 一份单一数据源（防御式旧档零迁移），纯显示零结算零存档变化。
+  const fragW = (S.G.fragments || []).length;
   CTX.fillStyle='#7dd47f'; CTX.font='bold 14px sans-serif';
-  CTX.fillText(`📕 图鉴 ${codexN}/${BESTIARY_TARGET.length} · 📦 宝箱 ${chestN}/${chestTotal()}`,CV.width/2,378);
+  CTX.fillText(`📕 图鉴 ${codexN}/${BESTIARY_TARGET.length} · 📦 宝箱 ${chestN}/${chestTotal()} · 🕯️ 记忆碎片 ${fragW}/${FRAGMENTS.length}`,CV.width/2,378);
   CTX.fillStyle='#7d93a3'; CTX.font='14px sans-serif';
   // v21.70 胜利画面 R 重开提示补「连按两次」（可发现性·与 main.js win.onKey 两按确认、标题页提示行
   // 「R 重开新档(连按两次)」同口径，承 v21.18「按键提示必须如实反映防误触口径」主线）：win 的 R 自

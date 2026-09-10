@@ -27,7 +27,7 @@ const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 
 const dataSrc = read('../js/data.js');
 
 ok('data.js 含 v21.81 版本注释', dataSrc.includes('v21.81 帮助页「战斗」行补技能菜单数字键快捷直发口径'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v22.1';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v22.2';"));
 
 // —— HELP_PAGES 数据契约：战斗行 r[1] 主行逐字零回归（含 FLEE_SUCCESS 派生），r[2] 追加新段 ——
 const page0 = HELP_PAGES[0] || [];
@@ -82,8 +82,8 @@ ok('README 战斗段早已标注「数字键 1-7 快捷直发」（同口径）'
 // —— README / package / 姊妹件套 pin 随新现实更新（v21.7 惯例：最新版守护 README 与旧 pin）——
 ok('README 已同步（tests 树收录 smoke_v2181_helpquickcast + 件套口径）',
   readme.includes('smoke_v2181_helpquickcast') && readme.includes('件套'));
-ok('README 件套口径已更新为九十七件套（九十六件套清除）',
-  readme.includes('九十七件套（九十六件套清除）') && !readme.includes('七十六件套（七十五件套清除）'));
+ok('README 件套口径已更新为九十八件套（九十七件套清除）',
+  readme.includes('九十八件套（九十七件套清除）') && !readme.includes('七十六件套（七十五件套清除）'));
 ok('README 含 v21.81 守护描述', readme.includes('v21.81 起含帮助页「战斗」行技能菜单数字键快捷直发口径守护'));
 ok('package.json 已收录 smoke_v2181_helpquickcast（第 77 份）', pkg.includes('tests/smoke_v2181_helpquickcast.mjs'));
 const s2180 = read('../tests/smoke_v2180_grain.mjs');
@@ -91,18 +91,18 @@ const s2179 = read('../tests/smoke_v2179_titlerecap.mjs');
 const s2178 = read('../tests/smoke_v2178_codexseen.mjs');
 const s2177 = read('../tests/smoke_v2177_elites.mjs');
 const s2176 = read('../tests/smoke_v2176_allchests.mjs');
-ok('smoke_v2180 的 README 件套 pin 已随新现实更新为九十七件套（九十六件套清除）',
-  s2180.includes('九十七件套（九十六件套清除）') && !s2180.includes('七十六件套（七十五件套清除）'));
-ok('smoke_v2179 的 README 件套 pin 已随新现实更新为九十七件套（九十六件套清除）',
-  s2179.includes('九十七件套（九十六件套清除）') && !s2179.includes('七十六件套（七十五件套清除）'));
+ok('smoke_v2180 的 README 件套 pin 已随新现实更新为九十八件套（九十七件套清除）',
+  s2180.includes('九十八件套（九十七件套清除）') && !s2180.includes('七十六件套（七十五件套清除）'));
+ok('smoke_v2179 的 README 件套 pin 已随新现实更新为九十八件套（九十七件套清除）',
+  s2179.includes('九十八件套（九十七件套清除）') && !s2179.includes('七十六件套（七十五件套清除）'));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2179.includes("const GAME_VERSION = 'v22.1';"));
-ok('smoke_v2178 的 README 件套 pin 已随新现实更新为九十七件套（九十六件套清除）',
-  s2178.includes('九十七件套（九十六件套清除）') && !s2178.includes('七十六件套（七十五件套清除）'));
-ok('smoke_v2177 的 README 件套 pin 已随新现实更新为九十七件套（九十六件套清除）',
-  s2177.includes('九十七件套（九十六件套清除）') && !s2177.includes('七十六件套（七十五件套清除）'));
-ok('smoke_v2176 的 README 件套 pin 已随新现实更新为九十七件套（九十六件套清除）',
-  s2176.includes('九十七件套（九十六件套清除）') && !s2176.includes('七十六件套（七十五件套清除）'));
+  s2179.includes("const GAME_VERSION = 'v22.2';"));
+ok('smoke_v2178 的 README 件套 pin 已随新现实更新为九十八件套（九十七件套清除）',
+  s2178.includes('九十八件套（九十七件套清除）') && !s2178.includes('七十六件套（七十五件套清除）'));
+ok('smoke_v2177 的 README 件套 pin 已随新现实更新为九十八件套（九十七件套清除）',
+  s2177.includes('九十八件套（九十七件套清除）') && !s2177.includes('七十六件套（七十五件套清除）'));
+ok('smoke_v2176 的 README 件套 pin 已随新现实更新为九十八件套（九十七件套清除）',
+  s2176.includes('九十八件套（九十七件套清除）') && !s2176.includes('七十六件套（七十五件套清除）'));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);
