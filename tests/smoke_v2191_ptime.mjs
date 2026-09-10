@@ -43,7 +43,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.91 版本注释', dataSrc.includes('v21.91 新成就「长明不熄」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.91', dataSrc.includes("const GAME_VERSION = 'v22.4';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.91', dataSrc.includes("const GAME_VERSION = 'v22.5';"));
 ok('data.js 导出 PLAY_TIME_GOAL（export 块落位；v22.0 起 PLAY_TIME2_GOAL/POTIONS_GOAL 随其后，v2200 冒烟守护）', dataSrc.includes(', PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, PERFECTION_GOLD'));
 
 // —— PLAY_TIME_GOAL 数据契约 ——
@@ -200,8 +200,8 @@ ok('运行期：成就页末页滚动渲染不抛错（33 项 PAGE=10 四页）'
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树收录 smoke_v2191_ptime', readme.includes('smoke_v2191_ptime'));
-ok('README 件套口径为一百件套（九十九件套清除）',
-  readme.includes('冒烟一百件套（九十九件套清除）') && !readme.includes('冒烟八十七件套（八十六件套清除）'));
+ok('README 件套口径为一百零一件套（一百件套清除）',
+  readme.includes('冒烟一百零一件套（一百件套清除）') && !readme.includes('冒烟八十七件套（八十六件套清除）'));
 ok('README 含 v21.91 守护描述', readme.includes('v21.91 起含新成就「长明不熄」'));
 ok('README 成就口径「33 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
   readme.includes('成就一览（全部 39 项进度') && readme.includes('**39 项成就**'));
@@ -217,8 +217,8 @@ const suite87 = ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'smo
   'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite87) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百件套（九十九件套清除）`,
-    src.includes('一百件套（九十九件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百零一件套（一百件套清除）`,
+    src.includes('一百零一件套（一百件套清除）'));
 }
 for (const nm of ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'smoke_v2188_wander.mjs',
   'smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs',
@@ -226,7 +226,7 @@ for (const nm of ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'sm
   'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.91`,
-    src.includes("const GAME_VERSION = 'v22.4';"));
+    src.includes("const GAME_VERSION = 'v22.5';"));
 }
 const achFiles = ['smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs',
   'smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs',

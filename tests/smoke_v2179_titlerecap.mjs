@@ -7,7 +7,7 @@
 // 本冒烟守护：版本锚点、data.js/core.js 源级落位（新三件套派生 + 既有段逐字保留）、运行期实证
 // （新档 0/0/0 → 推进档逐值 → 旧布尔 bestiary 归一 → 旧字段缺失防御档 → 难度档 → 空槽 null）、
 // 行宽预算、单行性、README/package 同步、smoke_v2178/v2177/v2176 件套 pin 随新现实更新。
-import { GAME_VERSION, ACH_LIST, BESTIARY_TARGET, chestTotal } from '../js/data.js';
+import { GAME_VERSION, ACH_LIST, BESTIARY_TARGET, chestTotal, FRAGMENTS } from '../js/data.js';
 import { slotPreview, saveKey, newGame } from '../js/core.js';
 
 let n = 0, failed = 0;
@@ -30,7 +30,7 @@ const dataSrc = read('../js/data.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.79 版本注释', dataSrc.includes('v21.79 标题页存档预览补收集进度'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v22.4';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v22.5';"));
 
 // —— 源级落位：core.js 新三件套派生 + 既有段逐字保留 ——
 ok('core.js 导入 ACH_LIST/BESTIARY_TARGET/chestCount/chestTotal（单一数据源）',
@@ -96,7 +96,7 @@ ok('困难档标注零回归且预览含 无字回廊/灯已归还', typeof pv3 
 // 空槽返回 null（零回归）
 ok('空槽返回 null', slotPreview(9) === null);
 
-// —— 行宽预算：v21.18 同款 estW（13px 单行 ≤620，640 画布中心对齐）——
+// —— 行宽预算：v21.18 同款 estW（13px 单行 ≤640，640 画布中心对齐；v22.5 随 ·🕯️N/4 并入由 ≤620 放宽）——
 const estW = (s, size) => {
   let wsum = 0;
   for (const ch of String(s || '')) {
@@ -116,12 +116,12 @@ const estW = (s, size) => {
   }
   return wsum;
 };
-const worst = `余烬 Lv.12 金币12345 无字回廊·灯已归还 · 困难 · 3天前 · ⏱99:59:59 · 成就${ACH_LIST.length}/${ACH_LIST.length}·图鉴${BESTIARY_TARGET.length}/${BESTIARY_TARGET.length}·宝箱${chestTotal()}/${chestTotal()}`;
+const worst = `余烬 Lv.12 金币12345 无字回廊·灯已归还 · 困难 · 3天前 · ⏱99:59:59 · 成就${ACH_LIST.length}/${ACH_LIST.length}·图鉴${BESTIARY_TARGET.length}/${BESTIARY_TARGET.length}·宝箱${chestTotal()}/${chestTotal()}·🕯️${FRAGMENTS.length}/${FRAGMENTS.length}`;
 const wWorst = estW(worst, 13);
-ok('最坏预览行估算宽 ≤620（640 画布两侧余量）', wWorst > 0 && wWorst <= 620, `≈${wWorst.toFixed(0)}`);
+ok('最坏预览行估算宽 ≤640（640 画布中心对齐，v22.5 随碎片并入放宽预算）', wWorst > 0 && wWorst <= 640, `≈${wWorst.toFixed(0)}`);
 ['余烬','守灯人','灯见','潮'].forEach((nm) => {
   const w = estW(worst.replace('余烬', nm), 13);
-  ok(`合理性抽查：${nm} 名预览 ≤620`, w <= 620, `≈${w.toFixed(0)}`);
+  ok(`合理性抽查：${nm} 名预览 ≤640`, w <= 640, `≈${w.toFixed(0)}`);
 });
 
 // —— README / package / 姊妹件套 pin 随新现实更新（v21.7 惯例：最新版守护 README 与旧 pin）——
@@ -129,18 +129,18 @@ const readme = read('../README.md');
 const pkg = read('../package.json');
 ok('README 已同步（tests 树收录 smoke_v2179_titlerecap + 冒烟/件套口径）',
   readme.includes('smoke_v2179_titlerecap') && readme.includes('冒烟') && readme.includes('件套'));
-ok('README 件套口径已更新为一百件套（九十九件套清除）',
-  readme.includes('一百件套（九十九件套清除）') && !readme.includes('七十五件套（七十四件套清除）'));
+ok('README 件套口径已更新为一百零一件套（一百件套清除）',
+  readme.includes('一百零一件套（一百件套清除）') && !readme.includes('七十五件套（七十四件套清除）'));
 ok('package.json 已收录 smoke_v2179_titlerecap（第 75 份）', pkg.includes('tests/smoke_v2179_titlerecap.mjs'));
 const s2178 = read('../tests/smoke_v2178_codexseen.mjs');
 const s2177 = read('../tests/smoke_v2177_elites.mjs');
 const s2176 = read('../tests/smoke_v2176_allchests.mjs');
-ok('smoke_v2178 的 README 件套 pin 已随新现实更新为一百件套（九十九件套清除）',
-  s2178.includes("ok('README 件套口径为一百件套（九十九件套清除）'"));
-ok('smoke_v2177 的 README 件套 pin 已随新现实更新为一百件套（九十九件套清除）',
-  s2177.includes("ok('README 件套口径为一百件套（九十九件套清除）'"));
-ok('smoke_v2176 的 README 件套 pin 已随新现实更新为一百件套（九十九件套清除）',
-  s2176.includes("ok('README 件套口径为一百件套（九十九件套清除）'"));
+ok('smoke_v2178 的 README 件套 pin 已随新现实更新为一百零一件套（一百件套清除）',
+  s2178.includes("ok('README 件套口径为一百零一件套（一百件套清除）'"));
+ok('smoke_v2177 的 README 件套 pin 已随新现实更新为一百零一件套（一百件套清除）',
+  s2177.includes("ok('README 件套口径为一百零一件套（一百件套清除）'"));
+ok('smoke_v2176 的 README 件套 pin 已随新现实更新为一百零一件套（一百件套清除）',
+  s2176.includes("ok('README 件套口径为一百零一件套（一百件套清除）'"));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

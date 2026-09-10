@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -266,10 +266,16 @@ function slotPreview(slot) {
     // 成就页/图鉴页/状态页同口径追加 成就N/M·图鉴N/M·宝箱N/M（推进性计数），与 ACH_LIST /
     // BESTIARY_TARGET / chestCount·chestTotal 同一份单一数据源（chestCount 防御式兼容 Set/数组/缺失
     // 三形态、旧档零迁移），绝无第二套口径；零结算零存档变化，仅追加显示
+    // v22.5 存档预览补「🕯️ 记忆碎片 N/4」（体验打磨·信息透明）：v21.79 三件套后，收集进度口径在
+    // 状态页（v22.1）/胜利画面（v22.2）/阵亡画面（v22.3）/J 日志/尾声战绩行（v19.49 记忆 N/N）五端齐备，
+    // 唯独标题页预览行（选槽即见）仍无碎片——多档玩家挑更完整的档续玩时，真结局关键收集无回声；现按
+    // 其余五端同口径并列 ·🕯️N/4（与 hero.fragments·FRAGMENTS.length 同一份单一数据源，
+    // (hero.fragments||[]) 防御式旧档零迁移），单行 13px estW 最坏 ≈620.5 ≤640 画布预算，纯显示零结算零存档
     const achN = (hero.ach || []).length;
     const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
     const chestN = chestCount(hero);
-    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)} · 成就${achN}/${ACH_LIST.length}·图鉴${codexN}/${BESTIARY_TARGET.length}·宝箱${chestN}/${chestTotal()}`;
+    const fragN = (hero.fragments || []).length;
+    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)} · 成就${achN}/${ACH_LIST.length}·图鉴${codexN}/${BESTIARY_TARGET.length}·宝箱${chestN}/${chestTotal()}·🕯️${fragN}/${FRAGMENTS.length}`;
   } catch (e) {
     return null;
   }
