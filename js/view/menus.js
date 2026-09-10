@@ -730,6 +730,16 @@ export function drawDead(){
     // 只在世界画面（world.onKey 的 B → codex）；且 codex.onKey 关闭走 backWorld——从 dead 场景打开图鉴
     // 再关会错回 world，故此处只如实标注入口（「图鉴在世界画面按 B 打开」），不绑 B→图鉴，纯文字零行为。
     text(bossDeath?`💡 建议：先回旅馆补给并练级，再按 B 重整旗鼓挑战${hero._bossRetry.name||'强敌'}！`:'💡 建议：回村 旅馆/喷泉 补给，再战前先用记忆图鉴看清魔物强度（图鉴在世界画面按 B 打开）。',CV.width/2,292,'13px',bossDeath?'#ffd24a':'#a8ff8a','center');
+    // v21.96 阵亡画面补收集进度三件套（信息透明·纯显示，承 v21.79 标题预览 slotPreview / v21.82 胜利画面
+    // drawWin / v21.87 尾声战绩页 drawEnding / v21.94 状态页资源行同一「收集进度三件套」主线）：四屏齐备后
+    // 逐屏核对 run 战果口径屏，阵亡画面（drawDead）是唯一仍缺 成就/图鉴/宝箱 的屏——它有 等级/金币/讨伐/时长
+    // 战绩行与余粮行（v19.88），但玩家倒在强敌面前想判断「这趟值不值得 B 重整旗鼓 / R 重开新档」，一眼
+    // 看不到收集三件套收到哪了；现与 slotPreview/drawWin/drawEnding 同读 ACH_LIST / BESTIARY_TARGET /
+    // chestCount·chestTotal 一份单一数据源（chestCount 三形态防御式、|0 归一旧档零迁移），新增行 y=312
+    // （建议行 292 与 R 提示 332 之间、行间 20px ≥16 不触），其余行零位移，纯显示零结算零存档变化。
+    const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
+    const chestN = chestCount(hero);
+    text(`🏆 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 📕 图鉴 ${codexN}/${BESTIARY_TARGET.length} · 📦 宝箱 ${chestN}/${chestTotal()}`,CV.width/2,312,'bold 13px','#7dd47f','center');
   }
   text('按 R 重新开始本次冒险',CV.width/2,332,'15px','#7d93a3','center');
   text('按 T 返回标题画面',CV.width/2,362,'15px','#7d93a3','center');

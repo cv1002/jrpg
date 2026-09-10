@@ -393,7 +393,15 @@
 // 承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——守着灯的时间本身就是奖励）；
 // 解锁时机：applyAchievements 既有通路（任意下一次判定点当场解锁，承 lvl12 同款——time 为持续累积量，
 // 无需新判定点）。
-const GAME_VERSION = 'v21.95';
+// v21.96 阵亡画面补收集进度三件套（体验打磨·信息透明·纯显示，承 v21.79 标题预览 slotPreview / v21.82 胜利
+// 画面 drawWin / v21.87 尾声战绩页 drawEnding / v21.94 状态页资源行同一「收集进度三件套」主线）：四屏齐备后
+// 逐屏核对 run 战果口径屏，阵亡画面（menus.drawDead）是唯一仍缺 成就/图鉴/宝箱 的屏——它有 等级/金币/讨伐/
+// 时长战绩行与余粮行（v19.88），但玩家倒在强敌面前想判断「这趟值不值得 B 重整旗鼓 / R 重开新档」，一眼
+// 看不到收集三件套收到哪了；现与 slotPreview/drawWin/drawEnding 同读 ACH_LIST / BESTIARY_TARGET /
+// chestCount·chestTotal 一份单一数据源（BESTIARY_TARGET.filter 同式 + |0 归一、chestCount 三形态防御式、
+// 旧档零迁移），新增行 y=312（建议行 292 与 R 提示 332 之间、行间 20px ≥16 不触），其余行零位移，
+// 纯显示零结算零存档变化。
+const GAME_VERSION = 'v21.96';
 
 const T=32;
 
