@@ -377,7 +377,13 @@
 // （(g.totalWins||0) 防御式读取——旧档无此字段=0 不误解锁、零迁移，承 v19.41 seen 同款）；无 r 字段
 // 纯里程碑（与 memoir/skills/hardtrue 同款——百战本身就是奖励）；解锁时机：applyAchievements 既有
 // 通路（winBattle 后任意下一次判定点当场解锁，承 lvl12 同款——totalWins 为持续累积量，无需新判定点）。
-const GAME_VERSION = 'v21.93';
+// v21.94 状态页资源行补图鉴进度（体验打磨·信息透明·纯显示，承 v21.79 标题预览三件套 / v21.82 胜利画面
+// / v21.87 尾声战绩页同一「收集进度三件套」主线）：收集三件套（成就·图鉴·宝箱）在 标题预览/胜利画面/尾声
+// 三处 run 总结屏齐备，I 状态页却只有 📦 宝箱与 ⏱ 时长——玩家按 I 看「这趟收集到哪了」时图鉴进度缺席
+// （图鉴 N/13 藏在 B 图鉴页）。现与 slotPreview/drawWin/drawEnding 同读 BESTIARY_TARGET 一份单一数据源
+// （|0 归一防御式），资源行补「📕 图鉴 N/13」，纯显示零结算零存档变化；行宽实测（@napi-rs/canvas 14px
+// 最宽组合）≈512 ≤ 面板右缘 570（smoke_v2122 预算断言随新现实更新）。
+const GAME_VERSION = 'v21.94';
 
 const T=32;
 

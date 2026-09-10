@@ -108,7 +108,14 @@ export function drawStatus(){
   // 一共几只箱、还剩几只没开——扫箱规划（v19.47 小地图暖金）缺全图总量这块拼图；现并列「已开 X/全图 N」
   // 与「成就 X/M」双口径，去掉「6/12 像开关 12 只」的歧义（6 是成就目标、12 是全图总数，各自与
   // TREASURE_GOAL / chestTotal() 同源，调任一阈值只改 data.js 一处）。纯显示零结算，行宽 estW 预算内。
-  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
+  // v21.94 资源行补图鉴进度（信息透明·纯显示，承 v21.79 标题预览/v21.82 胜利画面/v21.87 尾声同一
+  // 「收集三件套」主线）：三处 run 总结屏的成就·图鉴·宝箱三件套齐备，唯独 I 状态页有 📦 宝箱/⏱ 时长
+  // 却无图鉴——玩家按 I 看「这趟收集到哪了」，图鉴 N/13 还得再开 B 页才能看到；现与 slotPreview/drawWin/
+  // drawEnding 同读 BESTIARY_TARGET 一份单一数据源（|0 归一防御式，旧布尔 bestiary 零迁移），补
+  // 「📕 图鉴 N/13」。纯显示零结算零存档变化；行宽实测（@napi-rs/canvas 14px 最宽组合）≈512 ≤ 面板
+  // 右缘 570（smoke_v2122 预算断言随新现实更新）。
+  const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
+  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   // v21.83 七招容量（承 v21.48 行距 16→14 先例）：Lv11 领悟第 7 招「星砂回响」后行距 14→12、
   // 首行 308→302 双收——≤6 招时逐字保持 v21.48 布局（条件式，零回归）；7 招时末行基线 380
