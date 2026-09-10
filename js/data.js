@@ -393,6 +393,13 @@
 // 承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——守着灯的时间本身就是奖励）；
 // 解锁时机：applyAchievements 既有通路（任意下一次判定点当场解锁，承 lvl12 同款——time 为持续累积量，
 // 无需新判定点）。
+// v21.97 新成就「鸿运当头」（掉落线第二档里程碑，新内容·单成就，承 v21.91 长明不熄 / v21.93 驱雾百战 /
+// v21.95 彻夜长明 多档里程碑先例）：战斗掉落线第一档 lucky（幸运眷顾=累计 5 次额外掉落）之外补第二档——
+// 判定/进度/描述同读 LUCKY2_GOAL 单一数据源（与 LUCKY_GOAL 同一「成就阈值数据化」家族——调门槛只改
+// data.js 一处自动跟随，后续加第三档只增常量不再动条目）；读既有 hero.drops 存档字段（rules.rollDrop
+// 五档唯一写入点、随存档快照持久化），(g.drops||0) 防御式读取（旧档无此字段=0 不误解锁、零迁移，承
+// v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——运气本身就是奖励）；解锁时机：
+// applyAchievements 既有通路任意判定点当场解锁（drops 为持续累积量，无需新判定点，承 lvl12 同款）。
 // v21.96 阵亡画面补收集进度三件套（体验打磨·信息透明·纯显示，承 v21.79 标题预览 slotPreview / v21.82 胜利
 // 画面 drawWin / v21.87 尾声战绩页 drawEnding / v21.94 状态页资源行同一「收集进度三件套」主线）：四屏齐备后
 // 逐屏核对 run 战果口径屏，阵亡画面（menus.drawDead）是唯一仍缺 成就/图鉴/宝箱 的屏——它有 等级/金币/讨伐/
@@ -401,7 +408,7 @@
 // chestCount·chestTotal 一份单一数据源（BESTIARY_TARGET.filter 同式 + |0 归一、chestCount 三形态防御式、
 // 旧档零迁移），新增行 y=312（建议行 292 与 R 提示 332 之间、行间 20px ≥16 不触），其余行零位移，
 // 纯显示零结算零存档变化。
-const GAME_VERSION = 'v21.96';
+const GAME_VERSION = 'v21.97';
 
 const T=32;
 
@@ -1417,6 +1424,13 @@ const SCHOLAR_GOAL = 5;    // 成就「记忆收藏家」需收录的魔物种�
 // 注释已预告同族的 lucky 是下批对象，当时刻意保留其裸 5，本次收口「幸运眷顾」）
 const LUCKY_GOAL = 5;    // 成就「幸运眷顾」需累计获得的额外掉落次数
 
+// 成就「鸿运当头」累计额外掉落阈值（单一数据源·v21.97）：ACH_LIST 该条的判定（ok: drops >= LUCKY2_GOAL）、
+// 描述文案（d「累计获得 N 次额外掉落」）、进度条（prog「X/N」）三处同读此源——掉落线既有第一档 lucky，
+// 第二档沿用同一「多档里程碑」家族（等级线 lvl5/lvl10/lvl12、宝箱线 chests/allchests、讨伐线
+// hunt10/hunt100、时长线 ptime/ptime2），调门槛只改此一处自动跟随（后续加第三档只增常量，不再动条目）；
+// 同计数源 drops 防御式读取（旧档无此字段=0 不误解锁、零迁移）。
+const LUCKY2_GOAL = 30;   // 成就「鸿运当头」需累计获得的额外掉落次数（约 38% 掉率下 ≈75-80 场胜利，hunt100 途程内可达）
+
 // 成就「驱雾十战」累计讨伐只数阈值（单一数据源）：ACH_LIST 该条的判定
 // （ok: totalWins >= HUNT_GOAL）、描述文案（d「累计讨伐 N 只魔物」）、进度条（prog「X/N」）
 // 三处同读此源——此前 10 硬编码在同一条目内三处互不相关（ok 判定、d 描述、prog 分母）：想调门槛
@@ -2236,6 +2250,14 @@ const ACH_LIST=[
   // 无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——守着灯的时间本身就是奖励）；解锁时机：
   // applyAchievements 既有通路任意判定点当场解锁（time 为持续累积量，无需新判定点，承 lvl12 同款）。
   {id:'ptime2', name:'彻夜长明', d:`累计游玩 ${PLAY_TIME2_GOAL / 60} 分钟`, ok:g=>(g.time||0)>=PLAY_TIME2_GOAL, prog:g=>`${Math.floor((g.time||0)/60)}/${PLAY_TIME2_GOAL/60}`},
+  // 鸿运当头（v21.97 新成就·掉落线第二档里程碑，承 等级三档 lvl5·lvl10·lvl12 / 宝箱两档 chests·allchests /
+  // 讨伐两档 hunt10·hunt100 / 时长两档 ptime·ptime2 多档先例）：掉落线第一档 lucky（幸运眷顾=累计 5 次
+  // 额外掉落）之外补第二档——判定/进度/描述同读 LUCKY2_GOAL 单一数据源（与 LUCKY_GOAL 同一「成就阈值
+  // 数据化」家族——调门槛只改 data.js 一处自动跟随，绝无第二套口径）；读既有 hero.drops 存档字段
+  // （rules.rollDrop 五档唯一写入点、随存档快照持久化），(g.drops||0) 防御式读取（旧档无此字段=0 不误解锁、
+  // 零迁移，承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——运气本身就是奖励）；
+  // 解锁时机：applyAchievements 既有通路任意判定点当场解锁（drops 为持续累积量，无需新判定点，承 lvl12 同款）。
+  {id:'lucky2', name:'鸿运当头', d:`累计获得 ${LUCKY2_GOAL} 次额外掉落`, ok:g=>(g.drops||0)>=LUCKY2_GOAL, prog:g=>`${g.drops||0}/${LUCKY2_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -2468,7 +2490,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
