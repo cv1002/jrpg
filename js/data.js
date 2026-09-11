@@ -495,7 +495,20 @@
 // localStorage.removeItem（与 hasSlot/saveGame/load 同一份键源）+ 空槽不武装只给「无需删除」反馈
 // （与 v21.33 L 读空槽静默反馈同族）+ 标题页提示行/帮助页「存档槽」行/README 三端口径同步；
 // 删除仅清存档记录、不影响内存中正在进行的冒险（与 R 重开语义分工：R=重开覆盖、X=清槽腾位）。
-const GAME_VERSION = 'v22.7';
+// v22.8 新成就「灵药盈囊」（高级灵药持有线首枚里程碑，新内容·单成就，承 v22.0 有备无患 / v22.4 妙手回春 /
+// v22.6 药香满囊 单成就先例）：成就版图逐线核对的最后一条空白——等级/宝箱/讨伐/时长/掉落/金币/酿造/药水
+// 各线都有印记，唯独「持有高级灵药」这条全程陪伴的续航线没有任何纪念（brew 灵药初成 / brew2 妙手回春 记的
+// 是「酿造」行为，任务奖励/战斗掉落的灵药不算）；高级灵药是续航链的顶端资源（brewNow 酿造、四条支线任务
+// 各奖 1 瓶、战斗掉落 6% 三源，恢复 80%HP+40%MP 无背包上限），玩家常备囤 2-3 瓶留给 Boss 战，在成就一览
+// 却无一声回响；现补首枚（ELIXIR_STOCK_GOAL=3 瓶）——判定/描述/进度三处同读新常量 ELIXIR_STOCK_GOAL
+// （与 POTIONS2_GOAL 同一「成就阈值数据化」家族——调门槛只改 data.js 一处自动跟随，后续加第二档只增常量
+// 不再动条目，零裸字面量）；读既有 hero.potion2 存档字段（newGame 起始 0、brewNow 酿造/任务奖励/战斗掉落
+// 写定、喝药扣减，随存档快照持久化），(g.potion2||0) 防御式读取——旧档无此字段=0 不误解锁、零迁移
+// （承 v19.41 seen 同款）；无 r 字段纯里程碑（与 rich/memoir/skills/hardtrue 同款——灵药本身就是奖励）；
+// 解锁时机：applyAchievements 既有通路任意判定点当场解锁（potion2 为持续变化量，无需新判定点，承
+// lvl12/lucky2 同款——先囤药再喝掉也照常解锁，已解锁不因消耗回落而撤销；brewNow 酿造成功本就当场
+// applyAchievements，第 3 瓶落袋的瞬间即解锁、反馈不迟到）。
+const GAME_VERSION = 'v22.8';
 
 const T=32;
 
@@ -1530,6 +1543,19 @@ const POTIONS_GOAL = 20;
 // 成功分支 v22.0 起已当场 applyAchievements，买满第 50 瓶的瞬间即解锁、反馈不迟到）。
 const POTIONS2_GOAL = 50;
 
+// 成就「灵药盈囊」高级灵药持有阈值（单一数据源，v22.8 新成就·灵药持有线首枚里程碑，承 v22.0 有备无患 /
+// v22.4 妙手回春 / v22.6 药香满囊 单成就先例）：续航链的顶端资源（brewNow 酿造、四条支线任务各奖 1 瓶、
+// 战斗掉落 6% 三源，恢复 80%HP+40%MP、无背包上限），但「持有 N 瓶」这条线此前没有任何纪念——判定
+// （ok: (g.potion2||0)>=ELIXIR_STOCK_GOAL）、描述文案（d「持有 N 瓶高级灵药」）、进度条（prog「X/N」）
+// 三处同读此源（与 POTIONS2_GOAL 同一「成就阈值数据化」家族——调门槛只改 data.js 一处自动跟随，后续加
+// 第二档只增常量不再动条目，零裸字面量）；读既有 hero.potion2 存档字段（newGame 起始 0、brewNow 酿造/
+// 任务奖励/战斗掉落写定、喝药扣减，随存档快照持久化），(g.potion2||0) 防御式读取——旧档无此字段=0 不误解锁、
+// 零迁移（承 v19.41 seen 同款）；无 r 字段纯里程碑（与 rich/memoir/skills/hardtrue 同款——灵药本身就是
+// 奖励）；解锁时机：applyAchievements 既有通路任意判定点当场解锁（potion2 为持续变化量，无需新判定点，承
+// lvl12/lucky2 同款——先囤药再喝掉也照常解锁，已解锁不因消耗回落而撤销；brewNow 酿造成功本就当场
+// applyAchievements，第 3 瓶落袋的瞬间即解锁、反馈不迟到）。
+const ELIXIR_STOCK_GOAL = 3;   // 成就「灵药盈囊」需持有的高级灵药瓶数（支线任务/酿造/掉落三源，中期可达）
+
 // 成就「记忆收藏家」图鉴收录种数阈值（单一数据源）：ACH_LIST 该条的判定
 // （ok: bestiary 收录种数 >= SCHOLAR_GOAL）、描述文案（d「收录 N 种魔物」）、进度条（prog「X/N」）
 // 三处同读此源——此前 5 硬编码在同一条目内三处互不相关（ok 判定、d 描述、prog 分母）：想调门槛
@@ -2431,6 +2457,16 @@ const ACH_LIST=[
   // 判定点当场解锁（item 为持续变化量，承 stock 同款——先买药再喝掉也照常解锁，已解锁不因消耗回落而
   // 撤销），shop.buyPotion 成功分支 v22.0 起已当场判定，买满第 50 瓶的瞬间即解锁、反馈不迟到。
   {id:'stock2', name:'药香满囊', d:`持有 ${POTIONS2_GOAL} 瓶药水`, ok:g=>(g.item||0)>=POTIONS2_GOAL, prog:g=>`${g.item||0}/${POTIONS2_GOAL}`},
+  // 灵药盈囊（v22.8 新成就·高级灵药持有线首枚里程碑，追加在末尾、承 v22.6 stock2 / v22.4 brew2 末尾先例）：
+  // 成就版图逐线核对的最后一条空白——等级/宝箱/讨伐/时长/掉落/金币/酿造/药水各线都有印记，唯独「持有
+  // 高级灵药」这条续航链顶端资源线没有任何纪念（brew 灵药初成 / brew2 妙手回春 记的是「酿造」行为，任务
+  // 奖励/战斗掉落的灵药不算）；判定/描述/进度同读 ELIXIR_STOCK_GOAL 一份源（与 stock2 的 POTIONS2_GOAL
+  // 同一「成就阈值数据化」家族）、计数读既有 hero.potion2 存档字段（(g.potion2||0)，旧档无此字段=0 不误解锁、
+  // 零迁移，承 stock 同款）；无 r 字段（奖励在灵药本身，同 stock/brew/lvl5/memoir 纯里程碑惯例），prog 同式
+  // X/N 不钳制；解锁时机：applyAchievements 既有通路任意判定点当场解锁（potion2 为持续变化量，承 stock
+  // 同款——先囤药再喝掉也照常解锁，已解锁不因消耗回落而撤销），brewNow 酿造成功本就当场 applyAchievements，
+  // 第 3 瓶落袋的瞬间即解锁、反馈不迟到。
+  {id:'elixir', name:'灵药盈囊', d:`持有 ${ELIXIR_STOCK_GOAL} 瓶高级灵药`, ok:g=>(g.potion2||0)>=ELIXIR_STOCK_GOAL, prog:g=>`${g.potion2||0}/${ELIXIR_STOCK_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -2669,7 +2705,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
