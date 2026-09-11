@@ -46,9 +46,11 @@ ok('TREASURE_GOAL < chestTotal()（阈值小于全图总数，语义自洽）', 
 // —— 状态页双口径表达式（menus.js） ——
 const menuSrc = await (async () => { try { return (await import('node:fs')).readFileSync(new URL('../js/view/menus.js', import.meta.url), 'utf8'); } catch { return ''; } })();
 ok('menus.js 已导入 chestTotal', menuSrc.includes('chestTotal'));
-ok('状态行改为「已开 X/全图 N · 成就 X/M」双口径',
-  menuSrc.includes('📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}'));
-ok('旧的单一口径「📦:${chestCount(hero)}/${TREASURE_GOAL}」已不存在',
+// v22.9 随新现实：状态行「·成就X/6」（开箱寻宝目标数）→「🏆 成就 N/M」总进度（ACH_LIST 同源，
+// 与 drawDead 收集行同款四件套口径；开箱寻宝进度仍在 C 成就页 X/6 可见）
+ok('状态行改为「已开 X/全图 N · 🏆 成就 N/M」总进度口径（v22.9 随新现实）',
+  menuSrc.includes('📦:${chestCount(hero)}/${chestTotal()} 🏆:${(hero.ach||[]).length}/${ACH_LIST.length}'));
+ok('旧的「📦:${chestCount(hero)}/${chestTotal()}」单一口径已不存在',
   !menuSrc.includes('📦:${chestCount(hero)}/${TREASURE_GOAL}'));
 
 // —— 状态行宽度预算（estW 官方口径，14px 左起 x=110，面板右缘 570 → 预算 460；取最大字面量组合） ——
@@ -56,6 +58,8 @@ ok('旧的单一口径「📦:${chestCount(hero)}/${TREASURE_GOAL}」已不存�
 // ≈402（右缘 ≈512 ≤ 570，留 58px 余量）——预算随新现实放宽至 520（estW 口径），实测口径仍 ≤570 面板内。
 // v22.1 状态行再并列 🕯️ 记忆碎片 N/4（FRAGMENTS 同源）：estW 保守估算 ≈547、@napi-rs/canvas 实测
 // ≈448.3（右缘 ≈558.3 ≤ 570，留 ≈12px 余量）——预算随新现实放宽至 570（estW 口径），实测口径仍 ≤570 面板内。
+// v22.9 状态行并列入 🏆 成就 N/M 总进度（ACH_LIST 同源）：estW 保守估算 ≈551、@napi-rs/canvas 实测
+// 右缘仍 ≤570 面板内（净变化 -「·成就6/6」≈67px +「 🏆:41/41」≈53px）——预算维持 570（estW 口径）。
 const estW = (s, size) => {
   let wsum = 0;
   for (const ch of String(s || '')) {
@@ -71,9 +75,9 @@ const estW = (s, size) => {
   }
   return wsum;
 };
-const worstLine = `金币:99999  🍖:99 🧪:99 🍄:99 📕:13/13 📦:12/${chestTotal()}·成就12/${TREASURE_GOAL}  🕯️:4/4  ⏱️999:59:59`;
+const worstLine = `金币:99999  🍖:99 🧪:99 🍄:99 📕:13/13 📦:12/${chestTotal()} 🏆:41/41  🕯️:4/4  ⏱️999:59:59`;
 const wLine = estW(worstLine, 14);
-ok('状态行最宽组合估算 ≤570（v22.1 随 🕯️ 碎片并入放宽；实测右缘 ≈558.3 ≤ 570 面板内）', wLine > 0 && wLine <= 570, `≈${wLine.toFixed(0)}`);
+ok('状态行最宽组合估算 ≤570（v22.9 随 🏆 总进度并入；实测右缘仍 ≤570 面板内）', wLine > 0 && wLine <= 570, `≈${wLine.toFixed(0)}`);
 
 // —— data.js 陈年「11 个」注释已除、chestTotal 定义在库 ——
 const dataSrc = await (async () => { try { return (await import('node:fs')).readFileSync(new URL('../js/data.js', import.meta.url), 'utf8'); } catch { return ''; } })();

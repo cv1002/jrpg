@@ -120,9 +120,18 @@ export function drawStatus(){
   // hero.fragments / FRAGMENTS.length 一份单一数据源（(hero.fragments||[]) 防御式旧档零迁移），补
   // 「🕯️ 记忆碎片 N/4」。纯显示零结算零存档变化；行宽实测（@napi-rs/canvas 14px 最宽组合）≈558 ≤ 面板
   // 右缘 570（smoke_v2122/v2194/v2201 预算断言随新现实更新）。
+  // v22.9 资源行「·成就X/6」→「🏆 成就 N/41」总进度（体验打磨·信息透明·口径一致·纯显示）：v21.79 标题
+  // 预览/v21.82 胜利画面/v21.96 阵亡画面/v21.87 尾声的「收集口径」都报「🏆 成就 N/M（ACH_LIST 总数）」，
+  // 唯独 I 状态页资源行的「·成就X/6」读的是 TREASURE_GOAL（开箱寻宝目标数）——玩家按 I 看到「成就 3/6」
+  // 再开 C 页看到「成就 12/41」，两处数字对不上，是 v21.94「收集三件套收官」时把宝箱成就目标误当总数的
+  // 口径遗留（v21.22 双口径的第二个数字本就专指开箱寻宝）；现改为与 drawDead 收集行同款四件套口径
+  // （🏆/📕/📦/🕯️），🏆 读 (hero.ach||[]).length / ACH_LIST.length 一份单一数据源（防御式旧档零迁移），
+  // 开箱寻宝进度依旧在 C 成就页「X/6」可见（信息零丢失、零裸字面量）；行宽 estW 估算 ≈551（净变化
+  // -「·成就6/6」≈67px +「 🏆:41/41」≈53px）≤ 570 面板右缘（smoke_v2122/v2194/v2201/v2209 预算断言
+  // 随新现实更新）。
   const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
   const fragN = (hero.fragments || []).length;
-  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()}·成就${chestCount(hero)}/${TREASURE_GOAL}  🕯️:${fragN}/${FRAGMENTS.length}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
+  text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()} 🏆:${(hero.ach||[]).length}/${ACH_LIST.length}  🕯️:${fragN}/${FRAGMENTS.length}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
   text('已学技能：',110,288,'bold 14px','#ffd24a');
   // v21.83 七招容量（承 v21.48 行距 16→14 先例）：Lv11 领悟第 7 招「星砂回响」后行距 14→12、
   // 首行 308→302 双收——≤6 招时逐字保持 v21.48 布局（条件式，零回归）；7 招时末行基线 380
