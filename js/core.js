@@ -65,6 +65,7 @@ function initGame(name, continueSave) {
 }
 
 function usePotion() {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   if (S.scene !== 'world') return;
   const hero = S.G;
   const { hpFull, mpFull, any } = potionAvailability(hero);
@@ -88,6 +89,7 @@ function usePotion() {
 }
 
 function brewNow() {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const hero = S.G;
   if (mushroomQuestProtects(hero) && hero.mushrooms <= MUSHROOM_GOAL) {
     SFX.cancel();
@@ -124,6 +126,7 @@ function brewNow() {
 }
 
 function doTravel() {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const [key] = TRAVEL_LIST[S.travelSel];
   if (!(S.G.visited||[]).includes(key)) {
     SFX.cancel();
@@ -161,6 +164,9 @@ function openTalk(id) {
 hooks.openTalk = openTalk;
 
 function talkNext() {
+  // v22.10 未存档提醒置脏（防误丢档）：对话推进是任务链/奖励结算入口（交任务/领奖全经翻页），置
+  // S.unsaved=true；saveGame/load 成功清脏，beforeunload 守卫读之。纯状态标志零结算。
+  S.unsaved = true; // v22.10 未存档提醒置脏
   // 打字机（与 drawTalk 同读 rules.pageTotalMs/pageShownAt）：本页未打完时 Enter 先补全本页，不翻页
   const page = S.talkPages[S.talkPage] || [];
   const total = pageTotalMs(page);
@@ -205,6 +211,9 @@ function talkNext() {
 }
 
 function beginAdventure() {
+  // v22.10 未存档提醒置脏：新开局从故事页起即属「未落盘冒险」（尚未有任何存档），beforeunload 守卫
+  // 读 S.unsaved；saveGame/load 成功清脏。纯状态标志零结算。
+  S.unsaved = true; // v22.10 未存档提醒置脏
   SFX.select();
   startRun(HERO_NAMES[S.createName], S.createDiff);
   S.storyPage = 1;
@@ -301,6 +310,8 @@ function saveGame() {
     if (!hero) return;
     const snap = snapshotHero(hero);
     localStorage.setItem(saveKey(S.curSaveSlot), JSON.stringify({ G: snap, chests: snap.chests, savedAt: Date.now() }));
+    // v22.10 未存档提醒清脏（成功存档=已落盘）：beforeunload 守卫读 S.unsaved，存档成功即解除离站确认。
+    S.unsaved = false; // v22.10 未存档提醒清脏
     // v19.87 存档成功反馈追加角色摘要（信息透明·纯显示）：此前只报「已存档到槽 N」，
     // 玩家按 P 或菜单存档后想确认「当前角色/等级/所在地图/金币」是否写入正确，仍需再按 I 看状态页；
     // 与 v19.86「读档追加角色摘要」的同一信息透明主线一致。
@@ -341,6 +352,9 @@ function load() {
       S.G.y = MAPS[map].playerStart.y;
     }
     applyStats(S.G);
+    // v22.10 未存档提醒清脏（读档成功=状态与存档一致）：beforeunload 守卫读 S.unsaved，读档后未动作
+    // 的「已存档状态」不再误触发离站确认（承 saveGame 同款清脏）。
+    S.unsaved = false; // v22.10 未存档提醒清脏
     S.walk = null;
     bind.renderHUD();
     return true;
@@ -386,6 +400,8 @@ function deleteSlot(n) {
 }
 
 function resetRun() {
+  // v22.10 未存档提醒置脏：重开=从故事页起新一轮未落盘冒险（承 beginAdventure 同款置脏语义）。
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const name = S.G ? S.G.name : DEFAULT_NAME;
   const diff = S.G ? S.G.diff : 0;
   startRun(name, diff);

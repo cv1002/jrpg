@@ -56,6 +56,11 @@ export const S = {
   // v22.7 标题页 X 删除存档槽两按确认的武装时间戳（0=未武装；main.js title.onKey 读写，core.slotDeleteCheck 判定，
   // 与 titleResetArm 同族——两处标题页破坏性操作防误触共享同一确认窗口 TITLE_RESET_CONFIRM_MS）
   slotDeleteArm: 0,
+  // v22.10 关闭/刷新未存档提醒（防误丢档·承 R/X 两按确认同一家族）：unsaved=进行中冒险自上次成功存档/
+  // 读档后有未落盘的改动（world.move/battle.playerAction/shop 五购买/core 六入口共 13 个动作入口置脏，
+  // saveGame/load 成功清脏）；main.js beforeunload 时 S.G && S.unsaved 即弹浏览器原生「离开页面」确认，
+  // 纯运行时标志、不落盘零迁移（页面加载即 false 复位）。
+  unsaved: false,
 };
 
 // 当前地图唯一真相是 G.map（loadMap 负责同步）；curMap() 供全层读取——

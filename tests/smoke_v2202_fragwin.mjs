@@ -24,7 +24,7 @@ console.log('— v22.2 胜利画面记忆碎片进度冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.1', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 2)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.2', GAME_VERSION === 'v22.9', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.2', GAME_VERSION === 'v22.10', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -35,7 +35,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.2 版本注释', dataSrc.includes('v22.2 胜利画面收集行补「🕯️ 记忆碎片 N/4」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.2', dataSrc.includes("const GAME_VERSION = 'v22.9';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.2', dataSrc.includes("const GAME_VERSION = 'v22.10';"));
 ok('data.js 仍保留 v22.1 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.1 状态页资源行补「🕯️ 记忆碎片 N/4」'));
 
 // —— 源级落位：drawWin 碎片派生与收集行并入 ——
@@ -173,7 +173,7 @@ ok('运行期：防御档收集行报 0/0/0（图鉴 0/M · 宝箱 0/N · 碎片
 
 // —— README / package.json / CHANGELOG 同步 ——
 ok('README 已同步（tests 树收录 smoke_v2202_fragwin + 九十八件套口径）',
-  readme.includes('smoke_v2202_fragwin') && readme.includes('一百零五件套（一百零四件套清除）'));
+  readme.includes('smoke_v2202_fragwin') && readme.includes('一百零六件套（一百零五件套清除）'));
 ok('README 含 v22.2 守护描述', readme.includes('v22.2 起含胜利画面记忆碎片进度守护'));
 ok('README 不含旧「九十七件套（九十六件套清' + '除）」旧口径', !readme.includes('冒烟九十七件套（九十六件套清' + '除）'));
 ok('package.json 已收录 smoke_v2202_fragwin（npm test 串跑第 98 份）',
@@ -192,8 +192,8 @@ const suite98 = ['smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_v
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite98) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百零五件套（一百零四件套清除）`,
-    src.includes('一百零五件套（一百零四件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百零六件套（一百零五件套清除）`,
+    src.includes('一百零六件套（一百零五件套清除）'));
 }
 for (const nm of ['smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs',
   'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2196_deadrecap.mjs',
@@ -205,7 +205,7 @@ for (const nm of ['smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_
   'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.2`,
-    src.includes("const GAME_VERSION = 'v22.9';"));
+    src.includes("const GAME_VERSION = 'v22.10';"));
 }
 for (const nm of ['smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs',
   'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2196_deadrecap.mjs',
@@ -213,14 +213,14 @@ for (const nm of ['smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_
   'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.2`,
-    src.includes("GAME_VERSION === 'v22.9'"));
+    src.includes("GAME_VERSION === 'v22.10'"));
 }
 for (const nm of ['smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs',
   'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2196_deadrecap.mjs',
   'smoke_v2195_ptime2.mjs', 'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 README tests 树尾 pin 已随新现实更新（+ smoke_v2202_fragwin）`,
-    src.includes('smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2208_elixir + smoke_v2209_achstatus（npm test 串跑）'));
+    src.includes('smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2210_unsaved（npm test 串跑）'));
 }
 // 旧代 GAME_VERSION 字面量/恒等 pin 零残留（v22.1 全库清零；拼接避免本文件自匹配）
 const STALE_GV = "const GAME_VERSION = 'v22." + "1';";

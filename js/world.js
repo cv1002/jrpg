@@ -162,6 +162,9 @@ export function facingCell() {
 }
 
 function move(dx, dy) {
+  // v22.10 未存档提醒置脏（防误丢档）：行走是最高频的冒险状态改动入口（踩箱/遇敌/传送/喷泉全经
+  // onStep），置 S.unsaved=true；saveGame/load 成功清脏，beforeunload 守卫读之。纯状态标志零结算。
+  S.unsaved = true; // v22.10 未存档提醒置脏
   if (walking()) { walkBuf = { dx, dy }; return; }
   const hero = S.G;
   const nx = hero.x + dx;

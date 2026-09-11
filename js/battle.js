@@ -430,6 +430,9 @@ const PLAYER_ACTIONS = {
 
 function playerAction(type, arg) {
   if (S.scene !== 'battle' || S.battleBusy) return;
+  // v22.10 未存档提醒置脏（防误丢档）：战斗指令是战斗内唯一的冒险状态改动入口（胜负/掉落/经验全靠
+  // 指令推进），置 S.unsaved=true；saveGame/load 成功清脏，beforeunload 守卫读之。纯状态标志零结算。
+  S.unsaved = true; // v22.10 未存档提醒置脏
   // v21.5 战报回看跟随（体验打磨·纯显示）：回看旧战报（blogView>0）后发起行动 = 已读完历史、正在行动，
   // 把视图弹回最新——让本次行动产生的新战报（伤害/敌方 HP 剩余/敌方招数）直接落入 3 行视窗
   // （BLOG_WIN 单一数据源），不再出现「行动完看不到结果、以为没反应」；零结算，只复位显示偏移，

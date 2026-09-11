@@ -19,6 +19,9 @@ export function canSellMushroom() {
 }
 
 export function buyPotion() {
+  // v22.10 未存档提醒置脏（防误丢档）：购买/出售/住店是商店侧唯一的冒险状态改动入口，置 S.unsaved=true；
+  // saveGame/load 成功清脏，beforeunload 守卫读之。纯状态标志零结算。
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const hero = S.G;
   if (hero.item >= POTION_CAP) {
     SFX.cancel();
@@ -51,6 +54,7 @@ export function buyPotion() {
 }
 
 export function sellMushroom() {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const hero = S.G;
   if (!hero || (hero.mushrooms || 0) < 1) {
     bind.boxMsg('没有可出售的蘑菇');
@@ -69,6 +73,7 @@ export function sellMushroom() {
 }
 
 export function buyWeapon(name) {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const hero = S.G;
   const price = WEAPONS[name].price;
   if (hero.gold >= price) {
@@ -91,6 +96,7 @@ export function buyWeapon(name) {
 }
 
 export function buyArmor(name) {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const hero = S.G;
   const price = ARMORS[name].price;
   if (hero.gold >= price) {
@@ -116,6 +122,7 @@ export function buyArmor(name) {
 }
 
 export function stayInn() {
+  S.unsaved = true; // v22.10 未存档提醒置脏
   const hero = S.G;
   if (hero.hp < hero.hpMax || hero.mp < hero.mpMax) {
     if (hero.gold >= INN_PRICE) {

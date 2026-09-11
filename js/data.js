@@ -515,7 +515,14 @@
 // 总数的口径遗留；现改为与 drawDead 收集行同款四件套口径（🏆/📕/📦/🕯️），🏆 读 (hero.ach||[]).length /
 // ACH_LIST.length 一份单一数据源（防御式旧档零迁移），开箱寻宝进度依旧在 C 成就页「X/6」可见（信息零
 // 丢失、零裸字面量）；行宽 estW ≈551 ≤ 570 面板右缘；零结算零数值零存档变化。
-const GAME_VERSION = 'v22.9';
+// v22.10 关闭/刷新未存档提醒（防误丢档·体验打磨，承 R/X 两按确认、win「战果未自动存档」提示同一
+// 「破坏性/易丢操作防误触」家族）：本游戏进度只随 P/菜单「存档」落 localStorage，浏览器刷新/关标签页
+// 默认静默丢掉内存中的冒险——此前零离站提醒（手滑刷新一趟白打、误关标签页战果蒸发）；现按
+// 「S.G && S.unsaved」在 beforeunload 弹浏览器原生「离开页面」确认：13 个入口置脏（world.move /
+// battle.playerAction / shop 五购买 / core 六入口——usePotion·brewNow·doTravel·talkNext·
+// beginAdventure·resetRun），saveGame/load 成功清脏；纯状态标志零结算零存档格式变化（unsaved 不
+// 落盘、刷新即复位，无需迁移）。
+const GAME_VERSION = 'v22.10';
 
 const T=32;
 

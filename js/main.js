@@ -431,6 +431,18 @@ if (typeof window !== 'undefined') {
     if (KEY[e.key]) setHeldDir(KEY[e.key], false);
   });
   window.addEventListener('blur', () => setRun(false));
+  // v22.10 关闭/刷新未存档提醒（防误丢档·承 R/X 两按确认、win「战果未自动存档」提示同一家族）：本游戏
+  // 进度只随 P/菜单「存档」落 localStorage，浏览器刷新/关标签页默认静默丢掉内存中的冒险——此前零离站
+  // 提醒（手滑刷新一趟白打、误关标签页战果蒸发）；现 beforeunload 时 S.G && S.unsaved 即弹浏览器原生
+  // 「离开页面」确认（13 个动作入口置脏：world.move/battle.playerAction/shop 五购买/core 六入口，
+  // beginAdventure/resetRun 新开局置脏，saveGame/load 成功清脏）；标题页默认占位（S.G 非空但从未动作、
+  // unsaved 恒 false）与读档后未动作均不误报。纯守卫零结算零存档变化。
+  window.addEventListener('beforeunload', (e) => {
+    if (S.G && S.unsaved) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 }
 
 loadMap('village');
