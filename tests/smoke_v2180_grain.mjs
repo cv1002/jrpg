@@ -207,7 +207,7 @@ ok("sprites.js NPC_SHEET 已映射 grainman→mwCartman（杂货商贩造型，�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2180_grain', readme.includes('smoke_v2180_grain'));
-ok('README 件套口径为一百零二件套（一百零一件套清除）', readme.includes('一百零二件套（一百零一件套清除）'));
+ok('README 件套口径为一百零三件套（一百零二件套清除）', readme.includes('一百零三件套（一百零二件套清除）'));
 ok('README 含 v21.80 守护描述（粮铺掌柜新 NPC 与讨伐支线「护粮的委托」守护）',
   readme.includes('v21.80 起含潮灯镇粮铺掌柜新 NPC 与讨伐支线「护粮的委托」守护'));
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
@@ -215,17 +215,17 @@ ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图
 ok('README 潮灯镇条目含粮铺掌柜/护粮的委托', readme.includes('粮铺掌柜') && readme.includes('护粮的委托'));
 ok('package.json 已收录 smoke_v2180_grain（npm test 串跑第 76 份）', pkg.includes('smoke_v2180_grain.mjs'));
 const s2179 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2179_titlerecap.mjs'), 'utf8');
-ok('smoke_v2179 的 README 件套 pin 已随新现实更新为一百零二件套（一百零一件套清除）',
-  s2179.includes("ok('README 件套口径已更新为一百零二件套（一百零一件套清除）'"));
+ok('smoke_v2179 的 README 件套 pin 已随新现实更新为一百零三件套（一百零二件套清除）',
+  s2179.includes("ok('README 件套口径已更新为一百零三件套（一百零二件套清除）'"));
 const s2178 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2178_codexseen.mjs'), 'utf8');
-ok('smoke_v2178 的 README 件套 pin 已随新现实更新为一百零二件套（一百零一件套清除）',
-  s2178.includes("ok('README 件套口径为一百零二件套（一百零一件套清除）'"));
+ok('smoke_v2178 的 README 件套 pin 已随新现实更新为一百零三件套（一百零二件套清除）',
+  s2178.includes("ok('README 件套口径为一百零三件套（一百零二件套清除）'"));
 const s2177 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2177_elites.mjs'), 'utf8');
-ok('smoke_v2177 的 README 件套 pin 已随新现实更新为一百零二件套（一百零一件套清除）',
-  s2177.includes("ok('README 件套口径为一百零二件套（一百零一件套清除）'"));
+ok('smoke_v2177 的 README 件套 pin 已随新现实更新为一百零三件套（一百零二件套清除）',
+  s2177.includes("ok('README 件套口径为一百零三件套（一百零二件套清除）'"));
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
-ok('smoke_v2176 的 README 件套 pin 已随新现实更新为一百零二件套（一百零一件套清除）',
-  s2176.includes("ok('README 件套口径为一百零二件套（一百零一件套清除）'"));
+ok('smoke_v2176 的 README 件套 pin 已随新现实更新为一百零三件套（一百零二件套清除）',
+  s2176.includes("ok('README 件套口径为一百零三件套（一百零二件套清除）'"));
 ok('smoke_v2177 的 ACH_LIST 精确计数断言已去硬化（===28 零残留，>=28 存活性口径落位）',
   s2177.includes('ACH_LIST.length >= 28') && !s2177.includes('ACH_LIST.length === 28'));
 ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，31 项双处落位）',

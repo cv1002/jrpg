@@ -360,6 +360,31 @@ function titleResetCheck(armT, now, isR) {
   return { arm: now, fire: false };
 }
 
+// 标题页 X 删除存档槽防误触状态机（v22.7·纯函数·零副作用·承 v21.16 titleResetCheck 同构）：
+// 删除存档是不可恢复的破坏性操作——首次按 X 仅武装（返回 { arm: now, fire:false }），
+// TITLE_RESET_CONFIRM_MS 内再按 X 才 fire=true 并解除武装；任一非 X 键（isX=false）立即解除武装；
+// 超时后再按重新武装（不会连发、不会漏发）。与 R 重开共享同一确认窗口常量——两处标题页破坏性操作
+// 同一档防误触节奏，改节奏只改 data.js TITLE_RESET_CONFIRM_MS 一处自动跟随。
+function slotDeleteCheck(armT, now, isX) {
+  if (!isX) return { arm: 0, fire: false };
+  if (armT && now - armT <= TITLE_RESET_CONFIRM_MS) return { arm: 0, fire: true };
+  return { arm: now, fire: false };
+}
+
+// v22.7 删除存档槽：经 saveKey(n) 同源 localStorage.removeItem（与 hasSlot/saveGame/load 同一份键源，
+// 键名/槽位语义改一处自动跟随）；try/catch 防御（与 hasSlot 同款，隐私模式/配额异常不抛错）；
+// 删除幂等——空槽 removeItem 也是 no-op 返回 true（空槽不删除的拦截由 main.js title.onKey 的
+// hasSlot 门承担：有档才武装、无档只给「无需删除」反馈）；删除仅清存档记录，不影响内存中
+// 正在进行的冒险（与 resetRun 语义分工：R=重开覆盖、X=清槽腾位）。
+function deleteSlot(n) {
+  try {
+    localStorage.removeItem(saveKey(n));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function resetRun() {
   const name = S.G ? S.G.name : DEFAULT_NAME;
   const diff = S.G ? S.G.diff : 0;
@@ -407,5 +432,5 @@ export {
   saveKey, hasSlot, hasSave, slotPreview, saveGame, load, resetRun, retryBoss,
   takePotion, usePotion, questObjective, questLines, adventureProgress,
   brewNow, chiefPages, openTalk, talkNext, doTravel, beginAdventure,
-  applyAchievements, titleResetCheck,
+  applyAchievements, titleResetCheck, slotDeleteCheck, deleteSlot,
 };

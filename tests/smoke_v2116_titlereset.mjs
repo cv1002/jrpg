@@ -65,8 +65,8 @@ ok('操作说明页关键词不重复', new Set(keys).size === keys.length);
 const rowSlot = page.find((r) => r[0] === '存档槽');
 ok('存档槽行存在', !!rowSlot, JSON.stringify(keys));
 ok('存档槽行仍与 SAVE_SLOTS / ←/→ 派生同源', rowSlot && rowSlot[1].includes('1/2/' + SAVE_SLOTS) && rowSlot[1].includes('←/→'), rowSlot && rowSlot[1]);
-ok('存档槽行已补「R 重开新档」（可发现性收口）', rowSlot && rowSlot[1].includes('R 重开新档'), rowSlot && rowSlot[1]);
-ok('存档槽行已注明「连按两次确认」口径', rowSlot && rowSlot[1].includes('连按两次确认'), rowSlot && rowSlot[1]);
+ok('存档槽行已补「R 重开新档」（可发现性收口；v22.7 随行拆 r[2]，改查次行）', rowSlot && (rowSlot[2] || '').includes('R 重开新档'), rowSlot && rowSlot[2]);
+ok('存档槽行已注明「连按两次确认」口径', rowSlot && (rowSlot[2] || '').includes('连按两次确认'), rowSlot && rowSlot[2]);
 // 相邻行未被误动（防改错行的回归守护）
 const rowBattle = page.find((r) => r[0] === '战斗');
 ok('战斗行主行未被误动（6 指令仍在）', rowBattle && rowBattle[1].includes('6蓄力') && !rowBattle[1].includes('连按两次'), rowBattle && rowBattle[1]);

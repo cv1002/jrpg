@@ -681,7 +681,7 @@ export function drawTitle(){
   CTX.fillText(slots.join('   '),CV.width/2,340);
   const pv=slotPreview(S.curSaveSlot);
   if(pv){ CTX.fillStyle='#7dd47f'; CTX.font='13px sans-serif'; CTX.fillText(pv,CV.width/2,360); }
-  if(hasSave()){ CTX.fillStyle='#62c6ff'; CTX.fillText('按 L 读取当前槽存档',CV.width/2,378); }
+  if(hasSave()){ CTX.fillStyle='#62c6ff'; CTX.font='13px sans-serif'; CTX.fillText('按 L 读取当前槽存档 · X 删除当前槽存档(连按两次)',CV.width/2,378); }
   CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
   // v21.4 标题选槽按键提示（与 main.js title 分派逐字同源）：新增 ←/→（A/D）循环切槽后，提示行同步点名，
   // 保持 v20.3「快捷键可发现性」口径——功能存在就必须能让玩家看到入口；压缩「/」两侧空格抵消新增长度

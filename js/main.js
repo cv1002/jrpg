@@ -6,7 +6,7 @@ import { ac, startBgm, stopBgm, resumeBgm, SFX, loadSndPref, saveSndPref } from 
 import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir, setRun } from './world.js';
-import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame, titleResetCheck } from './core.js';
+import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame, titleResetCheck, slotDeleteCheck, deleteSlot, hasSlot } from './core.js';
 import { stayInn } from './shop.js';
 import { goto } from './scene.js';
 import { render, openSkillMenu, drawTitle, drawCreate, drawWorld, PAUSE_ITEMS } from './view/index.js';
@@ -172,6 +172,10 @@ const screens = {
       // 后 S.G 仍是进行中的冒险，误按一次 R 会零确认丢档；现改「两按确认」（core.titleResetCheck 纯判定，
       // TITLE_RESET_CONFIRM_MS 同源于 data.js）——非 R 键立即解除武装，提示停留时长与确认窗口同长。
       if (e.key !== 'r' && e.key !== 'R') S.titleResetArm = 0;
+      // v22.7 标题页 X 删除存档槽防误触（承 v21.16 R 重开同款「非目标键立即解除武装」）：X 是另一条
+      // 破坏性通道（删除不可恢复）——按 R/选槽/任何非 X 键立即解除 X 武装；X 与 R 互斥解除（按 X 时
+      // 上方 titleResetArm 清零行已生效、按 R 时本行同样清零 slotDeleteArm），两状态机零串扰。
+      if (e.key !== 'x' && e.key !== 'X') S.slotDeleteArm = 0;
       // 标题按 1..SAVE_SLOTS 或 ←/→（亦可 A/D）选择存档槽（读 data.js SAVE_SLOTS，加档位只改常量一处）
       if (/^[1-9]$/.test(e.key) && Number(e.key) <= SAVE_SLOTS) { S.curSaveSlot = Number(e.key); SFX.select(); }
       else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { S.curSaveSlot = (S.curSaveSlot % SAVE_SLOTS) + 1; SFX.select(); }
@@ -205,6 +209,33 @@ const screens = {
         } else {
           SFX.cancel();
           boxMsg('🔁 再按一次 R 确认重开新档（当前冒险进度将丢弃）', EVENT_MSG_MS);
+        }
+      } else if (e.key === 'x' || e.key === 'X') {
+        // v22.7 标题页 X 删除存档槽（两按确认，承 v21.16 R 重开 / v21.33 L 空槽反馈同族）：
+        // 删除不可恢复——有档才武装（首按仅提示、TITLE_RESET_CONFIRM_MS 内再按 X 才 deleteSlot 清
+        // localStorage，提示与窗口同长、执行后清零不连发）；空槽不武装、只给「无需删除」反馈
+        // （与 L 读空槽静默反馈同式：标题页每个按键都该有反应）；非同槽切换（1-3/←→ 选槽）后在
+        // 窗口内按 X 仍只对当前槽生效、槽号跟随 S.curSaveSlot（提示文案实时报槽号）。
+        if (!hasSlot(S.curSaveSlot)) {
+          S.slotDeleteArm = 0;
+          SFX.cancel();
+          boxMsg(`💤 槽 ${S.curSaveSlot} 还没有存档，无需删除。`, EVENT_MSG_MS);
+        } else {
+          const st = slotDeleteCheck(S.slotDeleteArm || 0, Date.now(), true);
+          S.slotDeleteArm = st.arm;
+          if (st.fire) {
+            S.slotDeleteArm = 0;
+            if (deleteSlot(S.curSaveSlot)) {
+              SFX.select();
+              boxMsg(`🗑 已删除槽 ${S.curSaveSlot} 的存档（槽位已清空）`, EVENT_MSG_MS);
+            } else {
+              SFX.cancel();
+              boxMsg(`⚠️ 删除槽 ${S.curSaveSlot} 的存档失败，请重试。`, EVENT_MSG_MS);
+            }
+          } else {
+            SFX.cancel();
+            boxMsg(`🗑 再按一次 X 确认删除槽 ${S.curSaveSlot} 的存档（不可恢复）`, EVENT_MSG_MS);
+          }
         }
       }
     },

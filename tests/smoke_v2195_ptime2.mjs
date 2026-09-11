@@ -30,7 +30,7 @@ console.log('— v21.95 彻夜长明游玩时长第二档里程碑冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.94', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 95)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v21.95', GAME_VERSION === 'v22.6', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v21.95', GAME_VERSION === 'v22.7', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -41,7 +41,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.95 版本注释', dataSrc.includes('v21.95 新成就「彻夜长明」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.95', dataSrc.includes("const GAME_VERSION = 'v22.6';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.95', dataSrc.includes("const GAME_VERSION = 'v22.7';"));
 ok('data.js 仍保留 v21.94 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.94 状态页资源行补图鉴进度'));
 ok('data.js 导出 PLAY_TIME2_GOAL（export 块落位，POTIONS_GOAL/POTIONS2_GOAL 随其后——v22.6 起 v2206 冒烟守护）', dataSrc.includes(', PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, PERFECTION_GOLD'));
 
@@ -198,9 +198,9 @@ ok('运行期：成就页 drawAch 35 项渲染不抛错', rendered);
 ok('运行期：成就页末页滚动渲染不抛错（35 项 PAGE=10 四页）', renderedPg4);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树收录 smoke_v2195_ptime2 且位于串尾（v2195 随新现实由当版冒烟守护）', readme.includes('smoke_v2195_ptime2 + smoke_v2196_deadrecap + smoke_v2197_lucky2 + smoke_v2198_winsave + smoke_v2199_rich2 + smoke_v2200_stock + smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2205_fragtitle + smoke_v2206_stock2（npm test 串跑）'));
-ok('README 件套口径为一百零二件套（一百零一件套清除）',
-  readme.includes('冒烟一百零二件套（一百零一件套清除）') && !readme.includes('冒烟九十件套（八十九件套清除）'));
+ok('README tests 树收录 smoke_v2195_ptime2 且位于串尾（v2195 随新现实由当版冒烟守护）', readme.includes('smoke_v2195_ptime2 + smoke_v2196_deadrecap + smoke_v2197_lucky2 + smoke_v2198_winsave + smoke_v2199_rich2 + smoke_v2200_stock + smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2206_stock2 + smoke_v2207_titledel（npm test 串跑）'));
+ok('README 件套口径为一百零三件套（一百零二件套清除）',
+  readme.includes('冒烟一百零三件套（一百零二件套清除）') && !readme.includes('冒烟九十件套（八十九件套清除）'));
 ok('README 含 v21.95 守护描述', readme.includes('v21.95 起含新成就「彻夜长明」'));
 ok('README 成就口径「35 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
   readme.includes('成就一览（全部 40 项进度') && readme.includes('**40 项成就**') &&
@@ -219,8 +219,8 @@ const suite91 = ['smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs', 'smok
   'smoke_v2176_allchests.mjs'];
 for (const nm of suite91) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百零二件套（一百零一件套清除）`,
-    src.includes('一百零二件套（一百零一件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百零三件套（一百零二件套清除）`,
+    src.includes('一百零三件套（一百零二件套清除）'));
 }
 const vers = ['smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs',
   'smoke_v2191_ptime.mjs', 'smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs',
@@ -230,7 +230,7 @@ const vers = ['smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs', 'smoke_v
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.95`,
-    src.includes("const GAME_VERSION = 'v22.6';"));
+    src.includes("const GAME_VERSION = 'v22.7';"));
 }
 const achFiles = ['smoke_v2193_hunt100.mjs', 'smoke_v2191_ptime.mjs', 'smoke_v2188_wander.mjs',
   'smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2180_grain.mjs',

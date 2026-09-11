@@ -53,6 +53,9 @@ export const S = {
   battleTimer: null,
   // v21.16 标题页 R 重开两按确认的武装时间戳（0=未武装；main.js title.onKey 读写，core.titleResetCheck 判定）
   titleResetArm: 0,
+  // v22.7 标题页 X 删除存档槽两按确认的武装时间戳（0=未武装；main.js title.onKey 读写，core.slotDeleteCheck 判定，
+  // 与 titleResetArm 同族——两处标题页破坏性操作防误触共享同一确认窗口 TITLE_RESET_CONFIRM_MS）
+  slotDeleteArm: 0,
 };
 
 // 当前地图唯一真相是 G.map（loadMap 负责同步）；curMap() 供全层读取——
