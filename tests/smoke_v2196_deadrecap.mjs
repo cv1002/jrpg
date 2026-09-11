@@ -26,7 +26,7 @@ console.log('— v21.96 阵亡画面收集三件套冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.95', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 96)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v21.96', GAME_VERSION === 'v22.18', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v21.96', GAME_VERSION === 'v22.19', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -38,7 +38,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.96 版本注释', dataSrc.includes('v21.96 阵亡画面补收集进度三件套'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.96', dataSrc.includes("const GAME_VERSION = 'v22.18';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.96', dataSrc.includes("const GAME_VERSION = 'v22.19';"));
 ok('data.js 仍保留 v21.95 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.95 新成就「彻夜长明」'));
 
 // —— 源级落位：drawDead 新三件套派生 + 收集行 + 既有行逐字保留零位移 ——
@@ -202,9 +202,9 @@ ok('运行期：Boss 战败档 败于/建议/B 提示 与 三件套行 共存（
   cap.some((t) => t.includes(`🏆 成就 2/${ACH} · 📕 图鉴 1/${BEST} · 📦 宝箱 1/${CHESTS}`)));
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树收录 smoke_v2196_deadrecap 且位于串尾（v2196 随新现实由当版冒烟守护）', readme.includes('smoke_v2195_ptime2 + smoke_v2196_deadrecap + smoke_v2197_lucky2 + smoke_v2198_winsave + smoke_v2199_rich2 + smoke_v2200_stock + smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2（npm test 串跑）'));
-ok('README 件套口径为一百一十四件套（一百一十三件套清除）',
-  readme.includes('冒烟一百一十四件套（一百一十三件套清除）') && !readme.includes('冒烟九十件套（八十九件套清除）'));
+ok('README tests 树收录 smoke_v2196_deadrecap 且位于串尾（v2196 随新现实由当版冒烟守护）', readme.includes('smoke_v2195_ptime2 + smoke_v2196_deadrecap + smoke_v2197_lucky2 + smoke_v2198_winsave + smoke_v2199_rich2 + smoke_v2200_stock + smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys（npm test 串跑）'));
+ok('README 件套口径为一百一十五件套（一百一十四件套清除）',
+  readme.includes('冒烟一百一十五件套（一百一十四件套清除）') && !readme.includes('冒烟九十件套（八十九件套清除）'));
 ok('README 含 v21.96 守护描述', readme.includes('v21.96 起含阵亡画面收集三件套守护'));
 ok('README 系统清单「战败复盘」段补收集四件套口径（另补**收集进度四件套**）',
   readme.includes('另补**收集进度四件套**') && readme.includes('🏆 成就 N/M · 📕 图鉴 N/M · 📦 宝箱 N/M'));
@@ -222,8 +222,8 @@ const suite92 = ['smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs', 'smoke
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite92) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百一十四件套（一百一十三件套清除）`,
-    src.includes('一百一十四件套（一百一十三件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百一十五件套（一百一十四件套清除）`,
+    src.includes('一百一十五件套（一百一十四件套清除）'));
 }
 const vers = ['smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs',
   'smoke_v2192_travelwarn.mjs', 'smoke_v2191_ptime.mjs', 'smoke_v2190_launch.mjs',
@@ -234,12 +234,12 @@ const vers = ['smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs', 'smoke_v2
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.96`,
-    src.includes("const GAME_VERSION = 'v22.18';"));
+    src.includes("const GAME_VERSION = 'v22.19';"));
 }
 for (const nm of ['smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v21.96`,
-    src.includes("GAME_VERSION === 'v22.18'"));
+    src.includes("GAME_VERSION === 'v22.19'"));
 }
 // 旧代 pin 零残留：全部测试文件不得再含 v21.95 版本字面量 pin（拆串构造避免本文件扫描行自匹配）
 const OLD_GV = "const GAME_VERSION = 'v21.9" + "5';";
