@@ -19,6 +19,8 @@ const NPC_SHEET = {
   digger: 'mwSage',
   // 粮铺掌柜（v21.80 新 NPC）：复用杂货商贩造型（与星砂车夫同款商贩），跨图不重名
   grainman: 'mwCartman',
+  // 掌灯童（v22.11 新 NPC）：复用镇民短衫造型（孩童身形，与守名者/掌灯阿婆长者袍区分），跨图不重名
+  lampkid: 'mwVillager',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
