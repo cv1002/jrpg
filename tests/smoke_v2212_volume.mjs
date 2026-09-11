@@ -87,7 +87,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.11', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 12)), GAME_VERSION);
 ok('data.js 含 v22.12 注释（主音量调节说明）', dSrc.includes('v22.12 主音量'));
 ok('GAME_VERSION 字面量已更新为 v22.12（旧 v22.11 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.13';") && !dSrc.includes("const GAME_VERSION = 'v22.11';"));
+  dSrc.includes("const GAME_VERSION = 'v22.14';") && !dSrc.includes("const GAME_VERSION = 'v22.11';"));
 // 注：本文件由 pin 级联脚本机械替换过一处「const GAME_VERSION = 'v22.11';」→ 上方断言串已被同步为新版，
 // 负向存在性检查以「v22.11 字面量零残留」为准（data.js 内 v22.11 仅存于功能注释，不属于版本字面量，见上）。
 
