@@ -33,6 +33,9 @@ const NPC_SHEET = {
   // 失名的旅人（v22.21 新 NPC）：复用长者袍造型（风尘旧袍的迷路人，与守名者/掌灯阿婆同款身形，
   // 跨图不重名；同图雾语林内与雾径猎手斗篷/拾菇人镇民短衫均区分）
   wanderer: 'mwSage',
+  // 货郎（v22.22 新 NPC）：复用商贩造型（与星砂车夫/粮铺掌柜同款身形，跨图不重名；同图雾语林内
+  // 与雾径猎手斗篷/拾菇人镇民短衫/失名的旅人长者袍均区分）
+  peddler: 'mwCartman',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
