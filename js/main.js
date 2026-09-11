@@ -2,8 +2,8 @@
 // main.js —— 入口：goto + 场景按键表
 // ============================================================
 import { S, curMap } from './state.js';
-import { ac, startBgm, stopBgm, resumeBgm, SFX, loadSndPref, saveSndPref } from './audio.js';
-import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS } from './data.js';
+import { ac, startBgm, stopBgm, resumeBgm, SFX, loadSndPref, saveSndPref, loadVolPref, setVolume } from './audio.js';
+import { KEY, TRAVEL_LIST, HELP_PAGES, DIFFS, STORY, HERO_NAMES, DEFAULT_NAME, SAVE_SLOTS, SHORT_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, TUTOR_MSG_MS, MAPS, VOL_STEP } from './data.js';
 import { playerAction, updateBattle } from './battle.js';
 import { interact, move, loadMap, holdStep, setHeldDir, setRun } from './world.js';
 import { beginAdventure, saveGame, usePotion, resetRun, retryBoss, load, doTravel, brewNow, talkNext, initGame, titleResetCheck, slotDeleteCheck, deleteSlot, hasSlot } from './core.js';
@@ -405,7 +405,9 @@ const screens = {
 if (typeof window !== 'undefined') {
   // v21.21 启动恢复音频偏好（体验打磨）：M 静音状态此前刷新即失忆、回到有声，现从 localStorage
   // 恢复（读 data.js SND_KEY 单一数据源，'0'=静音其余=开；读取失败静默按默认开，不阻塞启动）。
+  // v22.12 同处恢复主音量（VOL_KEY，读不到默认 100%）——[ ] 调过的音量刷新后保留。
   loadSndPref();
+  loadVolPref();
   window.addEventListener('keydown', (e) => {
     if (e.key === 'm' || e.key === 'M') {
       S.SND = !S.SND;
@@ -414,6 +416,18 @@ if (typeof window !== 'undefined') {
       else stopBgm();
       renderHUD();
       boxMsg(S.SND ? '🔊 音效与音乐开启' : '🔇 静音', SHORT_MSG_MS);
+      return;
+    }
+    // v22.12 [ / ] 主音量调节（体验打磨·手感）：与 M 静音同层全局快捷键（all 场景生效，含战斗/菜单/标题）；
+    // [ 减小、] 增大，VOL_STEP=10% 步进、钳制 0~100%（data.js 单一数据源）；setVolume 实时写入主增益
+    // 总线并落盘（偏好记忆，承 v21.21 静音同族）；调节后播一声 select 让玩家当场听见新音量（tone 走
+    // 主增益总线，所闻即所得）；HUD 🔊/🔇 同步（0% 视为静音显示 🔇——与 S.SND 无冲突，M 仍是独立开关）；
+    // [ / ] 不在 KEY 移动表、无场景消费、无文本输入框，早退零行为影响。
+    if (e.key === '[' || e.key === ']') {
+      const v = setVolume(e.key === ']' ? VOL_STEP : -VOL_STEP);
+      if (v > 0) SFX.select();
+      renderHUD();
+      boxMsg(v <= 0 ? '🔇 音量 0%（M 可恢复音效开关）' : `🔊 音量 ${Math.round(v * 100)}%`, SHORT_MSG_MS);
       return;
     }
     // v21.44 按住 Shift 奔跑（体验打磨·操作手感）：Shift 键进/出各设一个 setRun 分支——与 M 静音 handler 同

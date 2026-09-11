@@ -85,8 +85,10 @@ const hudSrc = await (async () => {
   try { return (await import('node:fs')).readFileSync(new URL('../js/view/hud.js', import.meta.url), 'utf8'); }
   catch { return ''; }
 })();
-ok('hud.js 常驻 🔊/🔇 指示原样（s-snd 与 S.SND 派生未动）',
-  hudSrc.includes("set('s-snd'") && hudSrc.includes("S.SND ? '🔊' : '🔇'"));
+// v22.12 随新现实更新：hud 指示同步主音量（0% 视为静音）——原「s-snd 与 S.SND 派生未动」断言改查
+// 新口径 (S.SND && (S.VOL||1) > 0) ? '🔊' : '🔇'（与 v22.12 主音量守护同源；M 独立开关语义不变）
+ok('hud.js 常驻 🔊/🔇 指示同步主音量（s-snd 由 S.SND 与 S.VOL 共同派生）',
+  hudSrc.includes("set('s-snd'") && hudSrc.includes("(S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇'"));
 
 // —— README 同步守护（tests 树收录 smoke_v2121_sndpersist + 冒烟/件套口径存在；v21.22 起不再以件数断言，
 // 承 v21.7 去硬化惯例：件数随版本递增，数字写死必然脱节——实件数由新版冒烟守护 README 口径）——

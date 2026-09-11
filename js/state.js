@@ -7,6 +7,9 @@
 export const S = {
   AC: null,
   SND: true,
+  // v22.12 主音量（0~1，落盘为 '0'..'100' 百分比字符串）：与 SND 同族运行时偏好——[ ] 键调节、
+  // 启动 loadVolPref 恢复（读不到一律默认 1=100%）；audio.js 主增益总线读此值。零音色零时序。
+  VOL: 1,
   bgmTimer: null,
   bgmStep: 0,
   bgmTrack: null,

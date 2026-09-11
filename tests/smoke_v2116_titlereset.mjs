@@ -70,8 +70,8 @@ ok('存档槽行已注明「连按两次确认」口径', rowSlot && (rowSlot[2]
 // 相邻行未被误动（防改错行的回归守护）
 const rowBattle = page.find((r) => r[0] === '战斗');
 ok('战斗行主行未被误动（6 指令仍在）', rowBattle && rowBattle[1].includes('6蓄力') && !rowBattle[1].includes('连按两次'), rowBattle && rowBattle[1]);
-const rowMute = page.find((r) => r[0] === '静音');
-ok('静音行仍在（M 键口径未动）', rowMute && rowMute[1] === 'M', rowMute && rowMute[1]);
+const rowMute = page.find((r) => r[0].includes('静音'));
+ok('静音行仍在且补 v22.12 音量口径（M 静音切换 + [ / ] 调节音量）', rowMute && rowMute[1].includes('M 静音切换') && rowMute[1].includes('[ / ]'), rowMute && rowMute[1]);
 
 // —— 宽度预算（纯估算，零依赖；系数沿 v21.11/v21.13/v21.14 官方冒烟标定口径）——
 const estW = (s, size) => {

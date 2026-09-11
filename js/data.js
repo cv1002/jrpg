@@ -522,13 +522,11 @@
 // battle.playerAction / shop 五购买 / core 六入口——usePotion·brewNow·doTravel·talkNext·
 // beginAdventure·resetRun），saveGame/load 成功清脏；纯状态标志零结算零存档格式变化（unsaved 不
 // 落盘、刷新即复位，无需迁移）。
-// v22.11 无字回廊新风味 NPC「掌灯童」（新内容·纯数据·零机制，承 v21.36 掌灯阿婆 / v21.52 拾骨人 /
-// v21.80 粮铺掌柜「NPC 就是数据」先例）：回廊中段北侧（14,3）的提灯小孩——终局区 8×24 的走廊只有
-// 守名者一位 NPC（v21.24 后唯一缺口：四图里最空旷的地图）；台词走既有 NPCS.lines + trueBoss after
-// 彩蛋机制（villager 同款、npcQuestPages 无待办任务回退直落），零新逻辑零结算零存档零数值变化；
-// 全局坐标 (14,3) 为回廊可走草格、未被他图 extras 占用（全图扫描仅 gallery 一处），南邻主路 (14,4)
-// 可面对面对话、沿线不挡路（NPC 瓦片 SOLID、回廊上下两行 '0' 均可绕行）。
-const GAME_VERSION = 'v22.11';
+// v22.12 主音量调节 [ / ]（体验打磨·承 v21.21 静音偏好同一「浏览器偏好记忆」主线）：M 静音只有
+// 开/关两档，全场音量无法微调——夜间/安静环境嫌 BGM 吵只能整锅静音、音量太小又只能全开；现补
+// 10% 步进主音量（0~100%，[ 减小 / ] 增大，全场景生效），经 audio.js 主增益总线输出，偏好随
+// localStorage（VOL_KEY）持久化、刷新保留；零音色零时序零结算变化。
+const GAME_VERSION = 'v22.12';
 
 const T=32;
 
@@ -1060,6 +1058,21 @@ const START_POTIONS = 3;  // 新档开局生命药水
 const SND_KEY = 'jrpg_snd';
 function sndPrefToState(raw) { return raw !== '0'; }
 function sndPrefToString(on) { return on ? '1' : '0'; }
+
+// 主音量持久化（v22.12 体验打磨·单一数据源·纯函数，承 v21.21 静音偏好同一「浏览器偏好记忆」主线）：
+// M 静音只有开/关两档——嫌 BGM 喧闹或音效太轻声只能全静音，噪音环境想「小声一点」无解；现补 [ / ]
+// 10% 步进主音量（0~100%）。main.js 启动恢复与 [ ] 键调节落盘同读此源，audio.loadVolPref/saveVolPref/
+// setVolume 是仅有的三个读写方；存储值 '0'..'100'（百分比整数），键名与 jrpg_snd / jrpg_saveN 同一命名族；
+// 越界/非数字/读不到一律回退默认 100%（state.js VOL:1 同口径）。步进值只改这里一处、调音量只改
+// VOL_STEP 一处；改默认值只动 state.js 一处、改编码只动这里一处。
+const VOL_KEY = 'jrpg_vol';
+const VOL_STEP = 0.1;
+function volPrefToState(raw) {
+  const m = /^\d{1,3}$/.exec(String(raw == null ? '' : raw));
+  const pct = m ? parseInt(m[0], 10) : 100;
+  return Math.max(0, Math.min(1, pct / 100));
+}
+function volPrefToString(v) { return String(Math.round(Math.max(0, Math.min(1, v)) * 100)); }
 
 // 灼烧每回合扣血比例（单一数据源）：enemyAct 的灼烧结算 max(2, round(hpMax×此值)) 与
 // 战斗画面角标「每回合 -N血」、火焰斩技能提示「约N%最大HP」同读此源——
@@ -2554,7 +2567,11 @@ const HELP_PAGES=[
     ['成就一览','C'],
     ['快速旅行','T'],
     ['操作说明','H'],
-    ['静音','M'],
+    // v22.12 静音行补音量口径（可发现性·承 v21.21 静音偏好 / v21.29-32「功能存在就必须能看到入口」主线）：
+    // [ / ] 调音量是全局快捷键（与 M 静音同层、全场景生效），H 页操作清单若无此入口玩家无从发现；
+    // 行数不变仍 14（只改行内文字不触发页长自适应）、14px 行宽估算 ≈203 ≤470 面板预算（与 v19.59/v21.44
+    // 同款派生预算），零裸字面量（步进口径由 data.js VOL_STEP 单一数据源派生，见帮助页注释同源说明）。
+    ['静音 / 音量','M 静音切换 · [ / ] 调节音量（10% 步进）'],
     // v19.59 操作说明页排版修复（与 menus.drawHelp 的页长自适应行距 / r[2] 次行支持配套）：6 个指令 + 蓄力
     // 细节 + Boss 规则挤在单行时整行约 665px、远超面板右缘 x570（会成为首个目前就溢出画布被裁掉的行）；
     // 拆两行——首行 6 指令（估算结束 x≈548 不越界），次行（r[2]，12px 次级灰）专述 蓄力与 Boss 规则；
@@ -2746,5 +2763,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString,
 };

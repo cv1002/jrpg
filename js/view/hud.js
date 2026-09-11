@@ -42,7 +42,9 @@ export function renderHUD() {
   set('s-potion', hero.item);
   set('s-potion2', hero.potion2 || 0);
   set('s-mushroom', hero.mushrooms || 0);
-  set('s-snd', S.SND ? '🔊' : '🔇');
+  // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
+  // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
+  set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');
   set('s-weapon', hero.weapon);
   set('s-armor', hero.armor);
   // 攻/防常驻读数（信息透明·纯显示）：状态页/战斗对比行的数值平时要开 I 或进战斗才看得到，

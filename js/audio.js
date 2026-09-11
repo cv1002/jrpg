@@ -2,7 +2,7 @@
 // audio.js —— Web Audio 音效 / BGM
 // ============================================================
 import { S, curMap } from './state.js';
-import { SND_KEY, sndPrefToState, sndPrefToString } from './data.js';
+import { SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString } from './data.js';
 
 // v21.21 音频开关持久化（体验打磨·承「信息透明」主线里的偏好记忆缺口）：S.SND 此前只活在内存——
 // M 静音后刷新页面即回到有声（HUD 有 🔊/🔇 常驻指示却留不住偏好）。启动恢复与切换落盘只经这两函数，
@@ -14,12 +14,36 @@ export function loadSndPref() {
 export function saveSndPref() {
   try { localStorage.setItem(SND_KEY, sndPrefToString(S.SND)); } catch (e) {}
 }
+// v22.12 主音量偏好持久化（承 loadSndPref/saveSndPref 同款：存储键/编码由 data.js 单一数据源供给，
+// localStorage 读写失败静默降级为内存态；loadVolPref 只在 main.js 启动恢复调用一次（与 loadSndPref 同
+// 位），setVolume 是 [ ] 键调节的唯一入口——音量节点刷新/读档等场景无需重设，主增益总线常驻指向 S.VOL）。
+export function loadVolPref() {
+  try { S.VOL = volPrefToState(localStorage.getItem(VOL_KEY)); } catch (e) {}
+}
+export function saveVolPref() {
+  try { localStorage.setItem(VOL_KEY, volPrefToString(S.VOL)); } catch (e) {}
+}
+// [ ] 键主音量调节（唯一入口）：按 VOL_STEP 步进并钳制到 [0,1]，实时写入主增益总线（ac() 未初始化时
+// 仅落 S.VOL——此后首个音效/BGM 自动按新音量发声），落盘持久化。浮点步进经 ×10 取整消除 0.1 累加误差。
+export function setVolume(delta) {
+  S.VOL = Math.max(0, Math.min(1, Math.round((S.VOL + delta) * 10) / 10));
+  if (S.masterGain) S.masterGain.gain.value = S.VOL;
+  saveVolPref();
+  return S.VOL;
+}
 
 function ac() {
   if (!S.AC) {
     try {
       const W = typeof window !== 'undefined' ? window : globalThis;
       S.AC = new (W.AudioContext || W.webkitAudioContext)();
+      // v22.12 主音量总线：所有音效/BGM 经同一 gain 节点输出（tone 直连 S.masterGain），[ ] 调音量
+      // 只改这一个节点/一个 S.VOL 值——零音色零时序变化（各音效的相对音量配比保持原样，只缩放整体）。
+      if (S.AC && S.AC.createGain) {
+        S.masterGain = S.AC.createGain();
+        S.masterGain.gain.value = Math.max(0, Math.min(1, S.VOL));
+        S.masterGain.connect(S.AC.destination);
+      }
     } catch (e) {}
   }
   return S.AC;
@@ -38,7 +62,9 @@ function tone(freq, dur, type = 'square', vol = 0.12, when = 0, slide = 0) {
   gain.gain.setValueAtTime(vol, ctx.currentTime + when);
   gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + when + dur);
   osc.connect(gain);
-  gain.connect(ctx.destination);
+  // v22.12 主音量总线（音效/BGM 统一出口）：ac() 初始化成功即常驻 S.masterGain，连接失败/未初始化
+  // 时防御式回落直连 destination（旧行为）——音量总线只在音频后端可用时生效，绝不因偏好设置崩溃。
+  gain.connect(S.masterGain || ctx.destination);
   osc.start(ctx.currentTime + when);
   osc.stop(ctx.currentTime + when + dur + 0.02);
 }
