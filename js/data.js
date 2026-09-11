@@ -564,7 +564,17 @@
 // (g.potion2||0) 防御式读取旧档零迁移，承 elixir 同款；无 r 字段纯里程碑（灵药本身就是奖励）；
 // 解锁走 applyAchievements 既有通路任意判定点当场解锁（potion2 为持续变化量，无需新判定点，已解锁
 // 不因喝药消耗回落而撤销）。只改数据层（版本号 + 常量 + 条目 + 导出），零战斗零数值零存档。
-const GAME_VERSION = 'v22.17';
+// v22.18 新成就「菇山菌海」（魔法蘑菇持有线第二档里程碑·新内容·单成就，承 v22.14 菇香满仓首枚 /
+// v22.4 妙手回春 / v22.6 药香满囊 / v22.8 灵药盈囊 单成就与多档先例）——成就版图逐线核对的收口：
+// v22.17 补灵药线第二档时已点明「唯独灵药线与蘑菇线仍停首枚」——灵药线已补齐，现补蘑菇线第二档
+// （MUSH2_GOAL=25 株，宝箱 60% 蘑菇/精英必掉/战斗掉落 12% 三源、酿造 2 株/卖菇 10 金双消耗、
+// 无背包上限，中期攒菇不酿不卖可上 25 株）：判定/描述/进度三处同读新常量 MUSH2_GOAL
+// （与 MUSH_GOAL 同一「成就阈值数据化」家族——改门槛只改 data.js 一处自动跟随，零裸字面量），
+// 计数读既有 hero.mushrooms 存档字段（newGame 起始 0、开箱/精英必掉/战斗掉落写定、酿造/卖菇扣减），
+// (g.mushrooms||0) 防御式读取旧档零迁移，承 mush 同款；无 r 字段纯里程碑（蘑菇本身就是奖励）；
+// 解锁走 applyAchievements 既有通路任意判定点当场解锁（mushrooms 为持续变化量，无需新判定点，已解锁
+// 不因酿造/卖菇消耗回落而撤销）。只改数据层（版本号 + 常量 + 条目 + 导出），零战斗零数值零存档。
+const GAME_VERSION = 'v22.18';
 
 const T=32;
 
@@ -774,6 +784,9 @@ const BREW_GOLD = 10;       // 酿造一剂高级灵药所需金币
 // 四文件七处互不相关：想调支线目标（如放宽到 4 株）要改四处，还极易只改判定漏改文案，集齐 4 株界面却还标「/3 株」。
 const MUSHROOM_GOAL = 3;    // 灯长支线需找回的魔法蘑菇株数（集齐后转可交付）
 const MUSH_GOAL = 10;    // 成就「菇香满仓」需持有的魔法蘑菇株数（首枚里程碑；宝箱 60% 蘑菇/精英必掉/战斗掉落 12% 三源，酿造 2 株/卖菇 10 金双消耗）
+// v22.18 新成就「菇山菌海」第二档阈值（与 MUSH_GOAL 同一「成就阈值数据化」家族——判定/描述/进度
+// 三处同读一份源，改门槛只改本行一处自动跟随）：蘑菇是灯油主题签名采集物（无背包上限、中期可上 25 株）
+const MUSH2_GOAL = 25;   // 成就「菇山菌海」需持有的魔法蘑菇株数（第二档里程碑；资源持有线至此全部两档齐备）
 
 // 雾径猎手「雾里的新住客」支线目标只数（单一数据源）：QUESTS.side_mist 的讨伐条件（cond）、
 // 实时进度（condProg「X/3 只」）、任务条目标文案（obj）、接取/交付对话（offer「帮我打 3 只回来」/
@@ -2619,6 +2632,17 @@ const ACH_LIST=[
   // 解锁走 applyAchievements 既有通路任意判定点当场解锁（potion2 为持续变化量，无需新判定点——
   // 第 8 瓶落袋的瞬间即解锁、反馈不迟到；已解锁不因喝药消耗回落而撤销）。
   {id:'elixir2', name:'灵药满柜', d:`持有 ${ELIXIR_STOCK2_GOAL} 瓶高级灵药`, ok:g=>(g.potion2||0)>=ELIXIR_STOCK2_GOAL, prog:g=>`${g.potion2||0}/${ELIXIR_STOCK2_GOAL}`},
+  // 菇山菌海（v22.18 新成就·魔法蘑菇持有线第二档里程碑·承 mush 首枚 / stock2 / brew2 / lucky2 /
+  // rich2 多档先例）：v22.17 补灵药线第二档后成就版图逐线核对的收口——等级三档/宝箱/讨伐/时长/
+  // 掉落/金币/酿造/药水/灵药各线都有第二档，唯独蘑菇线（v22.14 首枚=持有 10 株）仍停首枚；现补
+  // MUSH2_GOAL=25 株（宝箱 60%/精英必掉/战斗掉落 12% 三源、酿造 2 株/卖菇 10 金双消耗、无背包上限）——
+  // 判定/描述/进度三处同读 MUSH2_GOAL 一份源（与 MUSH_GOAL 同一「成就阈值数据化」家族——改门槛只改
+  // data.js 一处自动跟随，零裸字面量），计数读既有 hero.mushrooms 存档字段（newGame 起始 0、开箱
+  // world.onStep/精英必掉 battle.winBattle/战斗掉落 rules.rollDrop 写定、酿造/卖菇扣减），(g.mushrooms||0)
+  // 防御式读取旧档零迁移，承 mush 同款；无 r 字段纯里程碑（蘑菇本身就是奖励）；解锁走 applyAchievements
+  // 既有通路任意判定点当场解锁（mushrooms 为持续变化量，无需新判定点——第 25 株落袋的瞬间即解锁、
+  // 反馈不迟到；已解锁不因酿造/卖菇消耗回落而撤销）。
+  {id:'mush2', name:'菇山菌海', d:`持有 ${MUSH2_GOAL} 株魔法蘑菇`, ok:g=>(g.mushrooms||0)>=MUSH2_GOAL, prog:g=>`${g.mushrooms||0}/${MUSH2_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -2861,7 +2885,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, DEFAULT_NAME, DIFFS, KEY,
