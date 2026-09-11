@@ -36,6 +36,9 @@ const NPC_SHEET = {
   // 货郎（v22.22 新 NPC）：复用商贩造型（与星砂车夫/粮铺掌柜同款身形，跨图不重名；同图雾语林内
   // 与雾径猎手斗篷/拾菇人镇民短衫/失名的旅人长者袍均区分）
   peddler: 'mwCartman',
+  // 拾灯人（v22.23 新 NPC）：复用旅人斗篷造型（与说书人/听矿人/雾径猎手同款身形，跨图不重名；
+  // 同图无字回廊内与守名者长者袍/掌灯童镇民短衫均区分）
+  lampman: 'mwHunter',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',

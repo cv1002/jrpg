@@ -140,7 +140,7 @@ const achBone = ACH_LIST.find((a) => a.id === 'bone');
 ok('ACH_LIST 含 bone「亡骨还乡」且 id 唯一',
   !!achBone && achBone.name === '亡骨还乡' && ACH_LIST.filter((a) => a.id === 'bone').length === 1);
 // v21.59 随新现实更新（承 v21.48 smoke_v2115 r[2] 计数断言 2→3 先例）：skills 成就「诸技通明」
-// 入列后 ACH_LIST 总数 24→24——本断言守护「bone 新增一项入列」语义（bone 存在且总数不少于 23），
+// 入列后 ACH_LIST 总数 25→24——本断言守护「bone 新增一项入列」语义（bone 存在且总数不少于 23），
 // 精确总数移交当版冒烟（smoke_v2159 ===24）守护，不再在此硬编码。
 ok('ACH_LIST 含 bone 且总数 ≥23（v21.59 起精确总数由当版冒烟守护）', !!achBone && ACH_LIST.length >= 23, String(ACH_LIST.length));
 ok('bone 成就判定读 quests.side_bone（未做 false / 已做 true）',
