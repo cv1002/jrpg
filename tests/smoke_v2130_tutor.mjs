@@ -7,6 +7,8 @@
 // 仅教程行文案二字之差 + 注释。承 v21.10 起冒烟入库先例（仓库常驻版）。
 // v21.44 教程行加 Shift奔跑 口径后更新本行全字面量（WASD移动 → WASD移动/Shift奔跑）：E 键口径
 // 断言对象不变（Enter/E对话 · TUTOR_MSG_MS 收尾 · 旧「Enter对话」清零），仅行字面量随 v21.44 同步。
+// v22.15 教程行补 [ / ] 音量 口径后再次更新本行全字面量（…H帮助 · M静音 → …H帮助 · M静音 ·
+// [ / ] 音量）：E 键/Shift 口径断言对象仍不变（Enter/E对话 · TUTOR_MSG_MS 收尾），仅行字面量随 v22.15 同步。
 import { S } from '../js/state.js';
 import { KEY, HELP_PAGES, STORY, GAME_VERSION, TUTOR_MSG_MS } from '../js/data.js';
 import fs from 'node:fs';
@@ -74,7 +76,7 @@ ok('GAME_VERSION 格式合法且已越过 v21.29', !!_gv && (_gv[0] > 21 || (_gv
 // —— 源级落位：教程行已改 Enter/E对话，旧口径字面量清零，TUTOR_MSG_MS 沿用 ——
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/main.js'), 'utf8');
-const TUTOR_LINE = '💡 教程：WASD移动/Shift奔跑 · Enter/E对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音';
+const TUTOR_LINE = '💡 教程：WASD移动/Shift奔跑 · Enter/E对话 · Esc菜单 · P存档 · F喝药 · I状态 · J任务 · B图鉴 · C成就 · T旅行 · H帮助 · M静音 · [ / ] 音量';
 ok("main.js 教程行已含 'Enter/E对话'（与 README/H 页同口径，v21.44 起含 Shift奔跑）", mSrc.includes(TUTOR_LINE));
 ok('旧口径字面量已清零（WASD移动 · Enter对话 · Esc菜单 片段不存在）',
   !mSrc.includes('WASD移动 · Enter对话 · Esc菜单'));
