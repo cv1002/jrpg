@@ -27,6 +27,9 @@ const NPC_SHEET = {
   // 拾菇人（v22.16 新 NPC）：复用镇民短衫造型（采菇人农人身形，与守名者/掌灯阿婆长者袍区分，
   // 跨图不重名；同图雾语林内与雾径猎手斗篷区分）
   picker: 'mwVillager',
+  // 听矿人（v22.20 新 NPC）：复用工人造型（与雾语林雾径猎手同款身形，跨图不重名；同图星井矿脉内
+  // 与老矿工默认镇民/星砂车夫商贩/守碑人与拾骨人长者袍均区分）
+  hearer: 'mwHunter',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',

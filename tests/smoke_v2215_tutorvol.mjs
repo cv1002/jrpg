@@ -8,7 +8,7 @@
 // 本冒烟守护：版本锚点、GAME_VERSION 字面量 v22.15 精确（v22.14 历史注释保留）、main.js 教程行
 // 含「M静音 · [ / ] 音量」且 12 项既有口径逐字零残留、KEY 无 [ ] 映射冲突、VOL_STEP===0.1 与
 // H 页「静音 / 音量」行口径、README/package.json/CHANGELOG 同步（tests 树 + smoke_v2215_tutorvol、
-// 冒烟一百一十五件套（一百一十四件套清除）、v22.15 守护描述、README 上手表 [ / ] 行）、姊妹件套
+// 冒烟一百一十六件套（一百一十五件套清除）、v22.15 守护描述、README 上手表 [ / ] 行）、姊妹件套
 // pin（v2214..v2176 一百一十二件套 / v2214..v2179 GAME_VERSION v22.15 / v2214..v2192 恒等
 // v22.15 / v2214..v2192 树尾 v22.15）随新现实更新 + 旧代 v22.14 字面量/恒等/件套/树尾 pin 零残留。
 import { GAME_VERSION, VOL_STEP } from '../js/data.js';
@@ -26,7 +26,7 @@ console.log('— v22.15 新手教程行音量口径冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.14', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 15)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.15（本版独占精确锚点）', GAME_VERSION === 'v22.19', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.15（本版独占精确锚点）', GAME_VERSION === 'v22.20', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -37,7 +37,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.15 版本注释', dataSrc.includes('v22.15 新手教程行补 [ / ] 音量口径'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.15', dataSrc.includes("const GAME_VERSION = 'v22.19';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.15', dataSrc.includes("const GAME_VERSION = 'v22.20';"));
 ok('data.js 仍保留 v22.14 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.14 新成就「菇香满仓」'));
 
 // —— 教程行口径（v22.15 核心）——
@@ -54,16 +54,16 @@ ok('main.js [ / ] 全局分派仍在（v22.12 既有入口零回归）', mainSrc
 ok('H 页「静音 / 音量」行仍在（v22.12 口径零回归）', dataSrc.includes("'静音 / 音量'") && dataSrc.includes("M 静音切换 · [ / ] 调节音量"));
 
 // —— README 同步 ——
-ok('README tests 树尾含 + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys（npm test 串跑）', readme.includes('smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys（npm test 串跑）'));
-ok('README 件套口径为一百一十五件套（一百一十四件套清除）', readme.includes('冒烟一百一十五件套（一百一十四件套清除）') && !readme.includes('冒烟一百一十件套（一百零九件套清' + '除）'));
+ok('README tests 树尾含 + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer（npm test 串跑）', readme.includes('smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer（npm test 串跑）'));
+ok('README 件套口径为一百一十六件套（一百一十五件套清除）', readme.includes('冒烟一百一十六件套（一百一十五件套清除）') && !readme.includes('冒烟一百一十件套（一百零九件套清' + '除）'));
 ok('README 含 v22.15 守护描述', readme.includes('v22.15 起含新手教程行 [ / ] 音量口径守护'));
 ok('README 含 smoke_v2215_tutorvol 入库（111 份）', readme.includes('smoke_v2215_tutorvol 入库（111 份）'));
 ok('README 快速上手表 [ / ] 行仍在（v22.12 零回归）', readme.includes('调节主音量'));
 
 // —— package.json / CHANGELOG 同步 ——
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串收录 smoke_v2219_footkeys（第 115 份·串尾随新现实更新）', pkg.includes('&& node tests/smoke_v2218_mush2.mjs && node tests/smoke_v2219_footkeys.mjs"'));
-ok('package.json test 串共 114 件套', testChain === 115, String(testChain));
+ok('package.json test 串收录 smoke_v2219_footkeys（第 115 份·串尾随新现实更新）', pkg.includes('&& node tests/smoke_v2218_mush2.mjs && node tests/smoke_v2219_footkeys.mjs && node tests/smoke_v2220_hearer.mjs"'));
+ok('package.json test 串共 114 件套', testChain === 116, String(testChain));
 ok('CHANGELOG 含 v22.15 条目', changelog.includes('## v22.15 '));
 
 // —— 姊妹件套 pin（v2214..v2176 一百一十二件套 / v2214..v2179 GAME_VERSION v22.15 / 恒等 / 树尾）——
@@ -74,25 +74,25 @@ const s2192 = read('../tests/smoke_v2192_travelwarn.mjs');
 const s2181 = read('../tests/smoke_v2181_helpquickcast.mjs');
 const s2179 = read('../tests/smoke_v2179_titlerecap.mjs');
 const s2176 = read('../tests/smoke_v2176_allchests.mjs');
-ok('smoke_v2214 的 README 件套 pin 已随新现实更新为一百一十五件套（一百一十四件套清除）',
-  s2214.includes('一百一十五件套（一百一十四件套清除）'));
+ok('smoke_v2214 的 README 件套 pin 已随新现实更新为一百一十六件套（一百一十五件套清除）',
+  s2214.includes('一百一十六件套（一百一十五件套清除）'));
 ok('smoke_v2214 的 README 树尾 pin 已更新为 + smoke_v2215_tutorvol', s2214.includes('smoke_v2214_mush + smoke_v2215_tutorvol'));
 ok('smoke_v2214 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2214.includes("const GAME_VERSION = 'v22.19';"));
+  s2214.includes("const GAME_VERSION = 'v22.20';"));
 ok('smoke_v2214 的 GAME_VERSION 恒等 pin 已更新为 === v22.15',
-  s2214.includes("GAME_VERSION === 'v22.19'"));
+  s2214.includes("GAME_VERSION === 'v22.20'"));
 ok('smoke_v2213 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2213.includes("const GAME_VERSION = 'v22.19';"));
+  s2213.includes("const GAME_VERSION = 'v22.20';"));
 ok('smoke_v2212 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2212.includes("const GAME_VERSION = 'v22.19';"));
+  s2212.includes("const GAME_VERSION = 'v22.20';"));
 ok('smoke_v2192 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2192.includes("const GAME_VERSION = 'v22.19';"));
+  s2192.includes("const GAME_VERSION = 'v22.20';"));
 ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2181.includes("const GAME_VERSION = 'v22.19';"));
+  s2181.includes("const GAME_VERSION = 'v22.20';"));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2179.includes("const GAME_VERSION = 'v22.19';"));
-ok('smoke_v2176 件套 pin 已更新为一百一十五件套（一百一十四件套清除）',
-  s2176.includes('一百一十五件套（一百一十四件套清除）'));
+  s2179.includes("const GAME_VERSION = 'v22.20';"));
+ok('smoke_v2176 件套 pin 已更新为一百一十六件套（一百一十五件套清除）',
+  s2176.includes('一百一十六件套（一百一十五件套清除）'));
 
 // —— 旧代 pin 零残留：全部测试文件不得再含 v22.14 字面量/恒等/件套/树尾 pin（拆串构造避免自匹配）——
 let stale = [];
