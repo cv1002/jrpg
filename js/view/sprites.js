@@ -30,6 +30,9 @@ const NPC_SHEET = {
   // 听矿人（v22.20 新 NPC）：复用工人造型（与雾语林雾径猎手同款身形，跨图不重名；同图星井矿脉内
   // 与老矿工默认镇民/星砂车夫商贩/守碑人与拾骨人长者袍均区分）
   hearer: 'mwHunter',
+  // 失名的旅人（v22.21 新 NPC）：复用长者袍造型（风尘旧袍的迷路人，与守名者/掌灯阿婆同款身形，
+  // 跨图不重名；同图雾语林内与雾径猎手斗篷/拾菇人镇民短衫均区分）
+  wanderer: 'mwSage',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
