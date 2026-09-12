@@ -51,6 +51,10 @@ const NPC_SHEET = {
   // 锻灯师（v22.31 新 NPC）：复用镇民短衫造型（灯匠工匠身形，与同图镇民/守书记同款短衫、与灯长魁梧/
   // 井巫·掌灯阿婆长者袍/说书人斗篷/粮铺掌柜商贩区分，跨图不重名）
   smith: 'mwVillager',
+  // 客栈老板娘（v22.34 新 NPC）：复用镇民短衫造型（老板娘围裙身形，与同图镇民/守书记/锻灯师同款短衫、
+  // 由 kettle 热汤壶 mark 区分，与灯长魁梧/井巫·掌灯阿婆长者袍/说书人斗篷/粮铺掌柜商贩/巡灯人行脚
+  // 区分，跨图不重名）
+  innkeeper: 'mwVillager',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
@@ -365,6 +369,7 @@ export function drawNpcMark(px,py,mark){
   // 铁锤（v22.31 锻灯师专属）：NPC 贴图缺失时程序化绘制的头侧小锤——与既有 hat/lamp/pick/fan/qin 等
   // 占位标记同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它 mark 惯例）
   else if(mark==='hammer'){ c.fillStyle='#8a5a2b'; c.fillRect(21,14,8,3); c.fillStyle='#c0c8d4'; c.fillRect(24,5,6,10); }
+  else if(mark==='kettle'){ c.fillStyle='#c08040'; c.fillRect(22,8,8,7); c.fillStyle='#8a5a2b'; c.fillRect(22,7,8,2); c.fillStyle='#c08040'; c.fillRect(29,10,2,4); c.fillStyle='#e8d3a8'; c.fillRect(24,3,2,4); c.fillRect(27,3,2,3); }
   else if(mark==='staff'){ /* 默认图块已有杖 */ }
   c.restore();
 }

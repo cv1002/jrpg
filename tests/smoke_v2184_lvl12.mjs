@@ -81,7 +81,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.83', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 84)), GAME_VERSION);
 ok('data.js 含 v21.84 注释（新成就「灯燃长夜」说明）', dSrc.includes('v21.84 新成就「灯燃长夜」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.84', dSrc.includes("const GAME_VERSION = 'v22.33';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.84', dSrc.includes("const GAME_VERSION = 'v22.34';"));
 
 // —— LVL12_GOAL 常量（与 LVL5_GOAL/LVL10_GOAL 同族：判定/描述/进度三处同读）——
 ok('LVL12_GOAL===12 且已从 data.js 导出（与 LVL5_GOAL/LVL10_GOAL 同档）',
@@ -156,7 +156,7 @@ ok('运行期：成就页第三页滚动渲染不抛错（30 项 PAGE=10 三页�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2184_lvl12', readme.includes('smoke_v2184_lvl12'));
-ok('README 件套口径为一百二十九件套（一百二十八件套清除）', readme.includes('一百二十九件套（一百二十八件套清除）'));
+ok('README 件套口径为一百三十件套（一百二十九件套清除）', readme.includes('一百三十件套（一百二十九件套清除）'));
 ok('README 含 v21.84 守护描述', readme.includes('v21.84 起含'));
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
   readme.includes('成就一览（全部 45 项进度') && readme.includes('**45 项成就**'));
@@ -169,13 +169,13 @@ const suite78 = ['smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v21
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite78) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百二十九件套（一百二十八件套清除）`,
-    src.includes('一百二十九件套（一百二十八件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百三十件套（一百二十九件套清除）`,
+    src.includes('一百三十件套（一百二十九件套清除）'));
 }
 for (const nm of ['smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v22.33';"));
+    src.includes("const GAME_VERSION = 'v22.34';"));
 }
 for (const nm of ['smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
