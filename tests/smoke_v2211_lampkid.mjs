@@ -84,12 +84,12 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.10', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 11)), GAME_VERSION);
 ok('data.js 含 v22.11 注释（掌灯童说明）', dSrc.includes('v22.11'));
 ok('GAME_VERSION 字面量已更新为 v22.11（旧 v22.10 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.30';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
+  dSrc.includes("const GAME_VERSION = 'v22.31';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[14,3]===lampkid', NPC_SPOTS['14,3'] === 'lampkid', NPC_SPOTS['14,3']);
 ok('lampkid 仅占一个坐标键（无重复映射）', Object.keys(NPC_SPOTS).filter((k) => NPC_SPOTS[k] === 'lampkid').length === 1);
-ok('NPC_SPOTS 总数 28（既有 22 键 + 失名的旅人 1 键，v22.21 随新现实更新）', Object.keys(NPC_SPOTS).length === 28, Object.keys(NPC_SPOTS).length);
+ok('NPC_SPOTS 总数 29（既有 22 键 + 失名的旅人 1 键，v22.21 随新现实更新）', Object.keys(NPC_SPOTS).length === 29, Object.keys(NPC_SPOTS).length);
 ok('既有 19 个 NPC/石碑键未被误动', ['13,6', '10,13', '19,8', '12,8', '2,4', '13,9', '3,1', '2,3', '17,12', '17,11', '5,1', '10,1', '15,1', '20,1', '8,5', '14,8', '5,10', '15,12', '14,3']
   .every((k) => NPC_SPOTS[k] != null));
 // 全局坐标防撞演练：全图 extras 扫描，(14,3) 必须恰出现 1 次且在 gallery、ty 为 NPC
@@ -154,7 +154,7 @@ ok('sprites.js NPC_SHEET 已映射 lampkid→mwVillager（镇民短衫孩童身�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2211_lampkid', readme.includes('smoke_v2211_lampkid'));
-ok('README 件套口径为一百二十六件套（一百二十五件套清除）', readme.includes('一百二十六件套（一百二十五件套清除）'));
+ok('README 件套口径为一百二十七件套（一百二十六件套清除）', readme.includes('一百二十七件套（一百二十六件套清除）'));
 ok('README 含 v22.11 守护描述（无字回廊掌灯童）', readme.includes('v22.11 起含无字回廊掌灯童'));
 ok('README 快速上手/系统清单含「掌灯童」', readme.includes('掌灯童'));
 ok('package.json 已收录 smoke_v2211_lampkid（npm test 串跑第 107 份）',

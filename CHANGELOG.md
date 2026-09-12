@@ -1,3 +1,47 @@
+## v22.31 潮灯镇商店南侧新风味 NPC「锻灯师」（新内容·纯数据三件套，承 v22.27 琴师 / v22.13 说书人
+/ v22.16 拾菇人「NPC 就是数据」先例）——镇子此前唯一缺的工匠角色：镇上所有灯的灯芯钩/油嘴/铜箍都
+是他打的，「灯记住路、人跟着灯走」的灯匠直白版世界观（与说书人段子/掌灯阿婆旧故事同脉不同面）+
+「进林子前把药水热汤备齐」的出发前补给口径（承 v21.40 无泉水提醒 / v21.17 老矿工 / v22.22 货郎
+同一主线）+ 圣光之剑的灯匠视角侧写（「剑身封着的是一截黎明」——与巡灯人 lore 同源不同面：一个讲
+它是什么、一个讲它是怎么打出来的）。开工摸底：基线 git 干净树（最新提交 089a7d5，v22.30）、基线
+npm test 一百二十六件套全绿、并发检查双测 mtime 无变化、平衡模拟复核（普通带药 100%/普通裸刷
+99.63%/困难带药 99.27%/困难裸刷 15.00% 生还——数值健康无需调整）——故本轮选新内容而非平衡/打磨
+（选题轮换：v22.28 体验打磨、v22.29 新成就、v22.30 体验打磨后本轮回新内容 NPC）。
+
+- 【数据层三件套】`js/data.js`：`village.extras` 追加 `{ x: 7, y: 11, ty: 'NPC' }`（商店南侧草地角、
+  坐标为可行走格且未被他图占用——(6,11)/(8,11)/(7,12) 皆 '0' 可行走、立在杂货铺后墙外不挡主街/
+  商店/城门任何动线）；`NPC_SPOTS` 追加 `'7,11': 'smith'`（全局坐标键，未被他图占用）；`NPCS`
+  追加 `smith`（name:'锻灯师' / mark:'hammer' / lines 2 页 / trueBoss 后 after 彩蛋 2 页）——
+  台词走既有 `NPCS.lines` 兜底 + `after` 彩蛋（villager 同款机制、npcQuestPages 无待办任务回退
+  直落，零新逻辑、零裸字面量），无任务、无顶标、零结算零存档。
+- 【造型与专属标记】`js/view/sprites.js`：`NPC_SHEET` 追加 `smith: 'mwVillager'`（复用镇民短衫身形，
+  与同图灯长魁梧/井巫·掌灯阿婆长者袍/说书人斗篷/粮铺掌柜商贩区分，跨图不重名）；`drawNpcMark`
+  新增 `mark==='hammer'` 程序化绘制分支（铁锤占位标记——承 v22.13 fan / v22.27 qin 专属先例，
+  贴图齐备时走 sprite 路径不绘制）。
+- 【零回归面】未动 `NPC_SPOTS` 既有 28 键、`NPCS` 既有条目、`QUESTS`/`ACH_LIST`/`MAPS`/任何结算；
+  未动 world/battle/core/shop/quests 任何逻辑；未动 index.html 壳。纯内容零行为变化。
+- 【记录】`CHANGELOG.md`（本条）+ `package.json`（test 串第 127 份）+ `README.md`（tests 树尾收录
+  `smoke_v2231_smith`＋冒烟一百二十七件套（一百二十六件套清除）＋v22.31 守护描述＋入库 127 份＋
+  四图速览「潮灯镇」bullet 补锻灯师）；新增 `tests/smoke_v2231_smith.mjs`（仓库常驻，承
+  v21.10-v22.30 冒烟入库先例）；顺带把 v22.31 随新现实更新的姊妹 pin 一并落位：全库件冒烟的
+  GAME_VERSION 字面量/恒等 pin（v22.30→v22.31）、件套 pin（一百二十七件套/一百二十六件套清除）、
+  README tests 树尾 pin（+ smoke_v2231_smith）、package.json 串尾 pin（+ smoke_v2231_smith）、
+  testChain pin（===126→===127）、NPC 总数 pin（28→29）。
+- 【验证】`npm run check`（25 模块）全部通过；`node tests/smoke_v2231_smith.mjs` 全绿（55 项断言：
+  版本锚点/GAME_VERSION 字面量 v22.31 精确/v22.30 历史注释保留、NPC_SPOTS '7,11' 唯一映射与总数
+  29（既有 28 键零位移）、全图 extras 扫描 (7,11) 仅 village 一处 NPC、data.js 源级落位、NPCS.smith
+  契约（name/mark/lines 2 页/after 2 页/每页 [Enter] 收尾/行宽 ≤440/灯匠主题/补给口径/散尽彩蛋）、
+  npcQuestPages 无旗标→lines 与 trueBoss→after 两档选段、npcQuestMark 无顶标、resolveNpcTalk
+  零任务、运行期 loadMap(village) 落位 + 四邻可行走 + 同图 8 位 NPC 与商店/喷泉/酿造锅/旅馆/城门/
+  宝箱零回归 + Enter/E 真实交互开对话、sprites 源级（smith→mwVillager + hammer 分支）、README
+  tests 树尾/件套 127/守护描述/入库 127 份/四图速览、package.json 串尾/testChain===127、
+  CHANGELOG 条目、姊妹件套 pin 复查（v2230..v2225 字面量/恒等/件套/树尾/testChain + v2225..v2211
+  总数 29）、旧代 v22.30 字面量/恒等/件套/树尾 pin 全库零残留、断链防回归）；`npm test`
+  一百二十七件套全绿（既有 126 件逐项零回归——含 v2230..v2176 更新后件套 pin、全部 GAME_VERSION
+  字面量/恒等 pin、树尾 pin、testChain pin、NPC 总数 pin—— + 新增 v22.31 全过）。
+- 【技术要点补充】`npm run check` 25 模块清单无变化；未动 start.command/start.sh/package.json 脚本名。
+  （编辑于 2026-09-12 cron 自动完善）
+
 ## v22.30 暂停菜单「未存档 + 槽位占位」提示（体验打磨·防误丢档·信息透明·纯显示，承 v22.10
 beforeunload 离站守卫 / v22.28 标题页未存档警告同一「未落盘进度防丢失」主线）——标题页（drawTitle）与
 浏览器离站（main.js beforeunload）都有对 S.G && S.unsaved 的提醒，唯独 Esc 暂停菜单——玩家决定「要不要
