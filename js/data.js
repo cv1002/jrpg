@@ -4,6 +4,13 @@
 
 // 游戏版本（单一数据源）：与 CHANGELOG 顶部当前版本一致，标题画面底部「潮灯记 v…」同读此源。
 // 每版递增（v19.xx → v19.xx+1）时与此常量同步更新，玩家可据此汇报版本、排障更精确。
+// v22.29 新成就「萍水相逢」（新内容·单成就·图鉴「已遭遇」全收集里程碑，承 v21.37 seen 计数化 /
+// v21.78 图鉴页脚「已遭遇 X/13」同一「见过 vs 打过」双口径）：成就版图逐线核对——各资源/收集线
+// 全有两档印记，唯独「遭遇」这条比讨伐更早的线（battle.startBattle 每次进战 +1、真身 canonicalName
+// 归一、逃跑/战败也累计）毫无纪念；判定/描述/进度三处同读 BESTIARY_TARGET 单一数据源，读既有
+// hero.seen 计数（(g.seen||{})[n]>=1 防御式——旧档无 seen 字段=0 不误解锁、布尔 true 经 v21.37
+// 归一为 1、零迁移），无 r 字段纯里程碑，解锁走 applyAchievements 既有通路任意判定点（承 ptime/
+// lvl12 同款）。
 // v22.28 标题页「未存档冒险」存档闭环（体验打磨·信息透明，承 v22.10 beforeunload 离站守卫 / v21.16
 // 标题 R 两按确认 / v21.98 胜利 P 存档同一「未落盘进度防丢失」主线）：标题页补 P 分支把内存中未存档的
 // 冒险写入当前槽（与 world/win 的 P 同一 saveGame 入口、成功即清 S.unsaved）；drawTitle 警告行与
@@ -649,7 +656,7 @@
 // 第三个切面：说书人讲段子、失名的旅人被卷走、琴师用曲子把名字拴在舌头边，与刻碑人「名字不是刻上去的、
 // 是有人记得」同脉）；四图 NPC 数：潮灯镇 8 / 星井矿脉 7 / 无字回廊 8（含 4 石碑）/ 雾语林 5（此前 4——
 // 雾径猎手 + 拾菇人 + 失名的旅人 + 货郎，本版补第五位纯风味可对话角色）。零任务零结算零存档。
-const GAME_VERSION = 'v22.28';
+const GAME_VERSION = 'v22.29';
 
 const T=32;
 
@@ -2881,6 +2888,18 @@ const ACH_LIST=[
   // 既有通路任意判定点当场解锁（mushrooms 为持续变化量，无需新判定点——第 25 株落袋的瞬间即解锁、
   // 反馈不迟到；已解锁不因酿造/卖菇消耗回落而撤销）。
   {id:'mush2', name:'菇山菌海', d:`持有 ${MUSH2_GOAL} 株魔法蘑菇`, ok:g=>(g.mushrooms||0)>=MUSH2_GOAL, prog:g=>`${g.mushrooms||0}/${MUSH2_GOAL}`},
+  // 萍水相逢（v22.29 新成就·图鉴「已遭遇」全收集里程碑，承 v21.37 seen 计数化 / v21.78 图鉴页脚
+  // 「已遭遇 X/13」同一「见过 vs 打过」双口径）：成就版图逐线核对——等级/宝箱/讨伐/时长/掉落/金币/
+  // 酿造/药水/灵药/蘑菇各线都有印记，图鉴线（scholar 收录 + perfection 全讨伐）也有了，唯独「遭遇」
+  // （battle.startBattle 每次进战 +1、真身经 canonicalName 归一、逃跑/战败也累计）这条比讨伐更早的
+  // 线毫无纪念（v21.78 页脚「已遭遇 X/13」只展示不成纪念）；判定/进度/描述三处同读 BESTIARY_TARGET
+  // 一份源（与 perfection/scholar/图鉴页脚同一数据源——加/删魔物只改 data.js 一处、本成就自动跟随，
+  // 绝无第二套口径）+ 既有 hero.seen 遭遇计数（startBattle 唯一写入点，(g.seen||{})[n]>=1 防御式
+  // 读取——旧档无 seen 字段=0 不误解锁、布尔 true 经 v21.37 归一为 1、零迁移，承 v19.41 seen 同款）；
+  // 无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款——遇见本身就是奖励）；解锁时机：applyAchievements
+  // 既有通路任意判定点当场解锁（seen 为持续累积量，无需新判定点，承 lvl12/ptime 同款——逃跑/战败的
+  // 遭遇同样累计，比图鉴全讨伐先到一步）。
+  {id:'metall', name:'萍水相逢', d:`记忆图鉴已遭遇全部 ${BESTIARY_TARGET.length} 种魔物`, ok:g=>BESTIARY_TARGET.every(n=>(g.seen||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.seen||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
 ];
 
 function codexTag(name) {

@@ -1,3 +1,53 @@
+## v22.29 新成就「萍水相逢」（新内容·单成就·图鉴「已遭遇」全收集里程碑，承 v21.37 图鉴「已遭遇」计数化 /
+v21.78 图鉴页脚「已遭遇 X/13」汇总 / v21.79 标题预览·v21.94 状态页·v21.76 一箱不漏·v21.88 走遍四方
+同一「收集向里程碑」主线）——成就版图逐线核对的最后一条空白：等级/宝箱/讨伐/时长/掉落/金币/酿造/
+药水/灵药/蘑菇各线都有印记、图鉴线也有 scholar（收录 N 种）与 perfection（全讨伐）两档，唯独「遭遇」
+这条比讨伐更早的线（battle.startBattle 每次进战 +1、真身经 canonicalName 归一、逃跑/战败也累计）毫无
+纪念——v21.78 页脚只把「已遭遇 X/13」作为展示口径，从不成为里程碑；玩家刷图鉴时「见过 vs 打过」的双口径
+缺了「见过」这一半的回应。
+开工摸底：基线 git 干净树（最新提交 cad9457，v22.28）、基线 npm test 一百二十四件套全绿、并发检查
+双测 mtime 无变化、平衡模拟复核（普通带药 100%/普通裸刷 99.59%/困难带药 99.19%/困难裸刷 15.54% 生还
+——数值健康无需调整）——故本轮选新内容而非平衡/打磨（选题轮换：v22.26 体验打磨、v22.27 新内容 NPC、
+v22.28 体验打磨后本轮回新成就，收口成就版图最后一条空白线）
+
+- 【新成就「萍水相逢」】`js/data.js` ACH_LIST 末尾追加 `{id:'metall', name:'萍水相逢', d:'记忆图鉴已遭遇
+  全部 ${BESTIARY_TARGET.length} 种魔物', ok:g=>BESTIARY_TARGET.every(n=>(g.seen||{})[n]>=1),
+  prog:g=>...}`——判定/描述/进度三处同读 BESTIARY_TARGET（与 perfection/scholar/图鉴页脚同一数据源，
+  加/删魔物只改 data.js 一处、本成就自动跟随，绝无第二套口径）；计数读既有 hero.seen 遭遇计数
+  （battle.startBattle 唯一写入点，(g.seen||{})[n]>=1 防御式——旧档无 seen 字段=0 不误解锁、布尔 true
+  经 v21.37 归一为 1、零迁移，承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/hardtrue 同款
+  ——遇见本身就是奖励）；解锁走 applyAchievements 既有通路任意判定点当场解锁（seen 为持续累积量，无需
+  新判定点，承 lvl12/ptime 同款——逃跑/战败的遭遇同样累计，比图鉴全讨伐先到一步，反馈不迟到）。
+- 【零新状态零新逻辑】本版纯成就条目：未新增任何 hero 字段/计数写入点/判定点（seen 自 v21.37 起
+  startBattle 每次进战记录），未动 battle/hero/rules/core/world/shop 任何结算（存在性断言：battle.js
+  startBattle 的 seen 计数行源级零变化），未改存档格式；ACH_LIST 44→45 项且 id 唯一、末尾追加序位
+  （既有 44 成就 id 零回归、findIndex 序位零位移）。
+- 【可达性】13 种魔物（BESTIARY_TARGET，含 Lv.3 起出没的 树精/石魔像、雾语林约 7% 精英石心魔像、
+  无字回廊祭坛残焰魔像）全部「撞见」即计——精英/强敌走 startBattle 同一条 seen 写入（canonicalName
+  真身归一），无需击杀；比 perfection（13 种全讨伐）先到一步的「见过」里程碑。
+- 【记录】`CHANGELOG.md`（本条）+ `package.json`（test 串第 125 份）+ `README.md`（tests 树收录
+  smoke_v2229_metall＋冒烟一百二十五件套（一百二十四件套清除）＋快速上手表 C 行「45 项」＋图鉴&成就段
+  「45 项成就」＋v22.29 守护描述）；新增 `tests/smoke_v2229_metall.mjs`（仓库常驻，承 v21.10-v22.28
+  冒烟入库先例）；顺带把 v22.29 随新现实更新的姊妹 pin 一并落位：smoke_v2228..v2225 的 GAME_VERSION
+  字面量/恒等 pin（v22.28→v22.29）、全库件套 pin（一百二十四→一百二十五件套）、README 树尾 pin
+  （+ smoke_v2229_metall）、package.json 串尾 pin（+ smoke_v2229_metall）、testChain pin（===124→===125）、
+  成就计数 pin（44→45 项）。
+- 【零回归面】未动 MON_BASE/ENCOUNTER/XP 曲线任何数值；未动既有 44 成就判定/描述/进度；未动图鉴渲染/
+  页脚「已遭遇 X/13」；未动 applyAchievements/作战/存档/战斗任何结算（新条目随既有通路解锁）。
+- 【验证】`node --check js/data.js tests/smoke_v2229_metall.mjs` 与 `npm run check`（25 模块）全部通过；
+  `node tests/smoke_v2229_metall.mjs` 全绿（版本锚点/GAME_VERSION 字面量 v22.29 精确/v22.28 历史注释保留、
+  ACH_LIST 45 项精确/metall 条目源级落位（id/name/d/BESTIARY_TARGET 派生）/ok/prog 谓词逐值（全遇 13/13
+  → true、差 1 种 → false、缺 seen 字段 → false、布尔 true 防御归一 → true）、unlockedAchievements 集成
+  （全遇档 newly 含 metall、差一档不含、已解锁去重）、applyAchievements 运行期全链路（S.G 全遇 → hero.ach
+  落 metall + boxMsg「🔓 成就解锁：【萍水相逢】」+ 幂等不重报）、与 perfection 双口径对照（bestiary 全收
+  但 seen 不全 → 不解锁 metall；seen 全但 bestiary 不全 → 解锁 metall）、既有 44 id 零回归/序位零位移、
+  README/package.json/CHANGELOG 同步（树尾/件套 125（124 清除）/45 项双处/v22.29 守护描述/125 份/
+  testChain===125）、姊妹件套 pin 复查（v2228..v2225 字面量/恒等/件套/树尾/testChain）、旧代 v22.28
+  字面量/恒等/件套/树尾 pin 全库零残留、断链防回归、index.html 壳要素零回归）；`npm test` 一百二十五件套
+  全绿（既有 124 件逐项零回归——含 v2228..v2225 更新后件套 pin、全部 GAME_VERSION 字面量/恒等 pin、
+  树尾 pin、testChain pin—— + 新增 v22.29 全过）。
+  （编辑于 2026-09-12 cron 自动完善）
+
 ## v22.28 标题页「未存档冒险」存档闭环（体验打磨·信息透明，承 v22.10 beforeunload 离站守卫 / v21.16
 标题页 R 重开两按确认 / v21.98 胜利画面 P 存档同一「未落盘进度防丢失」主线）——标题页提示行（drawTitle）
 与 README 快速上手表都宣称「P 存档」，但标题页此前没有任何 P 分支：v21.98 修了 win 的 P、world 的 P
