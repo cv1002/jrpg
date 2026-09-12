@@ -45,6 +45,9 @@ const NPC_SHEET = {
   // 刻碑人（v22.25 新 NPC）：复用魁梧身形造型（与潮灯镇灯长/矿脉筛砂人同款身形，跨图不重名；同图
   // 无字回廊内与守名者长者袍、掌灯童镇民短衫、拾灯人斗篷均区分）
   stonecarver: 'mwChief',
+  // 琴师（v22.27 新 NPC）：复用行脚身形造型（与潮灯镇冒险者同款身形，跨图不重名；同图雾语林内
+  // 与雾径猎手斗篷/拾菇人镇民短衫/失名的旅人长者袍/货郎商贩均区分）
+  minstrel: 'mwAdventurer',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
@@ -353,6 +356,9 @@ export function drawNpcMark(px,py,mark){
   // 折扇（v22.13 说书人专属）：NPC 贴图缺失时程序化绘制的头侧折扇——与既有 hat/lamp/pick 等占位标记
   // 同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它 mark 惯例）
   else if(mark==='fan'){ c.fillStyle='#e8d3a8'; c.fillRect(22,7,8,6); c.strokeStyle='#8a5a2b'; c.lineWidth=1; c.strokeRect(22,7,8,6); c.fillStyle='#8a5a2b'; c.fillRect(25,13,2,4); }
+  // 琴（v22.27 琴师专属）：NPC 贴图缺失时程序化绘制的头侧小琴——与既有 hat/lamp/pick/fan 等占位标记
+  // 同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它 mark 惯例）
+  else if(mark==='qin'){ c.fillStyle='#8a5a2b'; c.fillRect(17,11,11,3); c.fillStyle='#c08040'; c.fillRect(24,3,6,10); c.strokeStyle='#6b3a1e'; c.lineWidth=1; c.strokeRect(24,3,6,10); }
   else if(mark==='staff'){ /* 默认图块已有杖 */ }
   c.restore();
 }
