@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -678,6 +678,10 @@ export function drawCreate(){
   CTX.fillText('选择守灯人',CV.width/2,105); CTX.shadowBlur=0;
   CTX.fillStyle='#e8eef1'; CTX.font='15px sans-serif'; CTX.fillText('姓名',CV.width/2,168);
   CTX.fillStyle='#62c6ff'; CTX.font='bold 42px sans-serif'; CTX.fillText('◀  '+HERO_NAMES[S.createName]+'  ▶',CV.width/2,230);
+  // v22.33 姓名寓意（开场引子·纯显示）：与 HERO_NAMES 逐下标同读 data.js NAME_FLAVOR 单一数据源——
+  // 名字下方一行灰色注脚点破各自的世界观（灯芯熄了/见过灯/潮水把名字带上岸），零结算零存档；
+  // 原 230/300/352/382/408/432 各基线逐字未动（v21.42 Esc 返回行同行零回归）
+  CTX.fillStyle='#8fa3b5'; CTX.font='13px sans-serif'; CTX.fillText('「'+NAME_FLAVOR[S.createName]+'」',CV.width/2,262);
   CTX.fillStyle='#e8eef1'; CTX.font='15px sans-serif'; CTX.fillText('难度',CV.width/2,300);
   CTX.fillStyle='#ffd24a'; CTX.font='bold 30px sans-serif'; CTX.fillText('▲  '+DIFFS[S.createDiff]+'  ▼',CV.width/2,352);
   CTX.fillStyle='#7d93a3'; CTX.font='13px sans-serif';
