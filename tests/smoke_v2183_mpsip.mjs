@@ -252,7 +252,7 @@ S.enemy = null; S.scene = 'world'; S.battleBusy = false;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README 已同步（tests 树收录 smoke_v2183_mpsip + 冒烟/件套口径）',
-  readme.includes('smoke_v2183_mpsip') && readme.includes('冒烟一百二十七件套（一百二十六件套清除）'));
+  readme.includes('smoke_v2183_mpsip') && readme.includes('冒烟一百二十八件套（一百二十七件套清除）'));
 ok('README 含 v21.83 守护描述', readme.includes('v21.83'));
 ok('README 数值速查技能领悟行含 Lv11 星砂回响', readme.includes('Lv11 星砂回响'));
 ok('package.json 已收录 smoke_v2183_mpsip（第 79 份）',
@@ -261,13 +261,13 @@ const suite = ['smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smo
   'smoke_v2179_titlerecap.mjs', 'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百二十七件套（一百二十六件套清除）`,
-    src.includes('一百二十七件套（一百二十六件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百二十八件套（一百二十七件套清除）`,
+    src.includes('一百二十八件套（一百二十七件套清除）'));
 }
 for (const nm of ['smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v22.31';"));
+    src.includes("const GAME_VERSION = 'v22.32';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过`);

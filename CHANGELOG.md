@@ -1,3 +1,45 @@
+## v22.32 快速旅行面板补「目的地补给点」提示（体验打磨·信息透明·纯显示，承 v21.92 目的地等级达标预警 /
+v21.40 无泉水/旅店进图提示同一「传送决策点信息」主线）——旅行面板每行的特色提示只标推荐等级/高难，唯独
+「该地有没有泉水/旅店」在按下 Enter 前看不到：星井矿脉/无字回廊是全图唯二无补给点的图（hasRecoveryPoint
+由 MAPS rows/extras 数据实扫），玩家在旅行菜单按 Enter 前无法得知「过去前该不该先回镇补给」，落地后才有
+v21.40 进图提醒——「出发前补给」的决策点缺了最关键的一条信息（v21.40/v21.17 老矿工/v21.36 掌灯阿婆/
+v22.31 锻灯师同一主线在面板侧的最后一块拼图）。开工摸底：基线 git 干净树（最新提交 4b7a3bc，v22.31）、
+基线 npm test 一百二十七件套全绿、并发检查双测 mtime 无变化、纯显示零战斗/数值/存档接触无需生存模拟
+——故本轮选体验打磨（选题轮换：v22.29 新成就、v22.30 体验打磨、v22.31 新内容 NPC 后本轮继续体验打磨，
+收口「传送决策点信息」家族的最后一块拼图）。
+
+- 【新提示行】`js/view/menus.js` `drawTravel` 在 v21.92 等级达标预警同一页脚区补橙行：选中目的地
+  `selDef` 无补给点（`!hasRecoveryPoint(selDef)`）且非当前所在地（`selK !== curMap()`，与 v21.92 同
+  守卫——已在该图时语义失真、由进图提示/状态页承载）时显示 `⚠️ ${selDef.name}没有泉水/旅店 · 出发前请
+  补给！`——文案与 world.transition v21.40 进图提醒逐字同口径（仅地图名动态派生）；与 v21.92 等级预警
+  同现时下移一行（+42，travelFootY(4)+42=362 + 12px 基线 ≈374 < 面板底缘 380），单现时 +24（=344）。
+  判定输入（hero/selK/selDef/curMap）全部来自既有运行态，零新状态零新字段。
+- 【单一数据源】`hasRecoveryPoint` 由 `data.js` 导出（v21.40 起既有函数），drawTravel 首次消费：
+  与 world.transition 进图提醒同读一份源——以后给某图加泉水/旅店只改 MAPS 一处、面板提示自动消失，
+  绝无第二套口径；v21.92 lowLv 判定仅提纯为 const 复用（触发守卫/文案逐字未动，零行为差）。
+- 【零回归面】未动 TRAVEL_LIST 数据/MAPS/recLv、未动 world.transition/doTravel/任何传送结算；未动
+  v21.92 等级预警行与 drawTravel 其余布局；未动 index.html 壳与任何存档格式。纯显示零结算零数值
+  零存档变化。
+- 【记录】`CHANGELOG.md`（本条）+ `package.json`（test 串第 128 份）+ `README.md`（tests 树尾收录
+  `smoke_v2232_travelsup`＋冒烟一百二十八件套（一百二十七件套清除）＋v22.32 守护描述＋入库 128 份＋
+  快速旅行 bullet 补「旅行面板补给点提示」）；新增 `tests/smoke_v2232_travelsup.mjs`（仓库常驻，承
+  v21.10-v22.31 冒烟入库先例）；顺带把 v22.32 随新现实更新的姊妹 pin 一并落位：全库件冒烟的
+  GAME_VERSION 字面量/恒等 pin（v22.31→v22.32）、件套 pin（一百二十八件套/一百二十七件套清除）、
+  README tests 树尾 pin（+ smoke_v2232_travelsup）、package.json 串尾 pin（+ smoke_v2232_travelsup）、
+  testChain pin（===127→===128）、入库 pin（127→128 份）。
+- 【验证】`npm run check`（25 模块）全部通过；`node tests/smoke_v2232_travelsup.mjs` 全绿（57 项断言：
+  版本锚点/GAME_VERSION 字面量 v22.32 精确/v22.31 历史注释保留、hasRecoveryPoint 数据契约
+  （village/dungeon true、cave/gallery false、空参防御）、menus 源级落位（import/注释/分支/文案逐字/
+  +42 偏移/lowLv 提纯零行为差）、travelFootY(4)===320 回归、运行期真实渲染捕获六档（星井矿脉选中达标
+  → +24 橙行且零等级预警；无字回廊选中 Lv4<10 → 双行共存、补给行 +42；当前所在地 gallery → 零提示且
+  📍 零回归；雾语林/潮灯镇选中 → 零提示；village 安全区恒不触发）、README/package.json/CHANGELOG 同步
+  （树尾/件套 128/守护描述/入库 128 份/testChain===128/## v22.32 条目）、姊妹件套 pin 复查
+  （v2231..v2226 字面量/恒等/件套/树尾/testChain）、旧代 v22.31 字面量/恒等/件套/树尾 pin 全库零残留、
+  坏链防回归）；`npm test` 一百二十八件套全绿（既有 127 件逐项零回归——含 v2231..v2176 更新后件套 pin、
+  全部 GAME_VERSION 字面量/恒等 pin、树尾 pin、testChain pin—— + 新增 v22.32 全过）。
+- 【技术要点补充】`npm run check` 25 模块清单无变化；未动 start.command/start.sh/package.json 脚本名。
+  （编辑于 2026-09-12 cron 自动完善）
+
 ## v22.31 潮灯镇商店南侧新风味 NPC「锻灯师」（新内容·纯数据三件套，承 v22.27 琴师 / v22.13 说书人
 / v22.16 拾菇人「NPC 就是数据」先例）——镇子此前唯一缺的工匠角色：镇上所有灯的灯芯钩/油嘴/铜箍都
 是他打的，「灯记住路、人跟着灯走」的灯匠直白版世界观（与说书人段子/掌灯阿婆旧故事同脉不同面）+

@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
@@ -514,8 +514,21 @@ export function drawTravel(){
   // 地处安全区/已达标时不显示（village recLv=1 恒不触发），纯显示零结算零逻辑变化。
   const selK = TRAVEL_LIST[S.travelSel] && TRAVEL_LIST[S.travelSel][0];
   const selRec = (MAPS[selK] || {}).recLv;
-  if (hero && selK !== curMap() && selRec && hero.level < selRec) {
+  const lowLv = !!(hero && selK !== curMap() && selRec && hero.level < selRec);
+  if (lowLv) {
     text(`⚠️ 目的地推荐 Lv.${selRec} · 你当前 Lv.${hero.level} · 先补给再战！`, 320, travelFootY(TRAVEL_LIST.length) + 24, '12px', '#ff5b5b', 'center');
+  }
+  // v22.32 目的地补给点提示（体验打磨·信息透明·纯显示，承 v21.92 等级达标预警 / v21.40 无泉水旅店
+  // 进图提示同一「传送决策点信息」主线）：旅行面板每行的特色提示只标推荐等级/高难，唯独「该地有没有
+  // 泉水/旅店」在按下 Enter 前看不到——星井矿脉/无字回廊是全图唯二无补给点的图，直接传送过去血蓝双缺
+  // 只能原路折返，落地后才有 v21.40 进图提醒；现按选中目的地由 data.js hasRecoveryPoint 实扫派生
+  // （与 world.transition 进图提示同读一份单一数据源，加泉水/旅店提醒自动消失），无补给点且非当前
+  // 所在地时补橙行，与 v21.92 等级预警同现时下移一行（+42 仍在面板底缘 380 之内）；
+  // 纯显示零结算零逻辑零存档变化。
+  const selDef = MAPS[selK];
+  const noSupPoint = !!(hero && selDef && selK !== curMap() && !hasRecoveryPoint(selDef));
+  if (noSupPoint) {
+    text(`⚠️ ${selDef.name}没有泉水/旅店 · 出发前请补给！`, 320, travelFootY(TRAVEL_LIST.length) + (lowLv ? 42 : 24), '12px', '#ff9d5b', 'center');
   }
 }
 

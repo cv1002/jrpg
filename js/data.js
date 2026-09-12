@@ -668,7 +668,14 @@
 // NPCS.smith，台词走既有 lines + trueBoss after 彩蛋（villager 同款，npcQuestPages 无待办任务回退
 // 直落，零新逻辑）；mark:'hammer' 由 sprites.js 程序化绘制（承 v22.13 fan / v22.27 qin 专属先例），
 // 造型复用 mwVillager（镇民短衫身形）。零战斗零数值零存档。
-const GAME_VERSION = 'v22.31';
+// v22.32 快速旅行面板补「目的地补给点」提示（体验打磨·信息透明·纯显示，承 v21.92 目的地等级达标
+// 预警 / v21.40 无泉水旅店进图提示同一「传送决策点信息」主线）：旅行面板每行的特色提示只标推荐等级/
+// 高难，唯独「该地有没有泉水/旅店」在按下 Enter 前看不到——星井矿脉/无字回廊是全图唯二无补给点的
+// 图，直接传送过去血蓝双缺只能原路折返，落地后才有 v21.40 进图提醒；现 drawTravel 按选中目的地由
+// data.js hasRecoveryPoint 实扫派生（与 world.transition 进图提示同读一份单一数据源，加泉水/旅店
+// 提醒自动消失），无补给点且非当前所在地时补橙行，与 v21.92 等级预警同现时下移一行；纯显示零结算
+// 零存档变化。
+const GAME_VERSION = 'v22.32';
 
 const T=32;
 
