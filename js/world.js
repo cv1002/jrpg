@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -224,6 +224,12 @@ function onChestStep(x, y, hero) {
   // 玩家当作「没解锁」；此处开箱即查（unlockedAchievements 只读 ACH_LIST 的 ok 谓词，纯判定零结算变化），
   // 与 quests 交付时的即时判定（core.talkNext 同款顺序：先 applyAchievements 再报奖励）同一惯例
   applyAchievements();
+  // v22.26 开箱反馈追加宝箱进度（体验打磨·信息透明·纯显示）：三条开箱报文此前只报本次所得与库存
+  // （蘑菇株数/金币枚数/药水瓶数），玩家刷「开箱寻宝（6 只）/一箱不漏（12 只）」进度时想确认全图还剩
+  // 几只没开，还得按 I 翻状态页（v21.22 双口径）；现与状态页同读 chestCount/chestTotal 一份单一数据源
+  // （chestCount 三形态防御式、chestTotal 由 MAPS/CAVE_TREASURE 派生），在三条报文补「已开 X/全图 N」，
+  // 纯显示零结算零存档变化；成就判定/掉落判定/库存计数逐字未动。
+  const opened = chestCount(hero), total = chestTotal();
   // 开箱掉落（data.js CHEST_* 单一数据源）：与帮助页「宝箱掉落」标注同读此源，数值逐字不变——
   // 雾语林先判 60% 蘑菇，余 40% 再判 45% 金币（12+级×5），余 22% 药水；城镇/矿脉直接 45% 金币 / 55% 药水
   if (curMap() === 'dungeon' && Math.random() < CHEST_MUSHROOM) {
@@ -234,7 +240,7 @@ function onChestStep(x, y, hero) {
     // 支线未激活或已集齐时不额外显示，零结算变化。
     const qm = (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms < MUSHROOM_GOAL)
       ? `，任务还差 ${MUSHROOM_GOAL - hero.mushrooms} 株` : '';
-    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm}）`);
+    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm} · 已开 ${opened}/${total}）`);
     if (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms >= MUSHROOM_GOAL) {
       setSideQuest(hero, 'side_mushroom', 'turnin');
       bind.boxMsg('💡 蘑菇集齐了！回去找灯长领取奖励吧！', MILESTONE_MS);
@@ -243,11 +249,11 @@ function onChestStep(x, y, hero) {
     const gold = CHEST_GOLD_BASE + hero.level * CHEST_GOLD_PER_LV;
     hero.gold += gold;
     SFX.coin();
-    bind.boxMsg(`📦 宝箱！获得 ${gold} 金币（共 ${hero.gold} 枚）`);
+    bind.boxMsg(`📦 宝箱！获得 ${gold} 金币（共 ${hero.gold} 枚 · 已开 ${opened}/${total}）`);
   } else {
     hero.item++;
     SFX.item();
-    bind.boxMsg(`📦 宝箱！获得 1 个🍖 生命药水（共 ${hero.item} 瓶）`);
+    bind.boxMsg(`📦 宝箱！获得 1 个🍖 生命药水（共 ${hero.item} 瓶 · 已开 ${opened}/${total}）`);
   }
   bind.renderHUD();
 }
