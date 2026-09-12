@@ -691,6 +691,18 @@ export function drawTitle(){
   const pv=slotPreview(S.curSaveSlot);
   if(pv){ CTX.fillStyle='#7dd47f'; CTX.font='13px sans-serif'; CTX.fillText(pv,CV.width/2,360); }
   if(hasSave()){ CTX.fillStyle='#62c6ff'; CTX.font='13px sans-serif'; CTX.fillText('按 L 读取当前槽存档 · X 删除当前槽存档(连按两次)',CV.width/2,378); }
+  // v22.28 标题画面「内存中未存档冒险」提示（信息透明·纯显示，承 v22.10 beforeunload 离站守卫 /
+  // v21.16 标题 R 两按确认 / v21.98 胜利 P 存档同一「未落盘进度防丢失」主线）：Esc 菜单「返回标题」/
+  // 阵亡 T / 胜利 T 都会带着内存中的 S.G 回到标题页，而标题画面此前对「有一局未落盘的冒险」零提示——
+  // 玩家按 L 读档 / Enter 新开档 / R 重开时，内存里未保存的进度被静默替换（v22.10 只守住了关页/刷新
+  // 通道）。现与 beforeunload 守卫同判 S.G && S.unsaved（同读 state.js S.unsaved 一份源：saveGame/load
+  // 成功清脏、13 个动作入口置脏），名字/等级/金币读 S.G 单一数据源（与状态页/存档预览同源），
+  // 并给出现成的解法「按 P 存档」（v22.28 标题页 P 分支同批落位，与提示同读 S.unsaved 不致误导）。
+  if (S.G && S.unsaved) {
+    CTX.fillStyle = '#ff9d5b';
+    CTX.font = 'bold 12px sans-serif';
+    CTX.fillText(`⚠️ 有未存档的冒险：${S.G.name || '守灯人'} Lv.${S.G.level} · ${S.G.gold}金 —— 按 P 存档，读档/新开档将放弃未保存进度`, CV.width/2, 396);
+  }
   CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
   // v21.4 标题选槽按键提示（与 main.js title 分派逐字同源）：新增 ←/→（A/D）循环切槽后，提示行同步点名，
   // 保持 v20.3「快捷键可发现性」口径——功能存在就必须能让玩家看到入口；压缩「/」两侧空格抵消新增长度

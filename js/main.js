@@ -237,6 +237,26 @@ const screens = {
             boxMsg(`🗑 再按一次 X 确认删除槽 ${S.curSaveSlot} 的存档（不可恢复）`, EVENT_MSG_MS);
           }
         }
+      } else if (e.key === 'p' || e.key === 'P') {
+        // v22.28 标题页 P 存档（存档闭环·信息透明，承 v22.10 beforeunload 离站守卫 / v21.16 标题 R 两按
+        // 确认 / v21.98 胜利 P 存档同一「未落盘进度防丢失」主线）：drawTitle 提示行与 README 快速上手表
+        // 都宣称「P 存档」，但标题页此前没有任何 P 分支——v21.98 修了 win 的 P、world 的 P 一直在，
+        // 标题是「文案宣称却无入口」的最后一处漏网点。Esc 菜单「返回标题」/ 阵亡 T / 胜利 T 都会带着
+        // 内存中的 S.G 回到标题页（v21.16 注释「S.G 仍是进行中的冒险」），此时按 L 读档、Enter 新开档或
+        // R 重开都会把未保存进度静默替换，而标题页零落盘入口（v22.10 只守住了 beforeunload 关页/刷新
+        // 通道）。现补 `P → saveGame()`：与 world.onKey P / win.onKey P 同一函数同一入口，写入当前槽
+        // S.curSaveSlot，saveGame 内部成功即清 S.unsaved（守卫同读 S.unsaved 一份源，P 完警告自动
+        // 熄灭）；S.G 为空或已无未保存进度时给一句 EVENT_MSG_MS 短反馈（承 v21.33「标题页每个按键都该有
+        // 反应」），零结算零存档格式变化。
+        if (!S.G) {
+          SFX.cancel();
+          boxMsg('💤 还没有进行中的冒险，无需存档。', EVENT_MSG_MS);
+        } else if (!S.unsaved) {
+          SFX.cancel();
+          boxMsg('💾 当前没有未保存的进度，无需存档。', EVENT_MSG_MS);
+        } else {
+          saveGame();
+        }
       }
     },
   },

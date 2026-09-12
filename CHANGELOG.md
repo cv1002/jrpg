@@ -1,3 +1,49 @@
+## v22.28 标题页「未存档冒险」存档闭环（体验打磨·信息透明，承 v22.10 beforeunload 离站守卫 / v21.16
+标题页 R 重开两按确认 / v21.98 胜利画面 P 存档同一「未落盘进度防丢失」主线）——标题页提示行（drawTitle）
+与 README 快速上手表都宣称「P 存档」，但标题页此前没有任何 P 分支：v21.98 修了 win 的 P、world 的 P
+一直在，标题是「文案宣称却无入口」的最后一处漏网点。Esc 菜单「返回标题」（pause→title：goto('title')
+不清 S.G）/ 阵亡 T / 胜利 T 都会带着内存中的 S.G 回到标题页（v21.16 注释「S.G 仍是进行中的冒险」），
+此时按 L 读档、Enter 新开档或 R 重开都会把内存里未保存的进度静默替换掉——而标题页零落盘入口
+（v22.10 只守住了 beforeunload 关页/刷新这一条通道，防了「离站」没防「标题页换档/重开」）。
+开工摸底：基线 git 干净树（最新提交 dfb30b6，v22.27）、基线 npm test 一百二十三件套全绿、并发检查
+双测 mtime 无变化、纯入口 + 纯显示零战斗/数值/存档格式接触无需生存模拟——故本轮选体验打磨
+（选题轮换：v22.27 新内容 NPC 后本轮回体验打磨）
+
+- 【标题页 P 存档】`js/main.js` title.onKey 补 P 分支：`S.G && S.unsaved` → `saveGame()`（与 world.onKey
+  P / win.onKey P 同一函数同一入口，写入当前槽 S.curSaveSlot，saveGame 内部成功即清 S.unsaved——与
+  beforeunload 守卫同读 state.js S.unsaved 一份源，P 完这张警告自动熄灭）；`S.G && !S.unsaved` →
+  「💾 当前没有未保存的进度，无需存档。」；无 S.G → 「💤 还没有进行中的冒险，无需存档。」（承 v21.33
+  「标题页每个按键都该有反应」），零结算零存档格式变化。
+- 【标题画面警告行】`js/view/menus.js` drawTitle 在 y=396（L/X 提示行 378 与主提示行 420 之间、行间
+  ≥18 不触）新增：`S.G && S.unsaved` 时橙色警告 `⚠️ 有未存档的冒险：{名字} Lv.{等级} · {金币}金 —— 按 P
+  存档，读档/新开档将放弃未保存进度`（与 beforeunload 守卫同判、名字/等级/金币读 S.G 单一数据源与
+  状态页/存档预览同源、12px 估算宽 ≤640；已落盘/无冒险时零噪音，纯显示零结算零存档）。
+- 【口径同步】`js/data.js` H 页「存档槽」行 r[2] 补「· P 存档」（estW ≈391 ≤470、行数不变仍 14）；
+  `index.html` 常驻帮助条标题段补 `<kbd>P</kbd> 存档（未存档冒险）`；README 快速上手表标题行补
+  `P` 存档（v22.28）与系统清单「标题页 P 存档与未存档警告」条目；标题页既有提示行「… P 存档 …」
+  从「宣称」变为「如实」（v22.19「功能存在就必须能看到入口」主线的收尾：入口仍在、宣称先至本轮补齐）。
+- 【零回归面】未动任何战斗/任务/成就/数值/地图/存档结构（S.unsaved 是 v22.10 既有字段、saveGame 是
+  既有函数）；未动 title.onKey 的 选槽/L/R/X 任一既有分支（P 分支尾部追加）；未动 beforeunload、
+  drawTitle 其余行（378/420/442/464 逐字未动）；KEY 表无 'p' 映射（P 不冲突）。
+- 【记录】`CHANGELOG.md`（本条）+ `package.json`（test 串第 124 份）+ `README.md`（tests 树收录
+  smoke_v2228_titlesave＋冒烟一百二十四件套（一百二十三件套清除）＋快速上手表标题行 P 存档＋系统清单
+  标题页 P 存档条目＋v22.28 守护描述）；新增 `tests/smoke_v2228_titlesave.mjs`（仓库常驻，承
+  v21.10-v22.27 冒烟入库先例）；顺带把 v22.28 随新现实更新的姊妹 pin 一并落位：smoke_v2227..v2225
+  的 GAME_VERSION 字面量/恒等 pin（v22.27→v22.28）、全库件套 pin（一百二十三→一百二十四件套）、
+  README 树尾 pin（+ smoke_v2228_titlesave）、package.json 串尾 pin（+ smoke_v2228_titlesave）、
+  testChain pin（===123→===124）。
+- 【验证】`node --check js/main.js js/view/menus.js js/data.js tests/smoke_v2228_titlesave.mjs` 与
+  `npm run check`（25 模块）全部通过；`node tests/smoke_v2228_titlesave.mjs` 全绿（版本锚点/GAME_VERSION
+  字面量 v22.28 精确/v22.27 历史注释保留、main.js P 分支源级落位（保存路径=saveGame/两档短反馈）、
+  drawTitle 警告行源级与运行期（清洁档零噪音/未存档档警告行逐字 + 行宽 ≤640/已落盘档零噪音/主提示行
+  零回归）、标题页 P 真实落盘（jrpg_save1 写入 + S.unsaved 清脏 + v19.87 摘要）、P 无进度/无冒险两档
+  短反馈、标题页既有分派零回归、H 页行/常驻帮助条/README/package/CHANGELOG 同步（树尾/件套 124
+  （123 清除）/v22.28 守护描述/124 份/testChain===124）、姊妹件套 pin 复查（v2227..v2225 字面量/
+  恒等/件套/树尾/串尾/testChain）、旧代 v22.27 字面量/恒等/件套/树尾 pin 全库零残留、断链防回归、
+  index.html 壳要素零回归）；`npm test` 一百二十四件套全绿（既有 123 件逐项零回归——含 v2227..v2225
+  更新后件套 pin、全部 GAME_VERSION 字面量/恒等 pin、树尾 pin、testChain pin—— + 新增 v22.28 全过）。
+  （编辑于 2026-09-12 cron 自动完善）
+
 ## v22.27 雾语林南坡新风味 NPC「琴师」（新内容·纯数据三件套，承 v22.11 掌灯童 / v22.13 说书人 /
 v22.16 拾菇人 / v22.20 听矿人 / v22.21 失名的旅人 / v22.22 货郎 / v22.23 拾灯人 / v22.24 筛砂人 /
 v22.25 刻碑人「NPC 就是数据」先例）——南坡草场 (14,15) 的新面孔：雾起时弹一支娘教的老调的走弦人，

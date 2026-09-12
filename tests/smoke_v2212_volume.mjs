@@ -87,7 +87,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.11', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 12)), GAME_VERSION);
 ok('data.js 含 v22.12 注释（主音量调节说明）', dSrc.includes('v22.12 主音量'));
 ok('GAME_VERSION 字面量已更新为 v22.12（旧 v22.11 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.27';") && !dSrc.includes("const GAME_VERSION = 'v22.11';"));
+  dSrc.includes("const GAME_VERSION = 'v22.28';") && !dSrc.includes("const GAME_VERSION = 'v22.11';"));
 // 注：本文件由 pin 级联脚本机械替换过一处「const GAME_VERSION = 'v22.11';」→ 上方断言串已被同步为新版，
 // 负向存在性检查以「v22.11 字面量零残留」为准（data.js 内 v22.11 仅存于功能注释，不属于版本字面量，见上）。
 
@@ -162,7 +162,7 @@ const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'))
 ok('package.json 已收录 smoke_v2212_volume（npm test 串跑第 108 份）', JSON.stringify(pkg.scripts.test).includes('smoke_v2212_volume.mjs'));
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README 快速上手表含 [ / ] 音量行', readme.includes('调节主音量') && readme.includes('10% 步进'));
-ok('README 含 smoke_v2212_volume 入库（冒烟一百一十二件套口径）', readme.includes('smoke_v2212_volume') && readme.includes('一百二十三件套（一百二十二件套清除）'));
+ok('README 含 smoke_v2212_volume 入库（冒烟一百一十二件套口径）', readme.includes('smoke_v2212_volume') && readme.includes('一百二十四件套（一百二十三件套清除）'));
 ok('README 系统清单 BGM/音效 bullet 含主音量口径', readme.includes('主音量') && readme.includes('[ / ]'));
 
 console.log(`\n${n}/${n} 通过` + (failed ? `（失败 ${failed}）` : ''));
