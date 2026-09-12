@@ -531,6 +531,14 @@ const PAUSE_ITEMS = [
   { id: 'title', name: '返回标题', hint: '不会自动存档' },
 ];
 
+// v22.30 纯显示辅助（与 adventureProgress 同款「纯函数 + 渲染层只画」契约）：Esc 暂停菜单的「未存档 +
+// 槽位占位」提示文案。判定输入（g/unsaved/slot/hasS）由调用方以实参传入，函数零副作用零状态写入——
+// 冒烟可直接断言四种组合的输出，无需构造完整渲染环境（承 skill 参考「纯显示辅助函数要纯」）。
+export function pauseSaveHint(g, unsaved, slot, hasS) {
+  if (!(g && unsaved)) return null;
+  return `⚠️ 未存档 · 按 P 写入槽 ${slot}${hasS ? '（已有存档，将覆盖）' : '（空槽）'}`;
+}
+
 export function drawPause() {
   const hero = S.G;
   drawWorld();
@@ -548,6 +556,15 @@ export function drawPause() {
     text(saveHint, 460, 124 + i * 32, '12px', '#7d93a3', 'right');
   });
   text('↑↓ 选择  ·  Enter 确定  ·  Esc 关闭', 320, 412, '12px', '#7d93a3', 'center');
+  // v22.30 暂停菜单「未存档 + 槽位占位」提示（体验打磨·防误丢档·信息透明·纯显示，承 v22.10 离站守卫 /
+  // v22.28 标题页未存档警告同一「未落盘进度防丢失」主线）：标题页（drawTitle）与浏览器离站（main.js
+  // beforeunload）都有对 S.G && S.unsaved 的提醒，唯独 Esc 暂停菜单——玩家决定「要不要存个档」的第一
+  // 现场——没有：菜单头部只报槽号，玩家不知道当前冒险是否已落盘、按下 P 会写进有存档的槽还是空槽。
+  // 现于面板底部（页脚 412 之下、panel 底缘 440 之内，12px 不越界）落一行：与 beforeunload 守卫同判
+  // S.G && S.unsaved（同读 state.js S.unsaved 一份源），槽位占位读 core.hasSlot(S.curSaveSlot)（与标题页
+  // 存档槽行/删除确认同源）；文案由 pauseSaveHint 纯函数派生（可冒烟直接断言），零结算零存档格式变化。
+  const pHint = pauseSaveHint(S.G, S.unsaved, S.curSaveSlot, hasSlot(S.curSaveSlot));
+  if (pHint) text(pHint, 320, 430, '12px', '#ff9d5b', 'center');
 }
 export { PAUSE_ITEMS };
 

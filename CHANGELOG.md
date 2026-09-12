@@ -1,3 +1,38 @@
+## v22.30 暂停菜单「未存档 + 槽位占位」提示（体验打磨·防误丢档·信息透明·纯显示，承 v22.10
+beforeunload 离站守卫 / v22.28 标题页未存档警告同一「未落盘进度防丢失」主线）——标题页（drawTitle）与
+浏览器离站（main.js beforeunload）都有对 S.G && S.unsaved 的提醒，唯独 Esc 暂停菜单——玩家决定「要不要
+存个档」的第一现场——没有：菜单头部只报槽号，玩家不知道当前冒险是否已落盘、按下 P 会写进有存档的槽
+还是空槽，「存不存」的决策缺了最关键的一条信息。开工摸底：基线 git 干净树（最新提交 bf44779，v22.29）、
+基线 npm test 一百二十五件套全绿、并发检查双测 mtime 无变化、纯显示零战斗/数值/存档接触无需生存模拟
+——故本轮选体验打磨（选题轮换：v22.27 新内容 NPC、v22.28 体验打磨、v22.29 新成就后本轮继续体验打磨，
+收口「未落盘进度防丢失」家族的最后一个决策现场）。
+
+- 【新纯函数 `pauseSaveHint`】`js/view/menus.js` 新增导出纯函数（与 adventureProgress 同款「纯函数 +
+  渲染层只画」契约：判定输入 g/unsaved/slot/hasS 全部由调用方以实参传入、零副作用零状态写入）：
+  `(g && unsaved)` 才产出文案，`hasS` 分档「（已有存档，将覆盖）/（空槽）」，否则返回 null——四组合
+  逐值可冒烟直接断言，无需构造渲染环境（承 skill 参考「纯显示辅助函数要纯」）。
+- 【drawPause 底部一行】`drawPause` 面板底部（页脚 412 之下、panel 底缘 440 之内，12px 橙色 #ff9d5b，
+  面板内不越界）落一行：与 beforeunload 守卫同判 `S.G && S.unsaved`（同读 state.js S.unsaved 一份源，
+  saveGame/load 成功即清脏——已落盘/读档后零噪音，绝不误报），槽位占位读 `core.hasSlot(S.curSaveSlot)`
+  （与标题页存档槽行/X 删除确认同源，复用既有 import 零新依赖）；无 S.G 或已落盘时整行不出现。纯显示
+  零结算零存档格式变化。
+- 【零回归面】未动 PAUSE_ITEMS/菜单项/存档通路（world/win/title 三处 P 分支与 saveGame 逐字未动）；未动
+  beforeunload 守卫与标题页警告（同源不同屏）；未动任何战斗/数值/存档格式；未动 index.html 壳。
+- 【记录】`CHANGELOG.md`（本条）+ `package.json`（test 串第 126 份）+ `README.md`（tests 树尾收录
+  smoke_v2230_pausewarn＋冒烟一百二十六件套（一百二十五件套清除）＋v22.30 守护描述＋入库 126 份）；
+  新增 `tests/smoke_v2230_pausewarn.mjs`（仓库常驻，承 v21.10-v22.29 冒烟入库先例）；顺带把 v22.30
+  随新现实更新的姊妹 pin 一并落位：全库件冒烟的 GAME_VERSION 字面量/恒等 pin、件套 pin（126/125 清除）、
+  README tests 树尾 pin（+ smoke_v2230_pausewarn）、package.json 串尾 pin、testChain pin（===125→===126）。
+- 【验证】`npm run check`（25 模块）全部通过；`node tests/smoke_v2230_pausewarn.mjs` 全绿（42 项断言：
+  版本锚点/GAME_VERSION 字面量 v22.30 精确/v22.29 历史注释保留、pauseSaveHint 四组合逐值、menus 源级
+  落位（注释/调用点/绘制点/hasSlot 复用）、运行期 drawPause 真实渲染捕获（unsaved 真 + 空槽 →「⚠️ 未存档
+  · 按 P 写入槽 1（空槽）」且页脚/槽头行零回归、unsaved 假 → 零「未存档」文字）、state.js S.unsaved 源级、
+  README/package.json 同步（树尾/件套 126/守护描述/入库 126 份/testChain===126）、姊妹件套 pin 复查
+  （v2229..v2225 字面量/恒等/件套/树尾/串尾）、旧代 v22.29 字面量/恒等/件套/树尾 pin 全库零残留、断链
+  防回归、index.html 壳要素零回归）；`npm test` 一百二十六件套全绿（既有 125 件逐项零回归 + 新增 v22.30
+  全过）。
+  （编辑于 2026-09-12 cron 自动完善）
+
 ## v22.29 新成就「萍水相逢」（新内容·单成就·图鉴「已遭遇」全收集里程碑，承 v21.37 图鉴「已遭遇」计数化 /
 v21.78 图鉴页脚「已遭遇 X/13」汇总 / v21.79 标题预览·v21.94 状态页·v21.76 一箱不漏·v21.88 走遍四方
 同一「收集向里程碑」主线）——成就版图逐线核对的最后一条空白：等级/宝箱/讨伐/时长/掉落/金币/酿造/

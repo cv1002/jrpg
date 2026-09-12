@@ -30,7 +30,7 @@ const dataSrc = read('../js/data.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.79 版本注释', dataSrc.includes('v21.79 标题页存档预览补收集进度'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v22.29';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v22.30';"));
 
 // —— 源级落位：core.js 新三件套派生 + 既有段逐字保留 ——
 ok('core.js 导入 ACH_LIST/BESTIARY_TARGET/chestCount/chestTotal（单一数据源）',
@@ -129,18 +129,18 @@ const readme = read('../README.md');
 const pkg = read('../package.json');
 ok('README 已同步（tests 树收录 smoke_v2179_titlerecap + 冒烟/件套口径）',
   readme.includes('smoke_v2179_titlerecap') && readme.includes('冒烟') && readme.includes('件套'));
-ok('README 件套口径已更新为一百二十五件套（一百二十四件套清除）',
-  readme.includes('一百二十五件套（一百二十四件套清除）') && !readme.includes('七十五件套（七十四件套清除）'));
+ok('README 件套口径已更新为一百二十六件套（一百二十五件套清除）',
+  readme.includes('一百二十六件套（一百二十五件套清除）') && !readme.includes('七十五件套（七十四件套清除）'));
 ok('package.json 已收录 smoke_v2179_titlerecap（第 75 份）', pkg.includes('tests/smoke_v2179_titlerecap.mjs'));
 const s2178 = read('../tests/smoke_v2178_codexseen.mjs');
 const s2177 = read('../tests/smoke_v2177_elites.mjs');
 const s2176 = read('../tests/smoke_v2176_allchests.mjs');
-ok('smoke_v2178 的 README 件套 pin 已随新现实更新为一百二十五件套（一百二十四件套清除）',
-  s2178.includes("ok('README 件套口径为一百二十五件套（一百二十四件套清除）'"));
-ok('smoke_v2177 的 README 件套 pin 已随新现实更新为一百二十五件套（一百二十四件套清除）',
-  s2177.includes("ok('README 件套口径为一百二十五件套（一百二十四件套清除）'"));
-ok('smoke_v2176 的 README 件套 pin 已随新现实更新为一百二十五件套（一百二十四件套清除）',
-  s2176.includes("ok('README 件套口径为一百二十五件套（一百二十四件套清除）'"));
+ok('smoke_v2178 的 README 件套 pin 已随新现实更新为一百二十六件套（一百二十五件套清除）',
+  s2178.includes("ok('README 件套口径为一百二十六件套（一百二十五件套清除）'"));
+ok('smoke_v2177 的 README 件套 pin 已随新现实更新为一百二十六件套（一百二十五件套清除）',
+  s2177.includes("ok('README 件套口径为一百二十六件套（一百二十五件套清除）'"));
+ok('smoke_v2176 的 README 件套 pin 已随新现实更新为一百二十六件套（一百二十五件套清除）',
+  s2176.includes("ok('README 件套口径为一百二十六件套（一百二十五件套清除）'"));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

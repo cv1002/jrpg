@@ -36,7 +36,7 @@ console.log('— v22.0 有备无患药水线首枚里程碑冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.99', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.0', GAME_VERSION === 'v22.29', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.0', GAME_VERSION === 'v22.30', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -48,7 +48,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.0 版本注释', dataSrc.includes('v22.0 新成就「有备无患」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.0', dataSrc.includes("const GAME_VERSION = 'v22.29';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.0', dataSrc.includes("const GAME_VERSION = 'v22.30';"));
 ok('data.js 仍保留 v21.99 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.99 新成就「金玉满堂」'));
 ok('data.js 导出 POTIONS_GOAL（export 块落位，与 PLAY_TIME2_GOAL/POTIONS2_GOAL 相邻）', dataSrc.includes('PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD'));
 
@@ -205,9 +205,9 @@ ok('运行期：成就页 drawAch 38 项渲染不抛错', rendered);
 ok('运行期：成就页末页滚动渲染不抛错（38 项 PAGE=10 四页）', renderedPg4);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树收录 smoke_v2200_stock 且位于串尾（v22.0 随新现实由当版冒烟守护）', readme.includes('smoke_v2199_rich2 + smoke_v2200_stock + smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall（npm test 串跑）'));
-ok('README 件套口径为一百二十五件套（一百二十四件套清除）',
-  readme.includes('冒烟一百二十五件套（一百二十四件套清除）') && !readme.includes('冒烟九十五件套（九十四件套清' + '除）'));
+ok('README tests 树收录 smoke_v2200_stock 且位于串尾（v22.0 随新现实由当版冒烟守护）', readme.includes('smoke_v2199_rich2 + smoke_v2200_stock + smoke_v2201_fragstatus + smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn（npm test 串跑）'));
+ok('README 件套口径为一百二十六件套（一百二十五件套清除）',
+  readme.includes('冒烟一百二十六件套（一百二十五件套清除）') && !readme.includes('冒烟九十五件套（九十四件套清' + '除）'));
 ok('README 含 v22.0 守护描述', readme.includes('v22.0 起含新成就「有备无患」'));
 ok('README 成就口径「38 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
   readme.includes('成就一览（全部 45 项进度') && readme.includes('**45 项成就**') &&
@@ -227,8 +227,8 @@ const suite96 = ['smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v219
   'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite96) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百二十五件套（一百二十四件套清除）`,
-    src.includes('一百二十五件套（一百二十四件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百二十六件套（一百二十五件套清除）`,
+    src.includes('一百二十六件套（一百二十五件套清除）'));
 }
 const vers = ['smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
   'smoke_v2196_deadrecap.mjs', 'smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs',
@@ -240,14 +240,14 @@ const vers = ['smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_l
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.0`,
-    src.includes("const GAME_VERSION = 'v22.29';"));
+    src.includes("const GAME_VERSION = 'v22.30';"));
 }
 for (const nm of ['smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
   'smoke_v2196_deadrecap.mjs', 'smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs',
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.0`,
-    src.includes("GAME_VERSION === 'v22.29'"));
+    src.includes("GAME_VERSION === 'v22.30'"));
 }
 const achFiles = ['smoke_v2199_rich2.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2195_ptime2.mjs',
   'smoke_v2193_hunt100.mjs', 'smoke_v2191_ptime.mjs', 'smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs',
