@@ -86,12 +86,12 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.12', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 13)), GAME_VERSION);
 ok('data.js 含 v22.13 注释（说书人说明）', dSrc.includes('v22.13 潮灯镇说书人'));
 ok('GAME_VERSION 字面量已更新为 v22.13（旧 v22.12 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.23';") && !dSrc.includes("const GAME_VERSION = 'v22.12';"));
+  dSrc.includes("const GAME_VERSION = 'v22.24';") && !dSrc.includes("const GAME_VERSION = 'v22.12';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[16,9]===teller', NPC_SPOTS['16,9'] === 'teller', NPC_SPOTS['16,9']);
 ok('teller 仅占一个坐标键（无重复映射）', Object.keys(NPC_SPOTS).filter((k) => NPC_SPOTS[k] === 'teller').length === 1);
-ok('NPC_SPOTS 总数 25（既有 22 键 + 失名的旅人 1 键，v22.21 随新现实更新）', Object.keys(NPC_SPOTS).length === 25, Object.keys(NPC_SPOTS).length);
+ok('NPC_SPOTS 总数 26（既有 22 键 + 失名的旅人 1 键，v22.21 随新现实更新）', Object.keys(NPC_SPOTS).length === 26, Object.keys(NPC_SPOTS).length);
 ok('既有 19 个 NPC/石碑键未被误动', ['13,6', '10,13', '19,8', '12,8', '2,4', '13,9', '3,1', '2,3', '17,12', '17,11', '5,1', '10,1', '15,1', '20,1', '8,5', '14,8', '5,10', '15,12', '14,3']
   .every((k) => NPC_SPOTS[k] != null));
 // 全局坐标防撞演练：全图 extras 扫描，(16,9) 必须恰出现 1 次且在 village、ty 为 NPC
@@ -161,8 +161,8 @@ ok('sprites.js drawNpcMark 含折扇 mark===\'fan\' 分支（纯显示）',
 // —— README / package.json / 既有冒烟随新现实 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-ok('README tests 树收录 smoke_v2213_teller 且位于串尾', readme.includes('smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman（npm test 串跑）'));
-ok('README 件套口径为一百一十九件套（一百一十八件套清除）', readme.includes('一百一十九件套（一百一十八件套清除）'));
+ok('README tests 树收录 smoke_v2213_teller 且位于串尾', readme.includes('smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter（npm test 串跑）'));
+ok('README 件套口径为一百二十件套（一百一十九件套清除）', readme.includes('一百二十件套（一百一十九件套清除）'));
 ok('README 含 v22.13 守护描述（潮灯镇说书人）', readme.includes('v22.13 起含潮灯镇说书人'));
 ok('README 快速上手/系统清单含「说书人」', readme.includes('说书人'));
 ok('package.json 已收录 smoke_v2213_teller（npm test 串跑第 109 份）',
@@ -171,10 +171,10 @@ ok('package.json 已收录 smoke_v2213_teller（npm test 串跑第 109 份）',
 const s2212 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2212_volume.mjs'), 'utf8');
 const s2211 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2211_lampkid.mjs'), 'utf8');
 ok('s2212 GAME_VERSION 字面量 pin 已随新现实更新为 v22.13',
-  s2212.includes("const GAME_VERSION = 'v22.23';") && !s2212.includes("=== 'v22.12'"));
-ok('s2212 件套 pin 已随新现实更新为一百一十二件套', s2212.includes('一百一十九件套（一百一十八件套清除）'));
-ok('s2211 件套 pin 已随新现实更新为一百一十二件套', s2211.includes('一百一十九件套（一百一十八件套清除）'));
-ok('s2211 NPC 总数 pin 已随新现实更新为 22（听矿人落位）', s2211.includes('总数 25'));
+  s2212.includes("const GAME_VERSION = 'v22.24';") && !s2212.includes("=== 'v22.12'"));
+ok('s2212 件套 pin 已随新现实更新为一百一十二件套', s2212.includes('一百二十件套（一百一十九件套清除）'));
+ok('s2211 件套 pin 已随新现实更新为一百一十二件套', s2211.includes('一百二十件套（一百一十九件套清除）'));
+ok('s2211 NPC 总数 pin 已随新现实更新为 22（听矿人落位）', s2211.includes('总数 26'));
 
 console.log(`\n${n - failed}/${n} 通过` + (failed ? `（失败 ${failed}）` : ''));
 process.exit(failed ? 1 : 0);

@@ -8,7 +8,7 @@
 // 与通用分支逐字同式；🏆 里程碑视觉与 CODEX_MSG_MS 更长档保留，
 // 加奖结算（hero.gold += PERFECTION_GOLD）逐字未动，零结算零数值零存档变化。
 // 本冒烟守护：版本锚点、data.js/hero.js 源级落位（v21.64 注释 + 新文案落位 + 旧裸文案零残留 +
-// 加奖/时长/通用分支逐字零回归）、数据契约（perfection 条目/总数 25/PERFECTION_GOLD/CODEX_MSG_MS）、
+// 加奖/时长/通用分支逐字零回归）、数据契约（perfection 条目/总数 26/PERFECTION_GOLD/CODEX_MSG_MS）、
 // 运行期实证（perfection 档报文逐字含成就名且加奖结算一致、lvl5 通用档报文逐字零回归、
 // 重复调用不重复解锁不加奖、未达成不报）、README/package.json 同步 + smoke_v2163 件套断言去硬化（v21.7 惯例）。
 import { S } from '../js/state.js';

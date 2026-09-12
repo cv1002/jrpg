@@ -24,7 +24,7 @@ console.log('— v22.3 阵亡画面记忆碎片进度冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.2', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 3)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.3', GAME_VERSION === 'v22.23', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.3', GAME_VERSION === 'v22.24', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -35,7 +35,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.3 版本注释', dataSrc.includes('v22.3 阵亡画面收集行补「🕯️ 记忆碎片 N/4」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.3', dataSrc.includes("const GAME_VERSION = 'v22.23';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.3', dataSrc.includes("const GAME_VERSION = 'v22.24';"));
 ok('data.js 仍保留 v22.2 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.2 胜利画面收集行补「🕯️ 记忆碎片 N/4」'));
 
 // —— 源级落位：drawDead 碎片派生与收集行并入 ——
@@ -211,7 +211,7 @@ ok('运行期：Boss 战败档 败于/建议/B 提示 与 四件套行 共存（
 
 // —— README / package.json / CHANGELOG 同步 ——
 ok('README 已同步（tests 树收录 smoke_v2203_fragdead + 九十九件套口径）',
-  readme.includes('smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman（npm test 串跑）') && readme.includes('冒烟一百一十九件套（一百一十八件套清除）'));
+  readme.includes('smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter（npm test 串跑）') && readme.includes('冒烟一百二十件套（一百一十九件套清除）'));
 ok('README 含 v22.3 守护描述', readme.includes('v22.3 起含阵亡画面记忆碎片进度守护'));
 ok('README 系统清单「战败复盘」段补四件套口径（另补**收集进度四件套** + 🕯️ 段）',
   readme.includes('另补**收集进度四件套**') && readme.includes('🏆 成就 N/M · 📕 图鉴 N/M · 📦 宝箱 N/M · 🕯️ 记忆碎片 N/4') && readme.includes('v22.3 并列 🕯️ 记忆碎片 N/4'));
@@ -234,8 +234,8 @@ const suite99 = ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smoke
   'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite99) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百一十九件套（一百一十八件套清除）`,
-    src.includes('一百一十九件套（一百一十八件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百二十件套（一百一十九件套清除）`,
+    src.includes('一百二十件套（一百一十九件套清除）'));
 }
 for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs',
   'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
@@ -247,7 +247,7 @@ for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smok
   'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.3`,
-    src.includes("const GAME_VERSION = 'v22.23';"));
+    src.includes("const GAME_VERSION = 'v22.24';"));
 }
 for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs',
   'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
@@ -255,7 +255,7 @@ for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smok
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.3`,
-    src.includes("GAME_VERSION === 'v22.23'"));
+    src.includes("GAME_VERSION === 'v22.24'"));
 }
 for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs',
   'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
@@ -263,7 +263,7 @@ for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smok
   'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 README tests 树尾 pin 已随新现实更新（+ smoke_v2203_fragdead）`,
-    src.includes('smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman（npm test 串跑）'));
+    src.includes('smoke_v2202_fragwin + smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter（npm test 串跑）'));
 }
 // 旧代 GAME_VERSION 字面量/恒等 pin 零残留（v22.2 全库清零；拼接避免本文件自匹配）
 const STALE_GV = "const GAME_VERSION = 'v22." + "2';";

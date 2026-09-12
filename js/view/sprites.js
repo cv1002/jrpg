@@ -39,6 +39,9 @@ const NPC_SHEET = {
   // 拾灯人（v22.23 新 NPC）：复用旅人斗篷造型（与说书人/听矿人/雾径猎手同款身形，跨图不重名；
   // 同图无字回廊内与守名者长者袍/掌灯童镇民短衫均区分）
   lampman: 'mwHunter',
+  // 筛砂人（v22.24 新 NPC）：复用魁梧身形造型（与潮灯镇灯长同款身形，跨图不重名；同图星井矿脉内
+  // 与井巫/守碑人/拾骨人长者袍、听矿人工人、星砂车夫商贩、老矿工镇民短衫均区分）
+  sifter: 'mwChief',
 };
 const MON_SHEET = {
   slime: 'slime', wolf: 'orc', goblin: 'peon', skel: 'skeleton',
