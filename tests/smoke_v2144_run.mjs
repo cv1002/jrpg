@@ -192,10 +192,10 @@ ok('H 页操作说明页行数仍为 14（口径行内更新，不增行）', HE
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2144_run', readme.includes('smoke_v2144_run'));
-ok('README 件套口径为存在性断言（v21.45 起件数由本版冒烟守护：四十一件套（四十件套清除））',
+ok('README 件套口径为存在性断言（v21.45 起件数由本版冒烟守护：一百三十九件套（一百三十八件套清除））',
   readme.includes('冒烟') && readme.includes('件套') &&
-  !readme.includes('三十九件套（三十八件套清除）') &&
-  !readme.includes('三十九件套'));
+  !readme.includes('一百四十件套（一百三十九件套清除）') &&
+  !readme.includes('一百四十件套'));
 ok('README 含 v21.44 守护描述（按住 Shift 奔跑守护）', readme.includes('按住 Shift 奔跑守护'));
 ok('README 快速上手表 W 行含 Shift 奔跑口径', readme.includes('`Shift` 奔跑'));
 
@@ -206,7 +206,7 @@ ok('package.json 已收录 smoke_v2144_run（npm test 串跑第 40 份）', pkg.
 // —— smoke_v2143 的 README 件套口径断言已去硬化（v21.7 惯例）——
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
 ok('smoke_v2143 的 README 件套口径断言已去硬化（v21.7 惯例：改用存活性口径，旧精确表达式「readme.includes(三十九件套) && readme.includes(三十八件套清除)」零残留，实件数由本版冒烟守护）',
-  s2143.includes("!readme.includes('三十九件套')") &&
+  s2143.includes("!readme.includes('一百四十件套')") &&
   !s2143.includes("readme.includes('三十九件套') && readme.includes('三十八件套清除')"));
 
 console.log(`\n${n - failed}/${n} 通过`);
