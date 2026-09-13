@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -205,6 +205,56 @@ function drawVillageLamp(camX, camY) {
   }
 }
 
+// v22.38 星井矿脉「星井」（新内容·世界景观·纯显示，承 v22.36 广场大灯「名字物补脸」先例）：矿脉的
+// 名字物——星砂从井底涌上、被矿车拉去喂记忆之灯（井巫「矿脉曾往镇上运星砂，喂那些记忆之灯」/
+// 星砂车夫「这洞从前往镇上拉星砂」/听矿人「矿脉嗡嗡响」都在说它），世界画面却一像素都没有；
+// 现于矿车区西缘 (16,11)（星砂车夫旁、最后一车没运走的星砂卸货处）立起星井，状态与灯长台词
+// 「可你听——井还在低鸣。」（bossDefeated done 档）/「井也不鸣了。」（trueBoss 档）同读
+// S.G.trueBoss 一份源两档（纯显示零结算零存档零数值变化，只读旗标）：
+//   低鸣（!trueBoss）——井底还在响：星蓝水面 #9adcff（星砂蓝光族）+ 星砂浮光点 #cfeaff + 蓝青光晕；
+//   静默（trueBoss）——「井也不鸣了」：暗水 #5a6472 + 零浮光零光晕（灰族，与大灯熄冷灰同口径）。
+// 位置读 data.js CAVE_WELL 单一数据源（(16,11) 可行走 CAVE 格零碰撞，与小地图标记同一份源）。
+// 画布星井先于角色绘制（与 v22.36 大灯同层，人站井前不被遮挡）。
+export function caveWellState(hero) {
+  if (hero && hero.trueBoss) return 'silent';
+  return 'hum';
+}
+
+function drawCaveWell(camX, camY) {
+  const st = caveWellState(S.G);
+  const px = CAVE_WELL.x * T - camX;
+  const py = CAVE_WELL.y * T - camY;
+  const cx = px + T / 2;
+  // 光晕（纯显示·状态档位色：低鸣星蓝青光 / 静默零光晕——与 v22.36 大灯光晕同档位结构）
+  if (st === 'hum') {
+    CTX.fillStyle = 'rgba(95,216,255,.22)';
+    CTX.beginPath(); CTX.arc(cx, py + 8, 15, 0, 7); CTX.fill();
+  }
+  // 石砌井体（三档共体、零状态分支；井沿深灰与洞窟岩壁/金属灯罩同色族）
+  CTX.fillStyle = '#2e333c';
+  CTX.fillRect(px + 6, py - 2, 20, 5);        // 井座
+  CTX.fillRect(px + 6, py - 13, 4, 13);       // 左井壁
+  CTX.fillRect(px + 22, py - 13, 4, 13);      // 右井壁
+  CTX.fillRect(px + 4, py - 16, 24, 5);       // 井沿
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(px + 8, py - 16, 2, 3);        // 井沿高光（左）
+  CTX.fillRect(px + 22, py - 16, 2, 3);       // 井沿高光（右）
+  // 井水（状态色：低鸣星蓝 / 静默暗灰）
+  if (st === 'hum') {
+    CTX.fillStyle = '#9adcff';
+    CTX.fillRect(px + 11, py - 12, 10, 10);
+    // 星砂浮光点（低鸣档：井口星屑 4 枚——井底还在响，星砂还亮着）
+    CTX.fillStyle = '#cfeaff';
+    CTX.fillRect(px + 13, py - 15, 2, 2);
+    CTX.fillRect(px + 18, py - 15, 2, 2);
+    CTX.fillRect(px + 15, py - 19, 2, 2);
+    CTX.fillRect(px + 20, py - 18, 2, 2);
+  } else {
+    CTX.fillStyle = '#5a6472';
+    CTX.fillRect(px + 11, py - 12, 10, 10);
+  }
+}
+
 // 祭坛 ⚠Lv 标签：推荐等级与战斗界 enemyLv 同读 data.js SPECIES[].lv
 const ALTAR_TAG = [
   { t: TY.BOSS, done: (g) => g && g.bossDefeated, lv: SPECIES['幽冥魔王'].lv },
@@ -394,6 +444,12 @@ function minimapColor(tile, hero, x, y) {
   if (tile === TY.MB) return (hero && hero.caveBoss) ? '#39414f' : '#b06ff0';
   if (tile === TY.SB) return (hero && hero.trueBoss) ? '#39414f' : '#ffe94a';
   if (tile === TY.TRIAL) return '#4fd8ff';
+  // v22.38 小地图星井标记（与画布星井同档位、同读 CAVE_WELL 单一数据源）：低鸣（trueBoss 前）→
+  // 星蓝 #9adcff（井底还在响，星砂蓝光族，与泉水蓝/试炼青同蓝青族），静默（trueBoss 后）→
+  // 深灰 #5a6472（「井也不鸣了」，与大灯熄冷灰同灰族）；只读 hero.trueBoss 旗标，纯显示零结算零存档。
+  if (curMap() === 'cave' && tile === TY.CAVE && x === CAVE_WELL.x && y === CAVE_WELL.y) {
+    return (hero && hero.trueBoss) ? '#5a6472' : '#9adcff';
+  }
   if (tile === TY.CAVE) return '#39414f';
   if (tile === TY.CAVEWALL) return '#151a22';
   if (tile === TY.STELE) return '#9aa4ad';
@@ -516,6 +572,9 @@ export function drawWorld() {
   // v22.36 广场大灯（纯显示·先于角色层）：三档状态光效见 drawVillageLamp 注释；位置读
   // data.js VILLAGE_LAMP 单一数据源。只读旗标，零结算零存档（与祭坛熄灭/灯长台词/胜利画面同源口径）。
   if (S.G && curMap() === 'village') drawVillageLamp(c.x, c.y);
+  // v22.38 星井（纯显示·先于角色层）：两档状态光效见 drawCaveWell 注释；位置读 data.js CAVE_WELL
+  // 单一数据源。只读旗标，零结算零存档（与灯长台词「井还在低鸣/井也不鸣了」同源口径）。
+  if (S.G && curMap() === 'cave') drawCaveWell(c.x, c.y);
   if (S.G && curMap() !== 'village') {
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {

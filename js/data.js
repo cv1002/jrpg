@@ -686,7 +686,7 @@
 // minimapColor 对 NPC 格与画布那侧同读 npcQuestMark（QUESTS 推导，单一数据源），有可接/可交
 // 任务的 NPC 在小地图上金光脉动（UI_PULSE_MS 呼吸，与未开宝箱引导态同族色），纯显示零结算
 // 零存档零数值变化（零任务项 NPC 保持米色零噪音）。
-const GAME_VERSION = 'v22.37';
+const GAME_VERSION = 'v22.38';
 
 // v22.37 体验打磨：H 帮助页「地图指南」补小地图图例（可发现性·信息透明·承 v19.47 小地图暖金 / v21.x
 // 危险红点 / v22.26 未开宝箱暖金 / v22.35 NPC 任务标 / v22.36 大灯标记同一「小地图决策信息」主线）——
@@ -704,6 +704,18 @@ const GAME_VERSION = 'v22.37';
 // (14,9) 为可行走 PATH 格（at(14,9)===TY.PATH 零碰撞变化），与说书人(16,9)/掌灯阿婆(14,8)/
 // 水塘(14-16,7)/喷泉(12,6)互不占位；纯显示零结算零存档零数值变化。
 const VILLAGE_LAMP = { x: 14, y: 9 };
+
+// v22.38 星井矿脉「星井」（新内容·世界景观·纯显示，承 v22.36 广场大灯「名字物补脸」先例）：
+// 矿脉的名字物——星砂从井底涌上、被矿车拉去喂记忆之灯（井巫「矿脉曾往镇上运星砂，喂那些记忆之灯」/
+// 星砂车夫「这洞从前往镇上拉星砂」/听矿人「把耳朵贴上岩壁听矿脉嗡嗡响」/说书人「井底那口钟」），
+// 此前却只活在台词里：矿车区有车夫/守碑人/试炼碑/星砂宝箱，一像素的井都没有——玩家在矿脉走三圈
+// 也看不到「井还在低鸣」这个开局伏笔（灯长 done「可你听——井还在低鸣。」/trueBoss「井也不鸣了。」）；
+// 现于矿车区西缘（星砂车夫 (17,11) 旁，最后一车没运走的星砂就在这儿卸下）立起星井：位置只存本常量
+// 一处，view/drawWorld.js 的世界绘制与小地图标记共用（调位只改这里）。(16,11) 为可行走 CAVE 格
+// （at(16,11)===TY.CAVE 零碰撞变化），与星砂车夫(17,11)/守碑人(17,12)/试炼碑(18,12)/洞窟领主祭坛
+// (20,8-9)/星砂宝箱(17-18,8-9)互不占位；纯显示零结算零存档零数值变化，状态与灯长台词同读
+// S.G.trueBoss 一份源两档（低鸣/静默）。
+const CAVE_WELL = { x: 16, y: 11 };
 
 const T=32;
 
@@ -3105,7 +3117,10 @@ const HELP_PAGES=[
     // 遇敌槽红条 #e14b3f / 大灯熄冷灰 #7b7a84·亮暖金 #ffd24a——文字描述不写十六进制、
     // 与 minimapColor 色板族同口径；行数 5→7 仍 ≤10（sp=34 档）、r[2] 数 0→2，末行（通关之路）
     // 基线 316 不触页脚 452；四段实测宽 431.2/394.0/310.3/352.2 ≤470（@napi-rs 2026-09-13）。
-    ['小地图·状态标','有委托NPC 金光脉动 · 未开宝箱 暖金(任务中脉动) · 危险区红点','遇敌槽红条 · 大灯 熄冷灰/亮暖金（与画布大灯同档） · 无委托NPC 米色'],
+    // v22.38 同批：状态标 r[2] 追加「星井 低鸣星蓝/静默灰」——星井低鸣 #9adcff（星砂蓝光族，与泉水蓝/
+    // 试炼青同蓝青族）/静默 #5a6472（与大灯熄冷灰/洞窟深灰同灰族），与 v22.37 图例「每加一种小地图
+    // 新标记必同步图例」同口罩（本行实测 442.8 ≤470，行数不变仍 7、r[2] 数不变仍 2、末行基线不变 316）。
+    ['小地图·状态标','有委托NPC 金光脉动 · 未开宝箱 暖金(任务中脉动) · 危险区红点','遇敌槽红条 · 大灯 熄冷灰/亮暖金（与画布大灯同档） · 星井 低鸣星蓝/静默灰 · 无委托NPC 米色'],
     ['小地图·色标','树岩·绿 水·蓝 镇路·棕 洞窟·深灰 门/出口·蓝','设施：商店·金 旅馆·灰 泉水·蓝 酿造·绿 试炼·青 魔王碑·紫 终焉碑·黄 石碑·灰'],
     ['通关之路','讨回灯芯 → 击败洞窟领主 → 双徽记开门 → 回廊尽头面对终焉之神'],
   ],
@@ -3259,7 +3274,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, CAVE_WELL, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
