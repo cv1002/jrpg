@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL, CAVE_CART } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -252,6 +252,56 @@ function drawCaveWell(camX, camY) {
   } else {
     CTX.fillStyle = '#5a6472';
     CTX.fillRect(px + 11, py - 12, 10, 10);
+  }
+}
+
+// v22.39 星井矿脉「星砂车」（新内容·世界景观·纯显示，承 v22.38 星井「名字物补脸」先例的补景收口）：
+// 星砂车夫守着的那辆运砂车——井巫「被矿车拉去喂记忆之灯」/车夫「这洞从前往镇上拉星砂」的台词全在
+// 说它，矿车区却一像素的车都没有；现于 data.js CAVE_CART=(19,10)（星砂车夫东北两格、祭坛南侧的开阔
+// 矿场）立起木轮星砂车：两档状态与星井同读 S.G.trueBoss 一份源（井巫 after「星砂落回矿脉深处」
+// 同口径，纯显示零结算零存档零数值变化，只读旗标）：
+//   满载（!trueBoss）——车斗里还亮着一层星砂：星砂蓝 #9adcff（星砂蓝光族）+ 浮光点 #cfeaff + 蓝青光晕；
+//   卸空（trueBoss）——「像什么都没发生过」：暗斗 #3a4148（洞窟岩壁同色族）+ 零浮光零光晕。
+// 位置读 data.js CAVE_CART 单一数据源（(19,10) 可行走 CAVE 格零碰撞）。画布星砂车先于角色绘制
+// （与 v22.36 大灯 / v22.38 星井同层，人站车前不被遮挡）。
+export function caveCartState(hero) {
+  if (hero && hero.trueBoss) return 'empty';
+  return 'loaded';
+}
+
+function drawCaveCart(camX, camY) {
+  const st = caveCartState(S.G);
+  const px = CAVE_CART.x * T - camX;
+  const py = CAVE_CART.y * T - camY;
+  const cx = px + T / 2;
+  // 光晕（状态档位色：满载星砂蓝青光 / 卸空零光晕——与星井同档位结构）
+  if (st === 'loaded') {
+    CTX.fillStyle = 'rgba(95,216,255,.18)';
+    CTX.beginPath(); CTX.arc(cx, py + 10, 14, 0, 7); CTX.fill();
+  }
+  // 车轮（两轮共体、零状态分支；暗铁与灯罩/井壁同色族）
+  CTX.fillStyle = '#2e333c';
+  CTX.beginPath(); CTX.arc(px + 9, py + 25, 5, 0, 7); CTX.fill();
+  CTX.beginPath(); CTX.arc(px + 23, py + 25, 5, 0, 7); CTX.fill();
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(px + 8, py + 24, 3, 2);
+  CTX.fillRect(px + 22, py + 24, 3, 2);
+  // 车斗（木体共体：木料 #8a5a2b / 顶缘 #6a4a2f，与 NPC 木制标记同色族）
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(px + 4, py + 8, 24, 13);
+  CTX.fillStyle = '#6a4a2f';
+  CTX.fillRect(px + 4, py + 8, 24, 3);
+  // 车斗内星砂（状态色：满载星砂蓝 + 浮光 / 卸空暗斗）
+  if (st === 'loaded') {
+    CTX.fillStyle = '#9adcff';
+    CTX.fillRect(px + 7, py + 3, 18, 7);
+    CTX.fillStyle = '#cfeaff';
+    CTX.fillRect(px + 10, py + 1, 2, 2);
+    CTX.fillRect(px + 16, py + 1, 2, 2);
+    CTX.fillRect(px + 20, py + 3, 2, 2);
+  } else {
+    CTX.fillStyle = '#3a4148';
+    CTX.fillRect(px + 7, py + 3, 18, 7);
   }
 }
 
@@ -575,6 +625,9 @@ export function drawWorld() {
   // v22.38 星井（纯显示·先于角色层）：两档状态光效见 drawCaveWell 注释；位置读 data.js CAVE_WELL
   // 单一数据源。只读旗标，零结算零存档（与灯长台词「井还在低鸣/井也不鸣了」同源口径）。
   if (S.G && curMap() === 'cave') drawCaveWell(c.x, c.y);
+  // v22.39 星砂车（纯显示·先于角色层）：两档状态光效见 drawCaveCart 注释；位置读 data.js CAVE_CART
+  // 单一数据源。只读旗标，零结算零存档（与星井同读 S.G.trueBoss 一份源两档）。
+  if (S.G && curMap() === 'cave') drawCaveCart(c.x, c.y);
   if (S.G && curMap() !== 'village') {
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {

@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.36', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 37)), GAME_VERSION);
 ok('data.js 含 v22.37 注释（小地图图例说明）', dSrc.includes('v22.37 体验打磨'));
 ok('GAME_VERSION 字面量已为 v22.37（旧 v22.36 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.38';") && !dSrc.includes("const GAME_VERSION = 'v22." + "36';"));
+  dSrc.includes("const GAME_VERSION = 'v22.39';") && !dSrc.includes("const GAME_VERSION = 'v22." + "36';"));
 ok('data.js 仍保留 v22.36/v22.35 历史注释（累积注释块，姊妹 pin 不失效）',
   dSrc.includes('v22.36 潮灯镇广场大灯') && dSrc.includes('v22.35 体验打磨'));
 
@@ -221,9 +221,9 @@ ok('未动 view/drawWorld.js 之外任何绘制模块（本版零文件新增：
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树收录 smoke_v2237_minimaplegend 且位于串尾', readme.includes('smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell（npm test 串跑）'));
-ok('README 件套口径为一百三十四件套（一百三十三件套清除）',
-  readme.includes('冒烟一百三十四件套（一百三十三件套清除）') && !readme.includes('冒烟一百三十二件套（一百三十一件套清' + '除）'));
+ok('README tests 树收录 smoke_v2237_minimaplegend 且位于串尾', readme.includes('smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2239_minercart（npm test 串跑）'));
+ok('README 件套口径为一百三十五件套（一百三十四件套清除）',
+  readme.includes('冒烟一百三十五件套（一百三十四件套清除）') && !readme.includes('冒烟一百三十二件套（一百三十一件套清' + '除）'));
 ok('README 含 v22.37 守护描述（帮助页小地图图例守护）', readme.includes('v22.37 起含帮助页「地图指南」小地图图例守护'));
 ok('README 含 smoke_v2237_minimaplegend 入库（133 份）', readme.includes('smoke_v2237_minimaplegend 入库（133 份）'));
 ok('README 仍保留 v22.36 守护描述与入库（132 份）（历史口径不漂移）',
@@ -232,7 +232,7 @@ ok('README 视觉 bullet 含图例指针（H 帮助页·地图指南）', readme
 ok('package.json 已收录 smoke_v2237_minimaplegend（npm test 串跑第 133 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2237_minimaplegend.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 133 件套', testChain === 134, String(testChain));
+ok('package.json test 串共 133 件套', testChain === 135, String(testChain));
 ok('CHANGELOG 含 v22.37 条目', changelog.includes('## v22.37 '));
 
 // —— 姊妹 pin 复查（v2236..v2226 随新现实更新）——
@@ -245,22 +245,22 @@ const s2231 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2231_smith.mjs'), 'u
 const s2230 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2230_pausewarn.mjs'), 'utf8');
 const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), 'utf8');
 const s2226 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2226_chestprogress.mjs'), 'utf8');
-ok('smoke_v2236 的 GAME_VERSION 字面量 pin 已更新为 v22.37', s2236.includes("const GAME_VERSION = 'v22.38';"));
-ok('smoke_v2236 的 GAME_VERSION 恒等 pin 已更新为 === v22.37', s2236.includes("GAME_VERSION === 'v22.38'"));
+ok('smoke_v2236 的 GAME_VERSION 字面量 pin 已更新为 v22.37', s2236.includes("const GAME_VERSION = 'v22.39';"));
+ok('smoke_v2236 的 GAME_VERSION 恒等 pin 已更新为 === v22.37', s2236.includes("GAME_VERSION === 'v22.39'"));
 ok('smoke_v2236 的 README 串尾 pin 已更新为 + smoke_v2237_minimaplegend',
-  s2236.includes('smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell（npm test 串跑）'));
-ok('smoke_v2236 的 package.json 件套计数 pin 已更新为 === 133', s2236.includes('testChain === 134'));
-ok('smoke_v2236 的 README 件套口径 pin 已更新为一百三十三件套', s2236.includes('冒烟一百三十四件套（一百三十三件套清除）'));
-ok('smoke_v2235 的 GAME_VERSION 字面量 pin 已更新为 v22.37', s2235.includes("const GAME_VERSION = 'v22.38';"));
-ok('smoke_v2234 的 GAME_VERSION 恒等 pin 已更新为 === v22.37', s2234.includes("GAME_VERSION === 'v22.38'"));
+  s2236.includes('smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2239_minercart（npm test 串跑）'));
+ok('smoke_v2236 的 package.json 件套计数 pin 已更新为 === 133', s2236.includes('testChain === 135'));
+ok('smoke_v2236 的 README 件套口径 pin 已更新为一百三十三件套', s2236.includes('冒烟一百三十五件套（一百三十四件套清除）'));
+ok('smoke_v2235 的 GAME_VERSION 字面量 pin 已更新为 v22.37', s2235.includes("const GAME_VERSION = 'v22.39';"));
+ok('smoke_v2234 的 GAME_VERSION 恒等 pin 已更新为 === v22.37', s2234.includes("GAME_VERSION === 'v22.39'"));
 ok('smoke_v2233 的 README 串尾 pin 已更新为 + smoke_v2237_minimaplegend',
-  s2233.includes('smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell（npm test 串跑）'));
-ok('smoke_v2232 的 package.json 件套计数 pin 已更新为 === 133', s2232.includes('testChain === 134'));
+  s2233.includes('smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2239_minercart（npm test 串跑）'));
+ok('smoke_v2232 的 package.json 件套计数 pin 已更新为 === 133', s2232.includes('testChain === 135'));
 ok('smoke_v2231 的 README 串尾 pin 已更新为 + smoke_v2237_minimaplegend',
-  s2231.includes('smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell（npm test 串跑）'));
-ok('smoke_v2230 的 GAME_VERSION 恒等 pin 已更新为 === v22.37', s2230.includes("GAME_VERSION === 'v22.38'"));
-ok('smoke_v2229 的 README 件套口径 pin 已更新为一百三十三件套', s2229.includes('冒烟一百三十四件套（一百三十三件套清除）'));
-ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.37', s2226.includes("const GAME_VERSION = 'v22.38';"));
+  s2231.includes('smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2239_minercart（npm test 串跑）'));
+ok('smoke_v2230 的 GAME_VERSION 恒等 pin 已更新为 === v22.37', s2230.includes("GAME_VERSION === 'v22.39'"));
+ok('smoke_v2229 的 README 件套口径 pin 已更新为一百三十三件套', s2229.includes('冒烟一百三十五件套（一百三十四件套清除）'));
+ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.37', s2226.includes("const GAME_VERSION = 'v22.39';"));
 ok('smoke_v2235 的 NPC 总数 pin 保持 30（零 NPC 变更）', s2235.includes('NPC_SPOTS).length === 30'));
 
 // 旧代 v22.36 pin 全库零残留（字面量/恒等/件套/串尾/第 132 份）
