@@ -350,6 +350,14 @@ function dangerAt(x, y) {
   return !!(dt && dt.includes(at(x, y)));
 }
 
+// v22.40 高草访问器（体验打磨·信息透明·纯显示）：'G' 高草自 v3.x 起就是全图通用危险格——dangerAt 的
+// 第一道判定就读 gCells（loadMap 建图时由原始行字符 'G' 建立的单一数据源），世界画面却与普通草一像素
+// 之差都没有（雾语林蘑菇田/潮灯镇粮田都在高草上，玩家边走边纳闷「哪片草算高草」）；现导出只读访问器
+// 供视图层把高草画成深绿草簇（dangerAt 逐字未动，遇敌/踩踏/传送判定零变化）。
+function isTallGrass(x, y) {
+  return gCells.has(x + ',' + y);
+}
+
 function interact() {
   const hero = S.G;
   const { x, y, tile } = facingCell();
@@ -414,7 +422,7 @@ function transition(name) {
 }
 
 export {
-  loadMap, MBounds, at, move, useGate, useExit, onStep, dangerAt,
+  loadMap, MBounds, at, move, useGate, useExit, onStep, dangerAt, isTallGrass,
   interact, transition, CAVE_TREASURE, revealCaveTreasure,
   applyVictoryWorld, walking, WALK_MS, RUN_MS, portalDest,
   holdStep, setHeldDir, clearHeld, STEP_HANDLERS,

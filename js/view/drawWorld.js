@@ -3,7 +3,7 @@
 // ============================================================
 import { S, curMap } from '../state.js';
 import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL, CAVE_CART } from '../data.js';
-import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
+import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
 import { CV, CTX, rr, text } from './canvas.js';
@@ -112,7 +112,24 @@ function drawTileFx(ty, px, py, x, y) {
   // 不进存档、不参与结算，洞窟 GRASS 已被 replaceTiles 换成 CAVE 故天然不触发
   const dh = (x * 19 + y * 37);
   if (ty === TY.GRASS) {
-    if (dh % 29 === 0) { // 小花：白瓣黄心
+    // v22.40 高草显形（体验打磨·信息透明·纯显示）：'G' 高草自 v3.x 起就是全图通用危险格
+    // （world.dangerAt 第一道判定即读 loadMap 建立的 gCells），世界画面却与普通草一像素之差都没有——
+    // 雾语林蘑菇田（v22.16 拾菇人/蘑菇宝箱所在）/潮灯镇粮田（v21.80 粮铺掌柜「护粮的委托」）都在高草上，
+    // 玩家边走边纳闷「哪片草算高草」；现经 world.isTallGrass（gCells 只读访问器，与 dangerAt 同一份源）
+    // 区分绘制：高草格画深绿剑形草簇（#245a24 叶身 + #56a656 草尖，与草皮 #367636/#2f6b2f/#56a656
+    // 同色族、零新增颜色族，草簇高随坐标哈希抖动确定性与小花/草痕同法）；普通草小花/草痕逐字零回归。
+    // 纯显示零结算零存档零数值变化（dangerAt/遇敌/踩踏/传送判定逐字未动）。
+    if (isTallGrass(x, y)) {
+      const ht = 10 + (dh % 6);
+      CTX.fillStyle = '#245a24';
+      CTX.fillRect(px + 5, py + 20 - ht, 2, ht);
+      CTX.fillRect(px + 15, py + 22 - ht - (dh % 3), 2, ht + (dh % 3));
+      CTX.fillRect(px + 24, py + 20 - ht, 2, ht);
+      CTX.fillStyle = '#56a656';
+      CTX.fillRect(px + 5, py + 19 - ht, 2, 2);
+      CTX.fillRect(px + 15, py + 21 - ht - (dh % 3), 2, 2);
+      CTX.fillRect(px + 24, py + 19 - ht, 2, 2);
+    } else if (dh % 29 === 0) { // 小花：白瓣黄心
       CTX.fillStyle = 'rgba(232,238,241,.85)';
       CTX.fillRect(px + 12, py + 9, 2, 2); CTX.fillRect(px + 16, py + 9, 2, 2);
       CTX.fillRect(px + 14, py + 7, 2, 2); CTX.fillRect(px + 14, py + 11, 2, 2);
