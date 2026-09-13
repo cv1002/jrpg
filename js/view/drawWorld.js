@@ -620,6 +620,15 @@ function drawMinimap() {
         CTX.fillRect(mx + x * sx + Math.max(1, sx * 0.3), my + y * sy, Math.max(1, sx * 0.4), Math.max(1, sy * 0.5));
       }
     }
+    // v22.44 小地图「全域危险」标注（体验打磨·信息透明·纯显示，承 v22.37 图例/v22.40 高草显形/
+    // v22.43 机制行同一「危险格看得见→读得懂」主线的视觉收口）：危险红点只叠涂在「危险格占可走格
+    // ≤50%」的混合地形（v19.x 阈值）——雾语林/星井矿脉/无字回廊全图皆危险（dangerAt 实扫占比
+    // 89%/96.5%/96.8%）恰恰越过阈值不叠红点，玩家只见遇敌槽涨、却看不出「这整张图都是危险格」；
+    // 现用同一趟 dangerAt 遍历的同一组计数（与红点判定互补：danger > walkable*0.5 即红点被抑制的
+    // 全域危险档）在遇敌槽标签补「· 全域危险」（与 v22.43 帮助页「雾语林/矿脉/回廊全图皆危险格」
+    // 同口径），纯显示零结算零存档零数值变化（dangerAt/遇敌/踩踏/传送判定逐字未动，红点阈值
+    // `danger <= walkable * 0.5` 逐字未动，两档互补覆盖 danger>0 的全部情形）。
+    const fullDanger = walkable > 0 && danger > walkable * 0.5;
     CTX.fillStyle = '#ffd24a';
     CTX.beginPath();
     CTX.arc(mx + hero.x * sx, my + hero.y * sy, 3, 0, 7);
@@ -634,7 +643,7 @@ function drawMinimap() {
     // 预警闪烁节奏读 data.js ENCOUNTER.warnFlash（单一数据源）：与满槽 full / 预警线 warn 同属遇敌槽口径，调「⚠️ 危险逼近」快闪节奏只改 data.js 一处
     CTX.fillStyle = encDanger && (Math.floor(Date.now() / ENCOUNTER.warnFlash) % 2 === 0) ? '#ff8a5b' : '#e14b3f';
     CTX.fillRect(mx, my + mh + 3, mw * (encPct / ENCOUNTER.full), 6);
-    const encLab = `遇敌 ${Math.round(encPct)}%${encDanger ? ' ⚠️ 危险逼近' : ''}`;
+    const encLab = `遇敌 ${Math.round(encPct)}%${encDanger ? ' ⚠️ 危险逼近' : ''}${fullDanger ? ' · 全域危险' : ''}`;
     CTX.font = 'bold 12px sans-serif';
     const encW = Math.max(mw, Math.ceil(CTX.measureText(encLab).width) + 16);
     const encX = mx + mw - encW;
