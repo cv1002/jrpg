@@ -52,7 +52,7 @@ const LINE_MAX = 470;
 const page1 = HELP_PAGES[1];
 const caveRow = page1.find((r) => r[0] === '星井矿脉 Lv.' + MAPS.cave.recLv);
 ok('帮助页仍 4 页', HELP_PAGES.length === 4);
-ok('地图指南页仍 5 行（追加不增行）', page1.length === 5, `实际 ${page1.length}`);
+ok('地图指南页 7 行（v21.28 追加不增行；v22.37 起加小地图图例两行 5→7）', page1.length === 7, `实际 ${page1.length}`);
 ok('星井矿脉行存在且以 MAPS.cave.recLv 派生（无 r[2]）', !!caveRow && !caveRow[2], caveRow && caveRow[0]);
 
 // —— 派生串独立复算（测试侧重算而非快照）：与 NPCS.sentinel.name 单一数据源逐字相等 ——
@@ -75,7 +75,7 @@ page1.forEach((r) => {
   const w = estW(r[0] + '   ', 14) + estW(r[1], 14);
   if (w > LINE_MAX) { allOk1 = false; console.log('    <- 越界行:', r[0], Math.round(w)); }
 });
-ok('地图指南页全部 5 行估算宽 ≤470（含追加入口的星井矿脉行）', allOk1);
+ok('地图指南页全部 7 行估算宽 ≤470（含 v21.28 追加入口的星井矿脉行 + v22.37 图例两行）', allOk1);
 
 // —— 零回归：其余 4 行关键词未误动 ——
 const checks = [

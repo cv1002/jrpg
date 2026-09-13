@@ -127,7 +127,7 @@ const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README 已同步（tests 树收录 smoke_v2130_tutor + 冒烟/件套口径存在；件数去硬化——v21.7 惯例：实件数由后续版本冒烟守护）',
   readme.includes('smoke_v2130_tutor') && readme.includes('冒烟') && readme.includes('件套'));
-ok('package.json 已收录 smoke_v2130_tutor+ smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp（npm test 串跑）',
+ok('package.json 已收录 smoke_v2130_tutor+ smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend（npm test 串跑）',
   pkg.includes('smoke_v2130_tutor.mjs'));
 const s2129 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2129_ekey.mjs'), 'utf8');
 ok('smoke_v2129 的 README 守护表达式已去硬化（v21.7 惯例：不再以「二十五件套」断言件数，实件数由本版冒烟守护）',

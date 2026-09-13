@@ -113,8 +113,8 @@ ok('帮助页仍 4 页（操作/地图指南/魔物状态/试炼进阶）', HELP
 ok('HELP_TITLES 仍 4 枚与 HELP_PAGES 一一对应', HELP_TITLES.length === 4);
 const page3 = HELP_PAGES[3];
 ok('试炼进阶页 10 行（原 9 行 + v21.72 记忆碎片 1 行，仍 ≤10 保持 sp=34 档）', page3.length === 10, `实际 ${page3.length}`);
-ok('其余三页行数未动（操作 14 / 地图指南 5 / 魔物状态 10）',
-  HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 5 && HELP_PAGES[2].length === 10);
+ok('其余三页行数：操作 14 / 地图指南 7（v22.37 起加小地图图例两行）/ 魔物状态 10',
+  HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 7 && HELP_PAGES[2].length === 10);
 ok('记忆碎片行落位索引 6（蘑菇宝箱之后、三 Boss 机制行之前）',
   page3[5] && page3[5][0] === '蘑菇宝箱' && page3[6] && page3[6][0] === '记忆碎片' &&
   page3[7] && page3[7][0] === '幽冥魔王' && page3[8] && page3[8][0] === '洞窟领主' && page3[9] && page3[9][0] === '终焉之神');

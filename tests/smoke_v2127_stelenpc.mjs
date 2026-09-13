@@ -89,8 +89,8 @@ const checks = [
 ];
 ok('试炼进阶页其余 8 行关键词全在（双徽记/试炼三连战/重整旗鼓/快旅/蘑菇/Boss 三行等逐字未动）',
   checks.every(([k, kw]) => { const r = page3.find((x) => x[0] === k); return !!r && ((r[1] || '') + ' ' + (r[2] || '')).includes(kw); }));
-ok('其余三页行数未动（操作 14 / 地图指南 5 / 魔物状态 10）',
-  HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 5 && HELP_PAGES[2].length === 10);
+ok('其余三页行数：操作 14 / 地图指南 7（v22.37 起加小地图图例两行）/ 魔物状态 10',
+  HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 7 && HELP_PAGES[2].length === 10);
 
 // —— 源码级守护：v21.27 注释 + 派生式落位 ——
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

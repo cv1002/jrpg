@@ -91,7 +91,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.33', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 34)), GAME_VERSION);
 ok('data.js 含 v22.34 注释（客栈老板娘说明）', dSrc.includes('v22.34 新 NPC'));
 ok('GAME_VERSION 字面量已为 v22.34（旧 v22.33 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.36';") && !dSrc.includes("const GAME_VERSION = 'v22." + "33';"));
+  dSrc.includes("const GAME_VERSION = 'v22.37';") && !dSrc.includes("const GAME_VERSION = 'v22." + "33';"));
 ok('data.js 仍保留 v22.33 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.33 新内容：创建角色页「姓名寓意」'));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
@@ -180,16 +180,16 @@ ok('sprites.js 已新增 kettle mark 分支（承 v22.13 fan / v22.27 qin / v22.
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树收录 smoke_v2234_innkeeper 且位于串尾', readme.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp（npm test 串跑）'));
-ok('README 件套口径为一百三十二件套（一百三十一件套清除）',
-  readme.includes('冒烟一百三十二件套（一百三十一件套清除）') && !readme.includes('冒烟一百二十八件套（一百二十七件套清' + '除）'));
+ok('README tests 树收录 smoke_v2234_innkeeper 且位于串尾', readme.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend（npm test 串跑）'));
+ok('README 件套口径为一百三十三件套（一百三十二件套清除）',
+  readme.includes('冒烟一百三十三件套（一百三十二件套清除）') && !readme.includes('冒烟一百二十八件套（一百二十七件套清' + '除）'));
 ok('README 含 v22.34 守护描述（潮灯镇客栈老板娘新 NPC）', readme.includes('v22.34 起含潮灯镇客栈老板娘新 NPC 守护'));
 ok('README 含 smoke_v2234_innkeeper 入库（130 份）', readme.includes('smoke_v2234_innkeeper 入库（130 份）'));
 ok('README 四图速览/系统清单含「客栈老板娘」', readme.includes('客栈老板娘'));
 ok('package.json 已收录 smoke_v2234_innkeeper（npm test 串跑第 130 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2234_innkeeper.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 130 件套', testChain === 132, String(testChain));
+ok('package.json test 串共 130 件套', testChain === 133, String(testChain));
 ok('CHANGELOG 含 v22.34 条目', changelog.includes('## v22.34 '));
 
 // 姊妹 pin 复查（v22.33..v2226 随新现实更新 + 旧代 v22.33 全库零残留）
@@ -201,24 +201,24 @@ const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), '
 const s2228 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2228_titlesave.mjs'), 'utf8');
 const s2227 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2227_minstrel.mjs'), 'utf8');
 const s2226 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2226_chestprogress.mjs'), 'utf8');
-ok('smoke_v2233 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2233.includes("const GAME_VERSION = 'v22.36';"));
-ok('smoke_v2233 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2233.includes("GAME_VERSION === 'v22.36'"));
-ok('smoke_v2233 的 README 件套 pin 已随新现实更新为一百三十二件套（一百三十一件套清除）',
-  s2233.includes('一百三十二件套（一百三十一件套清除）'));
+ok('smoke_v2233 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2233.includes("const GAME_VERSION = 'v22.37';"));
+ok('smoke_v2233 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2233.includes("GAME_VERSION === 'v22.37'"));
+ok('smoke_v2233 的 README 件套 pin 已随新现实更新为一百三十三件套（一百三十二件套清除）',
+  s2233.includes('一百三十三件套（一百三十二件套清除）'));
 ok('smoke_v2233 的 README 串尾 pin 已更新为 + smoke_v2234_innkeeper',
-  s2233.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp（npm test 串跑）'));
-ok('smoke_v2233 的 package.json 件套计数 pin 已更新为 === 130', s2233.includes('testChain === 132'));
-ok('smoke_v2232 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2232.includes("const GAME_VERSION = 'v22.36';"));
+  s2233.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend（npm test 串跑）'));
+ok('smoke_v2233 的 package.json 件套计数 pin 已更新为 === 130', s2233.includes('testChain === 133'));
+ok('smoke_v2232 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2232.includes("const GAME_VERSION = 'v22.37';"));
 ok('smoke_v2232 的 README 串尾 pin 已更新为 + smoke_v2234_innkeeper',
-  s2232.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp（npm test 串跑）'));
+  s2232.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend（npm test 串跑）'));
 ok('smoke_v2231 的 NPC 总数 pin 已随新现实更新为 30（客栈老板娘落位）',
   s2231.includes('NPC_SPOTS).length === 30'));
-ok('smoke_v2230 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2230.includes("const GAME_VERSION = 'v22.36';"));
-ok('smoke_v2229 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2229.includes("GAME_VERSION === 'v22.36'"));
+ok('smoke_v2230 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2230.includes("const GAME_VERSION = 'v22.37';"));
+ok('smoke_v2229 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2229.includes("GAME_VERSION === 'v22.37'"));
 ok('smoke_v2228 的 README 串尾 pin 已更新为 + smoke_v2234_innkeeper',
-  s2228.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp（npm test 串跑）'));
+  s2228.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend（npm test 串跑）'));
 ok('smoke_v2227 的 NPC 总数 pin 已随新现实更新为 30', s2227.includes('NPC_SPOTS).length === 30'));
-ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2226.includes("const GAME_VERSION = 'v22.36';"));
+ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2226.includes("const GAME_VERSION = 'v22.37';"));
 // 旧代 v22.33 pin 全库零残留
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs'));
 const stale = [];

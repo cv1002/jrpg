@@ -102,8 +102,8 @@ ok('试炼三连战行 r[1] 未动（连战/全胜/百炼成钢逐字不变）+ 
   row('试炼三连战')[1] === '连战三名最强 Boss，全胜获「百炼成钢」' &&
   row('试炼三连战')[2].startsWith('每胜一关回血' + Math.round(RUSH_RECOVER.hp * 100) + '%HP/' + Math.round(RUSH_RECOVER.mp * 100) + '%MP · 全胜另得' + RUSH_BASE_GOLD + '+等级×' + RUSH_GOLD_PER_LV + '金') &&
   row('试炼三连战')[2].includes('建议Lv.'));
-ok('其余三页行数未动（操作 14 / 地图指南 5 / 魔物状态 10）',
-  HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 5 && HELP_PAGES[2].length === 10);
+ok('其余三页行数：操作 14 / 地图指南 7（v22.37 起加小地图图例两行）/ 魔物状态 10',
+  HELP_PAGES[0].length === 14 && HELP_PAGES[1].length === 7 && HELP_PAGES[2].length === 10);
 
 // —— data.js 派生定义在库 + 注释 ——
 const dataSrc = await (async () => { try { return (await import('node:fs')).readFileSync(new URL('../js/data.js', import.meta.url), 'utf8'); } catch { return ''; } })();
