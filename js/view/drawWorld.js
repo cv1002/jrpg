@@ -304,7 +304,20 @@ function minimapColor(tile, hero, x, y) {
   if (tile === TY.INN) return '#7a8aa0';
   if (tile === TY.FOUNTAIN) return '#62c6ff';
   if (tile === TY.BREW) return '#8fd86f';
-  if (tile === TY.NPC) return '#e8c9a0';
+  if (tile === TY.NPC) {
+    // v22.35 小地图 NPC 任务标（体验打磨·信息透明·纯显示）：世界画面有 ❕ 顶标
+    // （drawQuestMark，npcQuestMark 单一数据源）指示「该找谁接/交任务」，小地图上所有 NPC
+    // 却一律米色 #e8c9a0——扫小地图规划动线时看不出哪个人有委托待办；现与画布那侧同读
+    // npcQuestMark(hero, NPC_SPOTS[x+','+y])（quests.js 的 npcQuestMark 与 data.js 的
+    // NPC_SPOTS 本文件均已 import，零新增依赖），有可接/可交任务的 NPC 在小地图上金光脉动
+    //（与未开宝箱引导态同款 UI_PULSE_MS 呼吸、同族色 #ffd24a/#8a5a00，但仅 NPC 格触发），
+    // 纯显示零结算零存档零数值变化。
+    const qid = NPC_SPOTS[x + ',' + y];
+    if (qid && npcQuestMark(hero, qid)) {
+      return (Math.floor(Date.now() / UI_PULSE_MS) % 2 === 0) ? '#ffd24a' : '#8a5a00';
+    }
+    return '#e8c9a0';
+  }
   if (tile === TY.MB) return (hero && hero.caveBoss) ? '#39414f' : '#b06ff0';
   if (tile === TY.SB) return (hero && hero.trueBoss) ? '#39414f' : '#ffe94a';
   if (tile === TY.TRIAL) return '#4fd8ff';

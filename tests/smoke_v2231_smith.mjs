@@ -89,7 +89,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.30', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 31)), GAME_VERSION);
 ok('data.js 含 v22.31 注释（锻灯师说明）', dSrc.includes('v22.31 新内容：潮灯镇商店南侧新风味 NPC「锻灯师」'));
 ok('GAME_VERSION 字面量已为 v22.31（旧 v22.30 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.34';") && !dSrc.includes("const GAME_VERSION = 'v22." + "30';"));
+  dSrc.includes("const GAME_VERSION = 'v22.35';") && !dSrc.includes("const GAME_VERSION = 'v22." + "30';"));
 ok('data.js 仍保留 v22.30 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.30 暂停菜单「未存档 + 槽位占位」提示'));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
@@ -177,18 +177,18 @@ ok('sprites.js 已新增 hammer mark 分支（承 v22.13 fan / v22.27 qin 专属
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树收录 smoke_v2231_smith 且位于串尾', readme.includes('smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
+ok('README tests 树收录 smoke_v2231_smith 且位于串尾', readme.includes('smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
 ok('README tests 树尾链完整（v2230_pausewarn 未被新尾吞并，全链连到 smoke_v2231_smith）',
-  readme.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
-ok('README 件套口径为一百三十件套（一百二十九件套清除）',
-  readme.includes('冒烟一百三十件套（一百二十九件套清除）') && !readme.includes('冒烟一百二十六件套（一百二十五件套清' + '除）'));
+  readme.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
+ok('README 件套口径为一百三十一件套（一百三十件套清除）',
+  readme.includes('冒烟一百三十一件套（一百三十件套清除）') && !readme.includes('冒烟一百二十六件套（一百二十五件套清' + '除）'));
 ok('README 含 v22.31 守护描述（潮灯镇锻灯师新 NPC）', readme.includes('v22.31 起含潮灯镇锻灯师新 NPC 守护'));
 ok('README 含 smoke_v2231_smith 入库（128 份）', readme.includes('smoke_v2231_smith 入库（128 份）'));
 ok('README 四图速览/系统清单含「锻灯师」', readme.includes('锻灯师'));
 ok('package.json 已收录 smoke_v2231_smith（npm test 串跑第 127 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2231_smith.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 127 件套', testChain === 130, String(testChain));
+ok('package.json test 串共 127 件套', testChain === 131, String(testChain));
 ok('CHANGELOG 含 v22.31 条目', changelog.includes('## v22.31 '));
 
 // 姊妹 pin 复查（v22.30..v2225 随新现实更新 + v22.25..v2211 NPC 总数 pin 29）
@@ -206,30 +206,30 @@ const s2220 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2220_hearer.mjs'), '
 const s2216 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2216_picker.mjs'), 'utf8');
 const s2213 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2213_teller.mjs'), 'utf8');
 const s2211 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2211_lampkid.mjs'), 'utf8');
-ok('smoke_v2230 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2230.includes("const GAME_VERSION = 'v22.34';"));
-ok('smoke_v2230 的 README 件套 pin 已随新现实更新为一百三十件套（一百二十九件套清除）',
-  s2230.includes('一百三十件套（一百二十九件套清除）'));
+ok('smoke_v2230 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2230.includes("const GAME_VERSION = 'v22.35';"));
+ok('smoke_v2230 的 README 件套 pin 已随新现实更新为一百三十一件套（一百三十件套清除）',
+  s2230.includes('一百三十一件套（一百三十件套清除）'));
 ok('smoke_v2230 的 README 树尾 pin 已更新为 + smoke_v2231_smith',
-  s2230.includes('smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
-ok('smoke_v2230 的 package.json 件套计数 pin 已更新为 === 127', s2230.includes('testChain === 130'));
-ok('smoke_v2229 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2229.includes("const GAME_VERSION = 'v22.34';"));
-ok('smoke_v2229 的 GAME_VERSION 恒等 pin 已更新为 === v22.31', s2229.includes("GAME_VERSION === 'v22.34'"));
-ok('smoke_v2229 的 README 件套 pin 已随新现实更新为一百三十件套（一百二十九件套清除）',
-  s2229.includes('一百三十件套（一百二十九件套清除）'));
+  s2230.includes('smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
+ok('smoke_v2230 的 package.json 件套计数 pin 已更新为 === 127', s2230.includes('testChain === 131'));
+ok('smoke_v2229 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2229.includes("const GAME_VERSION = 'v22.35';"));
+ok('smoke_v2229 的 GAME_VERSION 恒等 pin 已更新为 === v22.31', s2229.includes("GAME_VERSION === 'v22.35'"));
+ok('smoke_v2229 的 README 件套 pin 已随新现实更新为一百三十一件套（一百三十件套清除）',
+  s2229.includes('一百三十一件套（一百三十件套清除）'));
 ok('smoke_v2229 的 README 树尾 pin 已更新为 + smoke_v2231_smith',
-  s2229.includes('smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
-ok('smoke_v2229 的 package.json 件套计数 pin 已更新为 === 127', s2229.includes('testChain === 130'));
-ok('smoke_v2228 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2228.includes("const GAME_VERSION = 'v22.34';"));
+  s2229.includes('smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
+ok('smoke_v2229 的 package.json 件套计数 pin 已更新为 === 127', s2229.includes('testChain === 131'));
+ok('smoke_v2228 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2228.includes("const GAME_VERSION = 'v22.35';"));
 ok('smoke_v2228 的 README 树尾 pin 已更新为 + smoke_v2231_smith',
-  s2228.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
+  s2228.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
 ok('smoke_v2227 的 README 树尾 pin 已更新为 + smoke_v2231_smith',
-  s2227.includes('smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
-ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2226.includes("const GAME_VERSION = 'v22.34';"));
-ok('smoke_v2226 的 README 件套 pin 已随新现实更新为一百三十件套（一百二十九件套清除）',
-  s2226.includes('一百三十件套（一百二十九件套清除）'));
+  s2227.includes('smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
+ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.31', s2226.includes("const GAME_VERSION = 'v22.35';"));
+ok('smoke_v2226 的 README 件套 pin 已随新现实更新为一百三十一件套（一百三十件套清除）',
+  s2226.includes('一百三十一件套（一百三十件套清除）'));
 ok('smoke_v2225 的 README 树尾 pin 已更新为 + smoke_v2231_smith',
-  s2225.includes('smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper（npm test 串跑）'));
-ok('smoke_v2225 的 package.json 件套计数 pin 已更新为 === 127', s2225.includes('testChain === 130'));
+  s2225.includes('smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest（npm test 串跑）'));
+ok('smoke_v2225 的 package.json 件套计数 pin 已更新为 === 127', s2225.includes('testChain === 131'));
 ok('smoke_v2225 的 NPC 总数 pin 已随新现实更新为 29（锻灯师落位）', s2225.includes('总数 29'));
 ok('smoke_v2224 的 NPC 总数 pin 已随新现实更新为 29（锻灯师落位）', s2224.includes('总数 29'));
 ok('smoke_v2223 的 NPC 总数 pin 已随新现实更新为 29（锻灯师落位）', s2223.includes('总数 29'));
