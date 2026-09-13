@@ -129,6 +129,24 @@ function drawTileFx(ty, px, py, x, y) {
       CTX.fillRect(px + 5, py + 19 - ht, 2, 2);
       CTX.fillRect(px + 15, py + 21 - ht - (dh % 3), 2, 2);
       CTX.fillRect(px + 24, py + 19 - ht, 2, 2);
+      // v22.42 雾语林蘑菇田「菌盖灯油」景观（新内容·世界景观·纯显示，承 v22.40 高草显形同一
+      // 「世界画面补脸」主线）：拾菇人「蘑菇是灯油：菌盖夜里发光、两株能熬一瓶高级灵药」/失名的
+      // 旅人/货郎的灯油营生全在说这片田，画面里却只有一色深绿高草——「菌盖」二字一像素都没有；
+      // 现仅雾语林（curMap()==='dungeon'）的高草格（isTallGrass 单一数据源，与 dangerAt 同读
+      // gCells 一份源，危险/遇敌/踩踏判定逐字未动）按坐标哈希 (x*7+y*13)%4===0 稀疏点缀 1 组
+      // 菌盖灯油：伞柄米色 #e8c9a0（NPC 米色同族）· 伞盖灯油金 #ffd24a · 盖缘深金 #8a5a00 ·
+      // 高光金白 #ffe9a8——全部既有色族零新增颜色族，与草簇/小花同一哈希确定性手法；
+      // 纯显示零结算零存档零数值变化；village 粮田/洞窟岩地（GRASS 已被 replaceTiles 换走）不触发。
+      if (curMap() === 'dungeon' && (x * 7 + y * 13) % 4 === 0) {
+        CTX.fillStyle = '#e8c9a0';           // 伞柄
+        CTX.fillRect(px + 15, py + 16, 3, 6);
+        CTX.fillStyle = '#ffd24a';           // 伞盖（灯油金）
+        CTX.fillRect(px + 8, py + 9, 17, 8);
+        CTX.fillStyle = '#8a5a00';           // 盖缘
+        CTX.fillRect(px + 8, py + 15, 17, 2);
+        CTX.fillStyle = '#ffe9a8';           // 高光
+        CTX.fillRect(px + 11, py + 11, 4, 2);
+      }
     } else if (dh % 29 === 0) { // 小花：白瓣黄心
       CTX.fillStyle = 'rgba(232,238,241,.85)';
       CTX.fillRect(px + 12, py + 9, 2, 2); CTX.fillRect(px + 16, py + 9, 2, 2);
