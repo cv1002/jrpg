@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL, CAVE_CART } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL, CAVE_CART, GALLERY_ARCH } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -320,6 +320,42 @@ function drawCaveCart(camX, camY) {
     CTX.fillStyle = '#3a4148';
     CTX.fillRect(px + 7, py + 3, 18, 7);
   }
+}
+
+// v22.41 无字回廊「名字之门」状态纯函数：与星井/星砂车/广场大灯同族只读旗标——守名者 done「名字
+// 回灯下」/真结局「记忆回到镇上」同读 S.G.trueBoss 一份源两档。只读不改，零结算零存档。
+export function galleryArchState(hero) {
+  if (hero && hero.trueBoss) return 'lit';
+  return 'dark';
+}
+
+function drawGalleryArch(camX, camY) {
+  const st = galleryArchState(S.G);
+  const px = GALLERY_ARCH.x * T - camX;
+  const py = GALLERY_ARCH.y * T - camY;
+  const cx = px + T / 2;
+  // 门内光（状态档位色：名字亮回金白微光 + 金晕 / 无字零光——与星井蓝光晕同档位结构）
+  if (st === 'lit') {
+    CTX.fillStyle = 'rgba(255,210,74,.15)';
+    CTX.beginPath(); CTX.arc(cx, py + 17, 12, 0, 7); CTX.fill();
+    CTX.fillStyle = '#ffe9a8';
+    CTX.fillRect(px + 11, py + 12, 10, 10);
+    CTX.fillStyle = '#ffd24a';
+    CTX.fillRect(px + 11, py + 10, 2, 2);
+    CTX.fillRect(px + 19, py + 13, 2, 2);
+    CTX.fillRect(px + 14, py + 18, 2, 2);
+  } else {
+    CTX.fillStyle = '#2e333c';
+    CTX.fillRect(px + 9, py + 12, 14, 16);
+  }
+  // 石门（共体零状态分支：门柱 #3a4148 / 门楣 #5a6472，与洞窟岩壁/NPC 石制标记同色族）
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(px + 2, py + 6, 6, 22);
+  CTX.fillRect(px + 24, py + 6, 6, 22);
+  CTX.fillStyle = '#5a6472';
+  CTX.fillRect(px, py + 4, 32, 6);
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(px, py + 4, 32, 2);
 }
 
 // 祭坛 ⚠Lv 标签：推荐等级与战斗界 enemyLv 同读 data.js SPECIES[].lv
@@ -645,6 +681,10 @@ export function drawWorld() {
   // v22.39 星砂车（纯显示·先于角色层）：两档状态光效见 drawCaveCart 注释；位置读 data.js CAVE_CART
   // 单一数据源。只读旗标，零结算零存档（与星井同读 S.G.trueBoss 一份源两档）。
   if (S.G && curMap() === 'cave') drawCaveCart(c.x, c.y);
+  // v22.41 名字之门（纯显示·先于角色层）：两档状态光效见 drawGalleryArch 注释；位置读 data.js
+  // GALLERY_ARCH 单一数据源。只读旗标，零结算零存档（与守名者 done「名字回灯下」同读 S.G.trueBoss
+  // 一份源两档）。
+  if (S.G && curMap() === 'gallery') drawGalleryArch(c.x, c.y);
   if (S.G && curMap() !== 'village') {
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
