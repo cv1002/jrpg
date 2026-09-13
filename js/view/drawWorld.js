@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -135,6 +135,73 @@ function drawTileFx(ty, px, py, x, y) {
       CTX.fillStyle = `rgba(255,200,90,${a})`;
       CTX.fillRect(px + 9 + w * 8, py + 12, 3, 4);
     }
+  }
+}
+
+// v22.36 潮灯镇广场大灯（新内容·世界景观·纯显示，承 v21.36 掌灯阿婆 / v22.13 说书人「NPC 就是数据」
+// 先例的全游标题物补脸）：「广场大灯（记忆之灯）」是镇子的名字物——v13.5 地图重排注释「广场大灯地标
+// 居中」/说书人（16,9）「广场大灯南侧」/灯长「广场那盏大灯，还在等灯芯」/开场叙事「广场的大灯熄了」
+// 都在说它，世界画面却一像素都没有（商店/旅馆/酿造/水塘/民宅都有脸，唯独镇子的名字物没有脸）；
+// 现按 v13.5「居中」口径在广场大道正中立起大灯，状态与灯长台词/胜利画面「灯芯回来了」同读
+// S.G.bossDefeated / S.G.trueBoss 一份源、三档（纯显示零结算零存档零数值变化，只读旗标）：
+//   熄灯（!bossDefeated）——「灯芯熄了，灰里还留着一粒火种」（创建页余烬寓意同源）：灰窗 + 一粒余烬 + 暗铜光晕；
+//   归来（bossDefeated）——「灯芯回来了，广场的大灯亮起来了」（灯长 done 档同口径）：暖金窗 + 金晕；
+//   全亮（trueBoss）——「灯全亮了，名字都回碑上了」（说书人 after 同口径）：金白窗 + 更亮双金晕 + 浮光点。
+// 位置读 data.js VILLAGE_LAMP 单一数据源（(14,9) 可行走 PATH 格，零碰撞变化，与小地图标记同一份源）。
+// 画布大灯先于角色绘制（角色/ NPC 走 actors 深度排序在此之后，人站在灯前不被灯柱遮挡）。
+export function villageLampState(hero) {
+  if (hero && hero.trueBoss) return 'full';
+  if (hero && hero.bossDefeated) return 'rekindled';
+  return 'dead';
+}
+
+function drawVillageLamp(camX, camY) {
+  const st = villageLampState(S.G);
+  const px = VILLAGE_LAMP.x * T - camX;
+  const py = VILLAGE_LAMP.y * T - camY;
+  const cx = px + T / 2;
+  // 光晕（纯显示·状态档位色：余烬暗铜 / 灯芯暖金 / 全亮金白——与 v22.35 小地图 NPC 任务标、
+  // v3.x 宝箱引导金族同族色系，零新增颜色族）
+  if (st === 'dead') {
+    CTX.fillStyle = 'rgba(138,90,0,.25)';
+    CTX.beginPath(); CTX.arc(cx, py + 8, 16, 0, 7); CTX.fill();
+  } else if (st === 'rekindled') {
+    CTX.fillStyle = 'rgba(255,210,74,.25)';
+    CTX.beginPath(); CTX.arc(cx, py + 6, 18, 0, 7); CTX.fill();
+  } else {
+    CTX.fillStyle = 'rgba(255,233,168,.35)';
+    CTX.beginPath(); CTX.arc(cx, py + 6, 20, 0, 7); CTX.fill();
+    CTX.fillStyle = 'rgba(255,210,74,.2)';
+    CTX.beginPath(); CTX.arc(cx, py + 2, 28, 0, 7); CTX.fill();
+  }
+  // 灯柱 / 底座 / 顶盖（三档共体、零状态分支）
+  CTX.fillStyle = '#4a4238';
+  CTX.fillRect(px + 15, py - 26, 3, 26);
+  CTX.fillRect(px + 11, py - 2, 12, 4);
+  CTX.fillRect(px + 9, py - 33, 14, 3);
+  CTX.fillRect(px + 15, py - 37, 3, 4);
+  // 灯罩（金属壳）
+  CTX.fillStyle = '#2e333c';
+  CTX.fillRect(px + 8, py - 30, 16, 15);
+  // 灯窗（状态色：熄灯灰 + 一粒余烬 / 归来暖金 / 全亮金白）
+  if (st === 'dead') {
+    CTX.fillStyle = '#5a5560';
+    CTX.fillRect(px + 11, py - 27, 10, 10);
+    CTX.fillStyle = '#8a5a00';
+    CTX.fillRect(px + 15, py - 23, 2, 2);
+  } else if (st === 'rekindled') {
+    CTX.fillStyle = '#ffd24a';
+    CTX.fillRect(px + 11, py - 27, 10, 10);
+  } else {
+    CTX.fillStyle = '#ffe9a8';
+    CTX.fillRect(px + 11, py - 27, 10, 10);
+  }
+  // 全亮档浮光点（名字回灯：灯周光屑，纯显示）
+  if (st === 'full') {
+    CTX.fillStyle = '#ffe9a8';
+    CTX.fillRect(px + 3, py - 35, 2, 2);
+    CTX.fillRect(px + 27, py - 31, 2, 2);
+    CTX.fillRect(px + 24, py - 40, 2, 2);
   }
 }
 
@@ -298,6 +365,12 @@ function drawQuestMark(qm, tx, ty) {
 function minimapColor(tile, hero, x, y) {
   if (tile === TY.TREE || tile === TY.ROCK) return '#1f4d1f';
   if (tile === TY.WATER) return '#22568a';
+  // v22.36 小地图大灯标记（与画布大灯同档位、同读 VILLAGE_LAMP 单一数据源）：灯在（bossDefeated）→
+  // 暖金 #ffd24a（与 NPC 任务标/宝箱引导同族色），灯熄 → 冷灰 #7b7a84（「灯熄了」在小地图也一眼可见）；
+  // 只读 hero.bossDefeated 旗标，纯显示零结算零存档。
+  if (curMap() === 'village' && tile === TY.PATH && x === VILLAGE_LAMP.x && y === VILLAGE_LAMP.y) {
+    return (hero && hero.bossDefeated) ? '#ffd24a' : '#7b7a84';
+  }
   if (tile === TY.TOWN || tile === TY.PATH) return '#7d6b49';
   if (tile === TY.BOSS) return '#a03fd9';
   if (tile === TY.SHOP) return '#ffd24a';
@@ -440,6 +513,9 @@ export function drawWorld() {
       drawTileFx(ty, px, py, x, y);
     }
   }
+  // v22.36 广场大灯（纯显示·先于角色层）：三档状态光效见 drawVillageLamp 注释；位置读
+  // data.js VILLAGE_LAMP 单一数据源。只读旗标，零结算零存档（与祭坛熄灭/灯长台词/胜利画面同源口径）。
+  if (S.G && curMap() === 'village') drawVillageLamp(c.x, c.y);
   if (S.G && curMap() !== 'village') {
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
