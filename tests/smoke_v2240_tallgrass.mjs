@@ -83,9 +83,9 @@ function ok(name, cond, extra) {
 }
 
 // —— 版本锚点 ——
-ok('GAME_VERSION 恒等 v22.40', GAME_VERSION === 'v22.51', GAME_VERSION);
+ok('GAME_VERSION 恒等 v22.40', GAME_VERSION === 'v22.52', GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量 v22.40 精确', dSrc.includes("const GAME_VERSION = 'v22.51';"));
+ok('data.js GAME_VERSION 字面量 v22.40 精确', dSrc.includes("const GAME_VERSION = 'v22.52';"));
 
 // —— 源级落位：world.js ——
 const wSrc = fs.readFileSync(path.join(ROOT, 'js/world.js'), 'utf8');
@@ -255,9 +255,9 @@ ok('契约：TY.GRASS 非 SOLID（高草可走）', !SOLID.has(TY.GRASS));
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树收录 smoke_v2240_tallgrass 且位于串尾', readme.includes('smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep（npm test 串跑）'));
-ok('README 件套口径为一百四十七件套（一百四十六件套清除）',
-  readme.includes('冒烟一百四十七件套（一百四十六件套清除）') && !readme.includes('冒烟一百三十五件套（一百三十四件套清' + '除）'));
+ok('README tests 树收录 smoke_v2240_tallgrass 且位于串尾', readme.includes('smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail（npm test 串跑）'));
+ok('README 件套口径为一百四十八件套（一百四十七件套清除）',
+  readme.includes('冒烟一百四十八件套（一百四十七件套清除）') && !readme.includes('冒烟一百三十五件套（一百三十四件套清' + '除）'));
 ok('README 含 v22.40 守护描述（高草危险格显形守护）', readme.includes('v22.40 起含高草危险格显形守护'));
 ok('README 含 smoke_v2240_tallgrass 入库（136 份）', readme.includes('smoke_v2240_tallgrass 入库（136 份）'));
 ok('README 仍保留 v22.39 守护描述与入库（135 份）（历史口径不漂移）',
@@ -267,7 +267,7 @@ ok('README 视觉 bullet 含高草危险格显形（v22.40）', readme.includes(
 ok('package.json 已收录 smoke_v2240_tallgrass（npm test 串跑第 136 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2240_tallgrass.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 136 件套', testChain === 147, String(testChain));
+ok('package.json test 串共 136 件套', testChain === 148, String(testChain));
 ok('CHANGELOG 含 v22.40 条目', changelog.includes('## v22.40 '));
 
 // —— 姊妹 pin 复查（v2239..v2226 随新现实更新，含 v2228/v2229/v2230 正则锚与 v2230 双转义锚）——
@@ -279,25 +279,25 @@ const s2234 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2234_innkeeper.mjs')
 const s2230 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2230_pausewarn.mjs'), 'utf8');
 const s2228 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2228_titlesave.mjs'), 'utf8');
 const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), 'utf8');
-ok('smoke_v2239 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2239.includes("const GAME_VERSION = 'v22.51';"));
-ok('smoke_v2239 的 GAME_VERSION 恒等 pin 已更新为 === v22.40', s2239.includes("GAME_VERSION === 'v22.51'"));
+ok('smoke_v2239 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2239.includes("const GAME_VERSION = 'v22.52';"));
+ok('smoke_v2239 的 GAME_VERSION 恒等 pin 已更新为 === v22.40', s2239.includes("GAME_VERSION === 'v22.52'"));
 ok('smoke_v2239 的 README 串尾 pin 已更新为 + smoke_v2240_tallgrass',
-  s2239.includes('smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep（npm test 串跑）'));
-ok('smoke_v2239 的 package.json 件套计数 pin 已更新为 === 136', s2239.includes('testChain === 147'));
-ok('smoke_v2239 的 README 件套口径 pin 已更新为一百三十六件套', s2239.includes('冒烟一百四十七件套（一百四十六件套清除）'));
-ok('smoke_v2238 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2238.includes("const GAME_VERSION = 'v22.51';"));
-ok('smoke_v2237 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2237.includes("const GAME_VERSION = 'v22.51';"));
-ok('smoke_v2235 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2235.includes("const GAME_VERSION = 'v22.51';"));
-ok('smoke_v2234 的 GAME_VERSION 恒等 pin 已更新为 === v22.40', s2234.includes("GAME_VERSION === 'v22.51'"));
-ok('smoke_v2230 的 GAME_VERSION 恒等 pin 已更新为 === v22.40', s2230.includes("GAME_VERSION === 'v22.51'"));
+  s2239.includes('smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail（npm test 串跑）'));
+ok('smoke_v2239 的 package.json 件套计数 pin 已更新为 === 136', s2239.includes('testChain === 148'));
+ok('smoke_v2239 的 README 件套口径 pin 已更新为一百三十六件套', s2239.includes('冒烟一百四十八件套（一百四十七件套清除）'));
+ok('smoke_v2238 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2238.includes("const GAME_VERSION = 'v22.52';"));
+ok('smoke_v2237 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2237.includes("const GAME_VERSION = 'v22.52';"));
+ok('smoke_v2235 的 GAME_VERSION 字面量 pin 已更新为 v22.40', s2235.includes("const GAME_VERSION = 'v22.52';"));
+ok('smoke_v2234 的 GAME_VERSION 恒等 pin 已更新为 === v22.40', s2234.includes("GAME_VERSION === 'v22.52'"));
+ok('smoke_v2230 的 GAME_VERSION 恒等 pin 已更新为 === v22.40', s2230.includes("GAME_VERSION === 'v22.52'"));
 ok('smoke_v2228/v2229/v2230 的 regex 串尾锚已延伸至 smoke_v2240_tallgrass',
-  s2228.includes('smoke_v2239_minercart\\.mjs && node tests\\/smoke_v2240_tallgrass\\.mjs && node tests\\/smoke_v2241_gatearch.mjs && node tests\\/smoke_v2242_mushfield.mjs && node tests\\/smoke_v2243_encguide.mjs && node tests\\/smoke_v2244_fulldanger.mjs && node tests\\/smoke_v2245_watcher.mjs && node tests\\/smoke_v2246_fountgauge.mjs && node tests\\/smoke_v2247_villagewell.mjs && node tests\\/smoke_v2248_mapguide.mjs && node tests\\/smoke_v2249_shopkeep.mjs && node tests\\/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs"/.test(pkg)') &&
-  s2229.includes('smoke_v2239_minercart\\.mjs && node tests\\/smoke_v2240_tallgrass\\.mjs && node tests\\/smoke_v2241_gatearch.mjs && node tests\\/smoke_v2242_mushfield.mjs && node tests\\/smoke_v2243_encguide.mjs && node tests\\/smoke_v2244_fulldanger.mjs && node tests\\/smoke_v2245_watcher.mjs && node tests\\/smoke_v2246_fountgauge.mjs && node tests\\/smoke_v2247_villagewell.mjs && node tests\\/smoke_v2248_mapguide.mjs && node tests\\/smoke_v2249_shopkeep.mjs && node tests\\/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs"/.test(pkg)') &&
-  s2230.includes('smoke_v2239_minercart\\.mjs && node tests\\/smoke_v2240_tallgrass\\.mjs && node tests\\/smoke_v2241_gatearch.mjs && node tests\\/smoke_v2242_mushfield.mjs && node tests\\/smoke_v2243_encguide.mjs && node tests\\/smoke_v2244_fulldanger.mjs && node tests\\/smoke_v2245_watcher.mjs && node tests\\/smoke_v2246_fountgauge.mjs && node tests\\/smoke_v2247_villagewell.mjs && node tests\\/smoke_v2248_mapguide.mjs && node tests\\/smoke_v2249_shopkeep.mjs && node tests\\/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs"/.test(pkg)'));
+  s2228.includes('smoke_v2239_minercart\\.mjs && node tests\\/smoke_v2240_tallgrass\\.mjs && node tests\\/smoke_v2241_gatearch.mjs && node tests\\/smoke_v2242_mushfield.mjs && node tests\\/smoke_v2243_encguide.mjs && node tests\\/smoke_v2244_fulldanger.mjs && node tests\\/smoke_v2245_watcher.mjs && node tests\\/smoke_v2246_fountgauge.mjs && node tests\\/smoke_v2247_villagewell.mjs && node tests\\/smoke_v2248_mapguide.mjs && node tests\\/smoke_v2249_shopkeep.mjs && node tests\\/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs && node tests\\/smoke_v2252_rail.mjs"/.test(pkg)') &&
+  s2229.includes('smoke_v2239_minercart\\.mjs && node tests\\/smoke_v2240_tallgrass\\.mjs && node tests\\/smoke_v2241_gatearch.mjs && node tests\\/smoke_v2242_mushfield.mjs && node tests\\/smoke_v2243_encguide.mjs && node tests\\/smoke_v2244_fulldanger.mjs && node tests\\/smoke_v2245_watcher.mjs && node tests\\/smoke_v2246_fountgauge.mjs && node tests\\/smoke_v2247_villagewell.mjs && node tests\\/smoke_v2248_mapguide.mjs && node tests\\/smoke_v2249_shopkeep.mjs && node tests\\/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs && node tests\\/smoke_v2252_rail.mjs"/.test(pkg)') &&
+  s2230.includes('smoke_v2239_minercart\\.mjs && node tests\\/smoke_v2240_tallgrass\\.mjs && node tests\\/smoke_v2241_gatearch.mjs && node tests\\/smoke_v2242_mushfield.mjs && node tests\\/smoke_v2243_encguide.mjs && node tests\\/smoke_v2244_fulldanger.mjs && node tests\\/smoke_v2245_watcher.mjs && node tests\\/smoke_v2246_fountgauge.mjs && node tests\\/smoke_v2247_villagewell.mjs && node tests\\/smoke_v2248_mapguide.mjs && node tests\\/smoke_v2249_shopkeep.mjs && node tests\\/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs && node tests\\/smoke_v2252_rail.mjs"/.test(pkg)'));
 ok('smoke_v2230 的 escaped 串尾锚已延伸至 smoke_v2248_mapguide（双转义复查链，任意转义风格容忍）',
-  /smoke_v2240_tallgrass[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2243_encguide[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2244_fulldanger[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2245_watcher[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2246_fountgauge[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2247_villagewell[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2248_mapguide[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2249_shopkeep[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2250_brewer[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2251_oathkeep[.\\]{0,6}mjs"/.test(s2230));
+  /smoke_v2240_tallgrass[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2243_encguide[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2244_fulldanger[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2245_watcher[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2246_fountgauge[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2247_villagewell[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2248_mapguide[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2249_shopkeep[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2250_brewer[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2251_oathkeep[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2252_rail[.\\]{0,6}mjs"/.test(s2230));
 ok('smoke_v2226 的 plain 串尾锚已延伸至 smoke_v2240_tallgrass',
-  s2228.includes('node tests/smoke_v2239_minercart.mjs && node tests/smoke_v2240_tallgrass.mjs && node tests/smoke_v2241_gatearch.mjs && node tests/smoke_v2242_mushfield.mjs && node tests/smoke_v2243_encguide.mjs && node tests/smoke_v2244_fulldanger.mjs && node tests/smoke_v2245_watcher.mjs && node tests/smoke_v2246_fountgauge.mjs && node tests/smoke_v2247_villagewell.mjs && node tests/smoke_v2248_mapguide.mjs && node tests/smoke_v2249_shopkeep.mjs && node tests/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs"'));
+  s2228.includes('node tests/smoke_v2239_minercart.mjs && node tests/smoke_v2240_tallgrass.mjs && node tests/smoke_v2241_gatearch.mjs && node tests/smoke_v2242_mushfield.mjs && node tests/smoke_v2243_encguide.mjs && node tests/smoke_v2244_fulldanger.mjs && node tests/smoke_v2245_watcher.mjs && node tests/smoke_v2246_fountgauge.mjs && node tests/smoke_v2247_villagewell.mjs && node tests/smoke_v2248_mapguide.mjs && node tests/smoke_v2249_shopkeep.mjs && node tests/smoke_v2250_brewer.mjs && node tests\\/smoke_v2251_oathkeep.mjs && node tests\\/smoke_v2252_rail.mjs"'));
 ok('smoke_v2235 的 NPC 总数 pin 保持 30（零 NPC 变更）', s2235.includes('NPC_SPOTS).length === 34'));
 
 // 旧代 v22.39 pin 全库零残留（字面量/恒等/件套/串尾/第 135 份）

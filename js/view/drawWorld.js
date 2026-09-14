@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, GALLERY_ARCH } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -391,6 +391,54 @@ function drawCaveCart(camX, camY) {
   }
 }
 
+// v22.52 星井矿脉「矿车轨道」（新内容·世界景观·纯显示，承 v22.39 星砂车「名字物补脸」先例的收口）：
+// 矿脉地图 v13.5 注释「轨道引导线贯穿——入口（井巫）→ 矿车区（车夫/试炼碑）→ 深处祭坛 → 中央水晶」，
+// ASCII PATH '.' 格就是这条引导线——replaceTiles（PATH→CAVE）后轨道与世界画面岩地同色，v22.39 立起的
+// 星砂车（19,10）停在矿场、车夫守护的却是一像素都看不见的轨道；现沿 data.js CAVE_RAIL 单一数据源
+// （= MAPS.cave.rows '.' 逐行扫描，35 格，改图自动跟随零漂移）逐格绘制木枕 + 双轨：方向感知——
+// 有左右轨道邻接画横轨、有上下邻接画竖轨（拐角/三通各画各的、交界格重叠自然衔接），纯斜向阶梯格
+// 回落横轨（阶梯式轨道路径，与像素矿洞同风格）；枕木木色 #8a5a2b/#6a4a2f（星砂车木料/车斗顶缘同色族）、
+// 双轨铁灰 #5a6472 + 受光高光 #7a828a（星井石砌/岩块高光同色族）——全部既有色族零新增颜色；
+// 先于星井/星砂车绘制（轨道铺在岩地上、井与车立在轨道旁，不遮挡彼此——CAVE_RAIL 与 CAVE_WELL (16,11)/
+// CAVE_CART (19,10) 无同格）；纯显示零结算零存档零数值变化（'.' 仍是 PATH→CAVE 可行走格，at()/SOLID/
+// 遇敌/开箱判定逐字未动），刻意不设小地图标记（轨道是矿脉地貌不是决策信息，与星砂车/名字之门同口径）。
+function drawCaveRail(camX, camY) {
+  const railSet = new Set(CAVE_RAIL.map((p) => p[0] + ',' + p[1]));
+  for (const [rx, ry] of CAVE_RAIL) {
+    // 只画纯岩地格：终焉水晶 (12,11) 恰在轨道引导线终点上（SB 瓦片），轨道不压任何设施/道具/角色——
+    // at() 与 dangerAt/碰撞同读世界网格，未来若在轨道格上放新设施自动免责（该格零轨道像素）。
+    if (at(rx, ry) !== TY.CAVE) continue;
+    const px = rx * T - camX;
+    const py = ry * T - camY;
+    if (px < -T || py < -T || px > CV.width || py > CV.height) continue;
+    const h = railSet.has((rx + 1) + ',' + ry) || railSet.has((rx - 1) + ',' + ry)
+      || (!railSet.has(rx + ',' + (ry + 1)) && !railSet.has(rx + ',' + (ry - 1)));
+    const v = railSet.has(rx + ',' + (ry + 1)) || railSet.has(rx + ',' + (ry - 1));
+    if (h) {
+      // 枕木（木色族，先于双轨——轨压枕上）
+      CTX.fillStyle = '#6a4a2f';
+      for (let i = 0; i < 6; i++) CTX.fillRect(px + 2 + i * 5, py + 11, 2, 10);
+      // 双轨 + 受光高光（铁灰/高光色族）
+      CTX.fillStyle = '#5a6472';
+      CTX.fillRect(px, py + 13, T, 2);
+      CTX.fillRect(px, py + 21, T, 2);
+      CTX.fillStyle = '#7a828a';
+      CTX.fillRect(px, py + 13, T, 1);
+      CTX.fillRect(px, py + 21, T, 1);
+    }
+    if (v) {
+      CTX.fillStyle = '#6a4a2f';
+      for (let i = 0; i < 6; i++) CTX.fillRect(px + 11, py + 2 + i * 5, 10, 2);
+      CTX.fillStyle = '#5a6472';
+      CTX.fillRect(px + 13, py, 2, T);
+      CTX.fillRect(px + 21, py, 2, T);
+      CTX.fillStyle = '#7a828a';
+      CTX.fillRect(px + 13, py, 1, T);
+      CTX.fillRect(px + 21, py, 1, T);
+    }
+  }
+}
+
 // v22.41 无字回廊「名字之门」状态纯函数：与星井/星砂车/广场大灯同族只读旗标——守名者 done「名字
 // 回灯下」/真结局「记忆回到镇上」同读 S.G.trueBoss 一份源两档。只读不改，零结算零存档。
 export function galleryArchState(hero) {
@@ -756,6 +804,10 @@ export function drawWorld() {
   // VILLAGE_WELL 单一数据源。只读旗标，零结算零存档（与星井同读 S.G.trueBoss 一份源两档）。
   if (S.G && curMap() === 'village') drawVillageLamp(c.x, c.y);
   if (S.G && curMap() === 'village') drawVillageWell(c.x, c.y);
+  // v22.52 矿车轨道（纯显示·先于星井/星砂车层）：轨道铺在岩地上（轨下无井无车——CAVE_RAIL 与
+  // CAVE_WELL/CAVE_CART 无同格），先画轨道再画井/车，车驶过的路线一眼可见。位置读 data.js
+  // CAVE_RAIL 单一数据源（= MAPS.cave.rows '.' 扫描），零结算零存档（见 drawCaveRail 注释）。
+  if (S.G && curMap() === 'cave') drawCaveRail(c.x, c.y);
   // v22.38 星井（纯显示·先于角色层）：两档状态光效见 drawCaveWell 注释；位置读 data.js CAVE_WELL
   // 单一数据源。只读旗标，零结算零存档（与灯长台词「井还在低鸣/井也不鸣了」同源口径）。
   if (S.G && curMap() === 'cave') drawCaveWell(c.x, c.y);

@@ -744,7 +744,11 @@
 // 镇子记着镇子——与 stele2 碑文同源、幽冥魔王即旧灯卫的主线口径），现补上记誓人。数据层三件套
 // （gallery.extras/NPC_SPOTS '10,3'/NPCS.oathkeep），mark 复用既有 'staff' 杖标、造型走 NPC_SHEET
 // 默认 mwVillager（零 sprites 改动），台词走既有 lines + trueBoss after 机制，无任务、无顶标、零结算零存档。
-const GAME_VERSION = 'v22.51';
+// v22.52 新内容·世界景观·纯显示：星井矿脉「矿车轨道」——矿脉地图注释「轨道引导线贯穿」的 PATH '.' 格
+// 此前与岩地同色一像素可见轨道都没有（v22.39 星砂车停在矿场、车夫守着空气轨道）；现收口
+// CAVE_RAIL 单一数据源（逐行扫描 MAPS.cave.rows '.' 共 35 格，改图自动跟随），drawWorld 沿格绘制
+// 木枕 + 双轨（既有色族零新增颜色），零碰撞零结算零存档，不设小地图标记（地貌非决策信息）。
+const GAME_VERSION = 'v22.52';
 
 // v22.37 体验打磨：H 帮助页「地图指南」补小地图图例（可发现性·信息透明·承 v19.47 小地图暖金 / v21.x
 // 危险红点 / v22.26 未开宝箱暖金 / v22.35 NPC 任务标 / v22.36 大灯标记同一「小地图决策信息」主线）——
@@ -1053,6 +1057,23 @@ const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 
 
 const CAVE_TREASURE = MAPS.cave.treasure;
 const INN_PRICE = 10;
+
+// v22.52 星井矿脉「矿车轨道」（新内容·世界景观·纯显示，承 v22.39 星砂车「名字物补脸」先例的收口）：
+// 矿脉地图 v13.5 注释「轨道引导线贯穿——入口（井巫）→ 矿车区（车夫/试炼碑）→ 深处祭坛 → 中央水晶」，
+// ASCII 里的 PATH '.' 格就是这条引导线——v22.39 立起的星砂车停在 (19,10) 矿场、车夫守着空气轨道：
+// 轨道本体在 replaceTiles（PATH→CAVE）之后与世界画面岩地同色，一像素可见的轨道都没有（车夫「从前往
+// 镇上拉星砂」拉的是看不到的轨道）。现把「轨道 = 矿脉图 PATH 格」作为单一数据源收口于此：逐行扫描
+// MAPS.cave.rows 的 '.' 字符（35 格：西缘纵列 + 顶部横段 + 斜下引线 + 底部横段 + 南向短支，与地图
+// 引导线逐格一致），改图自动跟随、轨道永不与地图漂移；view/drawWorld.js 的世界绘制共用（纯显示
+// 零结算零存档：'.' 仍是 PATH→CAVE 可行走格，at()/SOLID/遇敌/开箱判定逐字不变，不进存档不设小地图
+// 标记——轨道是矿脉的地貌不是决策信息，与星砂车/名字之门「无决策信息不设标」同口径）。
+const CAVE_RAIL = (() => {
+  const out = [];
+  MAPS.cave.rows.forEach((row, y) => {
+    [...row].forEach((ch, x) => { if (ch === '.') out.push([x, y]); });
+  });
+  return out;
+})();
 
 // 酿造高级灵药配方（单一数据源）：core.brewNow 结算与 view/menus.drawBrew 配方文案/可酿判定/材料差额标注同读此源——
 // 此前 2 株蘑菇 + 10 金硬编码在 brewNow（结算，< / -= 两判定两扣减）与 drawBrew（「配方：2 株蘑菇 + 10 金币」、
@@ -3485,7 +3506,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, GALLERY_ARCH, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
