@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.43（本版守 v22.44）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 44)), GAME_VERSION);
 ok('data.js 含 v22.44 注释（小地图全域危险标注说明）', dSrc.includes('v22.44 体验打磨·信息透明·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.44（旧 v22.43 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.53';") && !dSrc.includes("const GAME_VERSION = 'v22.43';"));
+  dSrc.includes("const GAME_VERSION = 'v22.54';") && !dSrc.includes("const GAME_VERSION = 'v22.43';"));
 ok('data.js 仍保留 v22.43/v22.42 世代注释链（机制行/菌盖灯油累积注释未动）',
   dSrc.includes('v22.43 体验打磨·信息透明·纯文字') && dSrc.includes('v22.42 新内容·世界景观·纯显示'));
 
@@ -177,30 +177,30 @@ for (const [mapKey, expectFull] of [
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (pkgSrc.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 140 件套（含 smoke_v2244_fulldanger）', testChain === 149, String(testChain));
+ok('package.json test 串共 140 件套（含 smoke_v2244_fulldanger）', testChain === 150, String(testChain));
 ok('package.json 串尾已收录 smoke_v2244_fulldanger',
   pkgSrc.includes('smoke_v2243_encguide.mjs && node tests/smoke_v2244_fulldanger.mjs && node tests/smoke_v2245_watcher.mjs'));
 ok('README tests 树尾已收录 smoke_v2244_fulldanger（串跑链）',
-  readmeSrc.includes('smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint（npm test 串跑）'));
-ok('README 件套口径为一百四十九件套（一百四十八件套清除）',
-  readmeSrc.includes('冒烟一百四十九件套（一百四十八件套清除）') &&
+  readmeSrc.includes('smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield（npm test 串跑）'));
+ok('README 件套口径为一百五十件套（一百四十九件套清除）',
+  readmeSrc.includes('冒烟一百五十件套（一百四十九件套清除）') &&
   !readmeSrc.includes('冒烟一百三十九件套（一百三十八件套清' + '除）'));
 ok('README 含 v22.44 守护描述（小地图全域危险标注守护）',
   readmeSrc.includes('v22.44 起含小地图全域危险标注守护'));
 ok('README 视觉 bullet 含小地图全域危险标注（v22.44）',
   readmeSrc.includes('**小地图全域危险标注**（v22.44'));
 ok('README 含 smoke_v2244_fulldanger 入库（140 份）', readmeSrc.includes('smoke_v2244_fulldanger 入库（140 份）'));
-ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v22.53'));
+ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v22.54'));
 
 // —— 姊妹件套 pin（v2243 随新现实更新）复查 + 旧代零残留 ——
 const s2243 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2243_encguide.mjs'), 'utf8');
 ok('smoke_v2243 的 GAME_VERSION 字面量 pin 已更新为 v22.44（旧 v22.43 零残留）',
-  s2243.includes("const GAME_VERSION = 'v22.53';") && !s2243.includes("const GAME_VERSION = 'v22.43';"));
-ok('smoke_v2243 的 README 件套 pin 已随新现实更新为一百四十九件套（一百四十八件套清除）',
-  s2243.includes('一百四十九件套（一百四十八件套清除）'));
-ok('smoke_v2243 的 package.json 件套计数 pin 已更新为 === 140', s2243.includes('testChain === 149'));
+  s2243.includes("const GAME_VERSION = 'v22.54';") && !s2243.includes("const GAME_VERSION = 'v22.43';"));
+ok('smoke_v2243 的 README 件套 pin 已随新现实更新为一百五十件套（一百四十九件套清除）',
+  s2243.includes('一百五十件套（一百四十九件套清除）'));
+ok('smoke_v2243 的 package.json 件套计数 pin 已更新为 === 140', s2243.includes('testChain === 150'));
 ok('smoke_v2243 的 README 串尾 pin 已随新现实延伸至 smoke_v2244_fulldanger',
-  s2243.includes('smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint（npm test 串跑）'));
+  s2243.includes('smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield（npm test 串跑）'));
 // 旧代串尾 pin 全库零残留：不应再有任何测试检验「smoke_v2243_encguide（npm test 串跑）」旧尾形态（本文件自身除外）
 const testsDir = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2244_fulldanger.mjs');
 let legacyTail = [];

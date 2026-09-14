@@ -92,7 +92,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.49（本版守 v22.52）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 50)), GAME_VERSION);
 ok('data.js 含 v22.50 注释（酿药师说明）', dSrc.includes('v22.50 新内容·纯风味 NPC'));
 ok('GAME_VERSION 字面量已为 v22.51（旧 v22.50 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.53';") && !dSrc.includes("const GAME_VERSION = 'v22." + "49';"));
+  dSrc.includes("const GAME_VERSION = 'v22.54';") && !dSrc.includes("const GAME_VERSION = 'v22." + "49';"));
 ok('data.js 仍保留 v22.49/v22.48 世代注释链（货栈掌柜/地图指南指针累积注释未动）',
   dSrc.includes('v22.49 新内容·纯风味 NPC') && dSrc.includes('v22.48 体验打磨·信息透明·纯文字') &&
   dSrc.includes("const GAME_VERSION = 'v22." + "49';") === false);
@@ -187,31 +187,31 @@ ok('sprites.js 既有 kettle 热汤壶标分支仍在（mark 复用零新增）'
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树已收录 smoke_v2250_brewer 且位于串尾', readme.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint（npm test 串跑）'));
-ok('README 件套口径为一百四十九件套（一百四十八件套清除）',
-  readme.includes('冒烟一百四十九件套（一百四十八件套清除）') && !readme.includes('冒烟一百四十五件套（一百四十四件套清' + '除）'));
+ok('README tests 树已收录 smoke_v2250_brewer 且位于串尾', readme.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield（npm test 串跑）'));
+ok('README 件套口径为一百五十件套（一百四十九件套清除）',
+  readme.includes('冒烟一百五十件套（一百四十九件套清除）') && !readme.includes('冒烟一百四十五件套（一百四十四件套清' + '除）'));
 ok('README 含 v22.50 守护描述（潮灯镇酿药师新 NPC）', readme.includes('v22.50 起含潮灯镇酿药师新 NPC 守护'));
 ok('README 含 smoke_v2250_brewer 入库（146 份）', readme.includes('smoke_v2250_brewer 入库（146 份）'));
 ok('README 四图速览/系统清单含「酿药师」', readme.includes('酿药师'));
 ok('package.json 已收录 smoke_v2250_brewer（npm test 串跑第 146 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2250_brewer.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 147 件套', testChain === 149, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.50 条目', changelog.startsWith('## v22.53'));
+ok('package.json test 串共 147 件套', testChain === 150, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.50 条目', changelog.startsWith('## v22.54'));
 
 // —— 姊妹 pin 复查（smoke_v2249 随新现实更新 + 哨兵链 148）——
 const s2249 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2249_shopkeep.mjs'), 'utf8');
 ok('smoke_v2249 的 GAME_VERSION 字面量 pin 已更新为 v22.50（旧 v22.49 零残留）',
-  s2249.includes("const GAME_VERSION = 'v22.53';") && !s2249.includes("const GAME_VERSION = 'v22." + "49';"));
-ok('smoke_v2249 的 README 件套 pin 已随新现实更新为一百四十九件套（一百四十八件套清除）',
-  s2249.includes('一百四十九件套（一百四十八件套清除）'));
-ok('smoke_v2249 的 package.json 件套计数 pin 已更新为 === 146', s2249.includes('testChain === 149'));
+  s2249.includes("const GAME_VERSION = 'v22.54';") && !s2249.includes("const GAME_VERSION = 'v22." + "49';"));
+ok('smoke_v2249 的 README 件套 pin 已随新现实更新为一百五十件套（一百四十九件套清除）',
+  s2249.includes('一百五十件套（一百四十九件套清除）'));
+ok('smoke_v2249 的 package.json 件套计数 pin 已更新为 === 146', s2249.includes('testChain === 150'));
 ok('smoke_v2249 的 README 串尾 pin 已随新现实延伸至 smoke_v2251_oathkeep',
-  s2249.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint（npm test 串跑）'));
+  s2249.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield（npm test 串跑）'));
 ok('smoke_v2249 的 NPC 总数 pin 已随新现实更新为 34（记誓人落位）', s2249.includes('NPC_SPOTS).length === 34'));
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('v2143-45「件套守护领先一位」哨兵链已推进至 148（一百五十件套（一百四十九件套清除））',
-  s2143.includes('一百五十件套（一百四十九件套清除）') && s2143.includes("!readme.includes('一百五十件套')"));
+ok('v2143-45「件套守护领先一位」哨兵链已推进至 148（一百五十一件套（一百五十件套清除））',
+  s2143.includes('一百五十一件套（一百五十件套清除）') && s2143.includes("!readme.includes('一百五十一件套')"));
 
 // —— 旧代 v22.49 pin 全库零残留 ——
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2250_brewer.mjs');

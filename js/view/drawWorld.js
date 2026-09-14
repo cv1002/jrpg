@@ -147,6 +147,30 @@ function drawTileFx(ty, px, py, x, y) {
         CTX.fillStyle = '#ffe9a8';           // 高光
         CTX.fillRect(px + 11, py + 11, 4, 2);
       }
+      // v22.54 潮灯镇粮田「谷穗」景观（新内容·世界景观·纯显示，承 v22.42 蘑菇田菌盖同一「世界画面
+      // 补脸」主线的潮灯镇侧收口）：v22.40 高草显形后雾语林蘑菇田有菌盖、潮灯镇粮田（v21.80 粮铺
+      // 掌柜「镇南那片庄稼，是全年的口粮」/支线「护粮的委托」——哥布林偷粮）却只有深绿高草——「全年
+      // 的口粮」配画面看不出口粮二字；现仅潮灯镇（curMap()==='village'）的高草格（isTallGrass 单一
+      // 数据源，与 dangerAt 同读 gCells 一份源，危险/遇敌/踩踏判定逐字未动）按坐标哈希
+      // (x*5+y*7)%4===0 稀疏点缀 1 束谷穗：穗杆米色 #e8c9a0（NPC 米色同族）· 穗粒暖金 #ffd24a（灯油金
+      // 同族）· 芒须深金 #8a5a00（盖缘深金同族）· 高光金白 #ffe9a8——全部既有色族零新增颜色族，与
+      // 草簇/小花/菌盖同一哈希确定性手法；纯显示零结算零存档零数值变化；雾语林菌盖/洞窟岩地（GRASS
+      // 已被 replaceTiles 换走）不触发。
+      if (curMap() === 'village' && (x * 5 + y * 7) % 4 === 0) {
+        CTX.fillStyle = '#e8c9a0';           // 穗杆
+        CTX.fillRect(px + 14, py + 8, 2, 14);
+        CTX.fillStyle = '#ffd24a';           // 穗粒（暖金）
+        CTX.fillRect(px + 11, py + 10, 2, 2);
+        CTX.fillRect(px + 17, py + 10, 2, 2);
+        CTX.fillRect(px + 12, py + 14, 2, 2);
+        CTX.fillRect(px + 16, py + 14, 2, 2);
+        CTX.fillStyle = '#8a5a00';           // 芒须（深金）
+        CTX.fillRect(px + 11, py + 17, 2, 1);
+        CTX.fillRect(px + 17, py + 17, 2, 1);
+        CTX.fillStyle = '#ffe9a8';           // 高光
+        CTX.fillRect(px + 15, py + 9, 1, 1);
+        CTX.fillRect(px + 13, py + 12, 1, 1);
+      }
     } else if (dh % 29 === 0) { // 小花：白瓣黄心
       CTX.fillStyle = 'rgba(232,238,241,.85)';
       CTX.fillRect(px + 12, py + 9, 2, 2); CTX.fillRect(px + 16, py + 9, 2, 2);
