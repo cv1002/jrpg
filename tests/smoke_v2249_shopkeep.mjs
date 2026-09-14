@@ -91,7 +91,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.48（本版守 v22.49）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 49)), GAME_VERSION);
 ok('data.js 含 v22.49 注释（货栈掌柜说明）', dSrc.includes('v22.49 新内容·纯风味 NPC'));
 ok('GAME_VERSION 字面量已为 v22.49（旧 v22.48 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.49';") && !dSrc.includes("const GAME_VERSION = 'v22." + "48';"));
+  dSrc.includes("const GAME_VERSION = 'v22.50';") && !dSrc.includes("const GAME_VERSION = 'v22." + "48';"));
 ok('data.js 仍保留 v22.48/v22.47 世代注释链（地图指南指针/村井补脸累积注释未动）',
   dSrc.includes('v22.48 体验打磨·信息透明·纯文字') && dSrc.includes('v22.47 新内容·世界景观·纯显示') &&
   dSrc.includes("const GAME_VERSION = 'v22." + "48';") === false);
@@ -99,7 +99,7 @@ ok('data.js 仍保留 v22.48/v22.47 世代注释链（地图指南指针/村井�
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[8,10]===shopkeep', NPC_SPOTS['8,10'] === 'shopkeep', NPC_SPOTS['8,10']);
 ok('shopkeep 仅占一个坐标键（无重复映射）', Object.keys(NPC_SPOTS).filter((k) => NPC_SPOTS[k] === 'shopkeep').length === 1);
-ok('NPC_SPOTS 总数 32（既有 31 键 + 货栈掌柜 1 键，v22.49 随新现实更新）', Object.keys(NPC_SPOTS).length === 32, Object.keys(NPC_SPOTS).length);
+ok('NPC_SPOTS 总数 32（既有 31 键 + 货栈掌柜 1 键，v22.49 随新现实更新）', Object.keys(NPC_SPOTS).length === 33, Object.keys(NPC_SPOTS).length);
 ok('既有 31 个 NPC/石碑键未被误动', ['13,6', '10,13', '19,8', '12,8', '2,4', '13,9', '3,1', '2,3', '17,12', '17,11', '5,1', '10,1', '15,1', '20,1', '8,5', '14,8', '5,10', '15,12', '14,3', '16,9', '15,2', '13,2', '21,2', '4,2', '5,3', '5,5', '19,3', '14,15', '7,11', '7,14', '20,12']
   .every((k) => NPC_SPOTS[k] != null));
 // 全局坐标防撞演练：全图 extras 扫描，(8,10) 必须恰出现 1 次且在 village、ty 为 NPC
@@ -183,34 +183,34 @@ ok('sprites.js 既有 basket 货篮标分支仍在（mark 复用零新增）', s
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树已收录 smoke_v2249_shopkeep 且位于串尾', readme.includes('smoke_v2248_mapguide + smoke_v2249_shopkeep（npm test 串跑）'));
-ok('README 件套口径为一百四十五件套（一百四十四件套清除）',
-  readme.includes('冒烟一百四十五件套（一百四十四件套清除）') && !readme.includes('冒烟一百四十四件套（一百四十三件套清' + '除）'));
+ok('README tests 树已收录 smoke_v2249_shopkeep 且位于串尾', readme.includes('smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer（npm test 串跑）'));
+ok('README 件套口径为一百四十六件套（一百四十五件套清除）',
+  readme.includes('冒烟一百四十六件套（一百四十五件套清除）') && !readme.includes('冒烟一百四十四件套（一百四十三件套清' + '除）'));
 ok('README 含 v22.49 守护描述（潮灯镇货栈掌柜新 NPC）', readme.includes('v22.49 起含潮灯镇货栈掌柜新 NPC 守护'));
 ok('README 含 smoke_v2249_shopkeep 入库（145 份）', readme.includes('smoke_v2249_shopkeep 入库（145 份）'));
 ok('README 四图速览/系统清单含「货栈掌柜」', readme.includes('货栈掌柜'));
 ok('package.json 已收录 smoke_v2249_shopkeep（npm test 串跑第 145 份）',
-  JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2249_shopkeep.mjs'));
+  JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2250_brewer.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 145 件套', testChain === 145, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.49 条目', changelog.startsWith('## v22.49'));
+ok('package.json test 串共 145 件套', testChain === 146, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.49 条目', changelog.startsWith('## v22.50'));
 
 // —— 姊妹 pin 复查（smoke_v2248 随新现实更新 + 哨兵链 146）——
 const s2248 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2248_mapguide.mjs'), 'utf8');
 ok('smoke_v2248 的 GAME_VERSION 字面量 pin 已更新为 v22.49（旧 v22.48 零残留）',
-  s2248.includes("const GAME_VERSION = 'v22.49';") && !s2248.includes("const GAME_VERSION = 'v22." + "48';"));
-ok('smoke_v2248 的 README 件套 pin 已随新现实更新为一百四十五件套（一百四十四件套清除）',
-  s2248.includes('一百四十五件套（一百四十四件套清除）'));
-ok('smoke_v2248 的 package.json 件套计数 pin 已更新为 === 145', s2248.includes('testChain === 145'));
+  s2248.includes("const GAME_VERSION = 'v22.50';") && !s2248.includes("const GAME_VERSION = 'v22." + "48';"));
+ok('smoke_v2248 的 README 件套 pin 已随新现实更新为一百四十六件套（一百四十五件套清除）',
+  s2248.includes('一百四十六件套（一百四十五件套清除）'));
+ok('smoke_v2248 的 package.json 件套计数 pin 已更新为 === 145', s2248.includes('testChain === 146'));
 ok('smoke_v2248 的 README 串尾 pin 已随新现实延伸至 smoke_v2249_shopkeep',
-  s2248.includes('smoke_v2248_mapguide + smoke_v2249_shopkeep（npm test 串跑）'));
-ok('smoke_v2248 的 NPC 总数 pin 已随新现实更新为 32（货栈掌柜落位）', s2248.includes('NPC_SPOTS).length === 32'));
+  s2248.includes('smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer（npm test 串跑）'));
+ok('smoke_v2248 的 NPC 总数 pin 已随新现实更新为 32（货栈掌柜落位）', s2248.includes('NPC_SPOTS).length === 33'));
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('v2143-45「件套守护领先一位」哨兵链已推进至 146（一百四十六件套（一百四十五件套清除））',
-  s2143.includes('一百四十六件套（一百四十五件套清除）') && s2143.includes("!readme.includes('一百四十六件套')"));
+ok('v2143-45「件套守护领先一位」哨兵链已推进至 146（一百四十七件套（一百四十六件套清除））',
+  s2143.includes('一百四十七件套（一百四十六件套清除）') && s2143.includes("!readme.includes('一百四十七件套')"));
 
 // —— 旧代 v22.48 pin 全库零残留 ——
-const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2249_shopkeep.mjs');
+const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2250_brewer.mjs');
 const stale = [];
 for (const f of allTests) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
