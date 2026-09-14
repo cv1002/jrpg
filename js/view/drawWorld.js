@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, CAVE_WELL, CAVE_CART, GALLERY_ARCH } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, GALLERY_ARCH } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -237,6 +237,57 @@ function drawVillageLamp(camX, camY) {
     CTX.fillRect(px + 3, py - 35, 2, 2);
     CTX.fillRect(px + 27, py - 31, 2, 2);
     CTX.fillRect(px + 24, py - 40, 2, 2);
+  }
+}
+
+// v22.47 潮灯镇「村井」状态纯函数：与星井/星砂车/广场大灯同族只读旗标——灯长「可你听——井还在低鸣。」
+// /「井也不鸣了。」/井巫「井底在响」/说书人「井底那口钟还在替大家记着」同读 S.G.trueBoss 一份源两档
+// （村井与矿脉星井是同一口水脉的两端，听矿人「像井底那口钟的余音」同口径）。只读不改，零结算零存档。
+export function villageWellState(hero) {
+  if (hero && hero.trueBoss) return 'silent';
+  return 'hum';
+}
+
+function drawVillageWell(camX, camY) {
+  const st = villageWellState(S.G);
+  const px = VILLAGE_WELL.x * T - camX;
+  const py = VILLAGE_WELL.y * T - camY;
+  const cx = px + T / 2;
+  // 光晕（状态档位色：低鸣星蓝青光 / 静默零光晕——与星井/大灯光晕同档位结构）
+  if (st === 'hum') {
+    CTX.fillStyle = 'rgba(95,216,255,.20)';
+    CTX.beginPath(); CTX.arc(cx, py + 6, 15, 0, 7); CTX.fill();
+  }
+  // 石砌井圈（共体零状态分支：浅石 #6a6f78 / 井沿高光 #8a9098，与镇路/民宅石色同族）
+  CTX.fillStyle = '#6a6f78';
+  CTX.fillRect(px + 5, py - 1, 22, 4);
+  CTX.fillRect(px + 6, py - 13, 4, 12);
+  CTX.fillRect(px + 22, py - 13, 4, 12);
+  CTX.fillRect(px + 3, py - 16, 26, 5);
+  CTX.fillStyle = '#8a9098';
+  CTX.fillRect(px + 7, py - 16, 2, 3);
+  CTX.fillRect(px + 23, py - 16, 2, 3);
+  // 辘轳木架（共体：木柱 #6b5138 / 横梁 #8a5a2b，与 NPC 木制标记/星砂车木料同色族）
+  CTX.fillStyle = '#6b5138';
+  CTX.fillRect(px + 1, py - 32, 3, 20);
+  CTX.fillRect(px + 28, py - 32, 3, 20);
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(px - 1, py - 34, 34, 3);
+  // 吊绳 + 水桶（共体：绳 #b8a78e / 桶木 #8a5a2b）
+  CTX.fillStyle = '#b8a78e';
+  CTX.fillRect(px + 15, py - 31, 1, 11);
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(px + 12, py - 20, 8, 6);
+  // 井水（状态色：低鸣星蓝 #9adcff + 星砂浮光 #cfeaff / 静默暗灰 #5a6472——与星井/星砂车同色族同档位）
+  if (st === 'hum') {
+    CTX.fillStyle = '#9adcff';
+    CTX.fillRect(px + 11, py - 11, 10, 9);
+    CTX.fillStyle = '#cfeaff';
+    CTX.fillRect(px + 13, py - 14, 2, 2);
+    CTX.fillRect(px + 18, py - 13, 2, 2);
+  } else {
+    CTX.fillStyle = '#5a6472';
+    CTX.fillRect(px + 11, py - 11, 10, 9);
   }
 }
 
@@ -701,7 +752,10 @@ export function drawWorld() {
   }
   // v22.36 广场大灯（纯显示·先于角色层）：三档状态光效见 drawVillageLamp 注释；位置读
   // data.js VILLAGE_LAMP 单一数据源。只读旗标，零结算零存档（与祭坛熄灭/灯长台词/胜利画面同源口径）。
+  // v22.47 村井（纯显示·同层先于角色）：两档状态光效见 drawVillageWell 注释；位置读 data.js
+  // VILLAGE_WELL 单一数据源。只读旗标，零结算零存档（与星井同读 S.G.trueBoss 一份源两档）。
   if (S.G && curMap() === 'village') drawVillageLamp(c.x, c.y);
+  if (S.G && curMap() === 'village') drawVillageWell(c.x, c.y);
   // v22.38 星井（纯显示·先于角色层）：两档状态光效见 drawCaveWell 注释；位置读 data.js CAVE_WELL
   // 单一数据源。只读旗标，零结算零存档（与灯长台词「井还在低鸣/井也不鸣了」同源口径）。
   if (S.G && curMap() === 'cave') drawCaveWell(c.x, c.y);
