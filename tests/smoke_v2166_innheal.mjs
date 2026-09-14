@@ -112,7 +112,7 @@ ok('shop.js 缺损进入条件逐字零回归（HP 或 MP 不满才可住店）'
 // —— 同源两端零回归（清泉结算端 / 旅馆面板预览端）——
 const wSrc = fs.readFileSync(path.join(ROOT, 'js/world.js'), 'utf8');
 ok('world.js 清泉端报文逐字零回归（v19.94 同式对照端不受扰）',
-  wSrc.includes('`⛲ 清泉涌动，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！`'));
+  wSrc.includes('`⛲ 清泉涌动，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！${gaugeSfx}`'));
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
 ok('menus.js drawInn 面板预览端逐字零回归（「今晚将恢复」行不受扰）',
   mSrc.includes('今晚将恢复   HP +${Math.max(0,hero.hpMax-hero.hp)}   MP +${Math.max(0,hero.mpMax-hero.mp)}'));

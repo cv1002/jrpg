@@ -259,7 +259,18 @@ function onChestStep(x, y, hero) {
 }
 
 function onFountainStep(x, y, hero) {
+  // v22.46 喷泉踩踏反馈补「遇敌槽 -N」（体验打磨·信息透明·纯显示，承 v19.94 喷泉数值反馈 /
+  // v22.43 帮助页「遇敌槽 / 危险格」机制行 / v22.44 小地图全域危险标注同一「危险端看得见→读得懂」
+  // 主线）：喷泉是遇敌槽唯一的「安全阀」（ENCOUNTER.fountain=-25，与帮助页机制行/小地图读数同读一份
+  // 源）——危险区跑路回泉=把危险表压回去，但 v22.43 机制行把「喷泉 -25」写进帮助页后，踩上喷泉这
+  // 一刻的反馈仍只报 HP/MP（玩家以为泉只回血、并不知道遇敌槽被压了多少）；现按 v21.58 石甲挡伤 /
+  // v21.66 住店同款「报实际生效值」补「· 遇敌槽 -N」（N=结算前后实际差，钳到 0 时如实报小值；
+  // N=0 时保持原文案逐字零回归），纯显示零结算零存档零数值变化（Math.max(0, …) 遇敌槽结算与
+  // HP/MP 恢复逐字未动）。
+  const gaugeBefore = S.encGauge;
   S.encGauge = Math.max(0, S.encGauge + ENCOUNTER.fountain);
+  const gaugeDrop = gaugeBefore - S.encGauge;
+  const gaugeSfx = gaugeDrop > 0 ? ` · 遇敌槽 -${gaugeDrop}` : '';
   if (hero.hp < hero.hpMax || hero.mp < hero.mpMax) {
     const hpBefore = hero.hp;
     const mpBefore = hero.mp;
@@ -269,10 +280,10 @@ function onFountainStep(x, y, hero) {
     // v19.94 喷泉恢复反馈追加具体数值（信息透明·纯显示）：此前只报「HP/MP 完全恢复」，
     // 玩家踩泉后想确认「到底回了多少 / 现在满没满」仍需再按 I 看状态页；现在直接读结算后的
     // hero.hp/hpMax/mp/mpMax，显示本次恢复量与最终值，满状态分支则按帮助页口径提示「状态已满」。
-    bind.boxMsg(`⛲ 清泉涌动，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！`, EVENT_MSG_MS);
+    bind.boxMsg(`⛲ 清泉涌动，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！${gaugeSfx}`, EVENT_MSG_MS);
     bind.renderHUD();
   } else {
-    bind.boxMsg('⛲ 踩上回血 · 状态已满', EVENT_MSG_MS);
+    bind.boxMsg('⛲ 踩上回血 · 状态已满' + gaugeSfx, EVENT_MSG_MS);
   }
 }
 
