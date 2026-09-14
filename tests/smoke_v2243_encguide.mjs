@@ -4,9 +4,9 @@
 // 地形阈值，红点只在危险格占可走格 ≤50% 时叠涂，玩家只见槽涨不知其义）；现于「通关之路」前补一行
 // 机制总述（数值全部由 data.js ENCOUNTER 单一数据源派生：dangerMin/dangerVar/calm/fountain/full/warn，
 // 与 world.tickEncounter 结算/小地图读数同读一份源），行数 7→8 仍 ≤10 保 sp=34 档、r[2] 数 2→3、
-// 末行（通关之路）基线 366 不触页脚 452。纯文字零逻辑零结算零存档。
+// 末行（通关之路）基线 398 不触页脚 452。纯文字零逻辑零结算零存档。
 // 本冒烟守护：版本锚点、data.js 源级落位（新行 + 既有 7 行逐字零回归 + v22.42/v22.40 注释保留）、
-// 宽度预算（estW 口径 ≤470）、页长派生预算（末行基线 366 / 页脚 452）、运行期实证（drawHelp 第 2 页
+// 宽度预算（estW 口径 ≤470）、页长派生预算（末行基线 398 / 页脚 452）、运行期实证（drawHelp 第 2 页
 // 渲染捕获：新行主行/次行逐字落位 + 坐标/字号/颜色 + 通关之路金色收尾仍在末行 + 页脚）、
 // README/package.json/CHANGELOG 同步（tests 树尾/件套口径 139/v22.43 守护描述/入库 139 份）、
 // 姊妹件套 pin（v2242..v2237 随新现实更新）复查 + 旧代 v22.42 字面量/恒等/件套/串尾 pin 全库零残留 +
@@ -93,7 +93,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.42（本版守 v22.43）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 43)), GAME_VERSION);
 ok('data.js 含 v22.43 注释（机制行说明）', dSrc.includes('v22.43 体验打磨'));
 ok('GAME_VERSION 字面量已为 v22.43（旧 v22.42 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.52';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
+  dSrc.includes("const GAME_VERSION = 'v22.53';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('data.js 仍保留 v22.42/v22.40 世代注释链（菌盖灯油/高草显形累积注释未动）',
   dSrc.includes('v22.42 新内容·世界景观·纯显示') && dSrc.includes('v22.40 高草显形'));
 
@@ -161,9 +161,9 @@ page.forEach((r) => {
   if (r[2] && estW(r[2], 12) > 470) { allOk = false; console.log('    <- r2越界:', r[0]); }
 });
 ok('地图指南页全部 8 行估算宽 ≤470（全页行宽巡检）', allOk);
-// 页长派生预算：末行基线 = 80 + (8-1)*34 + 3*16 = 366，不触页脚 452
-ok('页长派生：末行基线 366 ≤440（页脚 452 之上留白，v19.59 式预算）',
-  80 + (page.length - 1) * 34 + (page.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16 === 366,
+// 页长派生预算：末行基线 = 80 + (8-1)*34 + 5*16 = 398，不触页脚 452
+ok('页长派生：末行基线 398 ≤440（页脚 452 之上留白，v19.59 式预算）',
+  80 + (page.length - 1) * 34 + (page.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16 === 398,
   String(80 + (page.length - 1) * 34 + (page.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16));
 
 // —— 运行期实证：drawHelp 第 2 页渲染捕获（坐标/字号/颜色逐值）——
@@ -189,24 +189,24 @@ function captureHelp() {
 const calls = captureHelp();
 ok('运行期：drawHelp 第 2 页渲染无抛错', !calls.some((c) => c.t.startsWith('THREW:')), calls.filter((c) => c.t.startsWith('THREW:')).map((c) => c.t).join('|'));
 const at = (t, y, font, fill) => calls.find((c) => c.t.startsWith(t) && c.y === y && c.font === font && c.fill === fill);
-ok('运行期：机制行主行落位（x=100 y=316 14px 普通色）',
-  !!at('遇敌槽 / 危险格', 316, '14px sans-serif', '#e8eef1'),
+ok('运行期：机制行主行落位（x=100 y=348 14px 普通色）',
+  !!at('遇敌槽 / 危险格', 348, '14px sans-serif', '#e8eef1'),
   JSON.stringify(calls.filter((c) => c.t.startsWith('遇敌')).slice(0, 4)));
-ok('运行期：机制行次行落位（x=100 y=334 12px 次级灰）',
-  !!at('雾语林/矿脉/回廊全图皆危险格', 334, '12px sans-serif', '#7d93a3'));
-ok('运行期：通关之路金色收尾仍在末行（x=100 y=366 14px #ffd24a）',
-  !!at('通关之路', 366, '14px sans-serif', '#ffd24a'));
+ok('运行期：机制行次行落位（x=100 y=366 12px 次级灰）',
+  !!at('雾语林/矿脉/回廊全图皆危险格', 366, '12px sans-serif', '#7d93a3'));
+ok('运行期：通关之路金色收尾仍在末行（x=100 y=398 14px #ffd24a）',
+  !!at('通关之路', 398, '14px sans-serif', '#ffd24a'));
 ok('运行期：页脚落位（y=452 第 2/4 页翻页提示）',
   !!at('第 2/4 页', 452, '12px sans-serif', '#7d93a3'));
 ok('运行期：面板标题为「— 地图指南 —」（v21.31 标题随页切换零回归）', calls.some((c) => c.t === '— 地图指南 —'));
-ok('运行期：既有四图 Lv 行仍按 80/114/148/182 落位（零位移）',
+ok('运行期：既有四图 Lv 行仍按 80/114/148/198 落位（星井矿脉主行 148 不移、无字回廊 182→198 让位 r[2]）',
   !!at('潮灯镇 Lv.', 80, '14px sans-serif', '#e8eef1') &&
   !!at('雾语林 Lv.', 114, '14px sans-serif', '#e8eef1') &&
   !!at('星井矿脉 Lv.', 148, '14px sans-serif', '#e8eef1') &&
-  !!at('无字回廊 Lv.', 182, '14px sans-serif', '#e8eef1'));
-ok('运行期：图例两行仍按 216/266 落位（零位移）',
-  !!at('小地图·状态标', 216, '14px sans-serif', '#e8eef1') &&
-  !!at('小地图·色标', 266, '14px sans-serif', '#e8eef1'));
+  !!at('无字回廊 Lv.', 198, '14px sans-serif', '#e8eef1'));
+ok('运行期：图例两行仍按 248/298 落位（随 v22.53 让位下移）',
+  !!at('小地图·状态标', 248, '14px sans-serif', '#e8eef1') &&
+  !!at('小地图·色标', 298, '14px sans-serif', '#e8eef1'));
 
 // —— 零回归面：未动任何小地图绘制/标记/数据，未动 NPC/任务/存档 ——
 ok('NPC 总数保持 30（零 NPC 变更）', Object.keys(NPC_SPOTS).length === 34, String(Object.keys(NPC_SPOTS).length));
@@ -214,18 +214,18 @@ ok('本版零新增文件之外：仅 data.js 文案 + README/package.json/CHANG
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (pkgSrc.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 139 件套（含 smoke_v2243_encguide）', testChain === 148, String(testChain));
+ok('package.json test 串共 139 件套（含 smoke_v2243_encguide）', testChain === 149, String(testChain));
 ok('package.json 串尾已收录 smoke_v2243_encguide', pkgSrc.includes('smoke_v2242_mushfield.mjs && node tests/smoke_v2243_encguide.mjs'));
 ok('README tests 树尾已收录 smoke_v2243_encguide（串跑链）',
-  readmeSrc.includes('smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail（npm test 串跑）'));
-ok('README 件套口径为一百四十八件套（一百四十七件套清除）',
-  readmeSrc.includes('冒烟一百四十八件套（一百四十七件套清除）') &&
+  readmeSrc.includes('smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint（npm test 串跑）'));
+ok('README 件套口径为一百四十九件套（一百四十八件套清除）',
+  readmeSrc.includes('冒烟一百四十九件套（一百四十八件套清除）') &&
   !readmeSrc.includes('冒烟一百三十八件套（一百三十七件套清' + '除）'));
 ok('README 含 v22.43 守护描述（帮助页遇敌槽/危险格机制行守护）',
   readmeSrc.includes('v22.43 起含帮助页「地图指南」遇敌槽/危险格机制行守护'));
 ok('README 视觉 bullet 含机制行指针（H 帮助页·地图指南）',
   readmeSrc.includes('遇敌槽 / 危险格机制行') && readmeSrc.includes('H 帮助页·地图指南新增'));
-ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v22.52'));
+ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v22.53'));
 
 // —— 姊妹件套 pin（v2242..v2237 随新现实更新）复查 + 旧代零残留 ——
 const readTest = (name) => fs.readFileSync(path.join(ROOT, 'tests', name), 'utf8');
@@ -234,14 +234,14 @@ const s2237 = readTest('smoke_v2237_minimaplegend.mjs');
 const s2238 = readTest('smoke_v2238_starwell.mjs');
 const s2234 = readTest('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2242 的 GAME_VERSION 字面量 pin 已更新为 v22.43（旧 v22.42 零残留）',
-  s2242.includes("const GAME_VERSION = 'v22.52';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
+  s2242.includes("const GAME_VERSION = 'v22.53';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('smoke_v2237 的地图指南行数 pin 已更新为 === 8', s2237.includes('page.length === 8'));
 ok('smoke_v2237 的机制行/通关之路下标 pin 已更新（labels[6]=机制行 labels[7]=通关之路）',
   s2237.includes("labels[6] === '遇敌槽 / 危险格'") && s2237.includes("labels[7] === '通关之路'"));
 ok('smoke_v2238 的地图指南行数 pin 已更新为 === 8', s2238.includes('page.length === 8'));
-ok('smoke_v2234 的 README 件套 pin 已随新现实更新为一百四十八件套（一百四十七件套清除）',
-  s2234.includes('一百四十八件套（一百四十七件套清除）'));
-ok('smoke_v2234 的 package.json 件套计数 pin 已更新为 === 139', s2234.includes('testChain === 148'));
+ok('smoke_v2234 的 README 件套 pin 已随新现实更新为一百四十九件套（一百四十八件套清除）',
+  s2234.includes('一百四十九件套（一百四十八件套清除）'));
+ok('smoke_v2234 的 package.json 件套计数 pin 已更新为 === 139', s2234.includes('testChain === 149'));
 // 旧代串尾 pin 全库零残留：不应再有任何测试检验「smoke_v2242_mushfield（npm test 串跑）」旧尾形态（本文件自身除外）
 const testsDir = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2243_encguide.mjs');
 let legacyTail = [];
