@@ -111,6 +111,29 @@ function drawTileFx(ty, px, py, x, y) {
   // 确定性装饰（纯显示·零状态）：坐标哈希稀疏点缀——草地小花/草痕、路面石子；
   // 不进存档、不参与结算，洞窟 GRASS 已被 replaceTiles 换成 CAVE 故天然不触发
   const dh = (x * 19 + y * 37);
+  // v22.55 名字石碑「回灯温光」（新内容·世界景观·纯显示，承 v22.36 广场大灯三档 / v22.41 名字之门
+  // 两档同一「名字物状态随主线」主线的回廊收口）：trueBoss 后四块名字石碑（STELE 瓦片，碑文与
+  // FRAGMENTS 同源；拾灯人/掌灯童/刻碑人/记誓人守碑）此前与开局一模一样——守名者 done「名字都回
+  // 灯下了」/说书人 after「名字都回了灯下，第二块碑还是温的——这回，是镇子在焐它」/记誓人 after
+  // 「名字都回了灯下，第二块碑还是温的」都在说真结局后碑有光有温，世界画面里石碑却仍是冷灰石；现仅
+  // 无字回廊（curMap()==='gallery'）的 STELE 格（steleLitState 与守名者/名字之门同读 S.G.trueBoss
+  // 一份源）叠加温光：暖金微光罩 rgba(255,233,168,.16)（金白同族）· 碑缘暖光 rgba(255,210,74,.45)
+  // （灯油金同族）· 浮光金点 #ffe9a8（坐标哈希确定性，与小花草痕同法）· 顶上名字微光 #ffd24a——全部
+  // 既有色族零新增颜色；纯显示零结算零存档零数值变化（at/SOLID/NPC 判定逐字未动，trueBoss 前零回归）。
+  if (ty === TY.STELE && curMap() === 'gallery' && steleLitState(S.G)) {
+    CTX.fillStyle = 'rgba(255,233,168,.16)';
+    CTX.fillRect(px + 2, py + 2, 28, 28);
+    CTX.fillStyle = 'rgba(255,210,74,.45)';
+    CTX.fillRect(px + 2, py + 2, 28, 1);
+    CTX.fillRect(px + 2, py + 29, 28, 1);
+    CTX.fillRect(px + 2, py + 2, 1, 28);
+    CTX.fillRect(px + 29, py + 2, 1, 28);
+    CTX.fillStyle = '#ffd24a';
+    CTX.fillRect(px + 12 + (dh % 6), py + 6, 3, 2);
+    CTX.fillStyle = '#ffe9a8';
+    CTX.fillRect(px + 8 + (dh % 12), py + 20, 2, 2);
+    CTX.fillRect(px + 20 + (dh % 7), py + 24, 2, 2);
+  }
   if (ty === TY.GRASS) {
     // v22.40 高草显形（体验打磨·信息透明·纯显示）：'G' 高草自 v3.x 起就是全图通用危险格
     // （world.dangerAt 第一道判定即读 loadMap 建立的 gCells），世界画面却与普通草一像素之差都没有——
@@ -468,6 +491,13 @@ function drawCaveRail(camX, camY) {
 export function galleryArchState(hero) {
   if (hero && hero.trueBoss) return 'lit';
   return 'dark';
+}
+
+// v22.55 无字回廊名字石碑「回灯温光」状态纯函数：与守名者 done「名字都回灯下了」/名字之门
+// galleryArchState 同读 S.G.trueBoss 一份源——trueBoss 后四块名字石碑（STELE 瓦片）温光点亮
+// （「名字都回了灯下，第二块碑还是温的——这回，是镇子在焐它」）。只读不改，零结算零存档。
+export function steleLitState(hero) {
+  return !!(hero && hero.trueBoss);
 }
 
 function drawGalleryArch(camX, camY) {

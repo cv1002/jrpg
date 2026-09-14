@@ -96,7 +96,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.25', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 26)), GAME_VERSION);
 ok('data.js 含 v22.26 注释（宝箱开启反馈追加进度）', dSrc.includes('v22.26 宝箱开启反馈追加进度'));
 ok('GAME_VERSION 字面量已为 v22.26（旧 v22.25 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.54';") && !dSrc.includes("const GAME_VERSION = 'v22." + "25';"));
+  dSrc.includes("const GAME_VERSION = 'v22.55';") && !dSrc.includes("const GAME_VERSION = 'v22." + "25';"));
 ok('data.js 仍保留 v22.25 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.25 无字回廊新风味 NPC「刻碑人」'));
 
 // —— world.js 源级落位 ——
@@ -167,9 +167,9 @@ ok('已开箱格再踩不重复计数（chestCount 1→1，Set 不增）',
   String(chestCount(S.G)) + '/' + S.G.chests.size);
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README tests 树收录 smoke_v2226_chestprogress 且位于串尾', readme.includes('smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield（npm test 串跑）'));
-ok('README 件套口径为一百五十件套（一百四十九件套清除）',
-  readme.includes('冒烟一百五十件套（一百四十九件套清除）') && !readme.includes('冒烟一百二十一件套（一百二十件套清' + '除）'));
+ok('README tests 树收录 smoke_v2226_chestprogress 且位于串尾', readme.includes('smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow（npm test 串跑）'));
+ok('README 件套口径为一百五十一件套（一百五十件套清除）',
+  readme.includes('冒烟一百五十一件套（一百五十件套清除）') && !readme.includes('冒烟一百二十一件套（一百二十件套清' + '除）'));
 ok('README 含 v22.26 守护描述（宝箱开启反馈宝箱进度）', readme.includes('v22.26 起含宝箱开启反馈宝箱进度守护'));
 ok('README 含 smoke_v2226_chestprogress 入库（122 份）', readme.includes('smoke_v2226_chestprogress 入库（122 份）'));
 ok('README 系统清单补「开箱报文带宝箱进度」（v22.26）',
@@ -177,7 +177,7 @@ ok('README 系统清单补「开箱报文带宝箱进度」（v22.26）',
 ok('package.json 已收录 smoke_v2226_chestprogress（npm test 串跑第 122 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2226_chestprogress.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 122 件套', testChain === 150, String(testChain));
+ok('package.json test 串共 122 件套', testChain === 151, String(testChain));
 ok('CHANGELOG 含 v22.26 条目', changelog.includes('## v22.26 '));
 
 // 姊妹 pin 复查（v2225..v2215 随新现实更新）
@@ -187,18 +187,18 @@ for (const f of ['v2225_stonecarver', 'v2224_sifter', 'v2223_lampman', 'v2222_pe
 }
 const sibNames = Object.keys(sib);
 ok('姊妹件套（v2225..v2215）GAME_VERSION 字面量 pin 已更新为 v22.26',
-  sibNames.every((k) => sib[k].includes("const GAME_VERSION = 'v22.54';")));
+  sibNames.every((k) => sib[k].includes("const GAME_VERSION = 'v22.55';")));
 ok('姊妹件套（v2225..v2215）GAME_VERSION 恒等 pin 已更新为 === v22.26',
-  sibNames.every((k) => sib[k].includes("GAME_VERSION === 'v22.54'")));
-ok('姊妹件套（v2225..v2215）README 件套 pin 已更新为一百五十件套（一百四十九件套清除）',
-  sibNames.every((k) => sib[k].includes('一百五十件套（一百四十九件套清除）')));
+  sibNames.every((k) => sib[k].includes("GAME_VERSION === 'v22.55'")));
+ok('姊妹件套（v2225..v2215）README 件套 pin 已更新为一百五十一件套（一百五十件套清除）',
+  sibNames.every((k) => sib[k].includes('一百五十一件套（一百五十件套清除）')));
 ok('姊妹件套（v2225..v2215）README 树尾 pin 已更新为 + smoke_v2226_chestprogress',
-  sibNames.every((k) => sib[k].includes('smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield（npm test 串跑）')));
+  sibNames.every((k) => sib[k].includes('smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow（npm test 串跑）')));
 ok('姊妹件套（v2225..v2215）package.json 件套计数 pin 已更新为 === 122',
-  sibNames.every((k) => sib[k].includes('testChain === 150')));
+  sibNames.every((k) => sib[k].includes('testChain === 151')));
 ok('串尾 pin（v2215/v2220..v2225）已更新为 + smoke_v2226_chestprogress',
   ['v2215_tutorvol', 'v2220_hearer', 'v2221_wanderer', 'v2222_peddler', 'v2223_lampman', 'v2224_sifter', 'v2225_stonecarver']
-    .every((k) => sib[k].includes('smoke_v2225_stonecarver.mjs && node tests/smoke_v2226_chestprogress.mjs && node tests/smoke_v2227_minstrel.mjs && node tests/smoke_v2228_titlesave.mjs && node tests/smoke_v2229_metall.mjs && node tests/smoke_v2230_pausewarn.mjs && node tests/smoke_v2231_smith.mjs && node tests/smoke_v2232_travelsup.mjs && node tests/smoke_v2233_nameflavor.mjs && node tests/smoke_v2234_innkeeper.mjs && node tests/smoke_v2235_minimapquest.mjs && node tests/smoke_v2236_villagelamp.mjs && node tests/smoke_v2237_minimaplegend.mjs && node tests/smoke_v2238_starwell.mjs && node tests/smoke_v2239_minercart.mjs && node tests/smoke_v2240_tallgrass.mjs && node tests/smoke_v2241_gatearch.mjs && node tests/smoke_v2242_mushfield.mjs && node tests/smoke_v2243_encguide.mjs && node tests/smoke_v2244_fulldanger.mjs && node tests/smoke_v2245_watcher.mjs && node tests/smoke_v2246_fountgauge.mjs && node tests/smoke_v2247_villagewell.mjs && node tests/smoke_v2248_mapguide.mjs && node tests/smoke_v2249_shopkeep.mjs && node tests/smoke_v2250_brewer.mjs && node tests/smoke_v2251_oathkeep.mjs && node tests/smoke_v2252_rail.mjs && node tests/smoke_v2253_supplypoint.mjs && node tests/smoke_v2254_grainfield.mjs"')));
+    .every((k) => sib[k].includes('smoke_v2225_stonecarver.mjs && node tests/smoke_v2226_chestprogress.mjs && node tests/smoke_v2227_minstrel.mjs && node tests/smoke_v2228_titlesave.mjs && node tests/smoke_v2229_metall.mjs && node tests/smoke_v2230_pausewarn.mjs && node tests/smoke_v2231_smith.mjs && node tests/smoke_v2232_travelsup.mjs && node tests/smoke_v2233_nameflavor.mjs && node tests/smoke_v2234_innkeeper.mjs && node tests/smoke_v2235_minimapquest.mjs && node tests/smoke_v2236_villagelamp.mjs && node tests/smoke_v2237_minimaplegend.mjs && node tests/smoke_v2238_starwell.mjs && node tests/smoke_v2239_minercart.mjs && node tests/smoke_v2240_tallgrass.mjs && node tests/smoke_v2241_gatearch.mjs && node tests/smoke_v2242_mushfield.mjs && node tests/smoke_v2243_encguide.mjs && node tests/smoke_v2244_fulldanger.mjs && node tests/smoke_v2245_watcher.mjs && node tests/smoke_v2246_fountgauge.mjs && node tests/smoke_v2247_villagewell.mjs && node tests/smoke_v2248_mapguide.mjs && node tests/smoke_v2249_shopkeep.mjs && node tests/smoke_v2250_brewer.mjs && node tests/smoke_v2251_oathkeep.mjs && node tests/smoke_v2252_rail.mjs && node tests/smoke_v2253_supplypoint.mjs && node tests/smoke_v2254_grainfield.mjs && node tests/smoke_v2255_steleglow.mjs"')));
 
 // —— 旧代 pin 零残留：全部测试文件不得再含 v22.25 字面量/恒等/件套/树尾 pin（拆串构造避免自匹配）——
 let stale = [];
