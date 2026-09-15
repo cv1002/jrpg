@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.51（本版守 v22.52）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 52)), GAME_VERSION);
 ok('data.js 含 v22.52 注释（矿车轨道说明）', dSrc.includes('v22.52 新内容·世界景观·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.52（旧 v22.51 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.62';") && !dSrc.includes("const GAME_VERSION = 'v22." + "51';"));
+  dSrc.includes("const GAME_VERSION = 'v22.63';") && !dSrc.includes("const GAME_VERSION = 'v22." + "51';"));
 ok('data.js 仍保留 v22.51/v22.50 世代注释链（记誓人/酿药师累积注释未动）',
   dSrc.includes('v22.51 新内容·纯风味 NPC') && dSrc.includes('v22.50 新内容·纯风味 NPC'));
 
@@ -233,9 +233,9 @@ const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树已收录 smoke_v2252_rail 且位于串尾',
-  readme.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal（npm test 串跑）'));
-ok('README 件套口径为一百五十八件套（一百五十七件套清除）',
-  readme.includes('冒烟一百五十八件套（一百五十七件套清除）') &&
+  readme.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3（npm test 串跑）'));
+ok('README 件套口径为一百五十九件套（一百五十八件套清除）',
+  readme.includes('冒烟一百五十九件套（一百五十八件套清除）') &&
   !readme.includes('冒烟一百四十七件套（一百四十六件套清' + '除）'));
 ok('README 含 v22.52 守护描述（星井矿脉矿车轨道景观）', readme.includes('v22.52 起含星井矿脉矿车轨道景观守护'));
 ok('README 含 smoke_v2252_rail 入库（148 份）', readme.includes('smoke_v2252_rail 入库（148 份）'));
@@ -243,22 +243,22 @@ ok('README 地图速览/系统清单含「矿车轨道」', readme.includes('矿
 ok('package.json 已收录 smoke_v2252_rail（npm test 串跑第 148 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2252_rail.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 148 件套', testChain === 158, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.52 条目', changelog.startsWith('## v22.62'));
+ok('package.json test 串共 148 件套', testChain === 159, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.52 条目', changelog.startsWith('## v22.63'));
 
 // —— 姊妹 pin 复查（smoke_v2251 随新现实更新 + 哨兵链 149）——
 const s2251 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2251_oathkeep.mjs'), 'utf8');
 ok('smoke_v2251 的 GAME_VERSION 字面量 pin 已更新为 v22.52（旧 v22.51 零残留）',
-  s2251.includes("const GAME_VERSION = 'v22.62';") && !s2251.includes("const GAME_VERSION = 'v22." + "51';"));
-ok('smoke_v2251 的 README 件套 pin 已随新现实更新为一百五十八件套（一百五十七件套清除）',
-  s2251.includes('一百五十八件套（一百五十七件套清除）'));
-ok('smoke_v2251 的 package.json 件套计数 pin 已更新为 === 148', s2251.includes('testChain === 158'));
+  s2251.includes("const GAME_VERSION = 'v22.63';") && !s2251.includes("const GAME_VERSION = 'v22." + "51';"));
+ok('smoke_v2251 的 README 件套 pin 已随新现实更新为一百五十九件套（一百五十八件套清除）',
+  s2251.includes('一百五十九件套（一百五十八件套清除）'));
+ok('smoke_v2251 的 package.json 件套计数 pin 已更新为 === 148', s2251.includes('testChain === 159'));
 ok('smoke_v2251 的 README 串尾 pin 已随新现实延伸至 smoke_v2252_rail',
-  s2251.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal（npm test 串跑）'));
-ok('smoke_v2251 的 CHANGELOG pin 已更新为 ## v22.52', s2251.includes("startsWith('## v22.62')"));
+  s2251.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3（npm test 串跑）'));
+ok('smoke_v2251 的 CHANGELOG pin 已更新为 ## v22.52', s2251.includes("startsWith('## v22.63')"));
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
 ok('v2143-45「件套守护领先一位」哨兵链已推进至 149（一百五十九件套（一百五十八件套清除））',
-  s2143.includes('一百五十九件套（一百五十八件套清除）') && s2143.includes("!readme.includes('一百五十九件套')"));
+  s2143.includes('一百六十件套（一百五十九件套清除）') && s2143.includes("!readme.includes('一百六十件套')"));
 
 // —— 旧代 v22.51 pin 全库零残留 ——
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2252_rail.mjs');
