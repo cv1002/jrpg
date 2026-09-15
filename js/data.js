@@ -816,7 +816,15 @@
 // (g.gold||0)>=RICH3_GOAL 为 false 不误解锁）；无 r 字段纯里程碑；解锁时机：applyAchievements
 // 既有通路任意判定点当场解锁（gold 为持续变化量无需新判定点，承 rich2/lvl12 同款——已解锁不因
 // 消费回落而撤销）；ACH_LIST 45→46 项（末尾追加，既有 45 项 id/序位零回归）。
-const GAME_VERSION = 'v22.61';
+// v22.62 星井矿脉/无字回廊「终焉水晶·终焉之神祭坛」补脸（新内容·世界景观·纯显示，承 v22.36 广场大灯 /
+// v22.38 星井 / v22.39 星砂车 / v22.59 星砂堆「名字物补脸」先例的收口）：矿脉注释「轨道引导线贯穿……
+// → 中央水晶」的中央水晶（SB 瓦片 (12,11)，world.js onTrueCrystal 三档报文——沉睡/睁眼/空——全游最重
+// 名字物之一）与无字回廊东端终焉之神祭坛（SB 瓦片 (21,4)）此前都只有通用门贴图 + 2×2 微光——门是给
+// 名字之门（v22.41）的，水晶与祭坛 却共用同一张贴图；现按 onTrueCrystal / ALTAR_TAG 同读 S.G 一份源
+// 分档补脸：终焉水晶三档（沉睡暗星蓝 / 睁眼亮星蓝 #9adcff + 光晕 / trueBoss 后暗灰 #5a6472 零光——报文
+// 「水晶空了」同口径）、终焉之神祭坛两档（未战金核 rgba(240,192,64,*)——TRUE_BOSS 色 #f0c040 同族 /
+// 战后灰核零光零晕）；纯显示零结算零存档零数值变化（SB 不在 SOLID、遇敌/踩踏/传送/开门判定逐字未动）。
+const GAME_VERSION = 'v22.62';
 
 // v22.37 体验打磨：H 帮助页「地图指南」补小地图图例（可发现性·信息透明·承 v19.47 小地图暖金 / v21.x
 // 危险红点 / v22.26 未开宝箱暖金 / v22.35 NPC 任务标 / v22.36 大灯标记同一「小地图决策信息」主线）——
@@ -907,6 +915,22 @@ const CAMP_FIRE = { x: 11, y: 9 };
 // （亮砂/不亮——筛砂人 after「砂堆不亮了。我筛了一辈子，头一回筛出这么多空的」同口径）；纯显示零结算
 // 零存档零数值变化，刻意不设小地图标记（无决策信息，与星砂车/名字之门/村井同口径，图例零变化）。
 const CAVE_SAND = { x: 5, y: 6 };
+
+// v22.62 星井矿脉「终焉水晶」位置（新内容·世界景观·纯显示）：星井矿脉 MAPS.cave.extras 的 SB 瓦片
+// (12,11)——矿脉地图注释「轨道引导线贯穿——入口（井巫）→ 矿车区（车夫/试炼碑）→ 深处祭坛 → 中央水晶」
+// 的「中央水晶」，world.js onTrueCrystal 三档报文（沉睡/睁眼/空）与双徽记开门（galleryOpen）的唯一入口；
+// 位置只存本常量一处，view/drawWorld.js 的晶簇绘制共用（调位只改这里）。与星井 (16,11)/星砂车 (19,10)/
+// 星砂堆 (5,6)/井巫 (3,1)/矿车轨道（CAVE_RAIL 35 格零同格——引导线终点）互不占位，SB 瓦片可行走
+// （SOLID 不含 SB）零碰撞变化；状态与 onTrueCrystal 报文/小地图同读 S.G 一份源三档（沉睡/睁眼/空）。
+const CAVE_CRYSTAL = { x: 12, y: 11 };
+
+// v22.62 无字回廊「终焉之神祭坛」位置（新内容·世界景观·纯显示）：gallery.extras 的 SB 瓦片 (21,4)——
+// 无字回廊东端隐藏真Boss「终焉之神」（初灯的意志）的祭坛，onTrueCrystal 的 gallery 分支「回廊尽头，所有
+// 的名字一齐看向你。终焉之神醒了。」；位置只存本常量一处，view/drawWorld.js 的祭坛绘制共用（调位只改
+// 这里）。与残焰魔像 (12,4)/守名者 (8,5)/第四块名字石碑 (20,1)/出口 EXIT (1,4) 互不占位，SB 瓦片可行走
+// （SOLID 不含 SB）零碰撞变化；状态与 onTrueCrystal trueBoss 判定/祭坛 ⚠Lv 标签（ALTAR_TAG）同读
+// S.G 一份源两档（未战金核 / 战后灰核）。
+const TRUE_ALTAR = { x: 21, y: 4 };
 
 const T=32;
 
@@ -3628,7 +3652,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

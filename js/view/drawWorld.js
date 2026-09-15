@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -164,9 +164,71 @@ function drawTileFx(ty, px, py, x, y) {
     CTX.fillRect(px + 17, py + 7, 1, 1);
     CTX.fillRect(px + 13, py + 5, 1, 1);
   }
-  if (ty === TY.CAVE || ty === TY.SB) {
+  if (ty === TY.CAVE) {
     CTX.fillStyle = `rgba(95,216,255,${0.2 + 0.2 * Math.sin(ph + px)})`;
     CTX.fillRect(px + 6, py + 8, 2, 2);
+  }
+  // v22.62 星井矿脉「终焉水晶」/无字回廊「终焉之神祭坛」补脸（新内容·世界景观·纯显示，承 v22.38 星井 /
+  // v22.39 星砂车 / v22.59 星砂堆「名字物补脸」先例的收口）：SB 瓦片此前只有通用门贴图 + 2×2 微光——门是
+  // 给名字之门（v22.41）的，全游最重要的两块 SB（矿脉中央水晶 (12,11) / 回廊东端终焉祭坛 (21,4)）却共用
+  // 同一张贴图；现按 data.js CAVE_CRYSTAL / TRUE_ALTAR 单一数据源分档补脸（状态与 world.onTrueCrystal
+  // 三档报文 / ALTAR_TAG 同读 S.G 一份源——纯显示零结算零存档零数值变化，SB 不在 SOLID、遇敌/踩踏/传送/
+  // 开门判定逐字未动，不设小地图标记（无决策信息，与星砂车/名字之门同口径））：
+  //   终焉水晶三档——沉睡「水晶沉睡着。它在等两份记得的资格。」（暗星蓝 rgba(95,216,255,.45) 晶簇）/
+  //   睁眼「水晶睁开了眼。门开了——通向存放名字的回廊。」（亮星蓝 #9adcff 晶簇 + #cfeaff 高光 +
+  //   rgba(95,216,255,.3) 光晕——星井/星砂车亮档同族）/ 空「水晶空了。回廊的门安静地敞着。」
+  //   （#5a6472 灰晶 + #39414f 暗部，零蓝零晕——星砂堆不亮档同族）；
+  //   终焉之神祭坛两档——未战「初灯的意志」金核（rgba(240,192,64,*)——TRUE_BOSS #f0c040 同族 + 金晕）/
+  //   战后灰核零光零晕。先铺 32×32 岩地盘面（与周格 CAVE 地面同色 #2a2f38 + 同纹 #333a45 岩块——盖住
+  //   通用门贴图），几何确定性零时间依赖（不含 ph）。
+  if (ty === TY.SB && S.G) {
+    if (curMap() === 'cave' && x === CAVE_CRYSTAL.x && y === CAVE_CRYSTAL.y) {
+      CTX.fillStyle = '#2a2f38';
+      CTX.fillRect(px, py, 32, 32);
+      CTX.fillStyle = '#333a45';
+      CTX.fillRect(px + 3, py + 3, 6, 4); CTX.fillRect(px + 20, py + 14, 7, 5); CTX.fillRect(px + 9, py + 24, 8, 5);
+      CTX.fillStyle = '#14181f';
+      CTX.fillRect(px + 7, py + 24, 18, 4);
+      if (trueCrystalState(S.G) === 'awake') {
+        CTX.fillStyle = 'rgba(95,216,255,.3)';
+        CTX.fillRect(px + 5, py + 5, 22, 22);
+        CTX.fillStyle = '#9adcff';
+        CTX.fillRect(px + 14, py + 4, 4, 20); CTX.fillRect(px + 9, py + 10, 3, 14); CTX.fillRect(px + 20, py + 10, 3, 14);
+        CTX.fillStyle = '#cfeaff';
+        CTX.fillRect(px + 15, py + 6, 2, 3); CTX.fillRect(px + 10, py + 12, 1, 2); CTX.fillRect(px + 21, py + 12, 1, 2);
+      } else if (trueCrystalState(S.G) === 'empty') {
+        CTX.fillStyle = '#5a6472';
+        CTX.fillRect(px + 14, py + 6, 4, 18); CTX.fillRect(px + 9, py + 12, 3, 12); CTX.fillRect(px + 20, py + 12, 3, 12);
+        CTX.fillStyle = '#39414f';
+        CTX.fillRect(px + 14, py + 18, 4, 6);
+      } else {
+        CTX.fillStyle = 'rgba(95,216,255,.45)';
+        CTX.fillRect(px + 14, py + 6, 4, 18); CTX.fillRect(px + 9, py + 12, 3, 12); CTX.fillRect(px + 20, py + 12, 3, 12);
+      }
+    }
+    if (curMap() === 'gallery' && x === TRUE_ALTAR.x && y === TRUE_ALTAR.y) {
+      CTX.fillStyle = '#2a2f38';
+      CTX.fillRect(px, py, 32, 32);
+      CTX.fillStyle = '#333a45';
+      CTX.fillRect(px + 3, py + 3, 6, 4); CTX.fillRect(px + 20, py + 14, 7, 5); CTX.fillRect(px + 9, py + 24, 8, 5);
+      CTX.fillStyle = '#1c222c';
+      CTX.fillRect(px + 5, py + 20, 22, 8);
+      CTX.fillStyle = '#262d3a';
+      CTX.fillRect(px + 5, py + 20, 22, 2);
+      if (trueAltarState(S.G) === 'lit') {
+        CTX.fillStyle = 'rgba(240,192,64,.18)';
+        CTX.fillRect(px + 8, py + 8, 16, 16);
+        CTX.fillStyle = 'rgba(240,192,64,.9)';
+        CTX.fillRect(px + 14, py + 10, 4, 8);
+        CTX.fillStyle = '#f0c040';
+        CTX.fillRect(px + 15, py + 12, 2, 4);
+      } else {
+        CTX.fillStyle = '#5a6472';
+        CTX.fillRect(px + 14, py + 10, 4, 8);
+        CTX.fillStyle = '#39414f';
+        CTX.fillRect(px + 14, py + 14, 4, 4);
+      }
+    }
   }
   // 确定性装饰（纯显示·零状态）：坐标哈希稀疏点缀——草地小花/草痕、路面石子；
   // 不进存档、不参与结算，洞窟 GRASS 已被 replaceTiles 换成 CAVE 故天然不触发
@@ -606,6 +668,23 @@ export function galleryArchState(hero) {
 // （「名字都回了灯下，第二块碑还是温的——这回，是镇子在焐它」）。只读不改，零结算零存档。
 export function steleLitState(hero) {
   return !!(hero && hero.trueBoss);
+}
+
+// v22.62 星井矿脉「终焉水晶」状态纯函数（新内容·世界景观·纯显示）：与 world.js onTrueCrystal 三档报文
+// （「水晶沉睡着。它在等两份记得的资格。」/「水晶睁开了眼。门开了——通向存放名字的回廊。」/「水晶空了。
+// 回廊的门安静地敞着。」）同读 S.G 一份源三档。只读不改，零结算零存档零数值变化。
+export function trueCrystalState(hero) {
+  if (hero && hero.trueBoss) return 'empty';
+  if (hero && hero.bossDefeated && hero.caveBoss) return 'awake';
+  return 'sleep';
+}
+
+// v22.62 无字回廊「终焉之神祭坛」状态纯函数（新内容·世界景观·纯显示）：与 onTrueCrystal 的 gallery
+// 分支（「回廊尽头，所有的名字一齐看向你。终焉之神醒了。」）/祭坛 ⚠Lv 标签（ALTAR_TAG done 判定）同读
+// S.G.trueBoss 一份源两档。只读不改，零结算零存档零数值变化。
+export function trueAltarState(hero) {
+  if (hero && hero.trueBoss) return 'dead';
+  return 'lit';
 }
 
 function drawGalleryArch(camX, camY) {

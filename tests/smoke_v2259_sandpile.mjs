@@ -95,7 +95,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.58（本版守 v22.60）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 59)), GAME_VERSION);
 ok('data.js 含 v22.59 注释（新内容·世界景观·纯显示）', dSrc.includes('v22.59 新内容·世界景观·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.60（旧 v22.58 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.61';") && !dSrc.includes("const GAME_VERSION = 'v22." + "58';"));
+  dSrc.includes("const GAME_VERSION = 'v22.62';") && !dSrc.includes("const GAME_VERSION = 'v22." + "58';"));
 ok('data.js 仍保留 v22.58/v22.57 世代注释链（喝药行/水塘灯影注释未动）',
   dSrc.includes('v22.58 体验打磨·信息透明·纯文字') && dSrc.includes('v22.57 新内容·世界景观·纯显示'));
 
@@ -103,7 +103,7 @@ ok('data.js 仍保留 v22.58/v22.57 世代注释链（喝药行/水塘灯影注�
 ok('data.js 含 CAVE_SAND = { x: 5, y: 6 }（星砂堆位置单一数据源）',
   dSrc.includes('const CAVE_SAND = { x: 5, y: 6 };'));
 ok('data.js export 块已收录 CAVE_SAND（CAVE_CART, CAVE_SAND, CAVE_RAIL 相邻）',
-  dSrc.includes('CAVE_CART, CAVE_SAND, CAVE_RAIL'));
+  dSrc.includes('CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL'));
 ok('data.js 含 v22.59 常量注释（星砂堆·承星井/星砂车补脸先例）',
   dSrc.includes('v22.59 星井矿脉「星砂堆」'));
 
@@ -117,7 +117,7 @@ ok('drawWorld.js 含 drawCaveSand 函数（先于角色层·位置读 CAVE_SAND 
 ok('drawWorld.js 调用点（星砂车后·仅 cave）',
   wSrc.includes("if (S.G && curMap() === 'cave') drawCaveSand(c.x, c.y);"));
 ok('drawWorld.js import 增 CAVE_SAND',
-  wSrc.includes('CAVE_CART, CAVE_SAND, CAVE_RAIL, GALLERY_ARCH'));
+  wSrc.includes('CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH'));
 ok('drawWorld.js 砂堆色板（rgba(95,216,255,.18) 光晕 / #3a4148 底缘 / #9adcff 亮砂 / #5a6472 不亮砂 / #cfeaff 浮光 / #8a5a2b·#6a4a2f 筛箩）',
   wSrc.includes("CTX.fillStyle = 'rgba(95,216,255,.18)'") && wSrc.includes("CTX.fillStyle = '#3a4148'") &&
   wSrc.includes("CTX.fillStyle = st === 'lit' ? '#9adcff' : '#5a6472'") && wSrc.includes("CTX.fillStyle = '#cfeaff'") &&
@@ -247,9 +247,9 @@ const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树收录 smoke_v2259_sandpile 且位于串尾',
-  readme.includes('smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3（npm test 串跑）'));
-ok('README 件套口径为一百五十七件套（一百五十六件套清除）且旧 154 口径零残留',
-  readme.includes('冒烟一百五十七件套（一百五十六件套清除）') && !readme.includes('冒烟一百五十五件套（一百五十四件套清' + '除）'));
+  readme.includes('smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal（npm test 串跑）'));
+ok('README 件套口径为一百五十八件套（一百五十七件套清除）且旧 154 口径零残留',
+  readme.includes('冒烟一百五十八件套（一百五十七件套清除）') && !readme.includes('冒烟一百五十五件套（一百五十四件套清' + '除）'));
 ok('README 含 v22.59 守护描述（星井矿脉星砂堆景观守护）', readme.includes('v22.59 起含星井矿脉星砂堆景观守护'));
 ok('README 含 smoke_v2259_sandpile 入库（155 份）', readme.includes('smoke_v2259_sandpile 入库（155 份）'));
 ok('README 仍保留 smoke_v2258_potionhelp 入库（154 份）历史口径', readme.includes('smoke_v2258_potionhelp 入库（154 份）'));
@@ -258,11 +258,11 @@ ok('README 星井矿脉行含星砂堆可见口径（v22.59）',
 ok('README 视觉 bullet 含星砂堆景观（v22.59）', readme.includes('星砂堆景观**（v22.59'));
 ok('package.json 已收录 smoke_v2259_sandpile（npm test 串跑第 155 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2259_sandpile.mjs'));
-ok('package.json 串尾为 smoke_v2259_sandpile.mjs && node tests/smoke_v2260_fountripple.mjs && node tests/smoke_v2261_rich3.mjs"',
-  pkg.includes('smoke_v2259_sandpile.mjs && node tests/smoke_v2260_fountripple.mjs && node tests/smoke_v2261_rich3.mjs"'));
+ok('package.json 串尾为 smoke_v2259_sandpile.mjs && node tests/smoke_v2260_fountripple.mjs && node tests/smoke_v2261_rich3.mjs && node tests/smoke_v2262_crystal.mjs"',
+  pkg.includes('smoke_v2259_sandpile.mjs && node tests/smoke_v2260_fountripple.mjs && node tests/smoke_v2261_rich3.mjs && node tests/smoke_v2262_crystal.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 155 件套', testChain === 157, String(testChain));
-ok('CHANGELOG 顶为 v22.60 条目', changelog.startsWith('## v22.61 '));
+ok('package.json test 串共 155 件套', testChain === 158, String(testChain));
+ok('CHANGELOG 顶为 v22.60 条目', changelog.startsWith('## v22.62 '));
 ok('CHANGELOG 含 v22.59 条目', changelog.includes('## v22.59 '));
 
 // —— 姊妹 pin 复查（v2258..v2226 随新现实更新，含 v2228 三风格锚与 v2239/v2240 容错正则尾锚）——
@@ -281,24 +281,24 @@ const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), '
 const s2228 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2228_titlesave.mjs'), 'utf8');
 const s2226 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2226_chestprogress.mjs'), 'utf8');
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('smoke_v2258 的 GAME_VERSION 字面量 pin 已更新为 v22.59', s2258.includes("const GAME_VERSION = 'v22.61';"));
+ok('smoke_v2258 的 GAME_VERSION 字面量 pin 已更新为 v22.59', s2258.includes("const GAME_VERSION = 'v22.62';"));
 ok('smoke_v2258 的 README 串尾 pin 已随新现实延伸至 smoke_v2259_sandpile',
-  s2258.includes('smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3（npm test 串跑）'));
-ok('smoke_v2258 的 README 件套 pin 已随新现实更新为一百五十七件套（一百五十六件套清除）',
-  s2258.includes('一百五十七件套（一百五十六件套清除）'));
-ok('smoke_v2258 的 package.json 件套计数 pin 已更新为 === 155', s2258.includes('testChain === 157'));
-ok('smoke_v2258 的 CHANGELOG 顶 pin 已更新为 ## v22.59', s2258.includes("startsWith('## v22.61')"));
+  s2258.includes('smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal（npm test 串跑）'));
+ok('smoke_v2258 的 README 件套 pin 已随新现实更新为一百五十八件套（一百五十七件套清除）',
+  s2258.includes('一百五十八件套（一百五十七件套清除）'));
+ok('smoke_v2258 的 package.json 件套计数 pin 已更新为 === 155', s2258.includes('testChain === 158'));
+ok('smoke_v2258 的 CHANGELOG 顶 pin 已更新为 ## v22.59', s2258.includes("startsWith('## v22.62')"));
 ok('smoke_v2258 的 package.json 串尾 plain pin 已延伸至 smoke_v2259_sandpile',
-  s2258.includes('smoke_v2259_sandpile.mjs && node tests/smoke_v2260_fountripple.mjs && node tests/smoke_v2261_rich3.mjs"'));
-ok('smoke_v2257 的 GAME_VERSION 字面量 pin 已更新为 v22.59', s2257.includes("const GAME_VERSION = 'v22.61';"));
+  s2258.includes('smoke_v2259_sandpile.mjs && node tests/smoke_v2260_fountripple.mjs && node tests/smoke_v2261_rich3.mjs && node tests/smoke_v2262_crystal.mjs"'));
+ok('smoke_v2257 的 GAME_VERSION 字面量 pin 已更新为 v22.59', s2257.includes("const GAME_VERSION = 'v22.62';"));
 ok('smoke_v2257 的 README 串尾 pin 已延伸至 smoke_v2259_sandpile',
-  s2257.includes('smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3（npm test 串跑）'));
-ok('smoke_v2256 的 GAME_VERSION 字面量 pin 已更新为 v22.59', s2256.includes("const GAME_VERSION = 'v22.61';"));
+  s2257.includes('smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal（npm test 串跑）'));
+ok('smoke_v2256 的 GAME_VERSION 字面量 pin 已更新为 v22.59', s2256.includes("const GAME_VERSION = 'v22.62';"));
 ok('smoke_v2255/v2254/v2253/v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.59',
-  s2255.includes("const GAME_VERSION = 'v22.61';") && s2254.includes("const GAME_VERSION = 'v22.61';") &&
-  s2253.includes("const GAME_VERSION = 'v22.61';") && s2252.includes("const GAME_VERSION = 'v22.61';"));
+  s2255.includes("const GAME_VERSION = 'v22.62';") && s2254.includes("const GAME_VERSION = 'v22.62';") &&
+  s2253.includes("const GAME_VERSION = 'v22.62';") && s2252.includes("const GAME_VERSION = 'v22.62';"));
 ok('smoke_v2230 的 package.json 串尾 plain pin 已延伸至 smoke_v2259_sandpile',
-  s2230.includes('smoke_v2259_sandpile.mjs && node tests\\\\/smoke_v2260_fountripple.mjs && node tests\\\\/smoke_v2261_rich3.mjs"'));
+  s2230.includes('smoke_v2259_sandpile.mjs && node tests\\/smoke_v2260_fountripple.mjs && node tests\\/smoke_v2261_rich3.mjs && node tests\\/smoke_v2262_crystal.mjs\"'));
 // 串尾锚延伸（任意转义风格：plain `/` / regex `\/` / 双转义 `\\/`）
 const archChain = (s) => /smoke_v2260_fountripple[.\\/]{0,4}mjs[\s\S]*?node tests[\\/]{0,4}smoke_v2261_rich3[.\\/]{0,4}mjs/.test(s);
 ok('smoke_v2226/v2228/v2229/v2230/v2239/v2240/v2242 的串尾锚已延伸至 smoke_v2259_sandpile（plain/regex/双转义三风格）',
@@ -308,10 +308,10 @@ ok('smoke_v2226/v2228/v2229/v2230/v2239/v2240/v2242 的串尾锚已延伸至 smo
 const looseChain = (s) => /smoke_v2260_fountripple[.\\/]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2261_rich3[.\\/]{0,6}mjs/.test(s);
 ok('smoke_v2239/smoke_v2240 的容错正则尾锚已延伸至 smoke_v2259_sandpile',
   looseChain(s2239) && looseChain(s2240));
-ok('v2143-45「件套守护领先一位」哨兵链已推进至 156（一百五十八件套（一百五十七件套清除））',
-  s2143.includes('一百五十八件套（一百五十七件套清除）') && s2143.includes("!readme.includes('一百五十八件套')"));
+ok('v2143-45「件套守护领先一位」哨兵链已推进至 156（一百五十九件套（一百五十八件套清除））',
+  s2143.includes('一百五十九件套（一百五十八件套清除）') && s2143.includes("!readme.includes('一百五十九件套')"));
 ok('smoke_v2228 的 GAME_VERSION 字面量 pin 已更新为 v22.59 且旧代零残留复查仍在（v22.27 风格）',
-  s2228.includes("const GAME_VERSION = 'v22.61';") && s2228.includes("'v22.") && s2228.includes("27';"));
+  s2228.includes("const GAME_VERSION = 'v22.62';") && s2228.includes("'v22.") && s2228.includes("27';"));
 
 // 旧代 v22.58 pin 全库零残留（字面量/恒等/件套/串尾/testChain）
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs'));
