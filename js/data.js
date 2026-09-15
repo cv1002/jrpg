@@ -808,7 +808,15 @@
 // 水柱，「清泉涌动」配画面仍显单薄——承 v22.57 水塘灯影同一 water 色族（rgba(158,232,255,*)/rgba(223,246,255,*)
 // 零新增颜色，坐标哈希 dhf = x*11+y*5 确定性同法）在水柱两侧叠加泉涌涟漪/水珠，纯显示零结算零存档
 // 零数值变化（FOUNTAIN 不在 SOLID、遇敌/踩踏/传送判定逐字未动，两图 TILE 分支天然同一实现）。
-const GAME_VERSION = 'v22.60';
+// v22.61 新成就·金币线第三档里程碑「富甲一方」（承 等级三档 lvl5·lvl10·lvl12 / 金币两档 rich·rich2
+// 多档先例）：金币线在 rich（500）/rich2（1500）之后补第三档 3000 金——终局区（无字回廊重复刷级/试炼
+// 三连战再战 / 卖蘑菇）积累可达，给「毕业装买齐 + 仍有富余」的后期玩家一枚纪念；判定/描述/进度三处
+// 同读 RICH3_GOAL 单一数据源（与 RICH_GOLD/RICH2_GOAL 同一「成就阈值数据化」家族，调门槛只改本处
+// 一处自动跟随，零裸字面量）；读既有 hero.gold 存档字段零新计数零迁移（旧档无 gold 字段时
+// (g.gold||0)>=RICH3_GOAL 为 false 不误解锁）；无 r 字段纯里程碑；解锁时机：applyAchievements
+// 既有通路任意判定点当场解锁（gold 为持续变化量无需新判定点，承 rich2/lvl12 同款——已解锁不因
+// 消费回落而撤销）；ACH_LIST 45→46 项（末尾追加，既有 45 项 id/序位零回归）。
+const GAME_VERSION = 'v22.61';
 
 // v22.37 体验打磨：H 帮助页「地图指南」补小地图图例（可发现性·信息透明·承 v19.47 小地图暖金 / v21.x
 // 危险红点 / v22.26 未开宝箱暖金 / v22.35 NPC 任务标 / v22.36 大灯标记同一「小地图决策信息」主线）——
@@ -2300,6 +2308,16 @@ const RICH_GOLD = 500;
 // ——攒下的金子本身就是奖励）；解锁时机：applyAchievements 既有通路任意判定点当场解锁（gold 为持续变化量，
 // 无需新判定点，承 lvl12/lucky2 同款——先攒钱买装备再存到 1500 也照常解锁，已解锁不因消费回落而撤销）。
 const RICH2_GOAL = 1500;
+// 成就「富甲一方」金币阈值（单一数据源，v22.61 新成就·金币线第三档里程碑，承 等级三档 lvl5·lvl10·lvl12 /
+// 金币两档 rich·rich2 多档先例）：金币线首档 rich（小富翁=500 金）、第二档 rich2（金玉满堂=1500 金）之外补
+// 第三档 3000 金——毕业装（勇者之剑 600 + 龙鳞甲 480 ≈1080）买齐后仍有富余的后期里程碑（终局无字回廊
+// 重复刷级 Lv12、试炼三连战再战每轮 150+lv×20、卖蘑菇 10 金/株，均随等级自然积累可达）；判定
+// （ok: (g.gold||0)>=RICH3_GOAL——防御式读取与 rich2 的 undefined 判定同款兜底）、描述文案（d「持有 N 金币」）、
+// 进度条（prog「X/N」）三处同读此源（与 RICH_GOLD/RICH2_GOAL 同一「成就阈值数据化」家族——调门槛只改
+// data.js 一处自动跟随，零裸字面量）；读既有 hero.gold 存档字段零新计数零迁移；无 r 字段纯里程碑；
+// 解锁时机：applyAchievements 既有通路任意判定点当场解锁（gold 为持续变化量无需新判定点，承
+// rich2/lvl12 同款——先攒钱再存到 3000 也照常解锁，已解锁不因消费回落而撤销）。
+const RICH3_GOAL = 3000;
 
 // 成就「有备无患」药水持有阈值（单一数据源，v22.0 新成就·药水线首枚里程碑，承 v21.91 长明不熄 /
 // v21.93 驱雾百战 / v21.95 彻夜长明 / v21.97 鸿运当头 / v21.99 金玉满堂 单成就先例）：药水是全程陪伴的
@@ -3303,6 +3321,15 @@ const ACH_LIST=[
   // 既有通路任意判定点当场解锁（seen 为持续累积量，无需新判定点，承 lvl12/ptime 同款——逃跑/战败的
   // 遭遇同样累计，比图鉴全讨伐先到一步）。
   {id:'metall', name:'萍水相逢', d:`记忆图鉴已遭遇全部 ${BESTIARY_TARGET.length} 种魔物`, ok:g=>BESTIARY_TARGET.every(n=>(g.seen||{})[n]>=1), prog:g=>`${BESTIARY_TARGET.filter(n=>(g.seen||{})[n]>=1).length}/${BESTIARY_TARGET.length}`},
+  // 富甲一方（v22.61 新成就·金币线第三档里程碑，追加在末尾、承 v22.4 brew2 / v21.99 rich2 末尾先例）：
+  // 金币线自 v21.99「金玉满堂」（=持有 1500 金）后仍只有两档——等级线三档（lvl5·lvl10·lvl12）是
+  // 全库唯一三档先例，金币作为全程伴随的硬通货（胜利/开箱/掉落/任务/卖蘑菇五源、消费只在商店/旅馆两处）
+  // 理应有第三档；判定/描述/进度同读 RICH3_GOAL 一份源（与 rich 的 RICH_GOLD / rich2 的 RICH2_GOAL 同一
+  // 「成就阈值数据化」家族）、计数读既有 hero.gold 存档字段（(g.gold||0) 防御式读取、旧档零迁移、与
+  // rich2 的 undefined 判定同款兜底）；无 r 字段（奖励在财富本身，同 rich/rich2/lvl5 纯里程碑惯例）；
+  // 解锁时机：applyAchievements 既有通路任意判定点当场解锁（gold 为持续变化量无需新判定点，承
+  // rich2/lvl12 同款——先攒钱买装备再存到 3000 也照常解锁，已解锁不因消费回落而撤销）。
+  {id:'rich3', name:'富甲一方', d:`持有 ${RICH3_GOAL} 金币`, ok:g=>(g.gold||0)>=RICH3_GOAL, prog:g=>`${Math.floor(g.gold||0)}/${RICH3_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -3601,7 +3628,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
