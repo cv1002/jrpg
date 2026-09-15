@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.53（本版守 v22.54）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 54)), GAME_VERSION);
 ok('data.js 含 v22.54 注释（粮田谷穗补脸说明）', dSrc.includes('v22.54 新内容·世界景观·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.54（旧 v22.53 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.58';") && !dSrc.includes("const GAME_VERSION = 'v22." + "53';"));
+  dSrc.includes("const GAME_VERSION = 'v22.59';") && !dSrc.includes("const GAME_VERSION = 'v22." + "53';"));
 ok('data.js 仍保留 v22.53/v22.52 世代注释链（补给指针/矿车轨道累积注释未动）',
   dSrc.includes('v22.53 体验打磨·信息透明·纯文字') && dSrc.includes('v22.52 新内容·世界景观·纯显示'));
 
@@ -230,9 +230,9 @@ ok('契约：TY.GRASS 非 SOLID（高草可走）', !SOLID.has(TY.GRASS));
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树收录 smoke_v2254_grainfield 且位于串尾', readme.includes('smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp（npm test 串跑）'));
-ok('README 件套口径为一百五十四件套（一百五十三件套清除）',
-  readme.includes('冒烟一百五十四件套（一百五十三件套清除）') && !readme.includes('冒烟一百四十三件套（一百四十二件套清' + '除）'));
+ok('README tests 树收录 smoke_v2254_grainfield 且位于串尾', readme.includes('smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile（npm test 串跑）'));
+ok('README 件套口径为一百五十五件套（一百五十四件套清除）',
+  readme.includes('冒烟一百五十五件套（一百五十四件套清除）') && !readme.includes('冒烟一百四十三件套（一百四十二件套清' + '除）'));
 ok('README 含 v22.54 守护描述（潮灯镇粮田谷穗景观守护）', readme.includes('v22.54 起含潮灯镇粮田谷穗景观守护'));
 ok('README 含 smoke_v2254_grainfield 入库（150 份）', readme.includes('smoke_v2254_grainfield 入库（150 份）'));
 ok('README 仍保留 v22.53 守护描述与入库（149 份）（历史口径不漂移）',
@@ -242,7 +242,7 @@ ok('README 视觉 bullet 含谷穗景观（v22.54）', readme.includes('谷穗�
 ok('package.json 已收录 smoke_v2254_grainfield（npm test 串跑第 150 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2254_grainfield.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 150 件套', testChain === 154, String(testChain));
+ok('package.json test 串共 150 件套', testChain === 155, String(testChain));
 ok('CHANGELOG 含 v22.54 条目', changelog.includes('## v22.55 '));
 
 // —— 姊妹 pin 复查（v2253..v2226 随新现实更新，含 v2228/v2229/v2230 三风格锚与 v2239/v2240 容错正则尾锚）——
@@ -256,18 +256,18 @@ const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), '
 const s2228 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2228_titlesave.mjs'), 'utf8');
 const s2226 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2226_chestprogress.mjs'), 'utf8');
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('smoke_v2253 的 GAME_VERSION 字面量 pin 已更新为 v22.54', s2253.includes("const GAME_VERSION = 'v22.58';"));
+ok('smoke_v2253 的 GAME_VERSION 字面量 pin 已更新为 v22.54', s2253.includes("const GAME_VERSION = 'v22.59';"));
 ok('smoke_v2253 的 README 串尾 pin 已随新现实延伸至 smoke_v2254_grainfield',
-  s2253.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp（npm test 串跑）'));
-ok('smoke_v2253 的 README 件套 pin 已随新现实更新为一百五十四件套（一百五十三件套清除）',
-  s2253.includes('一百五十四件套（一百五十三件套清除）'));
-ok('smoke_v2253 的 package.json 件套计数 pin 已更新为 === 150', s2253.includes('testChain === 154'));
-ok('smoke_v2253 的 CHANGELOG 顶 pin 已更新为 ## v22.54', s2253.includes("startsWith('## v22.58')"));
-ok('smoke_v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.54', s2252.includes("const GAME_VERSION = 'v22.58';"));
+  s2253.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile（npm test 串跑）'));
+ok('smoke_v2253 的 README 件套 pin 已随新现实更新为一百五十五件套（一百五十四件套清除）',
+  s2253.includes('一百五十五件套（一百五十四件套清除）'));
+ok('smoke_v2253 的 package.json 件套计数 pin 已更新为 === 150', s2253.includes('testChain === 155'));
+ok('smoke_v2253 的 CHANGELOG 顶 pin 已更新为 ## v22.54', s2253.includes("startsWith('## v22.59')"));
+ok('smoke_v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.54', s2252.includes("const GAME_VERSION = 'v22.59';"));
 ok('smoke_v2252 的 README 串尾 pin 已延伸至 smoke_v2254_grainfield',
-  s2252.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp（npm test 串跑）'));
+  s2252.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile（npm test 串跑）'));
 ok('smoke_v2242 的 README 串尾 pin 已延伸至 smoke_v2254_grainfield',
-  s2242.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp（npm test 串跑）'));
+  s2242.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile（npm test 串跑）'));
 // 串尾锚延伸（任意转义风格：plain `/` / regex `\/` / 双转义 `\\/`）
 const archChain = (s) => /smoke_v2253_supplypoint[.\\]{0,4}mjs\s*&&\s*node tests[\\/]{0,4}smoke_v2254_grainfield[.\\]{0,4}mjs[\s\S]*?node tests[\\/]{0,4}smoke_v2257_pondglow[.\\]{0,4}mjs/.test(s);
 ok('smoke_v2226/v2228/v2229/v2230/v2239/v2240/v2242 的串尾锚已延伸至 smoke_v2254_grainfield（plain/regex/双转义三风格）',
@@ -277,10 +277,10 @@ ok('smoke_v2226/v2228/v2229/v2230/v2239/v2240/v2242 的串尾锚已延伸至 smo
 const looseChain = (s) => /smoke_v2253_supplypoint[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2254_grainfield[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2257_pondglow[.\\]{0,6}mjs/.test(s);
 ok('smoke_v2239/smoke_v2240 的容错正则尾锚已延伸至 smoke_v2254_grainfield',
   looseChain(s2239) && looseChain(s2240));
-ok('v2143-45「件套守护领先一位」哨兵链已推进至 152（一百五十四件套（一百五十三件套清除））',
-  s2143.includes('一百五十五件套（一百五十四件套清除）') && s2143.includes("!readme.includes('一百五十五件套')"));
+ok('v2143-45「件套守护领先一位」哨兵链已推进至 152（一百五十六件套（一百五十五件套清除））',
+  s2143.includes('一百五十六件套（一百五十五件套清除）') && s2143.includes("!readme.includes('一百五十六件套')"));
 ok('smoke_v2228 的 GAME_VERSION 字面量 pin 已更新为 v22.54 且旧代零残留复查仍在（v22.27 风格）',
-  s2228.includes("const GAME_VERSION = 'v22.58';") && s2228.includes("'v22." ) && s2228.includes("27';"));
+  s2228.includes("const GAME_VERSION = 'v22.59';") && s2228.includes("'v22." ) && s2228.includes("27';"));
 
 // 旧代 v22.53 pin 全库零残留（字面量/恒等/件套/串尾/testChain）
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs'));
@@ -292,7 +292,7 @@ for (const f of allTests) {
       src.includes('smoke_v2253_supplypoint（npm test 串' + '跑）')) stale.push(f);
 }
 ok('旧代 v22.53 字面量/恒等/件套/串尾/testChain pin 全库零残留（' + allTests.length + ' 件扫描，含本件）', stale.length === 0, stale.join(','));
-// 坏链防回归：README 不得出现「smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp（npm test 串跑）」孤尾
+// 坏链防回归：README 不得出现「smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile（npm test 串跑）」孤尾
 ok('README 串尾无孤尾（smoke_v2253_supplypoint 后必须接 smoke_v2254_grainfield）',
   !readme.includes('smoke_v2253_supplypoint（npm test 串' + '跑）'));
 

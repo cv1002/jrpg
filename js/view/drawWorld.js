@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -478,6 +478,54 @@ function drawCaveCart(camX, camY) {
     CTX.fillStyle = '#3a4148';
     CTX.fillRect(px + 7, py + 3, 18, 7);
   }
+}
+
+// v22.59 星井矿脉「星砂堆」（新内容·世界景观·纯显示，承 v22.38 星井 / v22.39 星砂车「名字物补脸」先例
+// 的收口）：筛砂人（5,5）「把星砂一筛一筛拣回砂堆旁」——矿脉从前往镇上运星砂喂记忆之灯，井与车都有
+// 脸了，唯独这堆「喂灯的砂」本体一像素都没有（v22.39 后车是空的、井是空的，砂堆是唯一还该亮着的）；
+// 现于 data.js CAVE_SAND=(5,6)（筛砂人南邻、轨道引导线西侧的开阔矿场）立起星砂堆：两档状态与星井/
+// 星砂车同读 S.G.trueBoss 一份源（筛砂人 after「砂堆不亮了。我筛了一辈子，头一回筛出这么多空的」/
+// 「——不是空了，是被记起来了」同口径，纯显示零结算零存档零数值变化，只读旗标）：
+//   亮砂（!trueBoss）——砂面星砂蓝 #9adcff（星砂蓝光族）+ 浮光点 #cfeaff + 星砂浮光 #cfeaff 光点 + 蓝青光晕；
+//   不亮（trueBoss）——「砂堆不亮了」：#5a6472 暗灰（星井静默水同色族）+ 零浮光零光晕。
+// 位置读 data.js CAVE_SAND 单一数据源（(5,6) 可行走 CAVE 格零碰撞、不在 CAVE_RAIL 轨道上）。画布星砂堆
+// 先于角色绘制（与 v22.36 大灯 / v22.38 星井同层，人站砂堆前不被遮挡）；刻意不设小地图标记（无决策信息，
+// 与星砂车/名字之门/村井同口径）。
+export function caveSandState(hero) {
+  if (hero && hero.trueBoss) return 'dim';
+  return 'lit';
+}
+
+function drawCaveSand(camX, camY) {
+  const st = caveSandState(S.G);
+  const px = CAVE_SAND.x * T - camX;
+  const py = CAVE_SAND.y * T - camY;
+  const cx = px + T / 2;
+  // 光晕（状态档位色：亮砂星砂蓝青光 / 不亮零光晕——与星井/星砂车同档位结构）
+  if (st === 'lit') {
+    CTX.fillStyle = 'rgba(95,216,255,.18)';
+    CTX.beginPath(); CTX.arc(cx, py + 16, 13, 0, 7); CTX.fill();
+  }
+  // 砂丘本体（三阶台阶两档共体·零状态分支；底缘暗灰与岩壁/星井静默水同色族）
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(px + 4, py + 26, 24, 3);
+  CTX.fillStyle = st === 'lit' ? '#9adcff' : '#5a6472';
+  CTX.fillRect(px + 5, py + 20, 22, 7);
+  CTX.fillRect(px + 9, py + 14, 14, 6);
+  CTX.fillRect(px + 13, py + 10, 6, 4);
+  // 浮光点（亮砂档：砂面星屑 4 枚——与星井井口星屑同款；不亮档零浮光）
+  if (st === 'lit') {
+    CTX.fillStyle = '#cfeaff';
+    CTX.fillRect(px + 8, py + 17, 2, 2);
+    CTX.fillRect(px + 20, py + 15, 2, 2);
+    CTX.fillRect(px + 15, py + 7, 2, 2);
+    CTX.fillRect(px + 11, py + 21, 2, 2);
+  }
+  // 筛箩（筛砂人的家伙·木色族与星砂车木料同族）：斜靠砂丘东缘
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(px + 24, py + 11, 3, 12);
+  CTX.fillStyle = '#6a4a2f';
+  CTX.fillRect(px + 22, py + 22, 7, 2);
 }
 
 // v22.52 星井矿脉「矿车轨道」（新内容·世界景观·纯显示，承 v22.39 星砂车「名字物补脸」先例的收口）：
@@ -957,6 +1005,10 @@ export function drawWorld() {
   // v22.39 星砂车（纯显示·先于角色层）：两档状态光效见 drawCaveCart 注释；位置读 data.js CAVE_CART
   // 单一数据源。只读旗标，零结算零存档（与星井同读 S.G.trueBoss 一份源两档）。
   if (S.G && curMap() === 'cave') drawCaveCart(c.x, c.y);
+  // v22.59 星砂堆（纯显示·先于角色层，承 v22.38 星井/v22.39 星砂车同一「名字物补脸」主线的收口）：
+  // 两档状态光效见 drawCaveSand 注释；位置读 data.js CAVE_SAND 单一数据源。只读旗标，零结算零存档
+  // （与星井/星砂车同读 S.G.trueBoss 一份源两档——筛砂人 after「砂堆不亮了」同口径）。
+  if (S.G && curMap() === 'cave') drawCaveSand(c.x, c.y);
   // v22.41 名字之门（纯显示·先于角色层）：两档状态光效见 drawGalleryArch 注释；位置读 data.js
   // GALLERY_ARCH 单一数据源。只读旗标，零结算零存档（与守名者 done「名字回灯下」同读 S.G.trueBoss
   // 一份源两档）。
