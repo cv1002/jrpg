@@ -834,7 +834,17 @@
 // 解锁时机：applyAchievements 既有通路任意判定点当场解锁（time 为持续累积量无需新判定点，承
 // ptime/ptime2 同款——已解锁不因任何变化而撤销）；ACH_LIST 46→47 项（末尾追加，既有 46 项
 // id/序位零回归）。
-const GAME_VERSION = 'v22.63';
+// v22.64 新成就·讨伐线第三档里程碑「驱雾三百战」（承 v21.93 驱雾百战 / v22.61 富甲一方 /
+// v22.63 长明如昼 第三档先例）：讨伐线自 v21.93「驱雾百战」（=100 只）后仍只有两档——等级线三档
+// （lvl5·lvl10·lvl12）、金币线三档（rich·rich2·rich3）、时长线三档（ptime·ptime2·ptime3）已是
+// 全库三档先例，讨伐作为全程伴随的核心投入理应有第三档；判定/描述/进度同读 HUNT3_GOAL 一份源
+// （与 HUNT_GOAL/HUNT2_GOAL 同一「成就阈值数据化」家族，改门槛只改本处一处自动跟随，零裸字面量）；
+// 读既有 hero.totalWins 计数零新计数零迁移（(g.totalWins||0) 防御式读取、旧档零影响，与 hunt10/
+// hunt100 同款兜底）；无 r 字段纯里程碑（与 hunt10/hunt100/lvl5 同款——讨伐本身就是纪念）；
+// 解锁时机：applyAchievements 既有通路任意判定点当场解锁（totalWins 为持续累积量无需新判定点，
+// 承 hunt100/ptime3 同款——已解锁不因任何变化而撤销）；ACH_LIST 47→48 项（末尾追加，既有 47 项
+// id/序位零回归）。
+const GAME_VERSION = 'v22.64';
 
 // v22.37 体验打磨：H 帮助页「地图指南」补小地图图例（可发现性·信息透明·承 v19.47 小地图暖金 / v21.x
 // 危险红点 / v22.26 未开宝箱暖金 / v22.35 NPC 任务标 / v22.36 大灯标记同一「小地图决策信息」主线）——
@@ -2439,6 +2449,13 @@ const HUNT_GOAL = 10;    // 成就「驱雾十战」需累计讨伐的魔物只�
 // 调门槛只改此一处自动跟随（后续加第三档只增常量，不再动条目）；同计数源 totalWins 防御式读取。
 const HUNT2_GOAL = 100;  // 成就「驱雾百战」需累计讨伐的魔物只数（约 Lv12 练级途程内可达）
 
+// 成就「驱雾三百战」累计讨伐阈值（单一数据源，v22.64）：ACH_LIST 该条的判定（ok: totalWins >=
+// HUNT3_GOAL）、描述文案（d「累计讨伐 N 只魔物」）、进度条（prog「X/N」）三处同读此源——讨伐线既有
+// 两档 hunt10（10 只）/hunt100（100 只），第三档沿用同一「多档里程碑」家族（等级线 lvl5·lvl10·lvl12、
+// 金币线 rich·rich2·rich3、时长线 ptime·ptime2·ptime3 三档先例），调门槛只改此一处自动跟随；
+// 同计数源 totalWins 防御式读取（(g.totalWins||0)，承 hunt100 同款）。
+const HUNT3_GOAL = 300;  // 成就「驱雾三百战」需累计讨伐的魔物只数（第三档；hunt100 后终局刷级/试炼再战途程内可达）
+
 // 成就「独当一面」/「守灯者」等级阈值（单一数据源）：ACH_LIST 这两条的判定
 // （ok: level >= LVL5_GOAL / LVL10_GOAL）、描述文案（d「等级达到 N 级」）、进度条（prog「X/N」）
 // 三处各同读其源——此前 5/10 硬编码在各自条目内三处互不相关（ok 判定、d 描述、prog 分母）：想调门槛
@@ -3381,6 +3398,16 @@ const ACH_LIST=[
   // 纯里程碑惯例）；解锁时机：applyAchievements 既有通路任意判定点当场解锁（time 为持续累积量
   // 无需新判定点，承 ptime/ptime2 同款——已解锁不因任何变化而撤销）。
   {id:'ptime3', name:'长明如昼', d:`累计游玩 ${PLAY_TIME3_GOAL / 60} 分钟`, ok:g=>(g.time||0)>=PLAY_TIME3_GOAL, prog:g=>`${Math.floor((g.time||0)/60)}/${PLAY_TIME3_GOAL/60}`},
+  // 驱雾三百战（v22.64 新成就·讨伐线第三档里程碑）：讨伐线第一档 hunt10（驱雾十战=10 只）、
+  // 第二档 hunt100（驱雾百战=100 只）之后补第三档——等级/金币/时长各线都已有第三档（lvl5·lvl10·lvl12 /
+  // rich·rich2·rich3 / ptime·ptime2·ptime3），唯独讨伐这条从第一场战斗就开始累计的核心线停两档；
+  // 判定/进度/描述三处同读 HUNT3_GOAL 单一数据源（与 HUNT_GOAL/HUNT2_GOAL 同一「成就阈值数据化」
+  // 家族——调门槛只改 data.js 一处自动跟随，绝无第二套口径）；读既有 hero.totalWins 存档字段
+  // （winBattle 唯一写入点），(g.totalWins||0) 防御式读取（旧档无此字段=0 不误解锁、零迁移，
+  // 承 hunt100 同款）；无 r 字段纯里程碑（与 hunt10/hunt100/memoir 同款——讨伐本身就是奖励）；
+  // 解锁时机：applyAchievements 既有通路任意判定点当场解锁（totalWins 为持续累积量，无需新判定点，
+  // 承 hunt100/lvl12 同款——终局刷级途程内到达即解锁，已解锁不因任何变化而撤销）。
+  {id:'hunt3', name:'驱雾三百战', d:`累计讨伐 ${HUNT3_GOAL} 只魔物`, ok:g=>(g.totalWins||0)>=HUNT3_GOAL, prog:g=>`${g.totalWins||0}/${HUNT3_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -3679,7 +3706,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
