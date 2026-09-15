@@ -145,6 +145,24 @@ function drawTileFx(ty, px, py, x, y) {
   if (ty === TY.FOUNTAIN) {
     CTX.fillStyle = 'rgba(223,246,255,' + (0.4 + 0.4 * Math.sin(ph * 2)) + ')';
     CTX.fillRect(px + 15, py + 2, 2, 4);
+    // v22.60 潮灯镇/雾语林「喷泉泉涌涟漪」（新内容·世界景观·纯显示，承 v22.57 水塘灯影同一 water
+    // 色族）：潮灯镇广场喷泉 (12,6)（v19.94「⛲ 喷泉清泉涌动，HP/MP 完全恢复！」/v22.46 遇敌槽安全阀
+    // ENCOUNTER.fountain）与雾语林中段营地泉水 (12,9)（货郎「中段营地的泉水，可以白喝」/老矿工「这
+    // 附近最后一处免费的水」）此前只有一道 2×4 细水柱——「清泉涌动」四个字配画面仍显单薄（泉是四图
+    // 唯二的免费恢复点，玩家踩泉瞬间理应「看得见」泉在涌）；现于水柱两侧叠加泉涌涟漪：内圈水光带
+    // rgba(158,232,255,*) 6×2（WATER 波光同族）· 外圈涟漪 rgba(223,246,255,*) 8×2（水柱同族）· 溅起
+    // 水珠 rgba(223,246,255,.6) 1×1×2——全部既有色族零新增颜色；相位由既有 ph 与坐标哈希
+    // dhf = x*11+y*5 错开（water 分支先于函数级 const dh，不可引用——v22.57 同款局部哈希、零时间
+    // 依赖布尔）；纯显示零结算零存档零数值变化（FOUNTAIN 不在 SOLID、遇敌/踩踏/传送判定逐字未动，
+    // village/dungeon 两图同款零分支差异——TILE 分支天然覆盖，cave/gallery 无 FOUNTAIN 天然不触发）。
+    const dhf = x * 11 + y * 5;
+    CTX.fillStyle = 'rgba(158,232,255,' + (0.3 + 0.15 * Math.sin(ph * 2 + dhf)) + ')';
+    CTX.fillRect(px + 10 + (dhf % 3), py + 9, 6, 2);
+    CTX.fillStyle = 'rgba(223,246,255,' + (0.5 + 0.2 * Math.sin(ph * 2 + dhf + 1.5)) + ')';
+    CTX.fillRect(px + 12 + (dhf % 2), py + 13, 8, 2);
+    CTX.fillStyle = 'rgba(223,246,255,.6)';
+    CTX.fillRect(px + 17, py + 7, 1, 1);
+    CTX.fillRect(px + 13, py + 5, 1, 1);
   }
   if (ty === TY.CAVE || ty === TY.SB) {
     CTX.fillStyle = `rgba(95,216,255,${0.2 + 0.2 * Math.sin(ph + px)})`;
