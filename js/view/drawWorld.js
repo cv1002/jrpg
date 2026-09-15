@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -529,6 +529,53 @@ function drawGalleryArch(camX, camY) {
   CTX.fillRect(px, py + 4, 32, 2);
 }
 
+// v22.56 雾语林「营地篝火」（新内容·世界景观·纯显示，承 v22.36 广场大灯 / v22.47 村井「地标设施补脸」
+// 先例）：中段营地（泉水 (12,9) + 雾径猎手 (13,9)，货郎「中段营地的泉水，可以白喝」/老矿工「雾语林
+// 营地那口泉是这附近最后一处免费的水」/README「中段营地（泉水安全岛）」）此前只有泉水与猎手、一像素
+// 的「火」都没有——营地没有篝火，就只是水边一块空地；现于泉水西侧 (11,9) 立起营火（位置读 data.js
+// CAMP_FIRE 单一数据源）：暖橙光晕 rgba(255,200,90,.25)（村居窗光同族）· 石圈 #6a6f78/#8a9098（村井
+// 石色同族）· 交叉柴堆 #6b5138/#8a5a2b（村井辘轳/星砂车木料同族）· 火焰灯油金 #ffd24a + 金白焰心
+// #ffe9a8 + 深金余烬 #8a5a00（菌盖灯油/大灯光效同族——镇子的灯烧的是灯油，林间营火也是同一盏油的
+// 火；v22.42 菌盖夜里发光的设定同源）· 火星金白 #ffe9a8（坐标哈希确定性，与小花草痕同法）——全部既有
+// 色族零新增颜色；纯显示零结算零存档零数值变化（at/SOLID/遇敌/踩踏判定逐字未动），village/cave/
+// gallery 零触发，刻意不设小地图标记（无决策信息，与星砂车/名字之门/村井同口径，图例零变化）。
+function drawCampFire(camX, camY) {
+  const px = CAMP_FIRE.x * T - camX;
+  const py = CAMP_FIRE.y * T - camY;
+  const dh = CAMP_FIRE.x * 19 + CAMP_FIRE.y * 37;
+  // 暖橙光晕（村居窗光同族：rgba(255,200,90,α)）
+  CTX.fillStyle = 'rgba(255,200,90,.25)';
+  CTX.fillRect(px + 5, py + 3, 22, 22);
+  // 石圈（村井石色同族）
+  CTX.fillStyle = '#6a6f78';
+  CTX.fillRect(px + 3, py + 23, 4, 4);
+  CTX.fillRect(px + 25, py + 23, 4, 4);
+  CTX.fillStyle = '#8a9098';
+  CTX.fillRect(px + 5, py + 27, 5, 2);
+  CTX.fillRect(px + 22, py + 27, 5, 2);
+  // 交叉柴堆（辘轳/星砂车木料同族）
+  CTX.fillStyle = '#6b5138';
+  CTX.fillRect(px + 8, py + 21, 16, 3);
+  CTX.fillRect(px + 15, py + 18, 3, 6);
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(px + 13, py + 19, 7, 2);
+  // 火焰（灯油金 + 金白焰心——镇子的灯烧灯油，林间营火同一盏油）
+  CTX.fillStyle = '#ffd24a';
+  CTX.fillRect(px + 11, py + 8, 10, 13);
+  CTX.fillRect(px + 14, py + 5, 4, 4);
+  CTX.fillStyle = '#ffe9a8';
+  CTX.fillRect(px + 13, py + 12, 6, 8);
+  CTX.fillRect(px + 15, py + 9, 2, 4);
+  // 余烬（深金）
+  CTX.fillStyle = '#8a5a00';
+  CTX.fillRect(px + 12, py + 21, 2, 2);
+  CTX.fillRect(px + 18, py + 20, 2, 2);
+  // 火星（金白·坐标哈希确定性）
+  CTX.fillStyle = '#ffe9a8';
+  CTX.fillRect(px + 8 + (dh % 3), py + 6, 1, 1);
+  CTX.fillRect(px + 20 + (dh % 2), py + 3, 1, 1);
+}
+
 // 祭坛 ⚠Lv 标签：推荐等级与战斗界 enemyLv 同读 data.js SPECIES[].lv
 const ALTAR_TAG = [
   { t: TY.BOSS, done: (g) => g && g.bossDefeated, lv: SPECIES['幽冥魔王'].lv },
@@ -872,6 +919,9 @@ export function drawWorld() {
   // GALLERY_ARCH 单一数据源。只读旗标，零结算零存档（与守名者 done「名字回灯下」同读 S.G.trueBoss
   // 一份源两档）。
   if (S.G && curMap() === 'gallery') drawGalleryArch(c.x, c.y);
+  // v22.56 雾语林营地篝火（纯显示·先于角色层）：位置读 data.js CAMP_FIRE 单一数据源。零结算零存档
+  // （与泉水/菌盖/高草同层的地貌——林间雨幕之下营火仍燃，镇子灯油之火的设定同源）。
+  if (S.G && curMap() === 'dungeon') drawCampFire(c.x, c.y);
   if (S.G && curMap() !== 'village') {
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {

@@ -759,6 +759,18 @@
 // 偷粮）全在说这片田，画面却一株庄稼都没有——「全年的口粮」配画面看不出口粮二字；现仅潮灯镇
 // （curMap()==='village'）高草格（isTallGrass 与 dangerAt 同读 gCells 一份源）按坐标哈希稀疏点缀
 // 谷穗（穗杆米色/穗粒暖金/芒须深金/高光金白——全部既有色族零新增颜色），纯显示零结算零存档零数值变化。
+// v22.56 新内容·世界景观·纯显示：雾语林「营地篝火」（承 v22.36 广场大灯 / v22.39 星砂车 / v22.47 村井
+// 同一「地标设施补脸」主线的雾语林收口）——中段营地（v13.5「中段营地（泉水+猎手）」/README「中段营地
+// （泉水安全岛）」/货郎「中段营地的泉水，可以白喝」/老矿工「雾语林营地那口泉是这附近最后一处免费的水」
+// /雾径猎手 (13,9) 守在泉边）是雾语林唯一的补给安全岛——泉水+猎手+白喝水，却一像素的「火」都没有：
+// 营地没有篝火，就只是水边一块空地；现于泉水西侧 (11,9)（可行走 '0' 草格零碰撞，与泉水 (12,9)/
+// 雾径猎手 (13,9)/蘑菇宝箱 (12,11) 互不占位，全图 extras 扫描 (11,9) 仅 dungeon 草格一处）立起营地
+// 篝火：木柴 #6b5138/#8a5a2b（村井辘轳/星砂车木料同族）· 石圈 #6a6f78/#8a9098（村井石色同族）·
+// 火焰灯油金 #ffd24a + 金白焰心 #ffe9a8 + 深金余烬 #8a5a00（菌盖灯油/大灯光效同族——镇子的灯烧的
+// 是灯油，林间营火也是同一盏油的火）· 暖橙光晕 rgba(255,200,90,.25)（村居窗光同族）——全部既有色族
+// 零新增颜色；纯显示零结算零存档零数值变化（at/SOLID/遇敌/踩踏判定逐字未动），cave/gallery/village
+// 零触发，刻意不设小地图标记（地貌非决策信息，与星砂车/名字之门/村井「无决策信息不设标」同口径，
+// 图例零变化）。
 // v22.55 新内容·世界景观·纯显示：无字回廊名字石碑「回灯温光」（承 v22.36 广场大灯三档 / v22.41
 // 名字之门两档同一「名字物状态随主线」主线的回廊收口）——trueBoss 后四块名字石碑（STELE 瓦片，
 // 碑文与 FRAGMENTS 同源；拾灯人/掌灯童/刻碑人/记誓人守碑）此前与开局一模一样：守名者 done「名字
@@ -768,7 +780,7 @@
 // 同读 S.G.trueBoss 一份源）叠加温光：暖金微光罩 rgba(255,233,168,.16)（金白同族）·碑缘暖光
 // rgba(255,210,74,.45)（灯油金同族）·浮光金点 #ffe9a8·顶上名字微光 #ffd24a——全部既有色族零新增
 // 颜色；纯显示零结算零存档零数值变化（at/SOLID/NPC 判定逐字未动，未归档零回归）。
-const GAME_VERSION = 'v22.55';
+const GAME_VERSION = 'v22.56';
 
 // v22.37 体验打磨：H 帮助页「地图指南」补小地图图例（可发现性·信息透明·承 v19.47 小地图暖金 / v21.x
 // 危险红点 / v22.26 未开宝箱暖金 / v22.35 NPC 任务标 / v22.36 大灯标记同一「小地图决策信息」主线）——
@@ -837,6 +849,17 @@ const CAVE_CART = { x: 19, y: 10 };
 // 状态与守名者 done「名字回灯下」同读 S.G.trueBoss 一份源两档（无字灰石门零光/名字亮回金白微光）；
 // 纯显示零结算零存档零数值变化，刻意不设小地图标记（无决策信息，与星砂车同口径，图例零变化）。
 const GALLERY_ARCH = { x: 3, y: 4 };
+
+// v22.56 雾语林「营地篝火」（新内容·世界景观·纯显示，承 v22.47 村井 / v22.39 星砂车「地标设施补脸」
+// 先例）：中段营地是雾语林唯一的补给安全岛（泉水 (12,9) + 雾径猎手 (13,9)，货郎「中段营地的泉水，
+// 可以白喝」/老矿工「雾语林营地那口泉是这附近最后一处免费的水」/README「中段营地（泉水安全岛）」），
+// 泉水与猎手都有了脸，唯独营地没有「火」——营地里没有篝火，就只是水边一块空地；现于泉水西侧立起
+// 篝火：位置只存本常量一处，view/drawWorld.js 的世界绘制共用（调位只改这里）。(11,9) 为可行走 '0'
+// 草格（at(11,9)===TY.GRASS 零碰撞变化），与泉水 (12,9)/雾径猎手 (13,9)/蘑菇宝箱 (12,11)/拾菇人
+// (15,2)/货郎 (4,2) 互不占位，全图 extras 扫描 (11,9) 仅 dungeon 草格一处；纯显示零结算零存档零数值
+// 变化，刻意不设小地图标记（地貌非决策信息，与星砂车/名字之门/村井「无决策信息不设标」同口径，
+// 图例零变化）。
+const CAMP_FIRE = { x: 11, y: 9 };
 
 const T=32;
 
@@ -3533,7 +3556,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, HUNT_GOAL, HUNT2_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, POTIONS_GOAL, POTIONS2_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
