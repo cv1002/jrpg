@@ -99,6 +99,48 @@ function drawTileFx(ty, px, py, x, y) {
     CTX.fillStyle = 'rgba(158,232,255,' + (0.18 + 0.12 * Math.sin(ph + px * 0.01)) + ')';
     CTX.fillRect(px + 4, py + 6 + (Math.sin(ph) * 2 | 0), 10, 2);
     CTX.fillRect(px + 16, py + 18, 10, 2);
+    // v22.57 潮灯镇「水塘灯影」（新内容·世界景观·纯显示，承 v22.36 广场大灯三档同一「灯影状态随
+    // 主线」主线的水塘侧兑现）：掌灯阿婆（14,8 水塘南岸）「灯灭那晚，塘里的月亮也熄了」/after「你
+    // 看这塘水，倒映着整座镇子的灯——名字找回来了，灯也亮了」——镇子的灯（v22.36 大灯三档/v22.47
+    // 村井两档）都已上画面，唯独水塘这面「镜子」仍是死水一片：灯有脸，影没有。现仅潮灯镇
+    // （curMap()==='village'）的 WATER 格（6 格：北岸 (16..18,6) + 南岸 (14..16,7)）按状态叠加灯影
+    // （与广场大灯同读 villageLampState 一份源三档——熄灯 dead/归来 rekindled/全亮 full）：微光罩
+    // 20×18 + 灯柱 5×12 + 波光 22×2 +（全亮）第二波光 12×1·焰心 2×2 /（熄灯）余烬 2×2——全部既有
+    // 色族零新增颜色（灯油金 rgba(255,210,74,*) 同族/金白 rgba(255,233,168,*) 同族/熄灯灰
+    // rgba(90,85,96,*) 同 #5a5560 族/余烬暗铜 rgba(138,90,0,*) 同 #8a5a00 族），坐标哈希确定性零
+    // 时间依赖（局部 dhw = x*31+y*17——water 分支先于函数级 const dh，不可引用）；纯显示零结算零
+    // 存档零数值变化（WATER 仍 SOLID、遇敌/踩踏/传送判定逐字未动，dungeon/cave/gallery 零触发）。
+    if (curMap() === 'village' && S.G) {
+      const lp = villageLampState(S.G);
+      const dhw = x * 31 + y * 17;
+      const lx = 10 + (dhw % 5);
+      if (lp === 'full') {
+        CTX.fillStyle = 'rgba(255,233,168,.18)';
+        CTX.fillRect(px + 6, py + 5, 20, 18);
+        CTX.fillStyle = 'rgba(255,233,168,.55)';
+        CTX.fillRect(px + lx, py + 9, 5, 12);
+        CTX.fillStyle = 'rgba(255,233,168,.32)';
+        CTX.fillRect(px + 5, py + 23, 22, 2);
+        CTX.fillStyle = 'rgba(255,210,74,.2)';
+        CTX.fillRect(px + 8 + (dhw % 6), py + 19, 12, 1);
+        CTX.fillStyle = 'rgba(255,233,168,.8)';
+        CTX.fillRect(px + lx + 1, py + 7, 2, 2);
+      } else if (lp === 'rekindled') {
+        CTX.fillStyle = 'rgba(255,210,74,.12)';
+        CTX.fillRect(px + 6, py + 5, 20, 18);
+        CTX.fillStyle = 'rgba(255,210,74,.45)';
+        CTX.fillRect(px + lx, py + 9, 5, 12);
+        CTX.fillStyle = 'rgba(255,210,74,.28)';
+        CTX.fillRect(px + 5, py + 23, 22, 2);
+      } else {
+        CTX.fillStyle = 'rgba(90,85,96,.12)';
+        CTX.fillRect(px + 6, py + 5, 20, 18);
+        CTX.fillStyle = 'rgba(90,85,96,.3)';
+        CTX.fillRect(px + lx, py + 9, 5, 12);
+        CTX.fillStyle = 'rgba(138,90,0,.18)';
+        CTX.fillRect(px + lx + 8, py + 19, 2, 2);
+      }
+    }
   }
   if (ty === TY.FOUNTAIN) {
     CTX.fillStyle = 'rgba(223,246,255,' + (0.4 + 0.4 * Math.sin(ph * 2)) + ')';

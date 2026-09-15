@@ -96,7 +96,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.55（本版守 v22.56）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 56)), GAME_VERSION);
 ok('data.js 含 v22.55 注释（名字石碑回灯温光说明）', dSrc.includes('v22.55 新内容·世界景观·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.55（旧 v22.54 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.56';") && !dSrc.includes("const GAME_VERSION = 'v22." + "54';"));
+  dSrc.includes("const GAME_VERSION = 'v22.57';") && !dSrc.includes("const GAME_VERSION = 'v22." + "54';"));
 ok('data.js 仍保留 v22.54/v22.53 世代注释链（谷穗/补给指针累积注释未动）',
   dSrc.includes('v22.54 新内容·世界景观·纯显示') && dSrc.includes('v22.53 体验打磨·信息透明·纯文字'));
 
@@ -232,9 +232,9 @@ const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树收录 smoke_v2255_steleglow 且位于串尾',
-  readme.includes('smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire（npm test 串跑）'));
-ok('README 件套口径为一百五十二件套（一百五十一件套清除）',
-  readme.includes('冒烟一百五十二件套（一百五十一件套清除）') && !readme.includes('冒烟一百五十件套（一百四十九件套清' + '除）'));
+  readme.includes('smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow（npm test 串跑）'));
+ok('README 件套口径为一百五十三件套（一百五十二件套清除）',
+  readme.includes('冒烟一百五十三件套（一百五十二件套清除）') && !readme.includes('冒烟一百五十件套（一百四十九件套清' + '除）'));
 ok('README 含 v22.55 守护描述（无字回廊名字石碑回灯温光守护）', readme.includes('v22.55 起含无字回廊名字石碑回灯温光守护'));
 ok('README 含 smoke_v2255_steleglow 入库（151 份）', readme.includes('smoke_v2255_steleglow 入库（151 份）'));
 ok('README 仍保留 v22.54 守护描述与入库（150 份）（历史口径不漂移）',
@@ -245,7 +245,7 @@ ok('README 视觉 bullet 含名字石碑回灯温光（v22.55）', readme.includ
 ok('package.json 已收录 smoke_v2255_steleglow（npm test 串跑第 151 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2255_steleglow.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 151 件套', testChain === 152, String(testChain));
+ok('package.json test 串共 151 件套', testChain === 153, String(testChain));
 ok('CHANGELOG 含 v22.55 条目', changelog.includes('## v22.55 '));
 
 // —— 姊妹 pin 复查（v2254..v2226 随新现实更新，含 v2228/v2229/v2230 三风格锚与 v2239/v2240 容错正则尾锚）——
@@ -260,48 +260,48 @@ const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), '
 const s2228 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2228_titlesave.mjs'), 'utf8');
 const s2226 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2226_chestprogress.mjs'), 'utf8');
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('smoke_v2254 的 GAME_VERSION 字面量 pin 已更新为 v22.55', s2254.includes("const GAME_VERSION = 'v22.56';"));
+ok('smoke_v2254 的 GAME_VERSION 字面量 pin 已更新为 v22.55', s2254.includes("const GAME_VERSION = 'v22.57';"));
 ok('smoke_v2254 的 README 串尾 pin 已随新现实延伸至 smoke_v2255_steleglow',
-  s2254.includes('smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire（npm test 串跑）'));
-ok('smoke_v2254 的 README 件套 pin 已随新现实更新为一百五十二件套（一百五十一件套清除）',
-  s2254.includes('一百五十二件套（一百五十一件套清除）'));
-ok('smoke_v2254 的 package.json 件套计数 pin 已更新为 === 151', s2254.includes('testChain === 152'));
-ok('smoke_v2254 的 CHANGELOG 顶 pin 已更新为 ## v22.55', s2254.includes("startsWith('## v22.56')"));
-ok('smoke_v2253 的 GAME_VERSION 字面量 pin 已更新为 v22.55', s2253.includes("const GAME_VERSION = 'v22.56';"));
+  s2254.includes('smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow（npm test 串跑）'));
+ok('smoke_v2254 的 README 件套 pin 已随新现实更新为一百五十三件套（一百五十二件套清除）',
+  s2254.includes('一百五十三件套（一百五十二件套清除）'));
+ok('smoke_v2254 的 package.json 件套计数 pin 已更新为 === 151', s2254.includes('testChain === 153'));
+ok('smoke_v2254 的 CHANGELOG 顶 pin 已更新为 ## v22.55', s2254.includes("startsWith('## v22.57')"));
+ok('smoke_v2253 的 GAME_VERSION 字面量 pin 已更新为 v22.55', s2253.includes("const GAME_VERSION = 'v22.57';"));
 ok('smoke_v2253 的 README 串尾 pin 已延伸至 smoke_v2255_steleglow',
-  s2253.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire（npm test 串跑）'));
-ok('smoke_v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.55', s2252.includes("const GAME_VERSION = 'v22.56';"));
+  s2253.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow（npm test 串跑）'));
+ok('smoke_v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.55', s2252.includes("const GAME_VERSION = 'v22.57';"));
 ok('smoke_v2252 的 README 串尾 pin 已延伸至 smoke_v2255_steleglow',
-  s2252.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire（npm test 串跑）'));
+  s2252.includes('smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow（npm test 串跑）'));
 ok('smoke_v2242 的 README 串尾 pin 已延伸至 smoke_v2255_steleglow',
-  s2242.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire（npm test 串跑）'));
+  s2242.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow（npm test 串跑）'));
 // 串尾锚延伸（任意转义风格：plain `/` / regex `\/` / 双转义 `\\/`）
-const archChain = (s) => /smoke_v2253_supplypoint[.\\]{0,4}mjs[\s\S]*?node tests[\\/]{0,4}smoke_v2256_campfire[.\\]{0,4}mjs/.test(s);
+const archChain = (s) => /smoke_v2253_supplypoint[.\\]{0,4}mjs[\s\S]*?node tests[\\/]{0,4}smoke_v2257_pondglow[.\\]{0,4}mjs/.test(s);
 ok('smoke_v2226/v2228/v2229/v2230/v2239/v2240/v2242 的串尾锚已延伸至 smoke_v2255_steleglow（plain/regex/双转义三风格）',
   archChain(s2226) && archChain(s2228) && archChain(s2229) && archChain(s2230) && archChain(s2239) &&
   archChain(s2240) && archChain(s2242));
 // 容错正则尾锚（v2239/v2240 宽松模式：smoke_v2253_supplypoint 后 [\s\S]*? 再接 smoke_v2255_steleglow）
-const looseChain = (s) => /smoke_v2253_supplypoint[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2256_campfire[.\\]{0,6}mjs/.test(s);
+const looseChain = (s) => /smoke_v2253_supplypoint[.\\]{0,6}mjs[\s\S]*?node tests[\\/]{0,6}smoke_v2257_pondglow[.\\]{0,6}mjs/.test(s);
 ok('smoke_v2239/smoke_v2240 的容错正则尾锚已延伸至 smoke_v2255_steleglow',
   looseChain(s2239) && looseChain(s2240));
 ok('v2143-45「件套守护领先一位」哨兵链已推进至 152（一百五十三件套（一百五十二件套清除））',
-  s2143.includes('一百五十三件套（一百五十二件套清除）') && s2143.includes("!readme.includes('一百五十三件套')"));
+  s2143.includes('一百五十四件套（一百五十三件套清除）') && s2143.includes("!readme.includes('一百五十四件套')"));
 ok('smoke_v2228 的 GAME_VERSION 字面量 pin 已更新为 v22.55 且旧代零残留复查仍在（v22.27 风格）',
-  s2228.includes("const GAME_VERSION = 'v22.56';") && s2228.includes("'v22." ) && s2228.includes("27';"));
+  s2228.includes("const GAME_VERSION = 'v22.57';") && s2228.includes("'v22." ) && s2228.includes("27';"));
 
 // 旧代 v22.55 pin 全库零残留（字面量/恒等/件套/串尾/testChain）
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs'));
 const stale = [];
 for (const f of allTests) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
-  if (src.includes("const GAME_VERSION = 'v22." + "55';") || src.includes("GAME_VERSION === 'v22." + "55'") ||
-      src.includes('一百五十一件套（一百五十件套清' + '除）') || src.includes('testChain === ' + '151') ||
-      src.includes('smoke_v2255_steleglow（npm test 串' + '跑）')) stale.push(f);
+  if (src.includes("const GAME_VERSION = 'v22." + "56';") || src.includes("GAME_VERSION === 'v22." + "56'") ||
+      src.includes('一百五十二件套（一百五十一件套清' + '除）') || src.includes('testChain === ' + '152') ||
+      src.includes('smoke_v2256_campfire（npm test 串' + '跑）')) stale.push(f);
 }
 ok('旧代 v22.55 字面量/恒等/件套/串尾/testChain pin 全库零残留（' + allTests.length + ' 件扫描，含本件）', stale.length === 0, stale.join(','));
-// 坏链防回归：README 不得出现「smoke_v2255_steleglow + smoke_v2256_campfire（npm test 串跑）」孤尾
+// 坏链防回归：README 不得出现「smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow（npm test 串跑）」孤尾
 ok('README 串尾无孤尾（smoke_v2255_steleglow 后必须接 smoke_v2256_campfire）',
-  !readme.includes('smoke_v2255_steleglow（npm test 串' + '跑）'));
+  !readme.includes('smoke_v2256_campfire（npm test 串' + '跑）'));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);
