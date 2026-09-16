@@ -194,7 +194,14 @@ export function drawCodex(){
   // 事实对不上（撞见 3 次仍 ✕0）；现 battle 侧计数（每次进战 +1）、图鉴标真实 ✕N（与讨伐行 ✕N 同族）。
   // seenCt 经 |0 归一：旧档布尔 true → 1（至少撞见一次），undefined/0 → 0，零结算零存档格式变化。
   const rows=BESTIARY_TARGET.map(n=>({n,got:!!(hero.bestiary||{})[n],seen:!!((hero.seen||{})[n]),seenCt:((hero.seen||{})[n])|0}));
-  if(names.length===0){
+  // v22.75 图鉴空态条件收口（体验打磨·信息透明·纯显示）：空态分支只看 hero.bestiary（讨伐数）——
+  // 玩家阵亡/逃跑但「已遭遇」过魔物（hero.seen 有计数）时，图鉴砍掉了 v19.41/v21.37 专门设计的
+  // 「已遭遇未讨伐：揭示名字/出没地/已遭遇 ✕N」行，只剩「尚未击败任何敌人」占位，而页脚此刻却照常
+  // 显示「已遭遇：N/13」——同一屏自相矛盾（有遭遇却不给看）；现把空态条件收敛为「零讨伐 且 零遭遇」，
+  // 有已遭遇未讨伐者时走 rows 全量绘制（seen 行按 v19.41 揭示、未见行保持 ❓ 占位、页脚随之自洽）。
+  // 纯显示零结算零存档变化；零讨伐零遭遇的新档空态文案逐字保留。
+  const seenAny = BESTIARY_TARGET.some((n) => ((hero.seen || {})[n] | 0) > 0);
+  if (names.length === 0 && !seenAny) {
     text('尚未击败任何敌人。',320,170,'16px','#ffd24a','center');
     text('前往雾语林的草丛，开始你的冒险吧！',320,200,'14px','#7d93a3','center');
   } else {
