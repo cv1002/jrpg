@@ -914,7 +914,19 @@
 // （brewNow 酿造成功唯一写入点、(g.brews||0) 防御式读取、旧档零迁移），无 r 字段纯里程碑；解锁时机：
 // applyAchievements 既有通路任意判定点当场解锁（brews 为持续累积量，承 brew2 同款——已解锁不因任何变化
 // 而撤销），ACH_LIST 51→52 项（末尾追加，既有 51 项 id/序位零回归）。
-const GAME_VERSION = 'v22.71';
+// v22.72 新成就·图鉴收录线中档里程碑「见多识广」（承 v22.69 菇海无涯 / v22.70 踏出灯影 / v22.71 灯影渐远
+// 多档先例）：成就版图「三档推进」十线（等级/金币/时长/讨伐/掉落/药水/灵药/酿造/蘑菇/探索）逐一收口后转入
+// 收集线补档——图鉴收录线（scholar 记忆收藏家=5 种 / perfection 记忆守护者=全部 13 种）仍只有首档+封顶
+// 两档：玩家收录第 6~12 种期间（状态页/胜利画面/阵亡画面/尾声四处都在展示「图鉴 N/13」）毫无成就回响；
+// 现补中档（SCHOLAR2_GOAL=10 种，首档与封顶正中间——5→10→13；可达性：13 种里 11 种（5 普通怪 + 雾灵/
+// 树精/石魔像 + 石心魔像精英 + 幽冥魔王/洞窟领主 + 残焰魔像精英）在终焉之神前即收录，10 种自然可达）；
+// 判定/描述/进度三处同读新常量 SCHOLAR2_GOAL（与 SCHOLAR_GOAL 同一「成就阈值数据化」家族——调门槛只改
+// data.js 一处自动跟随，零裸字面量），计数读既有 hero.bestiary 字段（(g.bestiary||{}) 防御式读取、旧档
+// 无此字段 false 不误解锁、零迁移，承 scholar 同款）；无 r 字段（与 scholar/lvl5 同款纯里程碑——见多识广
+// 本身就是奖励）；解锁时机：applyAchievements 既有通路任意判定点当场解锁（bestiary 为持续累积量，无需新
+// 判定点，承 perfection 同款——已解锁不因任何变化而撤销；胜利/掉落本就当场判定，第 10 种收录的瞬间即
+// 解锁、反馈不迟到），ACH_LIST 55→56 项（末尾追加，既有 55 项 id/序位零回归）。
+const GAME_VERSION = 'v22.72';
 // v22.66 新成就·药水线第三档里程碑「万全之备」（承 v22.0 有备无患 / v22.6 药香满囊 / v22.61 富甲一方 /
 // v22.63 长明如昼 / v22.64 驱雾三百战 / v22.65 洪福齐天 多档先例）：成就版图三档推进的药水线收口——
 // 等级/金币/时长/讨伐/掉落五线均已三档齐备，唯独药水线（stock 有备无患=20 瓶 / stock2 药香满囊=50 瓶）
@@ -2508,6 +2520,12 @@ const ELIXIR_STOCK3_GOAL = 16;   // 成就「灵药满仓」需持有的高级�
 // 同类里残存的裸奔数值之一，本次收口「记忆收藏家」）
 const SCHOLAR_GOAL = 5;    // 成就「记忆收藏家」需收录的魔物种数
 
+// 成就「见多识广」图鉴收录中档阈值（单一数据源·v22.72）：ACH_LIST 该条的判定（ok: bestiary 收录种数 >=
+// SCHOLAR2_GOAL）、描述文案（d「收录 N 种魔物」）、进度条（prog「X/N」）三处同读此源；承 SCHOLAR_GOAL
+// 同一「成就阈值数据化」家族——scholar（5 种）与 perfection（全部 13 种）之间的中程（5→10→13），计数
+// 读既有 hero.bestiary（Object.keys 计数与 scholar/perfection 同式），(g.bestiary||{}) 防御式旧档零迁移。
+const SCHOLAR2_GOAL = 10;   // 成就「见多识广」需收录的魔物种数（图鉴线中档=5→10→13）
+
 // 成就「幸运眷顾」累计额外掉落次数阈值（单一数据源）：ACH_LIST 该条的判定
 // （ok: drops >= LUCKY_GOAL）、描述文案（d「累计获得 N 次额外掉落」）、进度条（prog「X/N」）
 // 三处同读此源——此前 5 硬编码在同一条目内三处互不相关（ok 判定、d 描述、prog 分母）：想调门槛
@@ -3630,6 +3648,10 @@ const ACH_LIST=[
   // 里程碑——脚印本身就是奖励）；解锁时机：world.transition 进图落账后当场 applyAchievements（承 v21.88
   // 反馈不迟到惯例），第 3 张图落账即解锁、反馈不迟到。
   {id:'outstep2', name:'灯影渐远', d:`到访 ${OUTSTEP2_GOAL} 张地图`, ok:g=>Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length>=OUTSTEP2_GOAL, prog:g=>`${Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length}/${OUTSTEP2_GOAL}`},
+  // v22.72 新成就「见多识广」（图鉴收录线中档里程碑）：判定/描述/进度三处同读 SCHOLAR2_GOAL（与
+  // SCHOLAR_GOAL 同一「成就阈值数据化」家族——5→10→13 中程），计数读既有 hero.bestiary（Object.keys
+  // 计数与 scholar/perfection 同式、(g.bestiary||{}) 防御式旧档零迁移），无 r 字段纯里程碑（承 scholar 同款）。
+  {id:'scholar2', name:'见多识广', d:`记忆图鉴收录 ${SCHOLAR2_GOAL} 种魔物`, ok:g=>Object.keys(g.bestiary||{}).length>=SCHOLAR2_GOAL, prog:g=>`${Object.keys(g.bestiary||{}).length}/${SCHOLAR2_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -3928,7 +3950,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

@@ -149,8 +149,9 @@ function runAch(hero) {
 {
   const h = mkHero({ gold: 100, bestiary: fullBestiary(), ach: ['scholar', 'rich', 'elites'] });
   const m = runAch(h);
-  ok('运行期：perfection 档报文逐字「🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）」',
-    m.length === 1 && m[0] === '🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）', m.join(' | '));
+  ok('运行期：perfection 档报文逐字「🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）」且连带 scholar2「见多识广」中档横幅（v22.72 全图鉴 13 种也越过 10 种门槛）',
+    m.length === 2 && m[0] === '🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）' &&
+    m[1] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物', m.join(' | '));
   ok('运行期：perfection 档加奖结算一致（gold 100→1099，ach 落 perfection）',
     h.gold === 100 + PERFECTION_GOLD && (h.ach || []).includes('perfection'));
 }
@@ -170,10 +171,11 @@ function runAch(hero) {
 {
   const h = mkHero({ gold: 0, level: 5, bestiary: fullBestiary(), ach: ['scholar', 'elites'] });
   const m = runAch(h);
-  ok('运行期：双解锁档两条横幅（lvl5 通用口径 + perfection 带名）',
-    m.length === 2 &&
+  ok('运行期：双解锁档三条横幅（lvl5 通用口径 + perfection 带名 + scholar2 中档）',
+    m.length === 3 &&
     m.includes('🔓 成就解锁：【独当一面】 等级达到 5 级') &&
-    m.includes('🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 999 金）'),
+    m.includes('🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 999 金）') &&
+    m.includes('🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物'),
     m.join(' | '));
   ok('运行期：双解锁档结算一致（gold 0→999，两成就均落）',
     h.gold === PERFECTION_GOLD && h.ach.includes('lvl5') && h.ach.includes('perfection'));
@@ -190,16 +192,18 @@ function runAch(hero) {
   ok('运行期：重复调用档不重复加奖（gold 停留 1099）', h.gold === goldAfterFirst && goldAfterFirst === 1099);
 }
 
-// E 档：未达成不报——图鉴缺一种，perfection 不解锁、零横幅零加奖
+// E 档：未达成不报——图鉴缺一种，perfection 不解锁、零加奖；但 12 种已越过 scholar2 的 10 种门槛，
+// 会如实报 scholar2「见多识广」中档横幅（v22.72 新中档；零加奖不变）
 //（12 种仍越过 scholar 的 5 种门槛，预置剔除连带项；v21.77 连带项补充：12 种仍含双精英会连带
-//  elites，预置剔除后零横幅断言聚焦 perfection）
+//  elites，预置剔除后断言聚焦 perfection 不解锁 + scholar2 中档横幅）
 {
   const b = fullBestiary();
   delete b['终焉之神'];
   const h = mkHero({ gold: 100, bestiary: b, ach: ['scholar', 'elites'] });
   const m = runAch(h);
-  ok('运行期：图鉴缺一种档零横幅零加奖（perfection 不解锁）',
-    m.length === 0 && h.gold === 100 && !(h.ach || []).includes('perfection'), m.join(' | '));
+  ok('运行期：图鉴缺一种档 scholar2 中档横幅且 perfection 不解锁零加奖',
+    m.length === 1 && m[0] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物' &&
+    h.gold === 100 && !(h.ach || []).includes('perfection'), m.join(' | '));
 }
 
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
