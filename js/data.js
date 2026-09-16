@@ -863,6 +863,20 @@
 // （(g.potion2||0) 防御式读取、旧档零迁移），无 r 字段纯里程碑；解锁时机：applyAchievements 既有通路
 // 任意判定点当场解锁（potion2 为持续变化量，承 elixir2 同款——已解锁不因喝药消耗回落而撤销），
 // ACH_LIST 50→51 项（末尾追加，既有 50 项 id/序位零回归）。
+// v22.71 新成就·探索线第二档里程碑「灯影渐远」（承 v22.70 踏出灯影 / v22.69 菇海无涯 / v22.68 炉火纯青 /
+// v22.67 灵药满仓 / v22.66 万全之备 / v22.65 洪福齐天 / v22.64 驱雾三百战 / v22.63 长明如昼 / v22.61 富甲一方 /
+// v21.88 走遍四方 多档先例）：成就版图「三档推进」的探索线补档——v22.70 补首档（outstep 踏出灯影=2 图）后，
+// 探索线（首档 2 图 · 封顶 wander 走遍四方=全部 4 图）仍只有两档，与其余九线三档齐备（等级 lvl5·lvl10·lvl12 /
+// 金币 rich·rich2·rich3 / 时长 ptime·ptime2·ptime3 / 讨伐 hunt10·hunt100·hunt3 / 掉落 lucky·lucky2·lucky3 /
+// 药水 stock·stock2·stock3 / 灵药 elixir·elixir2·elixir3 / 酿造 brew·brew2·brew3 / 蘑菇 mush·mush2·mush3）
+// 相比缺一枚中档；现补第二档（OUTSTEP2_GOAL=3 张地图——village 起始 + 两张新图即达，恰在「踏出灯影」与
+// 「走遍四方」的正中间，终局流程必经：进雾语林 → 星井矿脉/无字回廊任何一张即达）；判定/进度同读
+// Object.keys(MAPS) 单一数据源（与 outstep/wander 同款——加/删地图只改 data.js 一处、本成就自动跟随，
+// 绝无第二套口径）+ 既有 hero.visited 到访记录（world.transition 进图时 push，全游戏唯一写入点），
+// (g.visited||[]) 防御式读取、旧档无此字段 false 不误解锁、零迁移，承 outstep/wander 同款）；无 r 字段
+// （与 outstep/wander/lvl5 同款纯里程碑——脚印本身就是奖励）；解锁时机：world.transition 进图落账后当场
+// applyAchievements（承 v21.88 反馈不迟到惯例），第 3 张图落账即解锁，ACH_LIST 54→55 项（末尾追加，
+// 既有 54 项 id/序位零回归）。
 // v22.70 新成就·探索线首档里程碑「踏出灯影」（承 v22.69 菇海无涯 / v22.68 炉火纯青 / v22.67 灵药满仓 /
 // v22.66 万全之备 / v22.65 洪福齐天 / v22.64 驱雾三百战 / v22.63 长明如昼 / v22.61 富甲一方 / v21.88 走遍四方
 // 先例）：成就版图逐线核对后补探索线首档——探索线（wander 走遍四方=踏遍全部 4 图）此前只有封顶一枚，
@@ -900,7 +914,7 @@
 // （brewNow 酿造成功唯一写入点、(g.brews||0) 防御式读取、旧档零迁移），无 r 字段纯里程碑；解锁时机：
 // applyAchievements 既有通路任意判定点当场解锁（brews 为持续累积量，承 brew2 同款——已解锁不因任何变化
 // 而撤销），ACH_LIST 51→52 项（末尾追加，既有 51 项 id/序位零回归）。
-const GAME_VERSION = 'v22.70';
+const GAME_VERSION = 'v22.71';
 // v22.66 新成就·药水线第三档里程碑「万全之备」（承 v22.0 有备无患 / v22.6 药香满囊 / v22.61 富甲一方 /
 // v22.63 长明如昼 / v22.64 驱雾三百战 / v22.65 洪福齐天 多档先例）：成就版图三档推进的药水线收口——
 // 等级/金币/时长/讨伐/掉落五线均已三档齐备，唯独药水线（stock 有备无患=20 瓶 / stock2 药香满囊=50 瓶）
@@ -2572,6 +2586,14 @@ const FIRSTBLOOD_GOAL = 1;   // 成就「初露锋芒」需累计赢得的战斗
 // 防御式读取、旧档零迁移，承 wander 同款）。
 const OUTSTEP_GOAL = 2;   // 成就「踏出灯影」需到访的地图张数（探索线首档；village 起始 + 第一张新图即达）
 
+// 成就「灯影渐远」到访地图数阈值（单一数据源·v22.71）：ACH_LIST 该条的判定（ok: 已到访图数 >= OUTSTEP2_GOAL）
+// 与进度（prog「X/N」）两处同读此源——探索线 v22.70 补首档（2 图）后与封顶档 wander（全部图，Object.keys(MAPS)
+// 派生无需阈值）之间缺中档（3 图 = village 起始 + 进雾语林 + 星井矿脉/无字回廊任何一张，终局流程必经）；
+// 单设此常量（与 OUTSTEP_GOAL / FIRSTBLOOD_GOAL / HUNT_GOAL 同一「成就阈值数据化」家族——改门槛只改
+// data.js 一处自动跟随，零裸字面量），计数读既有 hero.visited（world.transition 进图 push、(g.visited||[])
+// 防御式读取、旧档零迁移，承 outstep/wander 同款）。
+const OUTSTEP2_GOAL = 3;   // 成就「灯影渐远」需到访的地图张数（探索线第二档；village 起始 + 两张新图即达）
+
 // 成就「灵药初成」酿造瓶数阈值（单一数据源·v21.86）：ACH_LIST 该条的判定（ok: g.brews >= ELIXIR_GOAL）
 // 与进度（prog「X/N」）两处同读此源——酿造瓶数此前只存在于 core.brewNow 的 potion2 库存（灵药瓶数，
 // 含任务奖励/掉落来源，不代表「酿造」行为），成就若按 potion2 判定会把「任务送的灵药」误记为酿造；
@@ -3599,6 +3621,15 @@ const ACH_LIST=[
   // 不误解锁、零迁移（承 wander 同款）；无 r 字段（与 wander/lvl5/memoir 同款纯里程碑——脚印本身就是奖励）；
   // 解锁时机：world.transition 进图落账后当场 applyAchievements（承 v21.88 反馈不迟到惯例），第 2 张图落账即解锁。
   {id:'outstep', name:'踏出灯影', d:`到访 ${OUTSTEP_GOAL} 张地图`, ok:g=>Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length>=OUTSTEP_GOAL, prog:g=>`${Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length}/${OUTSTEP_GOAL}`},
+  // 灯影渐远（v22.71 新成就·探索线第二档里程碑·承 v22.70 踏出灯影首档 / v21.88 走遍四方封顶 先例）：v22.70
+  // 补探索线首档（2 图）后，探索线与其余九线相比缺中档——现补第二档（OUTSTEP2_GOAL=3 张地图，恰在首档与
+  // 封顶 wander（全部图）正中间）；判定/进度同读 Object.keys(MAPS) 单一数据源（与 outstep/wander 同款——
+  // 加/删地图只改 data.js 一处、本成就自动跟随，绝无第二套口径）+ 既有 hero.visited 到访记录
+  // （world.transition 进图时 push，全游戏唯一写入点），(g.visited||[]) 防御式读取、旧档无此字段 false
+  // 不误解锁、零迁移（承 v19.41 seen / outstep / wander 同款）；无 r 字段（与 outstep/wander/lvl5 同款纯
+  // 里程碑——脚印本身就是奖励）；解锁时机：world.transition 进图落账后当场 applyAchievements（承 v21.88
+  // 反馈不迟到惯例），第 3 张图落账即解锁、反馈不迟到。
+  {id:'outstep2', name:'灯影渐远', d:`到访 ${OUTSTEP2_GOAL} 张地图`, ok:g=>Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length>=OUTSTEP2_GOAL, prog:g=>`${Object.keys(MAPS).filter(m=>(g.visited||[]).includes(m)).length}/${OUTSTEP2_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -3897,7 +3928,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, LUCKY_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
