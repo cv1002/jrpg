@@ -19,7 +19,7 @@ console.log('— v22.78 潮灯镇「放灯童」新 NPC 冒烟 —');
 // —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v22.75 ——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v22.76（本版守 v22.79）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 83)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.76（本版守 v22.79）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 84)), GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -31,7 +31,7 @@ const changelog = read('../CHANGELOG.md');
 // —— 源级落位：data.js v22.78 注释 + 三件套 + GAME_VERSION ——
 ok('data.js 含 v22.76 版本注释（放灯童三件套说明，注释按引入版次锚定 v22.76）', dataSrc.includes('v22.76 新 NPC·纯风味「放灯童」'));
 ok('data.js GAME_VERSION 字面量已为 v22.78（旧 v22.75 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v22.83';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "75';"));
+  dataSrc.includes("const GAME_VERSION = 'v22.84';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "75';"));
 ok('data.js 仍保留 v22.75 历史注释（图鉴空态收口注释未动）', dataSrc.includes('v22.75 体验打磨·图鉴空态条件收口'));
 ok('data.js NPC_SPOTS 含 19,7 → lampboat 键', dataSrc.includes("'19,7': 'lampboat'"));
 ok('data.js NPCS 含 lampboat 放灯童（name/mark 落位）', dataSrc.includes("lampboat:{name:'放灯童', mark:'lamp', lines:["));
@@ -164,9 +164,9 @@ ok('运行期：drawWorld 水塘东岸渲染不抛错', worldOk);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2276_lampkid（v2275 后接 v2276）',
-  readme.includes('smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey（npm test 串跑）'));
-ok('README 件套口径为一百七十九件套（一百七十八件套清除）且旧 171 口径零残留',
-  readme.includes('冒烟一百七十九件套（一百七十八件套清除）') && !readme.includes('冒烟一百七十一件套（一百七十件套清' + '除）'));
+  readme.includes('smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey（npm test 串跑）'));
+ok('README 件套口径为一百八十件套（一百七十九件套清除）且旧 171 口径零残留',
+  readme.includes('冒烟一百八十件套（一百七十九件套清除）') && !readme.includes('冒烟一百七十一件套（一百七十件套清' + '除）'));
 ok('README 含 v22.76 守护描述（潮灯镇放灯童新 NPC 守护，按引入版次锚定 v22.76）', readme.includes('v22.76 起含潮灯镇「放灯童」新 NPC 守护'));
 ok('README 含 smoke_v2276_lampkid 入库（172 份）', readme.includes('smoke_v2276_lampkid 入库（172 份）'));
 ok('README 仍保留 smoke_v2275_codexempty 入库（171 份）历史口径', readme.includes('smoke_v2275_codexempty 入库（171 份）'));
@@ -175,23 +175,23 @@ ok('README 成就口径「58 项」双处不变（本版非成就版，零回归
 ok('package.json 已收录 smoke_v2276_lampkid（npm test 串跑第 172 份）',
   pkg.includes('smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 172 件套', testChain === 179, String(testChain));
-ok('CHANGELOG 含 v22.78 条目（顶 pin）', changelog.startsWith('## v22.83 '));
+ok('package.json test 串共 172 件套', testChain === 180, String(testChain));
+ok('CHANGELOG 含 v22.78 条目（顶 pin）', changelog.startsWith('## v22.84 '));
 
 // —— 姊妹件套 pin 随新现实更新 + v22.75 遗留 stale 串尾锚修复落位 ——
 const s2275 = read('smoke_v2275_codexempty.mjs');
-ok('smoke_v2275 的 GAME_VERSION 字面量 pin 已更新为 v22.79', s2275.includes("const GAME_VERSION = 'v22.83';"));
-ok('smoke_v2275 的 CHANGELOG 顶 pin 已更新为 ## v22.78', s2275.includes("startsWith('## v22.83'"));
-ok('smoke_v2275 的件套 pin 已更新为一百七十九件套（一百七十八件套清除）', s2275.includes('一百七十九件套（一百七十八件套清除）'));
-ok('smoke_v2275 的 README 串尾 pin 已延伸至 smoke_v2276_lampkid', s2275.includes('smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey（npm test 串跑）'));
+ok('smoke_v2275 的 GAME_VERSION 字面量 pin 已更新为 v22.79', s2275.includes("const GAME_VERSION = 'v22.84';"));
+ok('smoke_v2275 的 CHANGELOG 顶 pin 已更新为 ## v22.78', s2275.includes("startsWith('## v22.84'"));
+ok('smoke_v2275 的件套 pin 已更新为一百八十件套（一百七十九件套清除）', s2275.includes('一百八十件套（一百七十九件套清除）'));
+ok('smoke_v2275 的 README 串尾 pin 已延伸至 smoke_v2276_lampkid', s2275.includes('smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey（npm test 串跑）'));
 ok('smoke_v2275 的 package.json 串尾 pin 已延伸至 smoke_v2276_lampkid', s2275.includes('smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));
 // 注：v2275 为图鉴空态版冒烟，本就无 NPC_SPOTS 计数 pin（v22.75 未立、v22.78 无需级联），此处不赘姊妹断言。
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至一百八十件套（一百七十九件套清除）', s2143.includes('一百八十件套（一百七十九件套清除）') && s2143.includes("!readme.includes('一百八十件套（一百七十九件套清除）')"));
+ok('smoke_v2143 哨兵链已推进至一百八十一件套（一百八十件套清除）', s2143.includes('一百八十一件套（一百八十件套清除）') && s2143.includes("!readme.includes('一百八十一件套（一百八十件套清除）')"));
 // v22.75 级联遗漏的 stale pkg 串尾锚修复：v2228 自身 regex 串尾锚延伸至 v2276
 const s2228 = read('smoke_v2228_titlesave.mjs');
 ok('smoke_v2228 的「已收录」regex 串尾锚已延伸至 smoke_v2276_lampkid（stale 修复落位）',
-  s2228.includes('node tests\\/smoke_v2276_lampkid\\.mjs && node tests\\/smoke_v2277_pondhint\\.mjs && node tests\\/smoke_v2278_mushguide\\.mjs && node tests\\/smoke_v2279_lampwell\\.mjs && node tests\\/smoke_v2280_grainfield\\.mjs && node tests\\/smoke_v2281_starwell\\.mjs && node tests\\/smoke_v2282_archgate\\.mjs && node tests\\/smoke_v2283_menuekey\\.mjs"'));
+  s2228.includes('node tests\\/smoke_v2276_lampkid\\.mjs && node tests\\/smoke_v2277_pondhint\\.mjs && node tests\\/smoke_v2278_mushguide\\.mjs && node tests\\/smoke_v2279_lampwell\\.mjs && node tests\\/smoke_v2280_grainfield\\.mjs && node tests\\/smoke_v2281_starwell\\.mjs && node tests\\/smoke_v2282_archgate\\.mjs && node tests\\/smoke_v2283_menuekey\\.mjs && node tests\\/smoke_v2284_skillekey\\.mjs"'));
 ok('smoke_v2228 旧 v2274 止点串尾锚零残留', !s2228.includes('node tests\\/smoke_v2274_seen2\\.mjs"'));
 // 旧代 v22.75 pin 零残留
 ok('smoke_v2275 旧 v22.75 字面量 pin 零残留', !s2275.includes("const GAME_VERSION = 'v22.75';"));

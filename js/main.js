@@ -142,8 +142,16 @@ const screens = {
             playerAction('skill', list[idx]);
           } else if (isEsc(e)) {
             S.skillMenuOpen = false;
-          } else if (e.key === 'Enter' && list.length) {
+          } else if ((e.key === 'Enter' || e.key === 'e' || e.key === 'E') && list.length) {
             // v19.48：Enter 施放光标所在技能（与商店/快速旅行 Enter 确认同一惯例）
+            // v22.84 技能菜单施放补 E 键别名（体验打磨·口径收尾，承 v21.43 对话翻页 E 别名 /
+            // v22.83 商店/旅馆/酿造/快速旅行/暂停五列表 E 别名同一「Enter/E 同效」主线）：技能菜单
+            // 是诸列表确认界面里唯一仍只认 Enter 的——v22.83 修完五个地面列表后，战斗内 ↑↓ 选招 +
+            // Enter 施放的技能菜单（本注释明言与商店/快速旅行 Enter 确认同一惯例）成了漏网：玩家按
+            // README/H 页「对话 / 确认」口径按 E 确认毫无反应（v21.16/v21.33「每个按键都该有反应」
+            // 同族的「文档写的键按了没反应」）；现 e/E 与 Enter 完全同路径施放光标所在技能——三键
+            // 逐字同行为；isEsc 分支/数字键快捷直发/↑↓ 导航逐字未动，KEY 无 'e' 映射（战斗内 E 原为
+            // 无反应键，与世界移动键零冲突，承 v22.83 注释已列）。纯入口、零结算、零数据变化。
             const i = Math.max(0, Math.min(list.length - 1, S.skillSel || 0));
             S.skillSel = i;
             S.skillMenuOpen = false;

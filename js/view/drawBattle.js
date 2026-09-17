@@ -158,7 +158,10 @@ export function drawSkillMenu() {
     if (!banned && hero.mp < skill.mp) text(`⛔ 还差 ${skill.mp - hero.mp} MP`, 474, 160 + HINT_DY + i * ROW_SP, 'bold 11px', '#e14b3f', 'right');
   });
   text(`当前 MP：${hero.mp}/${hero.mpMax}${hero.charge ? `  · 蓄力×${CHARGE_MULT}` : ''}`, 320, 368, '13px', '#7d93a3', 'center');
-  text('[↑↓]选择  [Enter]施放  [数字键]快捷  [Esc]取消', 320, 394, '13px', '#7d93a3', 'center');
+  // v22.84 技能菜单页脚口径补 E 别名（体验打磨·口径收尾，承 v21.81 页脚「[数字键]快捷」/ v22.83
+  // 菜单确认 E 别名同一「功能入口可见」主线）：main.js 技能施放已补 e/E 与 Enter 同路径（v22.84），
+  // 本页脚作为玩家眼前的操作入口同步为 [Enter/E]施放——两处口径同源，玩家按文档按 E 不再无反应。
+  text('[↑↓]选择  [Enter/E]施放  [数字键]快捷  [Esc]取消', 320, 394, '13px', '#7d93a3', 'center');
 }
 
 export function openSkillMenu() {
