@@ -336,7 +336,12 @@ const screens = {
   },
   ending: {
     onKey(e) {
-      if (e.key === 'Enter') { goto('title'); startBgm('title'); }
+      // v22.85 尾声确认补 E 键别名（体验打磨·口径收尾，承 v21.43 对话翻页 E 别名 / v21.74 开场
+      // 叙事页 E 别名 / v22.83 五列表 E 别名 / v22.84 技能菜单 E 别名同一「Enter/E 同效」主线）：
+      // drawEnding 页脚「按 Enter 返回标题」（v21.87 文案）此前仍只认 Enter——按 README/H 页
+      // 「对话 / 确认」口径按 E 无反应；现 e/E 与 Enter 完全同路径 goto('title') + startBgm('title')
+      // （BGM 切回标题曲目逐字同行为）。纯入口零结算零数据零存档。
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') { goto('title'); startBgm('title'); }
     },
   },
   dead: {
@@ -366,7 +371,13 @@ const screens = {
       // L 读档即可带着徽记继续星井矿脉/无字回廊/试炼之旅。Enter/R 分支与非 R 键解武装口径逐字未动，
       // 纯入口层改动、零结算零存档格式变化。
       if (e.key === 'p' || e.key === 'P') { saveGame(); return; }
-      if (e.key === 'Enter') goto('ending');
+      // v22.85 胜利画面「观看尾声」补 E 键别名（体验打磨·口径收尾，承 v21.43 对话翻页 E 别名 /
+      // v21.74 开场叙事页 E 别名 / v22.83 五列表 E 别名 / v22.84 技能菜单 E 别名同一「Enter/E
+      // 同效」主线）：drawWin 页脚「按 Enter 观看尾声」此前仍是胜利画面唯一只认 Enter 的确认
+      // 出口——按 README/H 页「对话 / 确认」口径按 E 无反应；现 e/E 与 Enter 完全同路径
+      // goto('ending')（Enter→ending 分支逐字同行为；E 属非 R 键、上一行两按确认解武装口径
+      // 一并沿用零回归）。纯入口零结算零数据零存档。
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') goto('ending');
       else if (e.key === 'r' || e.key === 'R') {
         // 两按确认：与标题页 R 分支逐字同构（提示文案同口径，承 v21.16）
         const st = titleResetCheck(S.titleResetArm || 0, Date.now(), true);

@@ -864,7 +864,9 @@ export function drawWin(){
   // 「按 P 存档」（与 main.js win.onKey P 分支逐字同口径），另加一行 12px 灰字提示「本局战果未自动存档 ·
   // 按 P 存进当前槽，回标题按 L 读档即可继续冒险」（y=416，与页脚 396 行间 20px ≥16 不触、画布底 480
   // 富余），Enter/R 分支与上方收集行逐字零位移，纯显示零结算零存档变化。
-  CTX.fillText('按 Enter 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)',CV.width/2,396);
+  // v22.85 页脚口径同步：win.onKey 观看尾声补 E 键别名后，页脚如实标注双键
+  // （承 v21.18/v21.70「按键提示必须如实反映可用键」主线）；P/R/Esc 口径逐字未动。
+  CTX.fillText('按 Enter/E 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)',CV.width/2,396);
   CTX.fillStyle='#5a6a78'; CTX.font='12px sans-serif';
   CTX.fillText('💡 本局战果未自动存档 · 按 P 存进当前槽，回标题按 L 读档即可继续冒险',CV.width/2,416);
 }
@@ -891,6 +893,8 @@ export function drawEnding(){
   const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
   const chestN = chestCount(hero);
   text(`📕 图鉴 ${codexN}/${BESTIARY_TARGET.length} · 📦 宝箱 ${chestN}/${chestTotal()}`,320,366,'bold 13px','#7dd47f','center');
-  text('按 Enter 返回标题',320,396,'13px','#7d93a3','center');
+  // v22.85 页脚口径同步：ending.onKey 返回标题补 E 键别名后，页脚如实标注双键
+  // （承 v21.18「按键提示必须如实反映可用键」主线），13px estW ≈125 ≤470 预算，纯文字零逻辑。
+  text('按 Enter/E 返回标题',320,396,'13px','#7d93a3','center');
 }
 bind.drawEnding=drawEnding;
