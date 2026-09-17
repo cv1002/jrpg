@@ -188,7 +188,7 @@ ok('package.json 已收录 smoke_v2145_journalscroll（npm test 串跑第 41 份
 // —— smoke_v2144 的 README 件套口径断言已去硬化（v21.7 惯例）——
 const s2144 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2144_run.mjs'), 'utf8');
 ok('smoke_v2144 的 README 件套口径断言已去硬化（v21.7 惯例：改用存活性口径，旧精确表达式「readme.includes(四十件套（三十九件套清除）)」零残留，实件数由本版冒烟守护）',
-  s2144.includes("!readme.includes('一百八十四件套（一百八十三件套清除）')") &&
+  s2144.includes("!readme.includes('一百八十五件套（一百八十四件套清除）')") &&
   !s2144.includes("readme.includes('四十件套（三十九件套清除）')"));
 
 console.log(`\n${n - failed}/${n} 通过`);

@@ -25,7 +25,7 @@ console.log('— v21.87 尾声战绩页收集进度冒烟 —');
 // —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v21.86 ——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.86', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 87)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.86', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 88)), GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -34,7 +34,7 @@ const menusSrc = read('../js/view/menus.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.87 版本注释', dataSrc.includes('v21.87 尾声战绩页补收集进度两件'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.87', dataSrc.includes("const GAME_VERSION = 'v22.87';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.87', dataSrc.includes("const GAME_VERSION = 'v22.88';"));
 
 // —— 源级落位：drawEnding 新两件派生 + 既有战绩行/页脚逐字保留 ——
 const endBlock = (menusSrc.match(/export function drawEnding\(\)\{[\s\S]*?\n\}/) || [''])[0];
@@ -191,8 +191,8 @@ const readme = read('../README.md');
 const pkg = read('../package.json');
 ok('README 已同步（tests 树收录 smoke_v2187_endingrecap + 冒烟/件套口径）',
   readme.includes('smoke_v2187_endingrecap') && readme.includes('冒烟') && readme.includes('件套'));
-ok('README 件套口径已更新为一百八十三件套（一百八十二件套清除）',
-  readme.includes('冒烟一百八十三件套（一百八十二件套清除）') && !readme.includes('冒烟八十二件套（八十一件套清除）'));
+ok('README 件套口径已更新为一百八十四件套（一百八十三件套清除）',
+  readme.includes('冒烟一百八十四件套（一百八十三件套清除）') && !readme.includes('冒烟八十二件套（八十一件套清除）'));
 ok('README 含 v21.87 守护描述', readme.includes('v21.87 起含尾声战绩页收集进度守护'));
 ok('README 系统清单补尾声战绩页收集进度口径（尾声战绩页收集进度）', readme.includes('尾声战绩页收集进度'));
 ok('package.json 已收录 smoke_v2187_endingrecap（npm test 串跑第 83 份）',
@@ -203,13 +203,13 @@ const suite83 = ['smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite83) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百八十三件套（一百八十二件套清除）`,
-    src.includes('一百八十三件套（一百八十二件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百八十四件套（一百八十三件套清除）`,
+    src.includes('一百八十四件套（一百八十三件套清除）'));
 }
 for (const nm of ['smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.87`,
-    src.includes("const GAME_VERSION = 'v22.87';"));
+    src.includes("const GAME_VERSION = 'v22.88';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
