@@ -33,7 +33,13 @@ const screens = {
         () => { S.shopSel = (S.shopSel + 1) % S.shopList.length; SFX.select(); },
         () => { S.shopSel = (S.shopSel - 1 + S.shopList.length) % S.shopList.length; SFX.select(); }
       );
-      if (e.key === 'Enter') {
+      // v22.83 菜单确认 E 键别名（体验打磨·口径收尾，承 v21.29 大地图 E 交互别名 / v21.43 对话翻页 E 别名
+      // 同一「Enter/E 同效」主线）：README 快速上手表与 H 页「对话 / 确认」行早已承诺 Enter/E，但商店/旅馆/
+      // 酿造/快速旅行/暂停五个列表确认界面内部仍只认 Enter——按 E 确认毫无反应（v21.16/v21.33「每个按键
+      // 都该有反应」同族的「文档写的键按了没反应」）；现 E 与 Enter 同路径调用 item.act()/stayInn()/brewNow()/
+      // doTravel()/PAUSE_ITEMS 分派，五种状态与 Enter 逐字同行为；isEsc 分支逐字未动，KEY 无 'e' 映射
+      // （不与移动键冲突）、world 交互 E 分派零回归。纯入口、零结算、零数据变化。
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') {
         const item = S.shopList[S.shopSel];
         if (item && item.act) item.act();
       } else if (isEsc(e)) {
@@ -43,13 +49,13 @@ const screens = {
   },
   inn: {
     onKey(e) {
-      if (e.key === 'Enter') stayInn();
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') stayInn(); // v22.83 E 同效确认
       else if (isEsc(e)) backWorld();
     },
   },
   brew: {
     onKey(e) {
-      if (e.key === 'Enter') brewNow();
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') brewNow(); // v22.83 E 同效确认
       else if (isEsc(e)) backWorld();
     },
   },
@@ -107,7 +113,7 @@ const screens = {
         () => { S.travelSel = (S.travelSel + 1) % TRAVEL_LIST.length; SFX.select(); },
         () => { S.travelSel = (S.travelSel - 1 + TRAVEL_LIST.length) % TRAVEL_LIST.length; SFX.select(); }
       );
-      if (e.key === 'Enter') doTravel();
+      if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') doTravel(); // v22.83 E 同效确认
       else if (isEsc(e)) backWorld();
     },
   },
@@ -405,7 +411,8 @@ const screens = {
         () => { S.pauseSel = (S.pauseSel - 1 + PAUSE_ITEMS.length) % PAUSE_ITEMS.length; SFX.select(); }
       );
       if (isEsc(e)) { goto('world'); return; }
-      if (e.key !== 'Enter') return;
+      // v22.83 pause 菜单确认 E 同效（与 shop/inn/brew/travel 同批）
+      if (e.key !== 'Enter' && e.key !== 'e' && e.key !== 'E') return;
       const act = PAUSE_ITEMS[S.pauseSel];
       if (!act) return;
       SFX.select();

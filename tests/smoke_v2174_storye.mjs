@@ -101,7 +101,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.73）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.73', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 82)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.73', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 83)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.74 注释（开场叙事页翻页补 E 键别名说明）', dSrc.includes('v21.74 体验打磨：开场叙事页翻页补 E 键别名'));
 
@@ -117,11 +117,12 @@ ok('STORY 末行行宽 estW ≤520 叙事面板预算（15px，面板内宽 60..
 // —— main.js 源级：新条件落位 + 旧单 Enter 条件零残留 ——
 const mainSrc = fs.readFileSync(path.join(ROOT, 'js/main.js'), 'utf8');
 ok('main.js 含 v21.74 注释（开场叙事翻页补 E 键别名）', mainSrc.includes('v21.74 开场叙事翻页补 E 键别名'));
-ok('main.js story.onKey 新条件落位（Enter/e/E 之外才早退，全文件唯一）',
+ok('main.js story.onKey 新条件落位（Enter/e/E 之外才早退）',
   mainSrc.includes("if (e.key !== 'Enter' && e.key !== 'e' && e.key !== 'E') return;"));
-// 注：旧条件串在 pause.onKey 仍合法存在（暂停菜单无 E 别名需求）——零残留口径 = 全文件仅剩 pause 一处。
+// 注：v22.83 起 pause.onKey 同样升级为 Enter/e/E 三键确认（菜单确认 E 键别名）——旧单 Enter 条件
+// 全文件已零残留（此前唯一保留的 pause 处也已随 v22.83 收口）。
 const oldCondCount = mainSrc.split("if (e.key !== 'Enter') return;").length - 1;
-ok('main.js story.onKey 旧单 Enter 条件零残留（全文件仅剩 pause 一处合法保留）', oldCondCount === 1, String(oldCondCount));
+ok('main.js 旧单 Enter 条件全文件零残留（story/pause 均已是 Enter/e/E 三键口径）', oldCondCount === 0, String(oldCondCount));
 ok("KEY 无 'e' 映射（不与移动键冲突）", !KEY['e'] && !KEY['E']);
 
 // —— menus.js 源级：drawStory 页脚新文案落位 + 旧裸文案零残留 ——

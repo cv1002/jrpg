@@ -36,7 +36,7 @@ export function drawShop(){
       text(it.price+'💰'+lack,560,118+i*38,'13px',afford?'#62c6ff':'#e14b3f','right');
     }
   });
-  text('绿色▲=更强升级 灰色=买不起 · ↑↓选择  Enter购买  Esc离开',320,470,'12px','#7d93a3','center');
+  text('绿色▲=更强升级 灰色=买不起 · ↑↓选择  Enter/E购买  Esc离开',320,470,'12px','#7d93a3','center');
 }
 
 export function drawInn(){
@@ -49,7 +49,7 @@ export function drawInn(){
     text(`今晚将恢复   HP +${Math.max(0,hero.hpMax-hero.hp)}   MP +${Math.max(0,hero.mpMax-hero.mp)}`,320,228,'14px','#62c6ff','center');
     if(hero.gold<INN_PRICE) text(`💰 金币不足（还差 ${INN_PRICE-hero.gold} 金），无法入住！`,320,254,'14px','#e14b3f','center');
   } else text('你现在精神饱满，不需要休息。',320,228,'14px','#7d93a3','center');
-  text('[Enter] 住宿休息   [Esc] 离开',320,275,'13px','#7d93a3','center');
+  text('[Enter/E] 住宿休息   [Esc] 离开',320,275,'13px','#7d93a3','center');
 }
 
 export function drawBrew(){
@@ -59,7 +59,7 @@ export function drawBrew(){
   text(`配方：${BREW_MUSHROOMS} 株魔法蘑菇 + ${BREW_GOLD} 金币 → 高级灵药 ×1`,320,180,'14px','#ffd24a','center');
   // 灵药描述由 ELIXIR_* 常量推导（v16.1 收口结算/战斗预览/商店文案时漏掉的最后一处旧字面量）：与 takePotion 逐字同源
   text(`高级灵药：恢复 ${Math.round(ELIXIR_HP_PCT * 100)}% HP + ${Math.round(ELIXIR_MP_PCT * 100)}% MP`,320,210,'13px','#7d93a3','center');
-  if(hero.mushrooms>=BREW_MUSHROOMS&&hero.gold>=BREW_GOLD) text('按 Enter 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
+  if(hero.mushrooms>=BREW_MUSHROOMS&&hero.gold>=BREW_GOLD) text('按 Enter/E 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
   else text(`材料不足（还差 ${Math.max(0,BREW_MUSHROOMS-hero.mushrooms)} 株蘑菇、${Math.max(0,BREW_GOLD-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
 }
 
@@ -512,7 +512,7 @@ export function drawTravel(){
     if(unlocked&&desc) text(desc,180,110+i*52+19,'11px','#7d93a3');
     if(unlocked&&hint) text(hint,478,110+i*52,'bold 11px','#ffd24a','right');
   });
-  text('↑↓ 选择  ·  Enter 传送  ·  Esc 取消',320,travelFootY(TRAVEL_LIST.length),'12px','#7d93a3','center');
+  text('↑↓ 选择  ·  Enter/E 传送  ·  Esc 取消',320,travelFootY(TRAVEL_LIST.length),'12px','#7d93a3','center');
   // v21.92 目的地等级达标预警（体验打磨·信息透明·纯显示）：列表提示（TRAVEL_LIST「推荐 Lv.X 起」）与
   // 进图预警（v19.56，传送落地后才提示）都只陈述标准，旅行菜单上玩家仍要心算「我 Lv.几、够不够」；
   // 现于选中行页脚区按 MAPS[k].recLv 与 hero.level 实时比对（与 TRAVEL_LIST 提示派生 / world.transition
@@ -575,7 +575,7 @@ export function drawPause() {
     text((sel ? '▶ ' : '  ') + it.name, 180, 124 + i * 32, '15px', sel ? '#ffd24a' : '#e8eef1');
     text(saveHint, 460, 124 + i * 32, '12px', '#7d93a3', 'right');
   });
-  text('↑↓ 选择  ·  Enter 确定  ·  Esc 关闭', 320, 412, '12px', '#7d93a3', 'center');
+  text('↑↓ 选择  ·  Enter/E 确定  ·  Esc 关闭', 320, 412, '12px', '#7d93a3', 'center');
   // v22.30 暂停菜单「未存档 + 槽位占位」提示（体验打磨·防误丢档·信息透明·纯显示，承 v22.10 离站守卫 /
   // v22.28 标题页未存档警告同一「未落盘进度防丢失」主线）：标题页（drawTitle）与浏览器离站（main.js
   // beforeunload）都有对 S.G && S.unsaved 的提醒，唯独 Esc 暂停菜单——玩家决定「要不要存个档」的第一
