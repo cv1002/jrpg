@@ -89,9 +89,9 @@ const cSrc = fs.readFileSync(path.join(ROOT, 'js/core.js'), 'utf8');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.85 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.85', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 89)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.85', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 90)), GAME_VERSION);
 ok('data.js 含 v21.86 注释（新成就「灵药初成」说明）', dSrc.includes('v21.86 新成就「灵药初成」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.86', dSrc.includes("const GAME_VERSION = 'v22.89';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.86', dSrc.includes("const GAME_VERSION = 'v22.90';"));
 
 // —— ELIXIR_GOAL 常量（与 FIRSTBLOOD_GOAL/LVL5_GOAL 同族：判定/进度同读一份源）——
 ok('ELIXIR_GOAL===1 且已从 data.js 导出（酿造首瓶即达标，承 firstblood「第一场」同款）',
@@ -207,7 +207,7 @@ ok('运行期：成就页第四页滚动渲染不抛错（31 项 PAGE=10 四页�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2186_brew', readme.includes('smoke_v2186_brew'));
-ok('README 件套口径为一百八十五件套（一百八十四件套清除）', readme.includes('一百八十五件套（一百八十四件套清除）'));
+ok('README 件套口径为一百八十六件套（一百八十五件套清除）', readme.includes('一百八十六件套（一百八十五件套清除）'));
 ok('README 含 v21.86 守护描述', readme.includes('v21.86 起含'));
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
   readme.includes('成就一览（全部 58 项进度') && readme.includes('**58 项成就**'));
@@ -221,13 +221,13 @@ const suite82 = ['smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v
   'smoke_v2176_allchests.mjs'];
 for (const nm of suite82) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百八十五件套（一百八十四件套清除）`,
-    src.includes('一百八十五件套（一百八十四件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百八十六件套（一百八十五件套清除）`,
+    src.includes('一百八十六件套（一百八十五件套清除）'));
 }
 for (const nm of ['smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.86`,
-    src.includes("const GAME_VERSION = 'v22.89';"));
+    src.includes("const GAME_VERSION = 'v22.90';"));
 }
 const achFiles = ['smoke_v2184_lvl12.mjs', 'smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs',
   'smoke_v2176_allchests.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs'];

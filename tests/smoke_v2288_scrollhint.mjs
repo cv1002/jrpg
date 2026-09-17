@@ -18,13 +18,13 @@ console.log('— v22.88 帮助页「操作说明」J/B/C 三行「↑↓ 滚动�
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.88', dataSrc.includes("const GAME_VERSION = 'v22.89'"));
+ok('data.js GAME_VERSION 字面量为 v22.88', dataSrc.includes("const GAME_VERSION = 'v22.90'"));
 ok('旧 v22.87 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "87';"));
 ok('data.js 含 v22.88 版本注释', dataSrc.includes('// v22.88 体验打磨·可发现性·纯文字'));
 ok('data.js 仍保留 v22.87 历史注释', dataSrc.includes('// v22.87 体验打磨·信息透明·纯文字'));
 
 // 2. 源级落位：操作说明页三行补「（↑↓ 滚动）」+ 行内注释 + 旧单键行零残留
-ok('data.js 任务日志行现为 J（↑↓ 滚动）', dataSrc.includes("['任务日志','J（↑↓ 滚动）']"));
+ok('data.js 任务日志行现为 J（↑↓ 滚动 · I 直达状态页）', dataSrc.includes("['任务日志','J（↑↓ 滚动 · I 直达状态页）']"));
 ok('data.js 记忆图鉴行现为 B（↑↓ 滚动）', dataSrc.includes("['记忆图鉴','B（↑↓ 滚动）']"));
 ok('data.js 成就一览行现为 C（↑↓ 滚动）', dataSrc.includes("['成就一览','C（↑↓ 滚动）']"));
 ok("data.js 旧单键行零残留（['任务日志','J'] 等）",
@@ -42,17 +42,17 @@ ok('main.js 三屏 ↑↓ 滚动分派存在（journal/codex/ach 各两向）',
 const data = await import(join(ROOT, 'js/data.js'));
 const { HELP_PAGES, GAME_VERSION } = data;
 ok(`操作说明页行数仍 14（实际 ${HELP_PAGES[0].length}）`, HELP_PAGES[0].length === 14);
-ok('GAME_VERSION 导出恒等于 v22.88', GAME_VERSION === 'v22.89', GAME_VERSION);
+ok('GAME_VERSION 导出恒等于 v22.88', GAME_VERSION === 'v22.90', GAME_VERSION);
 const p0 = HELP_PAGES[0];
 const row = (label) => { const r = p0.find((x) => x[0] === label); return r ? String(r[1]) : null; };
 const rowAll = (label) => { const r = p0.find((x) => x[0] === label); return r ? r.join(' ') : null; };
-ok('任务日志行精确为「J（↑↓ 滚动）」', row('任务日志') === 'J（↑↓ 滚动）', row('任务日志'));
+ok('任务日志行精确为「J（↑↓ 滚动 · I 直达状态页）」（v22.90 口径）', row('任务日志') === 'J（↑↓ 滚动 · I 直达状态页）', row('任务日志'));
 ok('记忆图鉴行精确为「B（↑↓ 滚动）」', row('记忆图鉴') === 'B（↑↓ 滚动）', row('记忆图鉴'));
 ok('成就一览行精确为「C（↑↓ 滚动）」', row('成就一览') === 'C（↑↓ 滚动）', row('成就一览'));
 ok('移动行零回归（Shift 奔跑口径仍在）', String(row('移动 / 传送门')).includes('按住 Shift 奔跑'));
 ok('对话/确认行零回归（Enter / E 口径仍在）', row('对话 / 确认') === 'Enter / E（镇民需面对面）');
 ok('菜单/取消行零回归', row('菜单 / 取消') === 'Esc（大地图打开菜单，界面内返回）');
-ok('状态行零回归（仍为 I）', row('状态') === 'I');
+ok('状态行 v22.90 口径（页底 J 直达日志）', row('状态') === 'I（页底 J 直达日志）');
 ok('快速旅行行零回归（仍为 T）', row('快速旅行') === 'T');
 ok('操作说明行零回归（仍为 H）', row('操作说明') === 'H');
 ok('喝药行零回归（POTION 派生仍在）', String(row('喝药（普通/灵药）')).includes('%HP+'));
@@ -177,9 +177,9 @@ const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 const idx = readFileSync(join(ROOT, 'index.html'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2288_scrollhint（v2287 后接 v2288）',
-  readme.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog（npm test 串跑）'));
-ok('README 件套口径为一百八十五件套（一百八十四件套清除）且旧 183 口径零残留',
-  readme.includes('冒烟一百八十五件套（一百八十四件套清除）') && !readme.includes('一百八十三件套（一百八十二件套清' + '除）'));
+  readme.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink（npm test 串跑）'));
+ok('README 件套口径为一百八十六件套（一百八十五件套清除）且旧 183 口径零残留',
+  readme.includes('冒烟一百八十六件套（一百八十五件套清除）') && !readme.includes('一百八十三件套（一百八十二件套清' + '除）'));
 ok('README 含 v22.88 守护描述（操作说明 J/B/C ↑↓ 滚动口径守护）',
   readme.includes('v22.88 起含帮助页「操作说明」任务日志/记忆图鉴/成就一览「↑↓ 滚动」口径守护'));
 ok('README 含 smoke_v2288_scrollhint 入库（184 份）', readme.includes('smoke_v2288_scrollhint 入库（184 份）'));
@@ -189,28 +189,28 @@ ok('README 快速上手表 B 行补 ↑↓ 滚动口径（v22.88）', readme.inc
 ok('index.html 常驻帮助条 J/B/C 三处补 ↑↓ 滚动口径',
   idx.includes('J</kbd>任务（<kbd>↑↓</kbd>滚动）') && idx.includes('B</kbd>图鉴（<kbd>↑↓</kbd>滚动）') && idx.includes('C</kbd>成就（<kbd>↑↓</kbd>滚动）'));
 ok('package.json test 串含 smoke_v2288_scrollhint.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs"'));
+  pkg.includes('node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 185 件套', testChain === 185, String(testChain));
-ok('CHANGELOG 含 v22.88 条目（顶 pin）', changelog.startsWith('## v22.89 '));
+ok('package.json test 串共 185 件套', testChain === 186, String(testChain));
+ok('CHANGELOG 含 v22.88 条目（顶 pin）', changelog.startsWith('## v22.90 '));
 
 // 7. 姊妹件套 pin（smoke_v2287/v2286/v2285 随新现实更新）
 const readTest = (name) => readFileSync(join(ROOT, 'tests', name), 'utf8');
 const s2287 = readTest('smoke_v2287_trueroute.mjs');
 const s2286 = readTest('smoke_v2286_titleekey.mjs');
 const s2285 = readTest('smoke_v2285_winekey.mjs');
-ok('smoke_v2287 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2287.includes("const GAME_VERSION = 'v22.89';"));
-ok('smoke_v2287 的 CHANGELOG 顶 pin 已更新为 ## v22.88', s2287.includes("startsWith('## v22.89 '"));
-ok('smoke_v2287 的件套 pin 已更新为一百八十五件套（一百八十四件套清除）', s2287.includes('一百八十五件套（一百八十四件套清除）'));
+ok('smoke_v2287 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2287.includes("const GAME_VERSION = 'v22.90';"));
+ok('smoke_v2287 的 CHANGELOG 顶 pin 已更新为 ## v22.88', s2287.includes("startsWith('## v22.90 '"));
+ok('smoke_v2287 的件套 pin 已更新为一百八十六件套（一百八十五件套清除）', s2287.includes('一百八十六件套（一百八十五件套清除）'));
 ok('smoke_v2287 的 README 串尾 pin 已延伸至 smoke_v2288_scrollhint',
-  s2287.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog（npm test 串跑）'));
+  s2287.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink（npm test 串跑）'));
 ok('smoke_v2287 的 package 串尾 pin 已延伸至 smoke_v2288_scrollhint',
-  s2287.includes('node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs"'));
-ok('smoke_v2287 的 testChain pin 已更新为 184', s2287.includes('testChain === 185'));
-ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2286.includes("const GAME_VERSION = 'v22.89';"));
-ok('smoke_v2286 的 testChain pin 已更新为 184', s2286.includes('testChain === 185'));
-ok('smoke_v2286 的哨兵 pin 已更新为一百八十六件套（一百八十五件套清除）', s2286.includes('一百八十六件套（一百八十五件套清除）'));
-ok('smoke_v2285 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2285.includes("const GAME_VERSION = 'v22.89';"));
+  s2287.includes('node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs"'));
+ok('smoke_v2287 的 testChain pin 已更新为 184', s2287.includes('testChain === 186'));
+ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2286.includes("const GAME_VERSION = 'v22.90';"));
+ok('smoke_v2286 的 testChain pin 已更新为 184', s2286.includes('testChain === 186'));
+ok('smoke_v2286 的哨兵 pin 已更新为一百八十七件套（一百八十六件套清除）', s2286.includes('一百八十七件套（一百八十六件套清除）'));
+ok('smoke_v2285 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2285.includes("const GAME_VERSION = 'v22.90';"));
 
 // 8. 旧代 v22.87 pin 全库零残留
 const allTests = readdirSync(join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2288_scrollhint.mjs');
@@ -226,9 +226,9 @@ ok('旧代 v22.87 字面量/恒等/件套/testChain/串尾/版本锚 pin 全库�
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 185 口径
 const s2143 = readTest('smoke_v2143_talkekey.mjs');
-ok('哨兵链 v2143 已含下一版件套口径（一百八十六件套（一百八十五件套清除））',
-  s2143.includes('一百八十六件套（一百八十五件套清除）') &&
-  s2143.includes("!readme.includes('一百八十六件套（一百八十五件套清除）')"));
+ok('哨兵链 v2143 已含下一版件套口径（一百八十七件套（一百八十六件套清除））',
+  s2143.includes('一百八十七件套（一百八十六件套清除）') &&
+  s2143.includes("!readme.includes('一百八十七件套（一百八十六件套清除）')"));
 
 console.log(`\n— v22.88 帮助页「操作说明」J/B/C 三行「↑↓ 滚动」口径冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);
