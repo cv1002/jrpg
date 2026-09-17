@@ -700,7 +700,9 @@ export function drawCreate(){
   // v21.42 创建页补 Esc 返回（体验打磨·可发现性）：create.onKey 新补 `isEsc(e) → goto('title')`
   //（此前创建页是无 Esc 处理的唯一场景，误入无退路是「看不见的入口」）；提示行如实补「Esc 返回」，
   // 与 H 页「菜单 / 取消」行 Esc 语义、dead 画面 T 回标题同口径，纯显示零结算。
-  CTX.fillText('← → 选择姓名     ↑ ↓ 选择难度    Enter 出发！    Esc 返回',CV.width/2,432);
+  // v22.86 页脚口径同步：create.onKey 出发补 E 键别名（Enter/E 同效收尾——drawTitle/drawCreate 是
+  // v22.85 胜利画面/尾声之后最后两处只认 Enter 的确认提示）
+  CTX.fillText('← → 选择姓名     ↑ ↓ 选择难度    Enter/E 出发！    Esc 返回',CV.width/2,432);
 }
 
 export function drawTitle(){
@@ -724,7 +726,8 @@ export function drawTitle(){
   CTX.fillText('潮 灯 记',CV.width/2,180); CTX.shadowBlur=0;
   CTX.fillStyle='#62c6ff'; CTX.font='16px sans-serif'; CTX.fillText('— 灯灭之夜 —',CV.width/2,220);
   CTX.fillStyle=(Math.floor(Date.now()/500)%2)?'#e8eef1':'#7d93a3';
-  CTX.font='bold 18px sans-serif'; CTX.fillText('按 Enter 开始新的冒险',CV.width/2,300);
+  // v22.86 页脚口径同步：title.onKey 开始新冒险补 E 键别名（Enter/E 同效收尾，与 drawCreate 同批）
+  CTX.font='bold 18px sans-serif'; CTX.fillText('按 Enter/E 开始新的冒险',CV.width/2,300);
   CTX.font='bold 14px sans-serif'; CTX.fillStyle='#ffd24a';
   const slotNums=Array.from({length:SAVE_SLOTS},(_,i)=>i+1);
   const slots=slotNums.map(s=>{ const on=S.curSaveSlot===s; return (on?'▶ ':'')+`槽${s}`+(hasSlot(s)?' ✓':'')+(on?' ◀':''); });

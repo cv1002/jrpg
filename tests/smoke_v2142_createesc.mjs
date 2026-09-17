@@ -102,8 +102,8 @@ ok('main.js create Enter 出发分支零回归（beginAdventure 原样）',
 // —— menus.js 源级：新提示落位 + 旧提示零残留 ——
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
 ok('menus.js 含 v21.42 注释（创建页 Esc 返回说明）', mSrc.includes('v21.42'));
-ok('drawCreate 提示行新口径落位（…Enter 出发！    Esc 返回）',
-  mSrc.includes("'← → 选择姓名     ↑ ↓ 选择难度    Enter 出发！    Esc 返回'"));
+ok('drawCreate 提示行新口径落位（…Enter/E 出发！    Esc 返回，v22.86 补 E）',
+  mSrc.includes("'← → 选择姓名     ↑ ↓ 选择难度    Enter/E 出发！    Esc 返回'"));
 ok('drawCreate 旧口径提示行（Enter 出发 后直接逗号接面宽参数）源级零残留',
   !mSrc.includes("Enter 出发！',CV.width/2,432)"));
 
@@ -154,8 +154,8 @@ try {
   drawCreate();
   ok('drawCreate 渲染含「Esc 返回」（提示行新口径）',
     drawn.some((t) => t.includes('Esc 返回')), drawn.filter((t) => t.includes('选择姓名')).join(' | '));
-  ok('drawCreate 渲染整行含「Enter 出发！」（前半零回归）',
-    drawn.some((t) => t.includes('Enter 出发！')));
+  ok('drawCreate 渲染整行含「Enter/E 出发！」（前半零回归，v22.86 补 E）',
+    drawn.some((t) => t.includes('Enter/E 出发！')));
   ok('drawCreate 旧整行（…Enter 出发！无 Esc）渲染零残留',
     !drawn.some((t) => t === '← → 选择姓名     ↑ ↓ 选择难度    Enter 出发！'));
   // world Esc→pause 零回归（Esc 语义面抽查）

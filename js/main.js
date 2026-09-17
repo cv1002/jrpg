@@ -194,7 +194,14 @@ const screens = {
       if (/^[1-9]$/.test(e.key) && Number(e.key) <= SAVE_SLOTS) { S.curSaveSlot = Number(e.key); SFX.select(); }
       else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { S.curSaveSlot = (S.curSaveSlot % SAVE_SLOTS) + 1; SFX.select(); }
       else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { S.curSaveSlot = ((S.curSaveSlot - 2 + SAVE_SLOTS) % SAVE_SLOTS) + 1; SFX.select(); }
-      else if (e.key === 'Enter') { ac(); SFX.select(); goto('create'); }
+      // v22.86 标题页「按 Enter 开始新的冒险」补 E 键别名（体验打磨·口径收尾，承 v21.43 对话翻页 E 别名 /
+      // v21.74 开场叙事页 E 别名 / v22.83 五列表 E 别名 / v22.84 技能菜单 E 别名 / v22.85 胜利画面·尾声 E 别名
+      // 同一「Enter/E 同效」主线）：v22.85 收口胜利画面/尾声后，标题页 drawTitle 页脚「按 Enter 开始新的冒险」
+      // 与创建页 drawCreate 页脚「Enter 出发！」成了仍只认 Enter 的两处确认提示——按 README 快速上手表
+      // 「对话 / 确认 / 进入界面」Enter/E 口径按键毫无反应（v21.16/v21.33「每个按键都该有反应」同族的
+      // 「文档写的键按了没反应」）；现 e/E 与 Enter 完全同路径 goto('create')（E 属非 R/X 键、上方两行
+      // titleResetArm/slotDeleteArm 解武装口径沿用），KEY 无 'e' 映射（不与移动键冲突），纯入口零结算零数据零存档变化。
+      else if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') { ac(); SFX.select(); goto('create'); }
       else if ((e.key === 'l' || e.key === 'L') && load()) {
         SFX.select();
         resumeBgm();
@@ -297,7 +304,11 @@ const screens = {
       } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
         S.createDiff = (S.createDiff - 1 + DIFFS.length) % DIFFS.length;
         SFX.select();
-      } else if (e.key === 'Enter') {
+      // v22.86 创建页「Enter 出发！」补 E 键别名（与 title.onKey 同一「Enter/E 同效」主线收尾）：README
+      // 快速上手表创建页行与 drawCreate 页脚此前只写 Enter——按「对话 / 确认」口径按 E 出发毫无反应
+      // （v21.16/v21.33 同族「文档写的键按了没反应」）；现 e/E 与 Enter 完全同路径 beginAdventure()，
+      // ↑↓←→/d/s 选名选难与 isEsc 返回逐字未动，KEY 无 'e' 映射（不与移动键冲突），纯入口零结算零数据零存档变化。
+      } else if (e.key === 'Enter' || e.key === 'e' || e.key === 'E') {
         beginAdventure();
       }
     },
