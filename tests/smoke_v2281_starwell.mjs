@@ -18,7 +18,7 @@ console.log('— v22.81 帮助页地图指南星井矿脉行「星井」r[2] 指
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.81', dataSrc.includes("const GAME_VERSION = 'v22.86'"));
+ok('data.js GAME_VERSION 字面量为 v22.81', dataSrc.includes("const GAME_VERSION = 'v22.87'"));
 ok('旧 v22.80 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "80';"));
 ok('data.js 含 v22.81 版本注释', dataSrc.includes('// v22.81 体验打磨'));
 ok('data.js 仍保留 v22.80 历史注释', dataSrc.includes('// v22.80 体验打磨'));
@@ -48,7 +48,7 @@ ok('潮灯镇行 r[2] 零回归（水塘灯影 + NPC 名派生 + 广场大灯·�
   String(guide[0][2]).includes(NPCS.lampboat.name) && String(guide[0][2]).includes('广场大灯·村井') &&
   String(guide[0][2]).includes('粮田（' + QUESTS.side_grain.name + '）'));
 ok('雾语林行「蘑菇田」零回归（v22.78）', String(guide[1][1]).includes('蘑菇田') && guide[1].length === 2);
-ok('地图指南页 r[2] 数仍 6', guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0) === 6);
+ok('地图指南页 r[2] 数仍 7（v22.87 通关之路行补 r[2]，6→7）', guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0) === 7);
 ok(`其余三页行数零回归（14/10/10，实际 ${HELP_PAGES[0].length}/${HELP_PAGES[2].length}/${HELP_PAGES[3].length}）`,
   HELP_PAGES[0].length === 14 && HELP_PAGES[2].length === 10 && HELP_PAGES[3].length === 10);
 ok('data.js 仍导出 CAVE_WELL 星井常量（世界景观同源）', !!CAVE_WELL && CAVE_WELL.x === 16 && CAVE_WELL.y === 11);
@@ -155,26 +155,26 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2281_starwell（v2280 后接 v2281）',
-  readme.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey（npm test 串跑）'));
-ok('README 件套口径为一百八十二件套（一百八十一件套清除）且旧 176 口径零残留',
-  readme.includes('冒烟一百八十二件套（一百八十一件套清除）') && !readme.includes('冒烟一百七十六件套（一百七十五件套清' + '除）'));
+  readme.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute（npm test 串跑）'));
+ok('README 件套口径为一百八十三件套（一百八十二件套清除）且旧 176 口径零残留',
+  readme.includes('冒烟一百八十三件套（一百八十二件套清除）') && !readme.includes('冒烟一百七十六件套（一百七十五件套清' + '除）'));
 ok('README 含 v22.81 守护描述（星井矿脉行星井指针守护）', readme.includes('v22.81 起含帮助页地图指南星井矿脉行「星井」指针守护'));
 ok('README 含 smoke_v2281_starwell 入库（177 份）', readme.includes('smoke_v2281_starwell 入库（177 份）'));
 ok('README 仍保留 smoke_v2280_grainfield 入库（176 份）历史口径', readme.includes('smoke_v2280_grainfield 入库（176 份）'));
 ok('package.json test 串含 smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs"'));
+  pkg.includes('node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 177 件套', testChain === 182, String(testChain));
-ok('CHANGELOG 含 v22.81 条目（顶 pin）', changelog.startsWith('## v22.86 '));
+ok('package.json test 串共 177 件套', testChain === 183, String(testChain));
+ok('CHANGELOG 含 v22.81 条目（顶 pin）', changelog.startsWith('## v22.87 '));
 
 // 7. 姊妹件套 pin（smoke_v2280_grainfield 随新现实更新）
 const s2280 = readFileSync(join(ROOT, 'tests/smoke_v2280_grainfield.mjs'), 'utf8');
 const s2260 = readFileSync(join(ROOT, 'tests/smoke_v2260_fountripple.mjs'), 'utf8');
 const s2279 = readFileSync(join(ROOT, 'tests/smoke_v2279_lampwell.mjs'), 'utf8');
-ok('smoke_v2280 的 GAME_VERSION 字面量 pin 已更新为 v22.81', s2280.includes("const GAME_VERSION = 'v22.86';"));
-ok('smoke_v2280 的 CHANGELOG 顶 pin 已更新为 ## v22.81', s2280.includes("startsWith('## v22.86'"));
-ok('smoke_v2280 的件套 pin 已更新为一百八十二件套（一百八十一件套清除）', s2280.includes('一百八十二件套（一百八十一件套清除）'));
-ok('smoke_v2280 的 README 串尾 pin 已延伸至 smoke_v2281_starwell', s2280.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey（npm test 串跑）'));
+ok('smoke_v2280 的 GAME_VERSION 字面量 pin 已更新为 v22.81', s2280.includes("const GAME_VERSION = 'v22.87';"));
+ok('smoke_v2280 的 CHANGELOG 顶 pin 已更新为 ## v22.81', s2280.includes("startsWith('## v22.87'"));
+ok('smoke_v2280 的件套 pin 已更新为一百八十三件套（一百八十二件套清除）', s2280.includes('一百八十三件套（一百八十二件套清除）'));
+ok('smoke_v2280 的 README 串尾 pin 已延伸至 smoke_v2281_starwell', s2280.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute（npm test 串跑）'));
 ok('smoke_v2260 的 package.json 串尾 pin 已延伸至 smoke_v2281_starwell', s2260.includes('node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs'));
 ok('smoke_v2279 的星井矿脉行 r[2] 断言已随新现实改 includes（v22.81 指针落位）', s2279.includes("String(guide[2][2]).includes('无泉水/旅店 · 出发前请补给')"));
 
@@ -191,7 +191,7 @@ ok('旧代 v22.80 字面量/恒等/件套/testChain/串尾/版本锚 pin 全库�
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 178 口径
 const s2143 = readFileSync(join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('哨兵链 v2143 已含下一版件套口径（一百八十三件套（一百八十二件套清除））', s2143.includes('一百八十三件套（一百八十二件套清除）'));
+ok('哨兵链 v2143 已含下一版件套口径（一百八十四件套（一百八十三件套清除））', s2143.includes('一百八十四件套（一百八十三件套清除）'));
 
 console.log(`\n— v22.81 帮助页地图指南星井矿脉行「星井」r[2] 指针冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);

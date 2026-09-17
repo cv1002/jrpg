@@ -101,7 +101,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.73）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.73', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 86)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.73', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 87)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.74 注释（开场叙事页翻页补 E 键别名说明）', dSrc.includes('v21.74 体验打磨：开场叙事页翻页补 E 键别名'));
 
