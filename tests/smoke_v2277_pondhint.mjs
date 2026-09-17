@@ -1,4 +1,4 @@
-// smoke_v2277_pondhint.mjs —— v22.77 帮助页地图指南潮灯镇行「水塘灯影」r[2] 指针守护
+// smoke_v2277_pondhint.mjs —— v22.78 帮助页地图指南潮灯镇行「水塘灯影」r[2] 指针守护
 // 承 v21.10-v22.76 冒烟入库先例：版本锚点 + 源级落位 + 数据契约 + 运行期全链路
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -13,12 +13,12 @@ const ok = (cond, label) => {
   else { fail++; console.log(`  ✗ ${label}`); }
 };
 
-console.log('— v22.77 帮助页地图指南潮灯镇行「水塘灯影」r[2] 指针冒烟 —');
+console.log('— v22.78 帮助页地图指南潮灯镇行「水塘灯影」r[2] 指针冒烟 —');
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok(dataSrc.includes("const GAME_VERSION = 'v22.77'"), 'data.js GAME_VERSION 字面量为 v22.77');
-ok(dataSrc.includes('// v22.77 体验打磨'), 'data.js 含 v22.77 版本注释');
+ok(dataSrc.includes("const GAME_VERSION = 'v22.78'"), 'data.js GAME_VERSION 字面量为 v22.78');
+ok(dataSrc.includes('// v22.78 体验打磨'), 'data.js 含 v22.78 版本注释');
 ok(dataSrc.includes('// v22.76 新 NPC'), 'data.js 仍保留 v22.76 历史注释');
 
 // 2. 源级落位：潮灯镇行拆 r[1]+r[2]
@@ -110,5 +110,5 @@ ok(!!caveRow && caveRow.length === 3, '星井矿脉行未动（仍 3 列）');
 const galleryRow = HELP_PAGES[1].find(r => r[0] && r[0].includes('无字回廊'));
 ok(!!galleryRow && galleryRow.length === 3, '无字回廊行未动（仍 3 列）');
 
-console.log(`\n— v22.77 帮助页地图指南潮灯镇行「水塘灯影」r[2] 指针冒烟：${pass}/${pass + fail} 通过 —`);
+console.log(`\n— v22.78 帮助页地图指南潮灯镇行「水塘灯影」r[2] 指针冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);
