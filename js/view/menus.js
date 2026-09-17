@@ -872,6 +872,15 @@ export function drawWin(){
   CTX.fillText('按 Enter/E 观看尾声 · 按 P 存档 · 按 R 重开新档(连按两次)',CV.width/2,396);
   CTX.fillStyle='#5a6a78'; CTX.font='12px sans-serif';
   CTX.fillText('💡 本局战果未自动存档 · 按 P 存进当前槽，回标题按 L 读档即可继续冒险',CV.width/2,416);
+  // v22.89 胜利画面补「冒险进度」行（体验打磨·信息透明·下一步指引，承 v19.49 战绩补全 / v21.82 收集行 /
+  // v22.2 碎片行同一「run 总结屏信息补齐」主线）：胜利画面是「灯芯回来了」的总结屏——玩家刚讨回灯芯，
+  // 下一步去哪（星井矿脉·洞窟领主 → 双徽记 → 无字回廊·终焉之神 / 试炼场）在此屏一字没有，还得按 I 或
+  // 开 J 日志才能查到；现与状态页五徽记同读 quests.adventureProgress(S.G) 一份单一数据源（✓/✗ 五档：
+  // 灯芯/星井/回廊/初灯/试炼场，bossDefeated 已亮 ✓、其余灰 ✗ 一眼看清路还长），落 12px 灰行 y=434
+  // （提示行 416 之下、画布底 480 之内、行间 18 ≥16 不触，上方全部逐字零位移），纯显示零结算零存档零数值变化。
+  const progW = adventureProgress(S.G);
+  CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
+  CTX.fillText('冒险进度：' + progW.map(([nm, dn]) => (dn ? '✓ ' : '✗ ') + nm).join(' · '),CV.width/2,434);
 }
 bind.drawWin=drawWin;
 
