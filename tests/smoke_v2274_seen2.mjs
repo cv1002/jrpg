@@ -33,7 +33,7 @@ console.log('— v22.74 似曾相识图鉴遭遇线中档里程碑冒烟 —');
 // —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v22.73 ——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v22.73（本版守 v22.76）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 76)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.73（本版守 v22.77）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 77)), GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -44,7 +44,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.74 版本注释', dataSrc.includes('v22.74 新成就·图鉴遭遇线中档里程碑「似曾相识」'));
 ok('data.js GAME_VERSION 字面量已为 v22.74（旧 v22.73 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v22.76';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "73';"));
+  dataSrc.includes("const GAME_VERSION = 'v22.77';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "73';"));
 ok('data.js 仍保留 v22.73 历史注释（一面之缘成就注释未动）', dataSrc.includes('v22.73 新成就·图鉴遭遇线首档里程碑「一面之缘」'));
 ok('data.js 导出 SEEN2_GOAL（export 块落位，与 SEEN_GOAL 相邻）',
   dataSrc.includes('SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL,'));
@@ -221,9 +221,9 @@ ok('运行期：成就页末页滚动渲染不抛错（58 项 PAGE=10 六页）'
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2274_seen2（v2273 后接 v2274）',
-  readme.includes('smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('README 件套口径为一百七十二件套（一百七十一件套清除）且旧 169 口径零残留',
-  readme.includes('冒烟一百七十二件套（一百七十一件套清除）') && !readme.includes('冒烟一百六十九件套（一百六十八件套清' + '除）'));
+  readme.includes('smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('README 件套口径为一百七十三件套（一百七十二件套清除）且旧 169 口径零残留',
+  readme.includes('冒烟一百七十三件套（一百七十二件套清除）') && !readme.includes('冒烟一百六十九件套（一百六十八件套清' + '除）'));
 ok('README 含 v22.74 守护描述（新成就似曾相识守护）', readme.includes('v22.74 起含新成就「似曾相识」'));
 ok('README 含 smoke_v2274_seen2 入库（170 份）', readme.includes('smoke_v2274_seen2 入库（170 份）'));
 ok('README 仍保留 v22.73 守护描述（历史口径未动）', readme.includes('v22.73 起含新成就「一面之缘」'));
@@ -232,22 +232,22 @@ ok('README 成就口径「58 项」双处同步（快速上手表 C 键行 + 图
   readme.includes('成就一览（全部 58 项进度') && readme.includes('**58 项成就**') &&
   !readme.includes('成就一览（全部 57 项进' + '度') && !readme.includes('**57 项成' + '就**'));
 ok('package.json 已收录 smoke_v2274_seen2（npm test 串跑第 170 份）',
-  pkg.includes('smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs'));
+  pkg.includes('smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 170 件套', testChain === 172, String(testChain));
-ok('CHANGELOG 含 v22.74 条目（顶 pin）', changelog.startsWith('## v22.76 '));
+ok('package.json test 串共 170 件套', testChain === 173, String(testChain));
+ok('CHANGELOG 含 v22.74 条目（顶 pin）', changelog.startsWith('## v22.77 '));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.73 pin 零残留 ——
 const s2273 = read('smoke_v2273_seen5.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2273 的 GAME_VERSION 字面量 pin 已更新为 v22.74', s2273.includes("const GAME_VERSION = 'v22.76';"));
-ok('smoke_v2273 的 CHANGELOG 顶 pin 已更新为 ## v22.74', s2273.includes("startsWith('## v22.76')") || s2273.includes("startsWith('## v22.76 ')"));
-ok('smoke_v2273 的件套 pin 已更新为一百七十二件套（一百七十一件套清除）', s2273.includes('一百七十二件套（一百七十一件套清除）'));
-ok('smoke_v2273 的 README 串尾 pin 已延伸至 smoke_v2274_seen2', s2273.includes('smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('smoke_v2273 的 package.json 串尾 plain pin 已延伸至 smoke_v2274_seen2', s2273.includes('smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs'));
+ok('smoke_v2273 的 GAME_VERSION 字面量 pin 已更新为 v22.74', s2273.includes("const GAME_VERSION = 'v22.77';"));
+ok('smoke_v2273 的 CHANGELOG 顶 pin 已更新为 ## v22.74', s2273.includes("startsWith('## v22.77')") || s2273.includes("startsWith('## v22.77 ')"));
+ok('smoke_v2273 的件套 pin 已更新为一百七十三件套（一百七十二件套清除）', s2273.includes('一百七十三件套（一百七十二件套清除）'));
+ok('smoke_v2273 的 README 串尾 pin 已延伸至 smoke_v2274_seen2', s2273.includes('smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('smoke_v2273 的 package.json 串尾 plain pin 已延伸至 smoke_v2274_seen2', s2273.includes('smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));
 ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 58', s2229.includes('ACH_LIST.length === 58'));
-ok('smoke_v2143 哨兵链已推进至一百七十三件套（一百七十二件套清除）', s2143.includes('一百七十三件套（一百七十二件套清除）') && s2143.includes("!readme.includes('一百七十三件套')"));
+ok('smoke_v2143 哨兵链已推进至一百七十三件套（一百七十二件套清除）', s2143.includes('一百七十五件套（一百七十四件套清除）') && s2143.includes("!readme.includes('一百七十五件套（一百七十四件套清除）')"));
 ok('smoke_v2273 旧 v22.73 字面量 pin 零残留', !s2273.includes("const GAME_VERSION = 'v22.73';"));
 ok('smoke_v2273 旧一百六十九件套 pin 零残留', !s2273.includes('一百六十九件套（一百六十八件套清除）'));
 

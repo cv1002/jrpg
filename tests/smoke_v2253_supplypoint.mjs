@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.52（本版守 v22.53）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 53)), GAME_VERSION);
 ok('data.js 含 v22.53 注释（无泉水补给指针说明）', dSrc.includes('v22.53 体验打磨·信息透明·纯文字'));
 ok('GAME_VERSION 字面量已为 v22.53（旧 v22.52 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.76';") && !dSrc.includes("const GAME_VERSION = 'v22." + "52';"));
+  dSrc.includes("const GAME_VERSION = 'v22.77';") && !dSrc.includes("const GAME_VERSION = 'v22." + "52';"));
 ok('data.js 仍保留 v22.52/v22.51 世代注释链（矿车轨道/记誓人累积注释未动）',
   dSrc.includes('v22.52 新内容·世界景观·纯显示') && dSrc.includes('v22.51 新内容·纯风味 NPC'));
 
@@ -111,8 +111,8 @@ ok('无字回廊行 r[1] 既有信息零回归（名字石碑/守名者(支线)/
 ok('潮灯镇行/雾语林行逐字零回归（v22.48 出口/泉水指针未动）',
   String(guide[0][1]).includes('东门→雾语林') && String(guide[0][1]).includes('喷泉回血') &&
   String(guide[1][1]).includes('中段营地泉水') && String(guide[1][1]).includes('魔王祭坛'));
-ok('地图指南页 r[2] 数 3→5（新增两行次行）',
-  guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0) === 5, String(guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0)));
+ok('地图指南页 r[2] 数 3→6（v22.53 新增两行次行 3→5、v22.77 潮灯镇拆 r[1]+r[2] 5→6）',
+  guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0) === 6, String(guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0)));
 ok('data.js 含 v22.53 地图指南注释（四图行至此补给状态齐全）', dSrc.includes('四图行至此补给状态齐全'));
 
 // —— 行宽预算（v21.11 estW 官方口径：汉字/全角 0.865em、·0.303em 等，@napi-rs 标定，误差 <6%；与 v2237 全页巡检同源）——
@@ -146,9 +146,9 @@ guide.forEach((r) => {
 });
 ok('地图指南页全部 8 行（含新增两处 r[2]）估算宽 ≤470（全页行宽巡检）', allOk);
 
-// —— 页长派生预算：末行基线 = 80 + (8-1)*34 + 5*16 = 398，不触页脚 452 ——
-ok('页长派生：末行基线 398 ≤440（页脚 452 之上留白，v19.59 式预算）',
-  80 + (guide.length - 1) * 34 + (guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16 === 398,
+// —— 页长派生预算：末行基线 = 80 + (8-1)*34 + 6*16 = 414，不触页脚 452（v22.77 后 r[2] 数 5→6，398→414）——
+ok('页长派生：末行基线 414 ≤440（页脚 452 之上留白，v19.59 式预算）',
+  80 + (guide.length - 1) * 34 + (guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16 === 414,
   String(80 + (guide.length - 1) * 34 + (guide.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16));
 
 // —— 数据契约：指针与地图事实逐字一致（hasRecoveryPoint 实扫单一数据源互证）——
@@ -176,15 +176,15 @@ function captureHelp() {
 const cap = captureHelp();
 const atY = (t, y) => cap.texts.some((x) => x.t.includes(t) && x.y === y);
 ok('运行期：地图指南页渲染无抛错', cap.threw === null, cap.threw && cap.threw.message);
-ok('运行期：星井矿脉行 r[2] 落位（无泉水/旅店 · 出发前请补给 @ y=166 12px 次级行）', atY('无泉水/旅店 · 出发前请补给', 166));
-ok('运行期：无字回廊行 r[2] 落位（同文案 @ y=216）', atY('无泉水/旅店 · 出发前请补给', 216));
+ok('运行期：星井矿脉行 r[2] 落位（无泉水/旅店 · 出发前请补给 @ y=182 12px 次级行，v22.77 后 166→182）', atY('无泉水/旅店 · 出发前请补给', 182));
+ok('运行期：无字回廊行 r[2] 落位（同文案 @ y=232，v22.77 后 216→232）', atY('无泉水/旅店 · 出发前请补给', 232));
 ok('运行期：r[2] 文案只以 12px 次级行出现两次（无主行误混）',
   cap.texts.filter((x) => x.t.includes('无泉水/旅店 · 出发前请补给')).length === 2,
   String(cap.texts.filter((x) => x.t.includes('无泉水/旅店 · 出发前请补给')).length));
-ok('运行期：四图 Lv 行按 80/114/148/198 落位（星井矿脉主行 148 不移、回廊主行 182→198 让位 r[2]）',
-  atY('潮灯镇 Lv.', 80) && atY('雾语林 Lv.', 114) && atY('星井矿脉 Lv.', 148) && atY('无字回廊 Lv.', 198));
-ok('运行期：通关之路金色收尾仍在末行（y=398）',
-  cap.texts.some((x) => x.t.includes('通关之路') && x.y === 398));
+ok('运行期：四图 Lv 行按 v22.77 后基线 80/130/164/214 落位（潮灯镇 80 不移、雾语林 114→130/星井矿脉 148→164/回廊主行 198→214 让位潮灯镇 r[2]）',
+  atY('潮灯镇 Lv.', 80) && atY('雾语林 Lv.', 130) && atY('星井矿脉 Lv.', 164) && atY('无字回廊 Lv.', 214));
+ok('运行期：通关之路金色收尾仍在末行（y=414，v22.77 后 398→414）',
+  cap.texts.some((x) => x.t.includes('通关之路') && x.y === 414));
 ok('运行期：页脚落位（y=452 第 2/4 页翻页提示）', atY('第 2/4 页', 452));
 ok('运行期：其余三页渲染零回归（操作说明/魔物状态/试炼进阶不抛错）',
   (() => {
@@ -200,30 +200,30 @@ ok('运行期：其余三页渲染零回归（操作说明/魔物状态/试炼�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树已收录 smoke_v2253_supplypoint 且位于串尾', readme.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('README 件套口径为一百七十二件套（一百七十一件套清除）',
-  readme.includes('冒烟一百七十二件套（一百七十一件套清除）') && !readme.includes('冒烟一百四十八件套（一百四十七件套清' + '除）'));
+ok('README tests 树已收录 smoke_v2253_supplypoint 且位于串尾', readme.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('README 件套口径为一百七十三件套（一百七十二件套清除）',
+  readme.includes('冒烟一百七十三件套（一百七十二件套清除）') && !readme.includes('冒烟一百四十八件套（一百四十七件套清' + '除）'));
 ok('README 含 v22.53 守护描述（地图指南无泉水补给指针）', readme.includes('v22.53 起含帮助页地图指南'));
 ok('README 含 smoke_v2253_supplypoint 入库（149 份）', readme.includes('smoke_v2253_supplypoint 入库（149 份）'));
 ok('package.json 已收录 smoke_v2253_supplypoint（npm test 串跑第 149 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2253_supplypoint.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 149 件套', testChain === 172, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.53 条目', changelog.startsWith('## v22.76'));
+ok('package.json test 串共 149 件套', testChain === 173, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.53 条目', changelog.startsWith('## v22.77'));
 
 // —— 姊妹 pin 复查（smoke_v2252 随新现实更新 + v2143-45「件套守护领先一位」哨兵推进至 150）——
 const s2252 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2252_rail.mjs'), 'utf8');
 ok('smoke_v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.53（旧 v22.52 零残留）',
-  s2252.includes("const GAME_VERSION = 'v22.76';") && !s2252.includes("const GAME_VERSION = 'v22." + "52';"));
-ok('smoke_v2252 的 README 件套 pin 已随新现实更新为一百七十二件套（一百七十一件套清除）',
-  s2252.includes('一百七十二件套（一百七十一件套清除）'));
-ok('smoke_v2252 的 package.json 件套计数 pin 已更新为 === 149', s2252.includes('testChain === 172'));
+  s2252.includes("const GAME_VERSION = 'v22.77';") && !s2252.includes("const GAME_VERSION = 'v22." + "52';"));
+ok('smoke_v2252 的 README 件套 pin 已随新现实更新为一百七十三件套（一百七十二件套清除）',
+  s2252.includes('一百七十三件套（一百七十二件套清除）'));
+ok('smoke_v2252 的 package.json 件套计数 pin 已更新为 === 149', s2252.includes('testChain === 173'));
 ok('smoke_v2252 的 README 串尾 pin 已随新现实延伸至 smoke_v2253_supplypoint',
-  s2252.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('smoke_v2252 的 CHANGELOG pin 已更新为 ## v22.53', s2252.includes("startsWith('## v22.76')"));
+  s2252.includes('smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('smoke_v2252 的 CHANGELOG pin 已更新为 ## v22.53', s2252.includes("startsWith('## v22.77')"));
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('v2143-45「件套守护领先一位」哨兵链已推进至 150（一百七十三件套（一百七十二件套清除））',
-  s2143.includes('一百七十三件套（一百七十二件套清除）') && s2143.includes("!readme.includes('一百七十三件套')"));
+ok('v2143-45「件套守护领先一位」哨兵链已推进至 150（一百七十五件套（一百七十四件套清除））',
+  s2143.includes('一百七十五件套（一百七十四件套清除）') && s2143.includes("!readme.includes('一百七十五件套（一百七十四件套清除）')"));
 
 // —— 旧代 v22.52 pin 全库零残留 ——
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2253_supplypoint.mjs');

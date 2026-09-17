@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.37', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 38)), GAME_VERSION);
 ok('data.js 含 v22.38 注释（星井地标说明）', dSrc.includes('v22.38 星井矿脉「星井」'));
 ok('GAME_VERSION 字面量已为 v22.38（旧 v22.37 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.76';") && !dSrc.includes("const GAME_VERSION = 'v22." + "37';"));
+  dSrc.includes("const GAME_VERSION = 'v22.77';") && !dSrc.includes("const GAME_VERSION = 'v22." + "37';"));
 ok('data.js 仍保留 v22.37/v22.36 历史注释（累积注释块，姊妹 pin 不失效）',
   dSrc.includes('v22.37 体验打磨') && dSrc.includes('v22.36 潮灯镇广场大灯'));
 
@@ -262,10 +262,10 @@ page.forEach((r) => {
   if (r[2] && estW(r[2], 12) > 470) { allOk = false; console.log('    <- r2越界:', r[0]); }
 });
 ok('地图指南页全部 8 行估算宽 ≤470（全页行宽巡检）', allOk);
-ok('页长派生：末行基线 398 ≤440（行数 8 不变、r[2] 数 3→5，页脚 452 之上留白）',
-  80 + (page.length - 1) * 34 + (page.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16 === 398);
+ok('页长派生：末行基线 414 ≤440（行数 8 不变、r[2] 数 3→6（v22.53 3→5、v22.77 5→6），页脚 452 之上留白）',
+  80 + (page.length - 1) * 34 + (page.reduce((a, r) => a + (r[2] ? 1 : 0), 0)) * 16 === 414);
 
-// —— 运行期实证：drawHelp 第 2 页渲染捕获（新 r[2] 落位 y=266，既有行随 v22.53 让位下移）——
+// —— 运行期实证：drawHelp 第 2 页渲染捕获（新 r[2] 落位 y=282，既有行随 v22.53/v22.77 让位下移）——
 function captureHelp() {
   const calls = [];
   const orig = CTX.fillText;
@@ -287,23 +287,23 @@ function captureHelp() {
 }
 const calls = captureHelp();
 ok('运行期：drawHelp 第 2 页渲染无抛错', !calls.some((c) => c.t.startsWith('THREW:')), calls.filter((c) => c.t.startsWith('THREW:')).map((c) => c.t).join('|'));
-ok('运行期：状态标次行含星井落位（x=100 y=266 12px 次级灰）',
+ok('运行期：状态标次行含星井落位（x=100 y=282 12px 次级灰，v22.77 后 +16）',
   calls.some((c) => c.t === '遇敌槽红条 · 大灯 熄冷灰/亮暖金（与画布大灯同档） · 星井 低鸣星蓝/静默灰 · 无委托NPC 米色' &&
-    c.y === 266 && c.font === '12px sans-serif' && c.fill === '#7d93a3'));
-ok('运行期：状态标主行/色标两行/通关之路/页脚基线零位移（248/298/316/398/452）',
-  calls.some((c) => c.t.startsWith('小地图·状态标') && c.y === 248) &&
-  calls.some((c) => c.t.startsWith('小地图·色标') && c.y === 298) &&
-  calls.some((c) => c.t.startsWith('设施：商店·金') && c.y === 316) &&
-  calls.some((c) => c.t.startsWith('通关之路') && c.y === 398) &&
+    c.y === 282 && c.font === '12px sans-serif' && c.fill === '#7d93a3'));
+ok('运行期：状态标主行/色标两行/通关之路/页脚基线 v22.77 后落位（264/314/332/414/452）',
+  calls.some((c) => c.t.startsWith('小地图·状态标') && c.y === 264) &&
+  calls.some((c) => c.t.startsWith('小地图·色标') && c.y === 314) &&
+  calls.some((c) => c.t.startsWith('设施：商店·金') && c.y === 332) &&
+  calls.some((c) => c.t.startsWith('通关之路') && c.y === 414) &&
   calls.some((c) => c.t.startsWith('第 2/4 页') && c.y === 452));
 
 // —— README / package.json / CHANGELOG 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树收录 smoke_v2238_starwell 且位于串尾', readme.includes('smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('README 件套口径为一百七十二件套（一百七十一件套清除）',
-  readme.includes('冒烟一百七十二件套（一百七十一件套清除）') && !readme.includes('冒烟一百三十三件套（一百三十二件套清' + '除）'));
+ok('README tests 树收录 smoke_v2238_starwell 且位于串尾', readme.includes('smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('README 件套口径为一百七十三件套（一百七十二件套清除）',
+  readme.includes('冒烟一百七十三件套（一百七十二件套清除）') && !readme.includes('冒烟一百三十三件套（一百三十二件套清' + '除）'));
 ok('README 含 v22.38 守护描述（星井矿脉星井地标守护）', readme.includes('v22.38 起含星井矿脉星井地标守护'));
 ok('README 含 smoke_v2238_starwell 入库（134 份）', readme.includes('smoke_v2238_starwell 入库（134 份）'));
 ok('README 仍保留 v22.37 守护描述与入库（133 份）（历史口径不漂移）',
@@ -314,7 +314,7 @@ ok('README 图例指针仍保留（H 帮助页·地图指南）', readme.include
 ok('package.json 已收录 smoke_v2238_starwell（npm test 串跑第 134 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2238_starwell.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 134 件套', testChain === 172, String(testChain));
+ok('package.json test 串共 134 件套', testChain === 173, String(testChain));
 ok('CHANGELOG 含 v22.38 条目', changelog.includes('## v22.38 '));
 
 // —— 姊妹 pin 复查（v2237..v2230 随新现实更新）——
@@ -325,25 +325,25 @@ const s2234 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2234_innkeeper.mjs')
 const s2233 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2233_nameflavor.mjs'), 'utf8');
 const s2232 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2232_travelsup.mjs'), 'utf8');
 const s2230 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2230_pausewarn.mjs'), 'utf8');
-ok('smoke_v2237 的 GAME_VERSION 字面量 pin 已更新为 v22.38', s2237.includes("const GAME_VERSION = 'v22.76';"));
-ok('smoke_v2237 的 GAME_VERSION 恒等 pin 已更新为 === v22.38', s2237.includes("GAME_VERSION === 'v22.76'"));
+ok('smoke_v2237 的 GAME_VERSION 字面量 pin 已更新为 v22.38', s2237.includes("const GAME_VERSION = 'v22.77';"));
+ok('smoke_v2237 的 GAME_VERSION 恒等 pin 已更新为 === v22.38', s2237.includes("GAME_VERSION === 'v22.77'"));
 ok('smoke_v2237 的 README 串尾 pin 已更新为 + smoke_v2238_starwell',
-  s2237.includes('smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('smoke_v2237 的 package.json 件套计数 pin 已更新为 === 134', s2237.includes('testChain === 172'));
-ok('smoke_v2237 的 README 件套口径 pin 已更新为一百三十四件套', s2237.includes('冒烟一百七十二件套（一百七十一件套清除）'));
+  s2237.includes('smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('smoke_v2237 的 package.json 件套计数 pin 已更新为 === 134', s2237.includes('testChain === 173'));
+ok('smoke_v2237 的 README 件套口径 pin 已更新为一百三十四件套', s2237.includes('冒烟一百七十三件套（一百七十二件套清除）'));
 ok('smoke_v2237 的图例正文 pin 已随星井更新（状态标 r[2] 含星井）',
   s2237.includes('星井 低鸣星蓝/静默灰'));
-ok('smoke_v2236 的 GAME_VERSION 字面量 pin 已更新为 v22.38', s2236.includes("const GAME_VERSION = 'v22.76';"));
+ok('smoke_v2236 的 GAME_VERSION 字面量 pin 已更新为 v22.38', s2236.includes("const GAME_VERSION = 'v22.77';"));
 ok('smoke_v2236 的 README 串尾 pin 已更新为 + smoke_v2238_starwell',
-  s2236.includes('smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
+  s2236.includes('smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
 ok('smoke_v2236 的件套/恒等 pin 已更新（===134/===v22.38）',
-  s2236.includes('testChain === 172') && s2236.includes("GAME_VERSION === 'v22.76'"));
-ok('smoke_v2235 的 GAME_VERSION 字面量 pin 已更新为 v22.38', s2235.includes("const GAME_VERSION = 'v22.76';"));
-ok('smoke_v2234 的 GAME_VERSION 恒等 pin 已更新为 === v22.38', s2234.includes("GAME_VERSION === 'v22.76'"));
+  s2236.includes('testChain === 173') && s2236.includes("GAME_VERSION === 'v22.77'"));
+ok('smoke_v2235 的 GAME_VERSION 字面量 pin 已更新为 v22.38', s2235.includes("const GAME_VERSION = 'v22.77';"));
+ok('smoke_v2234 的 GAME_VERSION 恒等 pin 已更新为 === v22.38', s2234.includes("GAME_VERSION === 'v22.77'"));
 ok('smoke_v2233 的 README 串尾 pin 已更新为 + smoke_v2238_starwell',
-  s2233.includes('smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid（npm test 串跑）'));
-ok('smoke_v2232 的 package.json 件套计数 pin 已更新为 === 134', s2232.includes('testChain === 172'));
-ok('smoke_v2230 的 GAME_VERSION 恒等 pin 已更新为 === v22.38', s2230.includes("GAME_VERSION === 'v22.76'"));
+  s2233.includes('smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint（npm test 串跑）'));
+ok('smoke_v2232 的 package.json 件套计数 pin 已更新为 === 134', s2232.includes('testChain === 173'));
+ok('smoke_v2230 的 GAME_VERSION 恒等 pin 已更新为 === v22.38', s2230.includes("GAME_VERSION === 'v22.77'"));
 ok('smoke_v2235 的 NPC 总数 pin 保持 30（零 NPC 变更）', s2235.includes('NPC_SPOTS).length === 35'));
 
 // 旧代 v22.37 pin 全库零残留（字面量/恒等/件套/串尾/第 133 份）
