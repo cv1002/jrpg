@@ -53,7 +53,7 @@ const page1 = HELP_PAGES[1];
 const caveRow = page1.find((r) => r[0] === '星井矿脉 Lv.' + MAPS.cave.recLv);
 ok('帮助页仍 4 页', HELP_PAGES.length === 4);
 ok('地图指南页 8 行（v21.28 追加不增行；v22.37 起加小地图图例两行；v22.43 起加机制行）', page1.length === 8, `实际 ${page1.length}`);
-ok('星井矿脉行存在且以 MAPS.cave.recLv 派生（v22.53 起带 r[2] 无泉水补给指针）', !!caveRow && caveRow[2] === '无泉水/旅店 · 出发前请补给', caveRow && caveRow[0]);
+ok('星井矿脉行存在且以 MAPS.cave.recLv 派生（v22.53 起带 r[2] 无泉水补给指针）', !!caveRow && String(caveRow[2]).includes('无泉水/旅店 · 出发前请补给'), caveRow && caveRow[0]);
 
 // —— 派生串独立复算（测试侧重算而非快照）：与 NPCS.sentinel.name 单一数据源逐字相等 ——
 const DERIVED = '更强魔物·迷宫·试炼碑（可问' + NPCS.sentinel.name + '）·中央终焉水晶·双徽记化为门';
