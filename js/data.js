@@ -945,11 +945,12 @@
 // 无 r 字段（与 seen/metall/lvl5 同款纯里程碑——似曾相识本身就是奖励）；解锁时机：applyAchievements 既有
 // 通路任意判定点当场解锁（seen 为持续累积量，无需新判定点，承 perfection 同款——已解锁不因任何变化而
 // 撤销；第 10 种撞见的瞬间即解锁、反馈不迟到），ACH_LIST 57→58 项（末尾追加，既有 57 项 id/序位零回归）。
+// v22.95 体验打磨·信息透明·纯显示：阵亡画面（drawDead）补「冒险进度」五徽记行（详见 js/view/menus.js drawDead 注释）
 // v22.94 新内容·纯风味：星井矿脉终焉水晶正南新 NPC「守晶人」（数据层三件套 cave.extras (12,12)/NPC_SPOTS '12,12'/NPCS.crystalwatch，见 NPCS 行内注释）
 // v22.93 体验打磨·防误丢档·存档闭环收口：阵亡画面补「未存档」提示行（复用 pauseSaveHint 纯函数，
 // 与暂停菜单同源，见 js/view/menus.js drawDead 注释）+ dead.onKey 补 P 存档入口（与 world/win 的 P
 // 逐字同款，见 js/main.js dead.onKey 注释）
-const GAME_VERSION = 'v22.94';
+const GAME_VERSION = 'v22.95';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）

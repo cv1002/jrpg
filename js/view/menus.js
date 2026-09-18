@@ -835,6 +835,17 @@ export function drawDead(){
   // 零存档格式变化（P 存档入口见 main.js dead.onKey 注释）。
   const deadHint = pauseSaveHint(hero, S.unsaved, S.curSaveSlot, hasSlot(S.curSaveSlot));
   if (deadHint) text(deadHint, 320, 412, '12px', '#ff9d5b', 'center');
+  // v22.95 阵亡画面补「冒险进度」行（体验打磨·信息透明·下一步指引，承 v22.89 胜利画面同一
+  // 「run 总结屏信息补齐」主线）：dead 屏是「R 重开 / B 重整旗鼓 / T 回标题」三选一的决策现场，
+  // 但五徽记（灯芯/星井/回廊/初灯/试炼场）在此屏一字没有——玩家倒在强敌面前判断这趟值不值得
+  // B 重整旗鼓 / R 重开时，下一步去哪只能按 I 或开 J 日志才能查到（win 屏 v22.89 已有此行）；
+  // 现与状态页五徽记 / drawWin 同读 quests.adventureProgress(hero) 一份单一数据源（✓/✗ 五档同式），
+  // 落 12px 灰行 y=432（提示行 412 之下、画布底 480 之内、行间 20 ≥16 不触、上方全部逐字零位移，
+  // 与 drawWin 434 行同款渲染式），纯显示零结算零存档零数值变化。
+  if (hero) {
+    const progD = adventureProgress(hero);
+    text('冒险进度：' + progD.map(([nm, dn]) => (dn ? '✓ ' : '✗ ') + nm).join(' · '), CV.width / 2, 432, '12px', '#7d93a3', 'center');
+  }
 }
 bind.drawDead=drawDead;
 
