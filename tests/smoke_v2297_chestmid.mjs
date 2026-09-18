@@ -21,7 +21,7 @@ console.log('— v22.97 满载而归宝箱线中档里程碑冒烟 —');
 // —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v22.96 ——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v22.96（本版守 v22.97）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 97)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.96（本版守 v22.97）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 98)), GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.97 版本注释', dataSrc.includes('// v22.97 新内容·单成就·宝箱线中档里程碑：新成就「满载而归」'));
 ok('data.js GAME_VERSION 字面量已为 v22.97（旧 v22.96 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v22.97';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "96';"));
+  dataSrc.includes("const GAME_VERSION = 'v22.98';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "96';"));
 ok('data.js 仍保留 v22.96 历史注释（尾声画面冒险进度行注释未动）', dataSrc.includes('// v22.96 体验打磨·信息透明·纯显示：尾声画面（drawEnding）补「冒险进度」五徽记行'));
 ok('data.js 导出 TREASURE2_GOAL（export 块落位，与 TREASURE_GOAL 相邻）',
   dataSrc.includes('LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,'));
@@ -211,11 +211,11 @@ ok('运行期：成就页末页滚动渲染不抛错（59 项 PAGE=10）', rende
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2297_chestmid（v2296 后接 v2297）',
-  readme.includes('smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid（npm test 串跑）'));
+  readme.includes('smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）'));
 ok('README 旧串尾零残留（smoke_v2296_endingprog（npm test 串跑）不在树尾）',
   !readme.includes('smoke_v2296_endingprog（npm test 串跑）'));
-ok('README 件套口径为一百九十三件套（一百九十二件套清除）且旧 192 口径零残留',
-  readme.includes('冒烟一百九十三件套（一百九十二件套清除）') && !readme.includes('冒烟一百九十二件套（一百九十一件套清' + '除）'));
+ok('README 件套口径为一百九十四件套（一百九十三件套清除）且旧 192 口径零残留',
+  readme.includes('冒烟一百九十四件套（一百九十三件套清除）') && !readme.includes('冒烟一百九十二件套（一百九十一件套清' + '除）'));
 ok('README 含 v22.97 守护描述（新成就满载而归守护）', readme.includes('v22.97 起含新成就「满载而归」守护'));
 ok('README 含 smoke_v2297_chestmid 入库（193 份）', readme.includes('smoke_v2297_chestmid 入库（193 份）'));
 ok('README 仍保留 v22.96 守护描述（历史口径）', readme.includes('v22.96 起含尾声画面「冒险进度」五徽记行守护'));
@@ -226,11 +226,11 @@ ok('README 成就口径「59 项」双处同步（快速上手表 C 键行 + 图
 ok('README 系统清单宝箱示例已更新为 6/9/12 只三档', readme.includes('宝箱 6/9/12 只三档'));
 ok('package.json 已收录 smoke_v2297_chestmid（npm test 串跑第 193 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2297_chestmid.mjs'));
-ok('package.json 串尾为 ... smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs"',
-  pkg.includes('node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs"'));
+ok('package.json 串尾为 ... smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"',
+  pkg.includes('node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 193 件套', testChain === 193, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.97 条目', changelog.startsWith('## v22.97 '));
+ok('package.json test 串共 193 件套', testChain === 194, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.97 条目', changelog.startsWith('## v22.98 '));
 ok('CHANGELOG 仍保留 v22.96 条目（历史口径）', changelog.includes('## v22.96 尾声画面补「冒险进度」五徽记行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.96 pin 零残留 ——
@@ -238,18 +238,18 @@ const s2296 = read('smoke_v2296_endingprog.mjs');
 const s2274 = read('smoke_v2274_seen2.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2296 的 GAME_VERSION 字面量 pin 已更新为 v22.97', s2296.includes("const GAME_VERSION = 'v22.97';"));
-ok('smoke_v2296 的 CHANGELOG 顶 pin 已更新为 ## v22.97', s2296.includes("startsWith('## v22.97 '"));
-ok('smoke_v2296 的件套 pin 已更新为一百九十三件套（一百九十二件套清除）', s2296.includes('冒烟一百九十三件套（一百九十二件套清除）'));
+ok('smoke_v2296 的 GAME_VERSION 字面量 pin 已更新为 v22.97', s2296.includes("const GAME_VERSION = 'v22.98';"));
+ok('smoke_v2296 的 CHANGELOG 顶 pin 已更新为 ## v22.97', s2296.includes("startsWith('## v22.98 '"));
+ok('smoke_v2296 的件套 pin 已更新为一百九十四件套（一百九十三件套清除）', s2296.includes('冒烟一百九十四件套（一百九十三件套清除）'));
 ok('smoke_v2296 的 README 串尾 pin 已延伸至 smoke_v2297_chestmid',
-  s2296.includes('smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid（npm test 串跑）'));
+  s2296.includes('smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）'));
 ok('smoke_v2296 的 package 串尾 pin 已延伸至 smoke_v2297_chestmid',
-  s2296.includes('node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs"'));
-ok('smoke_v2296 的 testChain pin 已更新为 193', s2296.includes('testChain === 193'));
-ok('smoke_v2296 的版本锚已推进至 >= 97', s2296.includes('_gv[1] >= 97'));
+  s2296.includes('node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"'));
+ok('smoke_v2296 的 testChain pin 已更新为 193', s2296.includes('testChain === 194'));
+ok('smoke_v2296 的版本锚已推进至 >= 97', s2296.includes('_gv[1] >= 98'));
 ok('smoke_v2274 的 ACH_LIST 精确计数 pin 已更新为 === 59', s2274.includes('ACH_LIST.length === 59'));
 ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 59', s2229.includes('ACH_LIST.length === 59'));
-ok('smoke_v2143 哨兵链已推进至一百九十四件套（一百九十三件套清除）', s2143.includes('一百九十四件套（一百九十三件套清除）') && s2143.includes("!readme.includes('一百九十四件套（一百九十三件套清除）')"));
+ok('smoke_v2143 哨兵链已推进至一百九十五件套（一百九十四件套清除）', s2143.includes('一百九十五件套（一百九十四件套清除）') && s2143.includes("!readme.includes('一百九十五件套（一百九十四件套清除）')"));
 
 // 旧代 v22.96 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2297_chestmid.mjs');
