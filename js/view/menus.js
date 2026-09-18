@@ -910,7 +910,8 @@ bind.drawWin=drawWin;
 export function drawEnding(){
   const hero = S.G;
   drawWorld(); CTX.fillStyle='rgba(5,8,12,.92)'; CTX.fillRect(0,0,CV.width,CV.height);
-  panel(40,110,560,300,'');
+  // v22.96 面板加高 300→330（底缘 410→440，画布底 480 之内、零行位移）：为新增的「冒险进度」行让位
+  panel(40,110,560,330,'');
   // 真结局差分：记忆碎片集齐则追加「全记忆」页（行距收窄以容下 8 行，不溢面板）
   const allFrag = FRAGMENTS.every((f) => (hero.fragments || []).includes(f.id));
   const lines = hero.trueBoss ? (allFrag ? ENDING_TRUE.concat(ENDING_TRUE_FRAG) : ENDING_TRUE) : ENDING;
@@ -931,5 +932,16 @@ export function drawEnding(){
   // v22.85 页脚口径同步：ending.onKey 返回标题补 E 键别名后，页脚如实标注双键
   // （承 v21.18「按键提示必须如实反映可用键」主线），13px estW ≈125 ≤470 预算，纯文字零逻辑。
   text('按 Enter/E 返回标题',320,396,'13px','#7d93a3','center');
+  // v22.96 尾声画面补「冒险进度」五徽记行（体验打磨·信息透明·下一步指引，承 v22.89 胜利画面 /
+  // v22.95 阵亡画面同一「run 总结屏信息补齐」主线收口）：尾声是「按 Enter 观看尾声」的终局屏——真结局在
+  // 击败终焉之神后由 winBattle 直接 goto('ending')（无胜利画面垫场），它就是真结局的总结屏；此前五徽记
+  // （灯芯/星井/回廊/初灯/试炼场）在此屏一字没有：真结局档想确认「试炼场还差没差」、非真结局档想确认
+  // 「下一步去哪（星井/回廊/初灯/试炼场）」只能按 I 或开 J 日志才能查到（状态页 / drawWin / drawDead
+  // 早已齐备，尾声是 run 总结屏全家桶里最后一块）；现与状态页五徽记 / drawWin / drawDead 同读
+  // quests.adventureProgress(hero) 一份单一数据源（✓/✗ 五档同式），落 12px 灰行 y=420（页脚 396 之下、
+  // 面板底缘 440 之内（v22.96 面板加高 300→330 让位，上方 346/366/396 全部逐字零位移）、行间 24 ≥16
+  // 不触、距面板底 20 ≥16），纯显示零结算零存档零数值变化。
+  const progE = adventureProgress(hero);
+  text('冒险进度：' + progE.map(([nm, dn]) => (dn ? '✓ ' : '✗ ') + nm).join(' · '), 320, 420, '12px', '#7d93a3', 'center');
 }
 bind.drawEnding=drawEnding;

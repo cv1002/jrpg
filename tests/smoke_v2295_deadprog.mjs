@@ -20,7 +20,7 @@ console.log('— v22.95 阵亡画面「冒险进度」五徽记行 冒烟 —');
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.95', dataSrc.includes("const GAME_VERSION = 'v22.95';"));
+ok('data.js GAME_VERSION 字面量为 v22.95', dataSrc.includes("const GAME_VERSION = 'v22.96';"));
 ok('旧 v22.94 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "94';"));
 ok('data.js 含 v22.95 版本注释', dataSrc.includes('// v22.95 体验打磨·信息透明·纯显示：阵亡画面（drawDead）补「冒险进度」五徽记行'));
 ok('data.js 仍保留 v22.94/v22.93 世代注释链（历史注释未动）',
@@ -28,7 +28,7 @@ ok('data.js 仍保留 v22.94/v22.93 世代注释链（历史注释未动）',
 const { GAME_VERSION, MAPS } = await import('../js/data.js');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v22.94（本版守 v22.95）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 95)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.94（本版守 v22.95）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 96)), GAME_VERSION);
 
 // 2. 源级落位：menus.js drawDead 冒险进度行 + drawWin 434 行零回归 + 既有行零位移
 const menusSrc = readFileSync(join(ROOT, 'js/view/menus.js'), 'utf8');
@@ -210,11 +210,11 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2295_deadprog（v2294 后接 v2295）',
-  readme.includes('+ smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog（npm test 串跑）'));
+  readme.includes('+ smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog（npm test 串跑）'));
 ok('README 旧串尾零残留（smoke_v2294_crystalwatch（npm test 串跑）不在树尾）',
   !readme.includes('smoke_v2294_crystalwatch（npm test 串跑）'));
-ok('README 件套口径为一百九十一件套（一百九十件套清除）且旧 190 口径零残留',
-  readme.includes('冒烟一百九十一件套（一百九十件套清除）') && !readme.includes('冒烟一百九十件套（一百八十九件套清' + '除）'));
+ok('README 件套口径为一百九十二件套（一百九十一件套清除）且旧 190 口径零残留',
+  readme.includes('冒烟一百九十二件套（一百九十一件套清除）') && !readme.includes('冒烟一百九十件套（一百八十九件套清' + '除）'));
 ok('README 含 v22.95 守护描述（阵亡画面「冒险进度」五徽记行守护）',
   readme.includes('v22.95 起含阵亡画面「冒险进度」五徽记行守护'));
 ok('README 含 smoke_v2295_deadprog 入库（191 份）', readme.includes('smoke_v2295_deadprog 入库（191 份）'));
@@ -224,28 +224,28 @@ ok('README 系统清单含 v22.95 阵亡画面冒险进度五徽记行条目',
   readme.includes('**阵亡画面冒险进度五徽记行**（v22.95'));
 ok('package.json 已收录 smoke_v2295_deadprog（npm test 串跑第 191 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2295_deadprog.mjs'));
-ok('package.json 串尾为 ... smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs"',
-  pkg.includes('node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs"'));
+ok('package.json 串尾为 ... smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs"',
+  pkg.includes('node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 191 件套', testChain === 191, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.95 条目', changelog.startsWith('## v22.95 '));
+ok('package.json test 串共 191 件套', testChain === 192, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.95 条目', changelog.startsWith('## v22.96 '));
 ok('CHANGELOG 仍保留 v22.94 条目（历史口径）', changelog.includes('## v22.94 星井矿脉终焉水晶正南新 NPC'));
 
 // 7. 姊妹件套 pin（smoke_v2294/v2293 随新现实更新）
 const readTest = (name) => readFileSync(join(ROOT, 'tests', name), 'utf8');
 const s2294 = readTest('smoke_v2294_crystalwatch.mjs');
 const s2293 = readTest('smoke_v2293_deadsave.mjs');
-ok('smoke_v2294 的 GAME_VERSION 字面量 pin 已更新为 v22.95', s2294.includes("const GAME_VERSION = 'v22.95';"));
-ok('smoke_v2294 的 CHANGELOG 顶 pin 已更新为 ## v22.95', s2294.includes("startsWith('## v22.95 '"));
-ok('smoke_v2294 的件套 pin 已更新为一百九十一件套（一百九十件套清除）', s2294.includes('一百九十一件套（一百九十件套清除）'));
+ok('smoke_v2294 的 GAME_VERSION 字面量 pin 已更新为 v22.95', s2294.includes("const GAME_VERSION = 'v22.96';"));
+ok('smoke_v2294 的 CHANGELOG 顶 pin 已更新为 ## v22.95', s2294.includes("startsWith('## v22.96 '"));
+ok('smoke_v2294 的件套 pin 已更新为一百九十二件套（一百九十一件套清除）', s2294.includes('一百九十二件套（一百九十一件套清除）'));
 ok('smoke_v2294 的 README 串尾 pin 已延伸至 smoke_v2295_deadprog',
-  s2294.includes('smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog（npm test 串跑）'));
+  s2294.includes('smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog（npm test 串跑）'));
 ok('smoke_v2294 的 package 串尾 pin 已延伸至 smoke_v2295_deadprog',
-  s2294.includes('node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs"'));
-ok('smoke_v2294 的 testChain pin 已更新为 191', s2294.includes('testChain === 191'));
-ok('smoke_v2294 的版本锚已推进至 >= 95', s2294.includes('_gv[1] >= 95'));
-ok('smoke_v2293 的 GAME_VERSION 字面量 pin 已更新为 v22.95', s2293.includes("const GAME_VERSION = 'v22.95';"));
-ok('smoke_v2293 的 testChain pin 已更新为 191', s2293.includes('testChain === 191'));
+  s2294.includes('node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs"'));
+ok('smoke_v2294 的 testChain pin 已更新为 191', s2294.includes('testChain === 192'));
+ok('smoke_v2294 的版本锚已推进至 >= 95', s2294.includes('_gv[1] >= 96'));
+ok('smoke_v2293 的 GAME_VERSION 字面量 pin 已更新为 v22.95', s2293.includes("const GAME_VERSION = 'v22.96';"));
+ok('smoke_v2293 的 testChain pin 已更新为 191', s2293.includes('testChain === 192'));
 
 // 8. 旧代 v22.94 pin 全库零残留
 const allTests = readdirSync(join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2295_deadprog.mjs');
@@ -261,9 +261,9 @@ ok('旧代 v22.94 字面量/恒等/件套/testChain/串尾/版本锚/顶 pin/pac
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 192 口径
 const s2143 = readTest('smoke_v2143_talkekey.mjs');
-ok('哨兵链 v2143 已含下一版件套口径（一百九十二件套（一百九十一件套清除））',
-  s2143.includes('一百九十二件套（一百九十一件套清除）') &&
-  s2143.includes("!readme.includes('一百九十二件套（一百九十一件套清除）')"));
+ok('哨兵链 v2143 已含下一版件套口径（一百九十三件套（一百九十二件套清除））',
+  s2143.includes('一百九十三件套（一百九十二件套清除）') &&
+  s2143.includes("!readme.includes('一百九十三件套（一百九十二件套清除）')"));
 
 console.log(`\n— v22.95 阵亡画面「冒险进度」五徽记行 冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);

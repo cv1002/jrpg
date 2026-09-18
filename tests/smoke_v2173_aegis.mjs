@@ -95,7 +95,7 @@ const sShop = fs.readFileSync(path.join(ROOT, 'js/shop.js'), 'utf8');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.72 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.72', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 95)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.72', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 96)), GAME_VERSION);
 ok('data.js 含 v21.73 注释（龙鳞加身/最强铠甲里程碑说明）', dSrc.includes('v21.73') && dSrc.includes('龙鳞加身'));
 
 // —— 数据源契约：BEST_ARMOR（ARMORS 最大防御派生，单一数据源）——
