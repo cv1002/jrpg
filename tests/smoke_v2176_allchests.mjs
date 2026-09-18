@@ -94,7 +94,7 @@ const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.75 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.75', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 96)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.75', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 97)), GAME_VERSION);
 ok('data.js 含 v21.76 注释（一箱不漏/全图宝箱全收集里程碑说明）', dSrc.includes('v21.76') && dSrc.includes('一箱不漏'));
 
 // —— 数据源契约：chestTotal/chestCount（v21.22 单一数据源）——
@@ -246,13 +246,13 @@ ok('成就页 drawAch 两态 + 第三页滚动渲染不抛错（未解锁/已解
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2176_allchests', readme.includes('smoke_v2176_allchests'));
-ok('README 件套口径为一百九十二件套（一百九十一件套清除）', readme.includes('一百九十二件套（一百九十一件套清除）'));
+ok('README 件套口径为一百九十三件套（一百九十二件套清除）', readme.includes('一百九十三件套（一百九十二件套清除）'));
 ok('README 含 v21.76 守护描述（新成就「一箱不漏」（全图宝箱全收集里程碑）守护）',
   readme.includes('新成就「一箱不漏」（全图宝箱全收集里程碑）守护'));
 // v21.77 随新现实更新：README 成就口径由「27 项」双处递增为「28 项」双处（elites 成就入列），
 // 本件断言同步递增（承 v21.73/v21.76 同款处理先例）。
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 58 项进度') && readme.includes('**58 项成就**'));
+  readme.includes('成就一览（全部 59 项进度') && readme.includes('**59 项成就**'));
 ok('package.json 已收录 smoke_v2176_allchests（npm test 串跑第 72 份）', pkg.includes('smoke_v2176_allchests.mjs'));
 const s2175 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2175_battletag.mjs'), 'utf8');
 ok('smoke_v2175 的 README 件套口径断言已去硬化（存活性口径落位，旧精确表达式零残留）',

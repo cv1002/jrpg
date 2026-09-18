@@ -945,13 +945,14 @@
 // 无 r 字段（与 seen/metall/lvl5 同款纯里程碑——似曾相识本身就是奖励）；解锁时机：applyAchievements 既有
 // 通路任意判定点当场解锁（seen 为持续累积量，无需新判定点，承 perfection 同款——已解锁不因任何变化而
 // 撤销；第 10 种撞见的瞬间即解锁、反馈不迟到），ACH_LIST 57→58 项（末尾追加，既有 57 项 id/序位零回归）。
+// v22.97 新内容·单成就·宝箱线中档里程碑：新成就「满载而归」（累计开启 9 个宝箱，承 v22.61-74 成就三档推进主线，见 ACH_LIST chests2 注释）
 // v22.96 体验打磨·信息透明·纯显示：尾声画面（drawEnding）补「冒险进度」五徽记行（详见 js/view/menus.js drawEnding 注释）
 // v22.95 体验打磨·信息透明·纯显示：阵亡画面（drawDead）补「冒险进度」五徽记行（详见 js/view/menus.js drawDead 注释）
 // v22.94 新内容·纯风味：星井矿脉终焉水晶正南新 NPC「守晶人」（数据层三件套 cave.extras (12,12)/NPC_SPOTS '12,12'/NPCS.crystalwatch，见 NPCS 行内注释）
 // v22.93 体验打磨·防误丢档·存档闭环收口：阵亡画面补「未存档」提示行（复用 pauseSaveHint 纯函数，
 // 与暂停菜单同源，见 js/view/menus.js drawDead 注释）+ dead.onKey 补 P 存档入口（与 world/win 的 P
 // 逐字同款，见 js/main.js dead.onKey 注释）
-const GAME_VERSION = 'v22.96';
+const GAME_VERSION = 'v22.97';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
@@ -2953,6 +2954,17 @@ const PERFECTION_GOLD = 999;   // 成就「记忆守护者」图鉴全收集的�
 // firstblood 时该家族数值型门槛已全部收口，本次是该家族第一条「全新门槛」，沿用同一单源模式）
 const TREASURE_GOAL = 6;   // 成就「开箱寻宝」需累计开启的宝箱个数
 
+// 成就「满载而归」累计开启宝箱数阈值（单一数据源·v22.97）：ACH_LIST 该条的判定（ok: chestCount(g)>=TREASURE2_GOAL）、
+// 描述文案（d「累计开启 N 个宝箱」）、进度条（prog「X/N」）三处同读此源——宝箱线（chests 开箱寻宝=6 首档 /
+// allchests 一箱不漏=全部 12 封顶）是成就版图里最后一条只有两档的收集线（等级/金币/时长/讨伐/掉落/药水/灵药/
+// 酿造/蘑菇/探索/图鉴收录/图鉴遭遇各线三档齐备，v22.72 注「十线早已三档齐备」后独缺宝箱中档）；
+// 现补中档（TREASURE2_GOAL=9，首档与封顶正中间——6→9→12；可达性：潮灯镇 2 + 雾语林 3 + 星井矿脉 2 = 7 只
+// 常规箱，洞窟领主后星砂宝藏 4 只显形，开 2 只宝藏即达 9——恰是「双徽记前可收最多」与「全图」的中点，
+// 与 scholar 5→10→13 / seen 5→10→13 同档对齐），与 TREASURE_GOAL 同一「成就阈值数据化」家族——
+// 调门槛只改 data.js 一处自动跟随，零裸字面量；计数读既有 hero.chests（world.onChestStep 开箱坐标 Set、
+// chestCount 三形态防御式读取、旧档零迁移，承 chests/allchests 同款）
+const TREASURE2_GOAL = 9;   // 成就「满载而归」需累计开启的宝箱个数
+
 // 已开启宝箱计数（单一数据源）：world.onChestStep 开箱即向 hero.chests（Set）add，ACH_LIST 该条 ok/prog
 // 同用此函数——运行期 hero.chests 恒为 Set（snapshotHero 存档转数组、restoreChests/resetRun 读回均
 // new Set 还原），此处防御性兼容数组/缺失形态：Set 读 size、数组读 length、缺失计 0，绝无第二套口径；
@@ -3953,6 +3965,22 @@ const ACH_LIST=[
   // ——已解锁不因任何变化而撤销；第 10 种撞见的瞬间即解锁、反馈不迟到），ACH_LIST 57→58 项（末尾追加，既有
   // 57 项 id/序位零回归）。
   {id:'seen2', name:'似曾相识', d:`记忆图鉴已遭遇 ${SEEN2_GOAL} 种魔物`, ok:g=>BESTIARY_TARGET.filter(n=>(g.seen||{})[n]>=1).length>=SEEN2_GOAL, prog:g=>`${BESTIARY_TARGET.filter(n=>(g.seen||{})[n]>=1).length}/${SEEN2_GOAL}`},
+  // 满载而归（v22.97 新成就·宝箱线中档里程碑·承 v22.61 富甲一方 / v22.72 见多识广 / v22.74 似曾相识 多档先例）：
+  // 收集线补档——宝箱线（chests 开箱寻宝=6 首档 / allchests 一箱不漏=全部 12 封顶）是成就版图最后一条只有
+  // 两档的收集线（等级 5/10/12·金币 500/1500/3000·时长 60/120/240·讨伐 10/100/300·掉落 5/30/120·
+  // 药水 20/50/99·灵药 3/8/16·酿造 1/5/12·蘑菇 10/25/50·探索 2/3/4 图·图鉴收录 5/10/13 种·
+  // 图鉴遭遇 5/10/13 种各线三档齐备，宝箱独缺中档——玩家开到第 7~11 只期间（状态页「已开 X/全图 12」/
+  // 开箱报文「已开 X/全图 N」/成就页 X/6 三处都在展示）毫无成就回响；现补中档（TREASURE2_GOAL=9，
+  // 首档与封顶正中间——6→9→12 与 scholar/seen 中档同档对齐；可达性：潮灯镇 2 + 雾语林 3 + 星井矿脉 2 =
+  // 7 只常规箱 + 洞窟领主后星砂宝藏 4 只显形开 2 只即达 9，恰是「双徽记前」与「全图」的中点），
+  // 判定/描述/进度三处同读新常量 TREASURE2_GOAL（与 TREASURE_GOAL 同一「成就阈值数据化」家族——调门槛
+  // 只改 data.js 一处自动跟随，零裸字面量），计数读既有 hero.chests（world.onChestStep 开箱坐标 Set、
+  // chestCount 三形态防御式读取、旧档无此字段 false 不误解锁、零迁移，承 chests/allchests 同款）；
+  // 无 r 字段（与 chests/allchests/lvl5 同款纯里程碑——宝箱内容本身就是奖励）；解锁时机：
+  // applyAchievements 既有通路任意判定点当场解锁（chestCount 为持续累积量，无需新判定点，承 allchests 同款
+  // ——已解锁不因任何变化而撤销；第 9 只箱开箱瞬间即解锁、反馈不迟到），ACH_LIST 58→59 项（末尾追加，
+  // 既有 58 项 id/序位零回归）。
+  {id:'chests2', name:'满载而归', d:`累计开启 ${TREASURE2_GOAL} 个宝箱`, ok:g=>chestCount(g)>=TREASURE2_GOAL, prog:g=>`${chestCount(g)}/${TREASURE2_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -4329,6 +4357,6 @@ export {
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
-  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, chestCount, chestTotal, trialSteleHint,
+  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
   SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString,
 };
