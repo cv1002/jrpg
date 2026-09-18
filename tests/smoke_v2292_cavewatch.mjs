@@ -1,0 +1,255 @@
+// v22.92 专项冒烟：星井矿脉洞窟领主祭坛正北新风味 NPC「守洞人」——纯内容扩充（无任务、零结算、零新逻辑）：
+// 数据层三件套（cave.extras (20,7) + NPC_SPOTS '20,7' + NPCS.cavewatch），洞窟领主祭坛（MB (20,8-9)）
+// 此前只是星砂车夫「言及」（v22.91 口径「四图强敌地标全部有人驻守」中唯一非物理在场的一档），现由
+// 守洞人补上——四图强敌地标至此真正全部有人驻守（魔王祭坛→守夜人/洞窟领主祭坛→守洞人/终焉祭坛→
+// 引灯人）；台词讲「再往里两步就是领主的祭坛/它霸着矿脉，也霸着那车没运走的星砂——镇上的灯就缺
+// 这一车」（与井巫/星砂车夫同口径）+ 战前预习——「血过半会现出真身，还会回一口气/雷鸣劈它，比别的
+// 招都疼/躲开它抡圆了的那一下」（与 SPECIES['洞窟领主'] phase2.at=0.5/phase2.heal=0.10/weak:'thunder'/
+// acts heavy 逐字同源——H 页三 Boss 机制预览已有石甲/变身/回血，雷鸣克制此前只有图鉴 codexTag 一处，
+// 战斗前最后一块预习拼图，承 v22.91 引灯人祸乱形态预习先例）；台词走既有 lines + trueBoss after 彩蛋
+// 机制（npcQuestPages 无待办任务回退时 trueBoss 优先 after、否则 lines）；mark:'pick' 复用既有矿镐标
+// （drawNpcMark 既有 pick 分支）、造型走 NPC_SHEET 默认 mwVillager（零 sprites 改动）；选址 (20,7)
+// 祭坛正北——南邻 (20,8) 即祭坛 BOSS 瓦片、四邻 (19,7)/(21,7)/(20,6) 皆 '0' 可行走，矿场东西两侧
+// 皆可绕行零碰撞，不卡矿车区/试炼碑/星砂宝箱任何动线。
+// 本冒烟守护：版本锚点、全局坐标防撞（NPC_SPOTS 跨地图共用键、唯一映射、既有 36 键未动、全图 extras
+// 扫描 (20,7) 仅 cave 一处）、NPCS 契约（name/mark/lines 2 页/after 2 页/每页结构/[Enter] 收尾/
+// 行宽预算/矿灯主题/战前预习同源/散尽彩蛋）、运行期（loadMap 落位 + 四邻可行走 + 祭坛 MB 零回归 +
+// 同图 NPC/地标零回归 + Enter/E 真实交互开对话 + 默认与 trueBoss 两档选段）、npcQuestMark 无任务顶标、
+// resolveNpcTalk 零任务契约、sprites 零改动（默认 mwVillager + 既有 pick 分支）、README/package.json/
+// CHANGELOG 同步（tests 树尾 + 件套口径 188 + v22.92 守护描述 + 入库 188 份）、姊妹件套 pin
+// （smoke_v2291 随新现实更新）复查 + 旧代 v22.91 字面量/恒等/件套/串尾/版本锚/顶 pin 全库零残留 +
+// 哨兵链 189 口径（v2143 领先一位）。
+import { S } from '../js/state.js';
+import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY, SOLID, SPECIES } from '../js/data.js';
+import { npcQuestPages, npcQuestMark } from '../js/quests.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// —— DOM 桩（承 v21.30-v22.91 冒烟先例：先装桩再 import main.js）——
+const noop = () => {};
+function makeCtx() {
+  const grad = { addColorStop: noop };
+  return {
+    canvas: { width: 640, height: 480 },
+    measureText: (t) => ({ width: String(t).length * 8 }),
+    createLinearGradient: () => grad, createRadialGradient: () => grad, createConicGradient: () => grad, createPattern: () => ({}),
+    beginPath: noop, closePath: noop, moveTo: noop, lineTo: noop, arc: noop, arcTo: noop, ellipse: noop,
+    quadraticCurveTo: noop, bezierCurveTo: noop, fill: noop, stroke: noop, fillRect: noop, strokeRect: noop,
+    clearRect: noop, drawImage: noop, save: noop, restore: noop, translate: noop, rotate: noop, scale: noop,
+    transform: noop, setTransform: noop, clip: noop, rect: noop, setLineDash: noop, getLineDash: () => [],
+    isPointInPath: () => false,
+    globalAlpha: 1, strokeStyle: '#000', fillStyle: '#000', font: '', textAlign: 'left', textBaseline: 'alphabetic',
+    lineWidth: 1, imageSmoothingEnabled: false,
+    fillText: noop,
+  };
+}
+function mkEl(id) {
+  const cl = { add: noop, remove: noop, contains: () => false, toggle: noop };
+  return { textContent: '', style: {}, className: '', id, width: 640, height: 480,
+    getContext: () => makeCtx(), classList: cl, parentElement: { classList: cl }, addEventListener: noop };
+}
+const els = {};
+globalThis.document = {
+  getElementById: (id) => { if (!els[id]) els[id] = mkEl(id); return els[id]; },
+  createElement: (tag) => tag === 'canvas'
+    ? { width: 32, height: 32, getContext: () => makeCtx(), style: {}, classList: { add: noop, remove: noop } }
+    : { style: {}, classList: { add: noop, remove: noop } },
+  addEventListener: noop,
+  documentElement: { style: {} },
+};
+function FakeAudio() { return { currentTime: 0, destination: {},
+  createOscillator: () => ({ connect: noop, start: noop, stop: noop, type: '',
+    frequency: { setValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
+  createGain: () => ({ connect: noop,
+    gain: { value: 1, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
+  createBuffer: () => ({}), createBufferSource: () => ({ connect: noop, start: noop }),
+  createPeriodicWave: () => ({}), resume: noop }; }
+globalThis.window = { addEventListener: noop, AudioContext: FakeAudio, webkitAudioContext: FakeAudio };
+const mem = {};
+globalThis.localStorage = {
+  getItem: (k) => Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null,
+  setItem: (k, v) => { mem[k] = String(v); },
+  removeItem: (k) => { delete mem[k]; },
+};
+globalThis.setInterval = () => 0;
+globalThis.clearInterval = () => {};
+
+await import('../js/main.js');
+const { screens } = await import('../js/main.js');
+const { loadMap, at } = await import('../js/world.js');
+
+let n = 0, failed = 0;
+function ok(name, cond, extra) {
+  n++;
+  if (cond) console.log('  ✓', name);
+  else { failed++; console.log('  ✗', name, extra || ''); }
+}
+
+console.log('— v22.92 星井矿脉洞窟领主祭坛守洞人 冒烟 —');
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
+
+// —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v22.91 + 精确值由本版守护）——
+const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
+const _gv = _vm(GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.91（本版守 v22.92）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 92)), GAME_VERSION);
+ok('data.js 含 v22.92 注释（守洞人说明）', dSrc.includes('v22.92 新内容·纯风味'));
+ok('GAME_VERSION 字面量已为 v22.92（旧 v22.91 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v22.92';") && !dSrc.includes("const GAME_VERSION = 'v22." + "91';"));
+ok('data.js 仍保留 v22.91/v22.90 世代注释链（历史注释未动）',
+  dSrc.includes('// v22.91 新内容·纯风味') && dSrc.includes('// v22.90 体验打磨·可发现性·纯文字'));
+
+// —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
+ok('NPC_SPOTS[20,7]===cavewatch', NPC_SPOTS['20,7'] === 'cavewatch', NPC_SPOTS['20,7']);
+ok('cavewatch 仅占一个坐标键（无重复映射）', Object.keys(NPC_SPOTS).filter((k) => NPC_SPOTS[k] === 'cavewatch').length === 1);
+ok('NPC_SPOTS 总数 37（既有 36 键 + 守洞人 1 键，v22.92 随新现实更新）', Object.keys(NPC_SPOTS).length === 37, Object.keys(NPC_SPOTS).length);
+ok('既有 36 个 NPC/石碑键未被误动', ['13,6', '10,13', '19,8', '12,8', '2,4', '13,9', '3,1', '2,3', '17,12', '17,11', '5,1', '10,1', '15,1', '20,1', '8,5', '14,8', '5,10', '15,12', '14,3', '16,9', '15,2', '13,2', '21,2', '4,2', '5,3', '5,5', '19,3', '14,15', '7,11', '7,14', '8,10', '9,12', '19,7', '10,3', '20,12', '21,3']
+  .every((k) => NPC_SPOTS[k] != null));
+// 全局坐标防撞演练：全图 extras 扫描，(20,7) 必须恰出现 1 次且在 cave、ty 为 NPC
+const at207 = [];
+for (const [mname, mdef] of Object.entries(MAPS)) {
+  for (const ex of (mdef.extras || [])) {
+    if (ex.x === 20 && ex.y === 7) at207.push(mname + ':' + ex.ty);
+  }
+}
+ok('(20,7) 全图 extras 仅 cave 一处 NPC（他图无占用/无撞车）',
+  at207.length === 1 && at207[0] === 'cave:NPC', at207.join(','));
+ok('data.js cave.extras 源级含 v22.92 注释（{ x: 20, y: 7, ty: \'NPC\' } + 守洞人）',
+  dSrc.includes("{ x: 20, y: 7, ty: 'NPC' }") && dSrc.includes('守洞人（v22.92'));
+ok('data.js NPC_SPOTS 源级含 v22.92 注释（\'20,7\': \'cavewatch\'）',
+  dSrc.includes("'20,7': 'cavewatch'"));
+
+// —— NPCS.cavewatch 契约 ——
+const cw = NPCS.cavewatch;
+ok('NPCS.cavewatch 存在且 name===守洞人 / mark===pick（复用既有矿镐标）', !!cw && cw.name === '守洞人' && cw.mark === 'pick', cw && cw.name);
+ok('lines 2 页（兜底闲聊），无 linesByStage（线性器/车夫同款静态台词机制）',
+  cw && Array.isArray(cw.lines) && cw.lines.length === 2 && !cw.linesByStage);
+ok('trueBoss after 彩蛋 2 页（掌柜/货郎/拾灯人/刻碑人同款契约）',
+  cw && Array.isArray(cw.after) && cw.after.length === 2);
+const allCwPages = [...cw.lines, ...cw.after];
+ok('全部 4 页：每页为字符串数组且末元素以 [Enter] 收尾（既有台词结构）',
+  allCwPages.every((pg) => Array.isArray(pg) && pg.length >= 2 &&
+    pg.every((ln) => typeof ln === 'string') && /\[Enter\]/.test(pg[pg.length - 1])));
+const estW = (s) => { let w = 0; for (const ch of String(s)) { const c = ch.codePointAt(0); if ((c >= 0x4e00 && c <= 0x9fff) || (c >= 0x3000 && c <= 0x303f) || (c >= 0xff00 && c <= 0xffef)) w += 15; else if (/[0-9A-Za-z]/.test(ch)) w += 7.5; else if (ch === ' ') w += 7.5; else w += 8; } return w; };
+ok('全部 4 页行宽 ≤440（对话面板预算）', allCwPages.every((pg) => pg.every((ln) => estW(ln) <= 440)));
+ok('lines 首页含矿灯主题（祭坛 + 霸着矿脉 + 星砂 + 镇上的灯缺一车）',
+  cw.lines[0].some((ln) => ln.includes('祭坛')) && cw.lines[0].some((ln) => ln.includes('霸着矿脉')) &&
+  cw.lines[0].some((ln) => ln.includes('星砂')) && cw.lines[0].some((ln) => ln.includes('缺这一车')));
+ok('lines 第 2 页含战前预习（真身 + 回一口气 + 雷鸣 + 抡圆了）',
+  cw.lines[1].some((ln) => ln.includes('真身')) && cw.lines[1].some((ln) => ln.includes('回一口气')) &&
+  cw.lines[1].some((ln) => ln.includes('雷鸣')) && cw.lines[1].some((ln) => ln.includes('抡圆了')));
+ok('after 首页含散尽彩蛋（星砂露出来 + 亮得晃眼 + 影子）',
+  cw.after[0].some((ln) => ln.includes('星砂')) && cw.after[0].some((ln) => ln.includes('亮得晃眼')) &&
+  cw.after[0].some((ln) => ln.includes('影子')));
+ok('after 第 2 页含收尾（矿难 + 名字都回来了 + 矿灯能熄了）',
+  cw.after[1].some((ln) => ln.includes('矿难')) && cw.after[1].some((ln) => ln.includes('都回来了')) &&
+  cw.after[1].some((ln) => ln.includes('矿灯')));
+ok('台词机制与数据同源：洞窟领主 phase2.at===0.5 / phase2.heal===0.10 / weak===\'thunder\' / acts 含 heavy',
+  SPECIES['洞窟领主'].phase2.at === 0.5 && SPECIES['洞窟领主'].phase2.heal === 0.10 &&
+  SPECIES['洞窟领主'].weak === 'thunder' && (SPECIES['洞窟领主'].acts || []).some((a) => a.type === 'heavy'));
+
+// —— 选段（npcQuestPages 运行期求值，无任务 → 直落 NPCS 数据）——
+const p0 = npcQuestPages({}, 'cavewatch');
+ok('无旗标选段落到 lines（祭坛）', p0 && p0[0].some((ln) => ln.includes('祭坛')), p0 && p0[0][0]);
+const pT = npcQuestPages({ trueBoss: true }, 'cavewatch');
+ok('trueBoss 走 after 彩蛋（矿难）',
+  pT && pT.some((pg) => pg.some((ln) => ln.includes('矿难'))));
+ok('无任务：npcQuestMark===null（无 ❕ 顶标）', npcQuestMark(S.G, 'cavewatch') === null);
+ok('无支线绑定 cavewatch：resolveNpcTalk 不推进任何任务（纯风味零任务）',
+  (await import('../js/quests.js')).resolveNpcTalk(S.G, 'cavewatch') === null);
+
+// —— 运行期：loadMap 落位 + 四邻可行走 + 祭坛/同图关键点零回归 + Enter/E 真实交互开对话 ——
+loadMap('cave');
+ok('(20,7) 落位为 NPC 瓦片（placeExtras 覆盖 + 不卡祭坛动线）', at(20, 7) === TY.NPC, at(20, 7));
+ok('四邻 (19,7)/(21,7)/(20,6) 皆可行走（可面对面对话，祭坛前不设卡）',
+  [[19, 7], [21, 7], [20, 6]].every(([x, y]) => !SOLID.has(at(x, y))));
+ok('祭坛 (20,8)/(20,9) 仍为 MB 瓦片（洞窟领主祭坛零回归）',
+  at(20, 8) === TY.MB && at(20, 9) === TY.MB, at(20, 8) + '/' + at(20, 9));
+ok('同图 NPC：井巫(3,1)/老矿工(2,3)/听矿人(13,2)/筛砂人(5,5)/星砂车夫(17,11)/守碑人(17,12)/拾骨人(5,10) 零回归',
+  at(3, 1) === TY.NPC && NPC_SPOTS['3,1'] === 'sage' && at(2, 3) === TY.NPC && NPC_SPOTS['2,3'] === 'miner' &&
+  at(13, 2) === TY.NPC && NPC_SPOTS['13,2'] === 'hearer' && at(5, 5) === TY.NPC && NPC_SPOTS['5,5'] === 'sifter' &&
+  at(17, 11) === TY.NPC && NPC_SPOTS['17,11'] === 'cartman' && at(17, 12) === TY.NPC && NPC_SPOTS['17,12'] === 'sentinel' &&
+  at(5, 10) === TY.NPC && NPC_SPOTS['5,10'] === 'digger');
+ok('同图地标零回归：终焉水晶(12,11) SB / 试炼碑(18,12) TRIAL',
+  at(12, 11) === TY.SB && at(18, 12) === TY.TRIAL, [at(12, 11), at(18, 12)].join('/'));
+S.G.x = 20; S.G.y = 6; S.dir = 'D'; S.scene = 'world';
+await screens.world.onKey({ key: 'Enter' });
+ok('面向守洞人按 Enter：进入对话（S.scene==talk）且 curNpc===cavewatch',
+  S.scene === 'talk' && S.curNpc === 'cavewatch', S.scene + '/' + S.curNpc);
+ok('对话第 1 页为 lines 默认台词（祭坛）——S.G 无旗标',
+  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('祭坛')));
+ok('对话共 2 页（第 1 页 [Enter] 继续 → 第 2 页 [Enter] 结束）', S.talkPages && S.talkPages.length === 2);
+S.scene = 'world';
+await screens.world.onKey({ key: 'E' });
+ok('E 键同效（v21.29 交互别名对 NPC 零回归）', S.scene === 'talk' && S.curNpc === 'cavewatch', S.scene + '/' + S.curNpc);
+
+// —— sprites 零改动：默认 mwVillager 造型 + 既有 pick 分支 ——
+const spSrc = fs.readFileSync(path.join(ROOT, 'js/view/sprites.js'), 'utf8');
+ok('sprites.js 造型默认回退 mwVillager（NPC_SHEET[nid] || mwVillager，cavewatch 零映射零新增）',
+  spSrc.includes("NPC_SHEET[nid] || 'mwVillager'") && !spSrc.includes("'cavewatch'"));
+ok('sprites.js 既有 pick 矿镐标分支仍在（mark 复用零新增）', spSrc.includes("mark==='pick'"));
+
+// —— README / package.json / CHANGELOG 同步 ——
+const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
+const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
+const TAIL = 'smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch（npm test 串跑）';
+ok('README tests 树已收录 smoke_v2292_cavewatch 且位于串尾', readme.includes(TAIL));
+const treeLine = readme.split('\n').find((l) => l.startsWith('├── tests/'));
+ok('README tests 树含 smoke_v2292_cavewatch 串尾且旧串尾零残留（树为历史清单，总数不守恒）',
+  treeLine && treeLine.includes('+ smoke_v2292_cavewatch（npm test 串跑）') &&
+  !treeLine.includes('smoke_v2291_lampguide（npm test 串跑）'));
+ok('README 件套口径为一百八十八件套（一百八十七件套清除）且旧 187 口径零残留',
+  readme.includes('冒烟一百八十八件套（一百八十七件套清除）') && !readme.includes('冒烟一百八十七件套（一百八十六件套清' + '除）'));
+ok('README 含 v22.92 守护描述（星井矿脉洞窟领主祭坛守洞人新 NPC）', readme.includes('v22.92 起含星井矿脉洞窟领主祭坛守洞人新 NPC 守护'));
+ok('README 含 smoke_v2292_cavewatch 入库（188 份）', readme.includes('smoke_v2292_cavewatch 入库（188 份）'));
+ok('README 仍保留 smoke_v2291_lampguide 入库（187 份）历史口径', readme.includes('smoke_v2291_lampguide 入库（187 份）'));
+ok('README 仍保留 v22.91 守护描述（历史口径）', readme.includes('v22.91 起含无字回廊终焉之神祭坛引灯人新 NPC 守护'));
+ok('README 四图速览·星井矿脉含「守洞人」', readme.includes('守洞人') && readme.includes('第八位可对话角色'));
+ok('README 系统清单面向提示名单含「守洞人」', readme.includes('引灯人/守洞人一目了然'));
+ok('package.json 已收录 smoke_v2292_cavewatch（npm test 串跑第 188 份）',
+  JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2292_cavewatch.mjs'));
+ok('package.json 串尾为 ... smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs"',
+  pkg.includes('node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs"'));
+const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
+ok('package.json test 串共 188 件套', testChain === 188, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.92 条目', changelog.startsWith('## v22.92 '));
+
+// 姊妹 pin 复查（smoke_v2291 随新现实更新）
+const s2291 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2291_lampguide.mjs'), 'utf8');
+ok('smoke_v2291 的 GAME_VERSION 字面量 pin 已更新为 v22.92（旧 v22.91 零残留）',
+  s2291.includes("const GAME_VERSION = 'v22.92';") && !s2291.includes("const GAME_VERSION = 'v22." + "91';"));
+ok('smoke_v2291 的 README 件套 pin 已随新现实更新为一百八十八件套（一百八十七件套清除）',
+  s2291.includes('一百八十八件套（一百八十七件套清除）'));
+ok('smoke_v2291 的 package.json 件套计数 pin 已更新为 === 188', s2291.includes('testChain === 188'));
+ok('smoke_v2291 的 README 串尾 pin 已随新现实延伸至 smoke_v2292_cavewatch（v2287 起尾部）',
+  s2291.includes('smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch（npm test 串跑）'));
+ok('smoke_v2291 的 package 串尾 pin 已延伸至 smoke_v2292_cavewatch',
+  s2291.includes('node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs"' ));
+ok('smoke_v2291 的 CHANGELOG 顶 pin 已更新为 ## v22.92', s2291.includes("startsWith('## v22.92 '"));
+ok('smoke_v2291 的哨兵 pin 已更新为一百八十九件套（一百八十八件套清除）', s2291.includes('一百八十九件套（一百八十八件套清除）'));
+ok('smoke_v2291 的 NPC 总数 pin 已更新为 === 37', s2291.includes('Object.keys(NPC_SPOTS).length === 37'));
+
+// 旧代 v22.91 pin 全库零残留
+const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2292_cavewatch.mjs');
+const stale = [];
+for (const f of allTests) {
+  const src = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
+  if (src.includes("const GAME_VERSION = 'v22." + "91';") || src.includes("GAME_VERSION === 'v22." + "91'") ||
+      src.includes('一百八十七件套（一百八十六件套清' + '除）') || src.includes('testChain === ' + '187') ||
+      src.includes('smoke_v2291_lampguide（npm test ' + '串跑）') || src.includes('_gv[1] >= ' + '91') ||
+      src.includes("startsWith('## v22." + "91 '") || src.includes("startsWith('## v22." + "91'") ||
+      src.includes('NPC_SPOTS).length === ' + '36')) stale.push(f);
+}
+ok('旧代 v22.91 字面量/恒等/件套/testChain/串尾/版本锚/顶 pin/NPC 计数 pin 全库零残留（' + allTests.length + ' 件扫描）', stale.length === 0, stale.join(','));
+
+// 哨兵链（件套守护领先一位）已指向下一版 189 口径
+const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
+ok('哨兵链 v2143 已含下一版件套口径（一百八十九件套（一百八十八件套清除））',
+  s2143.includes('一百八十九件套（一百八十八件套清除）') &&
+  s2143.includes("!readme.includes('一百八十九件套（一百八十八件套清除）')"));
+
+console.log(`\n=== ${n} 项断言，${failed === 0 ? '全部通过' : '存在 ' + failed + ' 项失败'} ===`);
+process.exit(failed === 0 ? 0 : 1);
