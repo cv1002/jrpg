@@ -360,6 +360,13 @@ const screens = {
       if (e.key === 'r' || e.key === 'R') resetRun();
       else if (e.key === 't' || e.key === 'T') { goto('title'); startBgm('title'); }
       else if (e.key === 'b' || e.key === 'B') retryBoss();
+      // v22.93 阵亡画面补 P 存档入口（体验打磨·存档闭环收口，承 v21.98 win.onKey P / v22.28 标题页 P /
+      // v22.30 暂停菜单同一「saveGame 全出口」主线）：dead 是玩家战败后 R/T/B 三选一的决策现场，
+      // 此前 P 无分支——未存档战果（等级/金币/收集/碎片）在死屏只能按 R 丢弃或回标题后凭标题页 P 间接
+      // 落盘（本局从 dead 按 T 起身后再无任何入口）；现补 P→saveGame（与 world/win 的 P 逐字同款唯一
+      // 入口，成功即清 S.unsaved，与 drawDead 未存档提示行同批同源——提示讲的键真的可用）。
+      // R/T/B 分支逐字未动，纯入口层改动、零结算零存档格式变化。
+      else if (e.key === 'p' || e.key === 'P') { saveGame(); return; }
     },
   },
   win: {

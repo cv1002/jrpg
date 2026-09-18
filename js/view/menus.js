@@ -823,6 +823,18 @@ export function drawDead(){
   text('按 R 重新开始本次冒险',CV.width/2,332,'15px','#7d93a3','center');
   text('按 T 返回标题画面',CV.width/2,362,'15px','#7d93a3','center');
   if(hero && hero._bossRetry && hero._bossRetry.bossId!=='rush') text('按 B 重整旗鼓，再战强敌！',CV.width/2,392,'15px','#ffd24a','center');
+  // v22.93 阵亡画面「未存档」提示（体验打磨·防误丢档·存档闭环收口，承 v22.10 beforeunload 守卫 /
+  // v22.28 标题页 P 存档 / v22.30 暂停菜单未存档提示同一「未落盘进度防丢失」主线）：战败复盘屏是
+  // 玩家「R 重开 / B 重整旗鼓 / T 回标题」三选一的决策现场——未存档的进行中冒险（S.G && S.unsaved）
+  // 按 R 即整段丢弃、按 T 回标题后本局再无落盘机会（存入口只剩标题页 P，且标题页 P 存的正是这局的
+  // 进行中状态、随后才能 L 读回续玩）；与 victory 屏 v21.98「按 P 存档 + 本局战果未自动存档」闭环相比，
+  // dead 屏既无提示也无 P 分支（v21.70 注释以「战败语境下重开是显式三选一的常态出口」为由维持 R 单击，
+  // 但那只是 R 不两按确认的理由、不是不提示的理由）；现复用 pauseSaveHint 纯函数同一份文案（与暂停
+  // 菜单同源：调文案只改一处、槽位占位分档「已有存档将覆盖/空槽」），落 12px 橙行 y=412（B 行 392 之下、
+  // 画布底 480 之内、行间 20 ≥16 不触、上方全部逐字零位移），S.unsaved=false 时零噪音；纯显示零结算
+  // 零存档格式变化（P 存档入口见 main.js dead.onKey 注释）。
+  const deadHint = pauseSaveHint(hero, S.unsaved, S.curSaveSlot, hasSlot(S.curSaveSlot));
+  if (deadHint) text(deadHint, 320, 412, '12px', '#ff9d5b', 'center');
 }
 bind.drawDead=drawDead;
 

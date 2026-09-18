@@ -85,7 +85,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.82）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.82', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 92)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.82', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 93)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.83 注释（Lv11 技能「星砂回响」）', dSrc.includes('v21.83 Lv11 新技能「星砂回响」'));
 
@@ -252,7 +252,7 @@ S.enemy = null; S.scene = 'world'; S.battleBusy = false;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README 已同步（tests 树收录 smoke_v2183_mpsip + 冒烟/件套口径）',
-  readme.includes('smoke_v2183_mpsip') && readme.includes('冒烟一百八十八件套（一百八十七件套清除）'));
+  readme.includes('smoke_v2183_mpsip') && readme.includes('冒烟一百八十九件套（一百八十八件套清除）'));
 ok('README 含 v21.83 守护描述', readme.includes('v21.83'));
 ok('README 数值速查技能领悟行含 Lv11 星砂回响', readme.includes('Lv11 星砂回响'));
 ok('package.json 已收录 smoke_v2183_mpsip（第 79 份）',
@@ -261,13 +261,13 @@ const suite = ['smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smo
   'smoke_v2179_titlerecap.mjs', 'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百八十八件套（一百八十七件套清除）`,
-    src.includes('一百八十八件套（一百八十七件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为一百八十九件套（一百八十八件套清除）`,
+    src.includes('一百八十九件套（一百八十八件套清除）'));
 }
 for (const nm of ['smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v22.92';"));
+    src.includes("const GAME_VERSION = 'v22.93';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过`);
