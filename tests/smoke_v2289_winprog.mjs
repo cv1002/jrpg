@@ -15,8 +15,8 @@ console.log('— v22.89 胜利画面「冒险进度」五徽记行冒烟 —');
 // 1. 版本锚点（v21.7 去硬化惯例）
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v22.88', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 90)), GAME_VERSION);
-ok('GAME_VERSION 恒等于 v22.89', GAME_VERSION === 'v22.90', GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.88', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 91)), GAME_VERSION);
+ok('GAME_VERSION 恒等于 v22.89', GAME_VERSION === 'v22.91', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -28,7 +28,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 // 2. 源级落位
-ok('data.js GAME_VERSION 字面量为 v22.89', dataSrc.includes("const GAME_VERSION = 'v22.90';"));
+ok('data.js GAME_VERSION 字面量为 v22.89', dataSrc.includes("const GAME_VERSION = 'v22.91';"));
 ok('旧 v22.88 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22.8" + "8';"));
 ok('data.js 含 v22.89 版本注释', dataSrc.includes('// v22.89 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v22.88 历史注释（累积注释块）', dataSrc.includes('// v22.88 体验打磨·可发现性·纯文字'));
@@ -188,9 +188,9 @@ ok('运行期：防御档冒险进度行全 ✗', CAPTURED.some((t) => t.include
 
 // 6. README / package.json / CHANGELOG 同步
 ok('README tests 树串尾已延伸至 smoke_v2289_winprog（v2288 后接 v2289）',
-  readme.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink（npm test 串跑）'));
-ok('README 件套口径为一百八十六件套（一百八十五件套清除）且旧 184 口径零残留',
-  readme.includes('冒烟一百八十六件套（一百八十五件套清除）') && !readme.includes('一百八十四件套（一百八十三件套清' + '除）'));
+  readme.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide（npm test 串跑）'));
+ok('README 件套口径为一百八十七件套（一百八十六件套清除）且旧 184 口径零残留',
+  readme.includes('冒烟一百八十七件套（一百八十六件套清除）') && !readme.includes('一百八十四件套（一百八十三件套清' + '除）'));
 ok('README 含 v22.89 守护描述（胜利画面「冒险进度」五徽记行守护）',
   readme.includes('v22.89 起含胜利画面「冒险进度」五徽记行守护'));
 ok('README 含 smoke_v2289_winprog 入库（185 份）', readme.includes('smoke_v2289_winprog 入库（185 份）'));
@@ -198,10 +198,10 @@ ok('README 仍保留 smoke_v2288_scrollhint 入库（184 份）历史口径', re
 ok('README 仍保留 v22.88 守护描述（历史口径）', readme.includes('v22.88 起含帮助页「操作说明」任务日志/记忆图鉴/成就一览「↑↓ 滚动」口径守护'));
 ok('README 系统清单补「胜利画面冒险进度行」条款', readme.includes('胜利画面冒险进度行**（v22.89'));
 ok('package.json test 串含 smoke_v2289_winprog.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs"'));
+  pkg.includes('node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 185 件套', testChain === 186, String(testChain));
-ok('CHANGELOG 含 v22.89 条目（顶 pin）', changelog.startsWith('## v22.90 '));
+ok('package.json test 串共 185 件套', testChain === 187, String(testChain));
+ok('CHANGELOG 含 v22.89 条目（顶 pin）', changelog.startsWith('## v22.91 '));
 ok('CHANGELOG 仍保留 v22.88 条目（历史口径）', changelog.includes('## v22.88 帮助页「操作说明」'));
 
 // 7. 姊妹件套 pin（smoke_v2288/v2287/v2286 随新现实更新）
@@ -209,21 +209,21 @@ const readTest = (name) => read('../tests/' + name);
 const s2288 = readTest('smoke_v2288_scrollhint.mjs');
 const s2287 = readTest('smoke_v2287_trueroute.mjs');
 const s2286 = readTest('smoke_v2286_titleekey.mjs');
-ok('smoke_v2288 的 GAME_VERSION 字面量 pin 已更新为 v22.89', s2288.includes("const GAME_VERSION = 'v22.90';"));
-ok('smoke_v2288 的 CHANGELOG 顶 pin 已更新为 ## v22.89', s2288.includes("startsWith('## v22.90 '"));
-ok('smoke_v2288 的件套 pin 已更新为一百八十六件套（一百八十五件套清除）', s2288.includes('一百八十六件套（一百八十五件套清除）'));
+ok('smoke_v2288 的 GAME_VERSION 字面量 pin 已更新为 v22.89', s2288.includes("const GAME_VERSION = 'v22.91';"));
+ok('smoke_v2288 的 CHANGELOG 顶 pin 已更新为 ## v22.89', s2288.includes("startsWith('## v22.91 '"));
+ok('smoke_v2288 的件套 pin 已更新为一百八十七件套（一百八十六件套清除）', s2288.includes('一百八十七件套（一百八十六件套清除）'));
 ok('smoke_v2288 的 README 串尾 pin 已延伸至 smoke_v2289_winprog',
-  s2288.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink（npm test 串跑）'));
+  s2288.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide（npm test 串跑）'));
 ok('smoke_v2288 的 package 串尾 pin 已延伸至 smoke_v2289_winprog',
-  s2288.includes('node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs"'));
-ok('smoke_v2288 的 testChain pin 已更新为 185', s2288.includes('testChain === 186'));
-ok('smoke_v2287 的 GAME_VERSION 字面量 pin 已更新为 v22.89', s2287.includes("const GAME_VERSION = 'v22.90';"));
-ok('smoke_v2287 的 testChain pin 已更新为 185', s2287.includes('testChain === 186'));
-ok('smoke_v2287 的哨兵 pin 已更新为一百八十七件套（一百八十六件套清除）', s2287.includes('一百八十七件套（一百八十六件套清除）'));
-ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.89', s2286.includes("const GAME_VERSION = 'v22.90';"));
-ok('smoke_v2286 的 哨兵 pin 已更新为一百八十七件套（一百八十六件套清除）', s2286.includes('一百八十七件套（一百八十六件套清除）'));
+  s2288.includes('node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs"'));
+ok('smoke_v2288 的 testChain pin 已更新为 185', s2288.includes('testChain === 187'));
+ok('smoke_v2287 的 GAME_VERSION 字面量 pin 已更新为 v22.89', s2287.includes("const GAME_VERSION = 'v22.91';"));
+ok('smoke_v2287 的 testChain pin 已更新为 185', s2287.includes('testChain === 187'));
+ok('smoke_v2287 的哨兵 pin 已更新为一百八十八件套（一百八十七件套清除）', s2287.includes('一百八十八件套（一百八十七件套清除）'));
+ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.89', s2286.includes("const GAME_VERSION = 'v22.91';"));
+ok('smoke_v2286 的 哨兵 pin 已更新为一百八十八件套（一百八十七件套清除）', s2286.includes('一百八十八件套（一百八十七件套清除）'));
 ok('smoke_v2286 的 README 串尾 pin 已延伸至 smoke_v2289_winprog',
-  s2286.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink（npm test 串跑）'));
+  s2286.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide（npm test 串跑）'));
 
 // 8. 旧代 v22.88 pin 全库零残留
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url)).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2289_winprog.mjs');
@@ -244,9 +244,9 @@ ok('旧代 v22.88 字面量/恒等/件套/testChain/串尾/版本锚/顶 pin 全
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 186 口径
 const s2143 = readTest('smoke_v2143_talkekey.mjs');
-ok('哨兵链 v2143 已含下一版件套口径（一百八十七件套（一百八十六件套清除））',
-  s2143.includes('一百八十七件套（一百八十六件套清除）') &&
-  s2143.includes("!readme.includes('一百八十七件套（一百八十六件套清除）')"));
+ok('哨兵链 v2143 已含下一版件套口径（一百八十八件套（一百八十七件套清除））',
+  s2143.includes('一百八十八件套（一百八十七件套清除）') &&
+  s2143.includes("!readme.includes('一百八十八件套（一百八十七件套清除）')"));
 
 console.log(`\n— v22.89 胜利画面「冒险进度」五徽记行冒烟：${n}/${n - failed} 通过${failed ? '（失败 ' + failed + '）' : ''} —`);
 process.exit(failed ? 1 : 0);
