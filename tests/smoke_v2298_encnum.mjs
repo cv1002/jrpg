@@ -4,7 +4,7 @@
 // warn/warnFlash 七字段逐值 + HELP_PAGES「遇敌槽 / 危险格」机制行派生复核与 README 新行同源同值）+
 // README 数值速查「遇敌槽」行落位（ENCOUNTER 单一数据源引用 + 五档数值 + v22.98 补录注释）+
 // README 视觉段小地图口径三段落位（遇敌槽红条/全域危险/大灯·星井状态标）+ README/package.json/CHANGELOG
-// 同步（一百九十五件套（一百九十四件套清除）/串尾/入库 194 份/顶 pin）+ 姊妹件套 pin（smoke_v2297 随新现实
+// 同步（一百九十六件套（一百九十五件套清除）/串尾/入库 194 份/顶 pin）+ 姊妹件套 pin（smoke_v2297 随新现实
 // 更新）+ 哨兵链领先一位（195 口径）+ 旧代 v22.97 pin 全库零残留。
 import { GAME_VERSION, ENCOUNTER, HELP_PAGES } from '../js/data.js';
 
@@ -20,7 +20,7 @@ console.log('— v22.98 遇敌槽机制数值说明守护冒烟 —');
 // —— 版本锚点（v21.7 去硬化惯例）：格式合法 + 已越过 v22.97 ——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v22.97（本版守 v22.98）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 98)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v22.97（本版守 v22.98）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 99)), GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -31,7 +31,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.98 版本注释', dataSrc.includes('// v22.98 文档整理·数值说明·同源口径：README「数值速查」补「遇敌槽」行'));
 ok('data.js GAME_VERSION 字面量已为 v22.98（旧 v22.97 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v22.98';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "97';"));
+  dataSrc.includes("const GAME_VERSION = 'v22.99';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "97';"));
 ok('data.js 仍保留 v22.97 历史注释（满载而归注释未动）', dataSrc.includes('// v22.97 新内容·单成就·宝箱线中档里程碑：新成就「满载而归」'));
 
 // —— ENCOUNTER 数据契约（七字段逐值，v22.43 机制行同源）——
@@ -76,41 +76,41 @@ ok('README 视觉段含「大灯/星井状态标」口径（与 v22.36/38 画布
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2298_encnum（v2297 后接 v2298）',
-  readme.includes('smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）'));
-ok('README 旧串尾零残留（smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）不在树尾）',
+  readme.includes('smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink（npm test 串跑）'));
+ok('README 旧串尾零残留（smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink（npm test 串跑）不在树尾）',
   !readme.includes('smoke_v2297_chestmid（npm test 串' + '跑）'));
-ok('README 件套口径为一百九十四件套（一百九十三件套清除）且旧 193 口径零残留',
-  readme.includes('冒烟一百九十四件套（一百九十三件套清除）') && !readme.includes('冒烟一百九十三件套（一百九十二件套清' + '除）'));
+ok('README 件套口径为一百九十五件套（一百九十四件套清除）且旧 193 口径零残留',
+  readme.includes('冒烟一百九十五件套（一百九十四件套清除）') && !readme.includes('冒烟一百九十三件套（一百九十二件套清' + '除）'));
 ok('README 含 v22.98 守护描述（遇敌槽机制数值说明守护）', readme.includes('v22.98 起含遇敌槽机制数值说明守护'));
 ok('README 含 smoke_v2298_encnum 入库（194 份）', readme.includes('smoke_v2298_encnum 入库（194 份）'));
 ok('README 仍保留 v22.97 守护描述（历史口径）', readme.includes('v22.97 起含新成就「满载而归」守护'));
 ok('README 仍保留 smoke_v2297_chestmid 入库（193 份）历史口径', readme.includes('smoke_v2297_chestmid 入库（193 份）'));
 ok('package.json 已收录 smoke_v2298_encnum（npm test 串跑第 194 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2298_encnum.mjs'));
-ok('package.json 串尾为 ... smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"',
-  pkg.includes('node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"'));
+ok('package.json 串尾为 ... smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs"',
+  pkg.includes('node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 194 件套', testChain === 194, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.98 条目', changelog.startsWith('## v22.98 '));
+ok('package.json test 串共 194 件套', testChain === 195, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.98 条目', changelog.startsWith('## v22.99 '));
 ok('CHANGELOG 仍保留 v22.97 条目（历史口径）', changelog.includes('## v22.97 新成就「满载而归」'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.97 pin 零残留 ——
 const s2297 = read('smoke_v2297_chestmid.mjs');
 const s2296 = read('smoke_v2296_endingprog.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2297 的 GAME_VERSION 字面量 pin 已更新为 v22.98', s2297.includes("const GAME_VERSION = 'v22.98';"));
-ok('smoke_v2297 的 CHANGELOG 顶 pin 已更新为 ## v22.98', s2297.includes("startsWith('## v22.98 '"));
-ok('smoke_v2297 的件套 pin 已更新为一百九十五件套（一百九十四件套清除）',
-  s2297.includes('一百九十五件套（一百九十四件套清除）'));
+ok('smoke_v2297 的 GAME_VERSION 字面量 pin 已更新为 v22.98', s2297.includes("const GAME_VERSION = 'v22.99';"));
+ok('smoke_v2297 的 CHANGELOG 顶 pin 已更新为 ## v22.98', s2297.includes("startsWith('## v22.99 '"));
+ok('smoke_v2297 的件套 pin 已更新为一百九十六件套（一百九十五件套清除）',
+  s2297.includes('一百九十六件套（一百九十五件套清除）'));
 ok('smoke_v2297 的 README 串尾 pin 已延伸至 smoke_v2298_encnum',
-  s2297.includes('smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）'));
+  s2297.includes('smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink（npm test 串跑）'));
 ok('smoke_v2297 的 package 串尾 pin 已延伸至 smoke_v2298_encnum',
-  s2297.includes('node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"'));
-ok('smoke_v2297 的 testChain pin 已更新为 194', s2297.includes('testChain === 194'));
-ok('smoke_v2297 的版本锚已推进至 >= 98', s2297.includes('_gv[1] >= 98'));
-ok('smoke_v2296 的 GAME_VERSION 字面量 pin 已更新为 v22.98', s2296.includes("const GAME_VERSION = 'v22.98';"));
-ok('smoke_v2143 哨兵链已推进至一百九十五件套（一百九十四件套清除）',
-  s2143.includes('一百九十五件套（一百九十四件套清除）') && s2143.includes("!readme.includes('一百九十五件套（一百九十四件套清除）')"));
+  s2297.includes('node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs"'));
+ok('smoke_v2297 的 testChain pin 已更新为 194', s2297.includes('testChain === 195'));
+ok('smoke_v2297 的版本锚已推进至 >= 98', s2297.includes('_gv[1] >= 99'));
+ok('smoke_v2296 的 GAME_VERSION 字面量 pin 已更新为 v22.98', s2296.includes("const GAME_VERSION = 'v22.99';"));
+ok('smoke_v2143 哨兵链已推进至一百九十六件套（一百九十五件套清除）',
+  s2143.includes('一百九十六件套（一百九十五件套清除）') && s2143.includes("!readme.includes('一百九十六件套（一百九十五件套清除）')"));
 
 // 旧代 v22.97 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2298_encnum.mjs');

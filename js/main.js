@@ -79,6 +79,10 @@ const screens = {
   codex: {
     onKey(e) {
       if (e.key === 'b' || e.key === 'B' || isEsc(e)) backWorld();
+      // v22.99 图鉴页补 I 直达状态页（可发现性·承 v22.90 日志页 I↔状态页 J 双向互切同一主线）：
+      // 图鉴页此前只有 B/Esc/方向键——玩家在图鉴里对属性只能 Esc 回世界再按 I；现 I 与
+      // drawCodex 页脚「I 状态页」提示同口径（提示讲的键真的可用），B/Esc/方向键零回归。
+      else if (e.key === 'i' || e.key === 'I') goto('status');
       else onArrow(e,
         () => { S.codexScroll++; SFX.select(); },
         () => { S.codexScroll--; SFX.select(); }
@@ -88,6 +92,9 @@ const screens = {
   ach: {
     onKey(e) {
       if (e.key === 'c' || e.key === 'C' || isEsc(e)) backWorld();
+      // v22.99 成就页补 I 直达状态页（与图鉴页同批，详见 codex.onKey v22.99 注释）；
+      // C/Esc/方向键零回归。
+      else if (e.key === 'i' || e.key === 'I') goto('status');
       else onArrow(e,
         () => { S.achScroll++; SFX.select(); },
         () => { S.achScroll--; SFX.select(); }

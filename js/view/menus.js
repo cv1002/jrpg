@@ -251,7 +251,12 @@ export function drawCodex(){
   text(`记忆收录：${have}/${BESTIARY_TARGET.length}`,320,404,'14px','#62c6ff','center');
   text(`累计讨伐：${total}   ·   已遭遇：${met}/${BESTIARY_TARGET.length}   ·   额外掉落：${hero.drops||0}`,320,426,'14px','#ffd24a','center');
   const remain=names.length>0?(rows.length-(S.codexScroll+PAGE)):0;
-  text(`按 B / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览（还有 ${remain} 种）`:''}`,320,448,'12px','#7d93a3','center');
+  // v22.99 图鉴页脚补「I 状态页」直达口径（可发现性·信息透明·纯文字，承 v22.90 状态页↔日志页 I↔J
+  // 双向互切同一主线）：v21.71 起状态页页底「J 任务日志」/日志页页脚「I 状态页」互切，唯独记忆图鉴
+  // 页脚只写「按 B / Esc 关闭」——在图鉴里对属性/想回状态页只能 Esc 回世界再按 I；现页脚补
+  // 「· I 状态页」与 main.js codex.onKey 新增的 I→goto('status') 分支同口径（提示讲的键真的可用），
+  // 行间预算：448 行上移一行仍不触页脚（448+12 <= 480 画布底、上方 426 行间 22 >= 16），纯显示零结算零存档。
+  text(`按 B / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览（还有 ${remain} 种）`:''}   ·   I 状态页`,320,448,'12px','#7d93a3','center');
 }
 
 export function drawAch(){
@@ -282,7 +287,9 @@ export function drawAch(){
   });
   const remain=ACH_LIST.length-(S.achScroll+PAGE);
   text(remain>0?`还有 ${remain} 项未在本页显示`:'全部成就已在当前页',320,412,'12px','#7d93a3','center');
-  text(`按 C / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览`:''}`,320,430,'12px','#7d93a3','center');
+  // v22.99 成就页脚补「I 状态页」直达口径（与记忆图鉴页脚同批，详见 drawCodex v22.99 注释）——
+  // 行间预算：430 行上方 412 行间 18 >= 16 不触、下方画布底 480 距 50，纯显示零结算零存档。
+  text(`按 C / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览`:''}   ·   I 状态页`,320,430,'12px','#7d93a3','center');
 }
 
 const QST_COL = {

@@ -18,7 +18,7 @@ console.log('— v22.82 帮助页地图指南无字回廊行「名字之门」r[
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.82', dataSrc.includes("const GAME_VERSION = 'v22.98'"));
+ok('data.js GAME_VERSION 字面量为 v22.82', dataSrc.includes("const GAME_VERSION = 'v22.99'"));
 ok('旧 v22.81 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "81';"));
 ok('data.js 含 v22.82 版本注释', dataSrc.includes('// v22.82 体验打磨'));
 ok('data.js 仍保留 v22.81 历史注释', dataSrc.includes('// v22.81 体验打磨'));
@@ -159,25 +159,25 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2282_archgate（v2281 后接 v2282）',
-  readme.includes('smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）'));
-ok('README 件套口径为一百九十四件套（一百九十三件套清除）且旧 177 口径零残留',
-  readme.includes('冒烟一百九十四件套（一百九十三件套清除）') && !readme.includes('冒烟一百七十七件套（一百七十六件套清' + '除）'));
+  readme.includes('smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink（npm test 串跑）'));
+ok('README 件套口径为一百九十五件套（一百九十四件套清除）且旧 177 口径零残留',
+  readme.includes('冒烟一百九十五件套（一百九十四件套清除）') && !readme.includes('冒烟一百七十七件套（一百七十六件套清' + '除）'));
 ok('README 含 v22.82 守护描述（无字回廊行名字之门指针守护）', readme.includes('v22.82 起含帮助页地图指南无字回廊行「名字之门」指针守护'));
 ok('README 含 smoke_v2282_archgate 入库（178 份）', readme.includes('smoke_v2282_archgate 入库（178 份）'));
 ok('README 仍保留 smoke_v2281_starwell 入库（177 份）历史口径', readme.includes('smoke_v2281_starwell 入库（177 份）'));
 ok('package.json test 串含 smoke_v2282_archgate.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs"'));
+  pkg.includes('node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 178 件套', testChain === 194, String(testChain));
-ok('CHANGELOG 含 v22.82 条目（顶 pin）', changelog.startsWith('## v22.98 '));
+ok('package.json test 串共 178 件套', testChain === 195, String(testChain));
+ok('CHANGELOG 含 v22.82 条目（顶 pin）', changelog.startsWith('## v22.99 '));
 
 // 7. 姊妹件套 pin（smoke_v2281_starwell 随新现实更新）
 const s2281 = readFileSync(join(ROOT, 'tests/smoke_v2281_starwell.mjs'), 'utf8');
 const s2260 = readFileSync(join(ROOT, 'tests/smoke_v2260_fountripple.mjs'), 'utf8');
-ok('smoke_v2281 的 GAME_VERSION 字面量 pin 已更新为 v22.82', s2281.includes("const GAME_VERSION = 'v22.98';"));
-ok('smoke_v2281 的 CHANGELOG 顶 pin 已更新为 ## v22.82', s2281.includes("startsWith('## v22.98'"));
-ok('smoke_v2281 的件套 pin 已更新为一百九十四件套（一百九十三件套清除）', s2281.includes('一百九十四件套（一百九十三件套清除）'));
-ok('smoke_v2281 的 README 串尾 pin 已延伸至 smoke_v2282_archgate', s2281.includes('smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum（npm test 串跑）'));
+ok('smoke_v2281 的 GAME_VERSION 字面量 pin 已更新为 v22.82', s2281.includes("const GAME_VERSION = 'v22.99';"));
+ok('smoke_v2281 的 CHANGELOG 顶 pin 已更新为 ## v22.82', s2281.includes("startsWith('## v22.99'"));
+ok('smoke_v2281 的件套 pin 已更新为一百九十五件套（一百九十四件套清除）', s2281.includes('一百九十五件套（一百九十四件套清除）'));
+ok('smoke_v2281 的 README 串尾 pin 已延伸至 smoke_v2282_archgate', s2281.includes('smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink（npm test 串跑）'));
 ok('smoke_v2281 的无字回廊行 r[2] 断言已随新现实改 includes（v22.82 指针落位）', s2281.includes("String(guide[3][2]).includes('无泉水/旅店 · 出发前请补给')"));
 ok('smoke_v2260 的 package.json 串尾 pin 已延伸至 smoke_v2282_archgate', s2260.includes('node tests/smoke_v2282_archgate.mjs'));
 
@@ -194,7 +194,7 @@ ok('旧代 v22.81 字面量/恒等/件套/testChain/串尾/版本锚 pin 全库�
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 179 口径
 const s2143 = readFileSync(join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('哨兵链 v2143 已含下一版件套口径（一百九十四件套（一百九十三件套清除））', s2143.includes('一百九十五件套（一百九十四件套清除）'));
+ok('哨兵链 v2143 已含下一版件套口径（一百九十五件套（一百九十四件套清除））', s2143.includes('一百九十六件套（一百九十五件套清除）'));
 
 console.log(`\n— v22.82 帮助页地图指南无字回廊行「名字之门」r[2] 指针冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);
