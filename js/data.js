@@ -945,6 +945,11 @@
 // 无 r 字段（与 seen/metall/lvl5 同款纯里程碑——似曾相识本身就是奖励）；解锁时机：applyAchievements 既有
 // 通路任意判定点当场解锁（seen 为持续累积量，无需新判定点，承 perfection 同款——已解锁不因任何变化而
 // 撤销；第 10 种撞见的瞬间即解锁、反馈不迟到），ACH_LIST 57→58 项（末尾追加，既有 57 项 id/序位零回归）。
+// v23.00 体验打磨·信息透明·纯显示：状态页（I）「支线」行多条支线在列时补「还有 N 条」计数后缀（承 v21.45
+// 任务日志「还有 N 条」页脚口径同一「信息不被静默折叠」主线：quests.sideObjectives 按 可交付/进行中/可接
+// 排序返回全部支线目标，状态页此前只显示第一条——玩家手里同时有 灯长委托/护粮/未归的矿灯/残焰的安息
+// 等多条支线时按 I 只能看到一条；现由 menus.js statusSideSuffix 纯函数派生计数后缀（单条/零条逐字零变化、
+// 零裸字面量、计数由数组长度派生不写死），纯显示零结算零存档零数值变化（详见 js/view/menus.js drawStatus 注释）
 // v22.99 体验打磨·可发现性·信息透明：记忆图鉴（B 页）与成就一览（C 页）页脚补「I 状态页」直达口径 +
 // main.js codex.onKey/ach.onKey 补 I→goto('status') 分支（承 v22.90 状态页↔日志页 I↔J 双向互切同一
 // 主线：v21.71 起状态页页底「J 任务日志」/日志页页脚「I 状态页」互切，唯独图鉴/成就两页脚只写
@@ -958,7 +963,7 @@
 // v22.93 体验打磨·防误丢档·存档闭环收口：阵亡画面补「未存档」提示行（复用 pauseSaveHint 纯函数，
 // 与暂停菜单同源，见 js/view/menus.js drawDead 注释）+ dead.onKey 补 P 存档入口（与 world/win 的 P
 // 逐字同款，见 js/main.js dead.onKey 注释）
-const GAME_VERSION = 'v22.99';
+const GAME_VERSION = 'v23.00';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）

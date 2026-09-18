@@ -156,7 +156,22 @@ export function drawStatus(){
   prog.forEach(([nm,dn],i)=>text((dn?'✓':'✗')+' '+nm,190+i*progressSpacing(prog.length),412,'12px',dn?'#4cd964':'#5a6a78'));
   const {main,sides}=questLines(hero);
   text('主线：'+main,110,434,'11px','#e8eef1');
-  text((sides[0] ? ('支线：'+sides[0]) : '支线：暂无')+'   ·  J 任务日志',110,450,'11px',sides[0]?'#a8ff8a':'#7d93a3');
+  // v23.00 体验打磨·信息透明·纯显示：状态页「支线」行多条支线在列时补「还有 N 条」计数（可发现性·承
+  // v21.45 任务日志「还有 N 条」页脚口径同一「信息不被静默折叠」主线：quests.sideObjectives 按
+  // 可交付/进行中/可接 排序返回全部支线目标，状态页此前只显示第一条（sides[0]）——玩家手里同时有
+  // 灯长委托/护粮/未归的矿灯/残焰的安息等多条支线时按 I 只能看到一条，不知道还欠几条没交、该不该开
+  // J 日志；现由 statusSideSuffix 纯函数派生计数后缀（单条/零条逐字零变化、零裸字面量、计数由数组
+  // 长度派生不写死），与 J 日志页脚「还有 N 条」同口径；纯显示零结算零存档零数值变化）
+  text((sides[0] ? '支线：'+sides[0]+statusSideSuffix(sides) : '支线：暂无')+'   ·  J 任务日志',110,450,'11px',sides[0]?'#a8ff8a':'#7d93a3');
+}
+
+// v23.00 纯显示辅助（与 progressSpacing/pauseSaveHint 同款「纯函数 + 渲染层只画」契约）：状态页
+// 「支线」行多条支线在列时追加「还有 N 条」计数后缀（sides 来自 quests.sideObjectives——按
+// 可交付/进行中/可接 排序后的全部支线目标数组）；n<=1 逐字零变化（空串），零副作用零状态写入，
+// 冒烟可直接断言多档输出（承 skill 参考「纯显示辅助函数要纯」）。
+export function statusSideSuffix(sides) {
+  const n = (sides || []).length;
+  return n > 1 ? `（还有 ${n - 1} 条）` : '';
 }
 
 function whereFind(name){
