@@ -18,7 +18,7 @@ console.log('— v22.78 帮助页地图指南雾语林行「蘑菇田」r[1] 指
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.79', dataSrc.includes("const GAME_VERSION = 'v22.93'"));
+ok('data.js GAME_VERSION 字面量为 v22.79', dataSrc.includes("const GAME_VERSION = 'v22.94'"));
 ok('旧 v22.77 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "77';"));
 ok('data.js 含 v22.78 版本注释', dataSrc.includes('// v22.78 体验打磨'));
 ok('data.js 仍保留 v22.77 历史注释', dataSrc.includes('// v22.77 体验打磨'));
@@ -151,25 +151,25 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2279_lampwell（v2278 后接 v2279）',
-  readme.includes('smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave（npm test 串跑）'));
-ok('README 件套口径为一百八十九件套（一百八十八件套清除）且旧 173 口径零残留',
-  readme.includes('冒烟一百八十九件套（一百八十八件套清除）') && !readme.includes('冒烟一百七十四件套（一百七十三件套清' + '除）'));
+  readme.includes('smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch（npm test 串跑）'));
+ok('README 件套口径为一百九十件套（一百八十九件套清除）且旧 173 口径零残留',
+  readme.includes('冒烟一百九十件套（一百八十九件套清除）') && !readme.includes('冒烟一百七十四件套（一百七十三件套清' + '除）'));
 ok('README 含 v22.78 守护描述（雾语林行蘑菇田指针守护）', readme.includes('v22.78 起含帮助页地图指南雾语林行「蘑菇田」指针守护'));
 ok('README 含 smoke_v2278_mushguide 入库（174 份）', readme.includes('smoke_v2278_mushguide 入库（174 份）'));
 ok('README 仍保留 smoke_v2277_pondhint 入库（173 份）历史口径', readme.includes('smoke_v2277_pondhint 入库（173 份）'));
 ok('package.json test 串含 smoke_v2278_mushguide.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2277_pondhint.mjs && node tests/smoke_v2278_mushguide.mjs && node tests/smoke_v2279_lampwell.mjs && node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs"'));
+  pkg.includes('node tests/smoke_v2277_pondhint.mjs && node tests/smoke_v2278_mushguide.mjs && node tests/smoke_v2279_lampwell.mjs && node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 174 件套', testChain === 189, String(testChain));
-ok('CHANGELOG 含 v22.78 条目（顶 pin）', changelog.startsWith('## v22.93 '));
+ok('package.json test 串共 174 件套', testChain === 190, String(testChain));
+ok('CHANGELOG 含 v22.78 条目（顶 pin）', changelog.startsWith('## v22.94 '));
 
 // 7. 姊妹件套 pin（smoke_v2276_lampkid 随新现实更新）
 const s2276 = readFileSync(join(ROOT, 'tests/smoke_v2276_lampkid.mjs'), 'utf8');
 const s2260 = readFileSync(join(ROOT, 'tests/smoke_v2260_fountripple.mjs'), 'utf8');
-ok('smoke_v2276 的 GAME_VERSION 字面量 pin 已更新为 v22.79', s2276.includes("const GAME_VERSION = 'v22.93';"));
-ok('smoke_v2276 的 CHANGELOG 顶 pin 已更新为 ## v22.78', s2276.includes("startsWith('## v22.93'"));
-ok('smoke_v2276 的件套 pin 已更新为一百八十九件套（一百八十八件套清除）', s2276.includes('一百八十九件套（一百八十八件套清除）'));
-ok('smoke_v2276 的 README 串尾 pin 已延伸至 smoke_v2278_mushguide', s2276.includes('smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave（npm test 串跑）'));
+ok('smoke_v2276 的 GAME_VERSION 字面量 pin 已更新为 v22.79', s2276.includes("const GAME_VERSION = 'v22.94';"));
+ok('smoke_v2276 的 CHANGELOG 顶 pin 已更新为 ## v22.78', s2276.includes("startsWith('## v22.94'"));
+ok('smoke_v2276 的件套 pin 已更新为一百九十件套（一百八十九件套清除）', s2276.includes('一百九十一件套（一百九十件套清除）'));
+ok('smoke_v2276 的 README 串尾 pin 已延伸至 smoke_v2278_mushguide', s2276.includes('smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch（npm test 串跑）'));
 ok('smoke_v2260 的 package.json 串尾 pin 已延伸至 smoke_v2279_lampwell', s2260.includes('node tests/smoke_v2279_lampwell.mjs'));
 
 // 8. 旧代 v22.77 pin 全库零残留

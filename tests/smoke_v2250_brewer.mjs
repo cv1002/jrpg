@@ -92,7 +92,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.49（本版守 v22.52）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 50)), GAME_VERSION);
 ok('data.js 含 v22.50 注释（酿药师说明）', dSrc.includes('v22.50 新内容·纯风味 NPC'));
 ok('GAME_VERSION 字面量已为 v22.51（旧 v22.50 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v22.93';") && !dSrc.includes("const GAME_VERSION = 'v22." + "49';"));
+  dSrc.includes("const GAME_VERSION = 'v22.94';") && !dSrc.includes("const GAME_VERSION = 'v22." + "49';"));
 ok('data.js 仍保留 v22.49/v22.48 世代注释链（货栈掌柜/地图指南指针累积注释未动）',
   dSrc.includes('v22.49 新内容·纯风味 NPC') && dSrc.includes('v22.48 体验打磨·信息透明·纯文字') &&
   dSrc.includes("const GAME_VERSION = 'v22." + "49';") === false);
@@ -100,7 +100,7 @@ ok('data.js 仍保留 v22.49/v22.48 世代注释链（货栈掌柜/地图指南�
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[9,12]===brewer', NPC_SPOTS['9,12'] === 'brewer', NPC_SPOTS['9,12']);
 ok('brewer 仅占一个坐标键（无重复映射）', Object.keys(NPC_SPOTS).filter((k) => NPC_SPOTS[k] === 'brewer').length === 1);
-ok('NPC_SPOTS 总数 34（既有 33 键 + 记誓人 1 键，v22.51 随新现实更新）', Object.keys(NPC_SPOTS).length === 37, Object.keys(NPC_SPOTS).length);
+ok('NPC_SPOTS 总数 34（既有 33 键 + 记誓人 1 键，v22.51 随新现实更新）', Object.keys(NPC_SPOTS).length === 38, Object.keys(NPC_SPOTS).length);
 ok('既有 32 个 NPC/石碑键未被误动', ['13,6', '10,13', '19,8', '12,8', '2,4', '13,9', '3,1', '2,3', '17,12', '17,11', '5,1', '10,1', '15,1', '20,1', '8,5', '14,8', '5,10', '15,12', '14,3', '16,9', '15,2', '13,2', '21,2', '4,2', '5,3', '5,5', '19,3', '14,15', '7,11', '7,14', '20,12', '8,10']
   .every((k) => NPC_SPOTS[k] != null));
 // 全局坐标防撞演练：全图 extras 扫描，(9,12) 必须恰出现 1 次且在 village、ty 为 NPC
@@ -187,31 +187,31 @@ ok('sprites.js 既有 kettle 热汤壶标分支仍在（mark 复用零新增）'
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('README tests 树已收录 smoke_v2250_brewer 且位于串尾', readme.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave（npm test 串跑）'));
-ok('README 件套口径为一百八十九件套（一百八十八件套清除）',
-  readme.includes('冒烟一百八十九件套（一百八十八件套清除）') && !readme.includes('冒烟一百四十五件套（一百四十四件套清' + '除）'));
+ok('README tests 树已收录 smoke_v2250_brewer 且位于串尾', readme.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch（npm test 串跑）'));
+ok('README 件套口径为一百九十件套（一百八十九件套清除）',
+  readme.includes('冒烟一百九十件套（一百八十九件套清除）') && !readme.includes('冒烟一百四十五件套（一百四十四件套清' + '除）'));
 ok('README 含 v22.50 守护描述（潮灯镇酿药师新 NPC）', readme.includes('v22.50 起含潮灯镇酿药师新 NPC 守护'));
 ok('README 含 smoke_v2250_brewer 入库（146 份）', readme.includes('smoke_v2250_brewer 入库（146 份）'));
 ok('README 四图速览/系统清单含「酿药师」', readme.includes('酿药师'));
 ok('package.json 已收录 smoke_v2250_brewer（npm test 串跑第 146 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2250_brewer.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 147 件套', testChain === 189, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.50 条目', changelog.startsWith('## v22.93'));
+ok('package.json test 串共 147 件套', testChain === 190, String(testChain));
+ok('CHANGELOG 顶部已追加 v22.50 条目', changelog.startsWith('## v22.94'));
 
 // —— 姊妹 pin 复查（smoke_v2249 随新现实更新 + 哨兵链 148）——
 const s2249 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2249_shopkeep.mjs'), 'utf8');
 ok('smoke_v2249 的 GAME_VERSION 字面量 pin 已更新为 v22.50（旧 v22.49 零残留）',
-  s2249.includes("const GAME_VERSION = 'v22.93';") && !s2249.includes("const GAME_VERSION = 'v22." + "49';"));
-ok('smoke_v2249 的 README 件套 pin 已随新现实更新为一百八十九件套（一百八十八件套清除）',
-  s2249.includes('一百八十九件套（一百八十八件套清除）'));
-ok('smoke_v2249 的 package.json 件套计数 pin 已更新为 === 146', s2249.includes('testChain === 189'));
+  s2249.includes("const GAME_VERSION = 'v22.94';") && !s2249.includes("const GAME_VERSION = 'v22." + "49';"));
+ok('smoke_v2249 的 README 件套 pin 已随新现实更新为一百九十件套（一百八十九件套清除）',
+  s2249.includes('一百九十一件套（一百九十件套清除）'));
+ok('smoke_v2249 的 package.json 件套计数 pin 已更新为 === 146', s2249.includes('testChain === 190'));
 ok('smoke_v2249 的 README 串尾 pin 已随新现实延伸至 smoke_v2251_oathkeep',
-  s2249.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave（npm test 串跑）'));
-ok('smoke_v2249 的 NPC 总数 pin 已随新现实更新为 34（记誓人落位）', s2249.includes('NPC_SPOTS).length === 37'));
+  s2249.includes('smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch（npm test 串跑）'));
+ok('smoke_v2249 的 NPC 总数 pin 已随新现实更新为 34（记誓人落位）', s2249.includes('NPC_SPOTS).length === 38'));
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
 ok('v2143-45「件套守护领先一位」哨兵链已推进至 148（一百九十件套（一百八十九件套清除））',
-  s2143.includes('一百九十件套（一百八十九件套清除）') && s2143.includes("!readme.includes('一百九十件套（一百八十九件套清除）')"));
+  s2143.includes('一百九十一件套（一百九十件套清除）') && s2143.includes("!readme.includes('一百九十一件套（一百九十件套清除）')"));
 
 // —— 旧代 v22.49 pin 全库零残留 ——
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2250_brewer.mjs');
