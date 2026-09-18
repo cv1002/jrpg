@@ -963,7 +963,11 @@
 // v22.93 体验打磨·防误丢档·存档闭环收口：阵亡画面补「未存档」提示行（复用 pauseSaveHint 纯函数，
 // 与暂停菜单同源，见 js/view/menus.js drawDead 注释）+ dead.onKey 补 P 存档入口（与 world/win 的 P
 // 逐字同款，见 js/main.js dead.onKey 注释）
-const GAME_VERSION = 'v23.00';
+// v23.01 文档整理·数值说明·同源口径：README「数值速查」补「出没生态」行（出没门槛 MON_BASE[].minLv /
+// 遇敌池 MAPS[].pool / 精英出没 ELITE_GATE_LV·ELITE_CHANCE 全部由 data.js 单一数据源派生，与图鉴
+// 「Lv.X起出没」标注 / randomEncounter 遇敌权重 / 精英判定同读一份源）+ README tests 树串尾延伸至
+// smoke_v2301_eco（冒烟一百九十七件套（一百九十六件套清除））；纯文档零逻辑零结算零存档零数值变化
+const GAME_VERSION = 'v23.01';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
