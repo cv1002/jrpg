@@ -812,7 +812,12 @@ export function drawDead(){
     const killName=(enemy&&enemy.name)?enemy.name:((hero._bossRetry&&hero._bossRetry.name)||null);
     const kills=Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0);
     if(killName) text('败于 '+killName,CV.width/2,206,'bold 15px','#ff8a5b','center');
-    text(`当前 Lv.${hero.level} · 金币 ${hero.gold} · 累计讨伐 ${kills} 只 · ⏱️${fmtTime(hero.time)}`,CV.width/2,236,'13px','#7d93a3','center');
+    // v23.10 阵亡画面战绩行补困难档标注（体验打磨·信息透明·同一口径——承 状态页 I「[困难 · 魔物HP×…]」/
+    // HUD ⚡ 角标/标题槽预览难度 同一「困难档可见性」主线的 run 总结屏收口：阵亡/胜利/尾声三屏战绩行此前
+    // 一字没有难度标志，玩家困难档倒下时只能凭记忆确认这是困难局（v23.08 难度行四端口径唯独总结屏缺席）；
+    // 现三屏同读 hero.diff · DIFFS 单一数据源（menus.js 既有 import），困难档追加「 · 困难」、普通档
+    // 零后缀零噪音零位移（y=236 逐字未动），纯显示零结算零存档零数值变化。
+    text(`当前 Lv.${hero.level} · 金币 ${hero.gold} · 累计讨伐 ${kills} 只 · ⏱️${fmtTime(hero.time)}` + (hero.diff ? ' · ' + DIFFS[hero.diff] : ''),CV.width/2,236,'13px','#7d93a3','center');
     // v19.88 阵亡画面追加剩余补给（信息透明·纯显示）：死亡结算屏此前只报 等级/金币/讨伐/时间，
     // 但玩家紧接着要做「R 重开 / B 重整旗鼓 / T 回标题」的决策，身上还剩多少药水/灵药/蘑菇直接影响
     // 「是否需要先回旅馆/酿造」。现在直接读 hero.item / hero.potion2 / hero.mushrooms，零结算变化。
@@ -885,7 +890,8 @@ export function drawWin(){
   // 数据源，成就上限读 ACH_LIST 单一数据源），居中 14px 不抢主标题与按钮行，纯显示零结算变化
   const kills=Object.values(S.G.bestiary||{}).reduce((a,b)=>a+b,0);
   CTX.fillStyle='#a8ff8a'; CTX.font='bold 14px sans-serif';
-  CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}`,CV.width/2,362);
+  // v23.10 胜利画面战绩行补困难档标注（与 drawDead/drawEnding 同读 hero.diff·DIFFS 一份源，y=362 零位移）
+  CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}` + (S.G.diff ? ' · ' + DIFFS[S.G.diff] : ''),CV.width/2,362);
   // v21.82 胜利画面补收集进度两件（信息透明·纯显示）：v19.49 战绩行已有 成就 N/M（三件套之一），
   // 但 v21.79 标题预览确立的「收集进度三件套」（成就·图鉴·宝箱）在「灯芯回来了」这一刻仍缺 图鉴 N/13
   // 与宝箱 N/12——玩家站在这趟 run 的总结屏上想「继续收集还是 R 重开/Enter 尾声」，一眼看不到
@@ -940,7 +946,8 @@ export function drawEnding(){
   const step = lines.length > 5 ? 25 : 30;
   const y0 = lines.length > 5 ? 146 : 166;
   lines.forEach((l,i)=>text(l,320,y0+i*step,'bold 16px','#e8eef1','center'));
-  text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 记忆 ${(hero.fragments||[]).length}/${FRAGMENTS.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}`,320,346,'13px','#7d93a3','center');
+  // v23.10 尾声战绩行补困难档标注（与 drawDead/drawWin 同读 hero.diff·DIFFS 一份源，y=346 零位移）
+  text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 记忆 ${(hero.fragments||[]).length}/${FRAGMENTS.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}` + (hero.diff ? ' · ' + DIFFS[hero.diff] : ''),320,346,'13px','#7d93a3','center');
   // v21.87 尾声战绩页补收集进度两件（信息透明·纯显示）：v19.49 战绩行（讨伐/成就/记忆/金币/时长）
   // 已覆盖 run 总结屏的战果口径，但 v21.79 标题预览/v21.82 胜利画面确立的「收集进度三件套」
   // （成就·图鉴·宝箱）在「按 Enter 观看尾声」这一刻仍缺 图鉴 N/13 与 宝箱 N/12——玩家站在这趟

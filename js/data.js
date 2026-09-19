@@ -1006,7 +1006,14 @@
 // （蘑菇支线奖励随等级实时 gold:(lv)=>40+lv*10、目标 *_GOAL/FRAGMENTS.length 同源、药水 reward.item/
 // 高级灵药 reward.potion2 同读）——调任何支线奖励只改 data.js 一处、README 自动跟随）；
 // 纯文档零逻辑零结算零存档零数值变化（详见 README「数值速查」行内注释）
-const GAME_VERSION = 'v23.09';
+// v23.10 体验打磨·信息透明·同一口径：run 总结屏三屏（阵亡画面 drawDead 战绩行 y=236 / 胜利画面 drawWin
+// 战绩行 y=362 / 尾声战绩页 drawEnding 战绩行 y=346）补「困难档」标注——三屏此前与 状态页 I「[困难 ·
+// 魔物HP×1.35 攻×1.15 防×1.12]」（menus.js 状态页）/HUD ⚡ 角标（hud.js hero.diff）/标题槽预览难度
+// （core.js slotPreview）四端同在而总结屏独缺（v23.08 难度行口径尚无此端）；现三屏同读 hero.diff ·
+// DIFFS 单一数据源（DIFFS[1]='困难'）：困难档战绩行追加「 · 困难」、普通档零后缀零噪音零位移——
+// 调难度档名只改本文件 DIFFS 一处、五端（创建页/状态页/HUD/槽预览/总结屏）自动跟随；纯显示零结算
+// 零存档零数值变化（详见 view/menus.js drawDead/drawWin/drawEnding 行内注释）
+const GAME_VERSION = 'v23.10';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
