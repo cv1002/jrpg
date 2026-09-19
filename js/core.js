@@ -122,7 +122,14 @@ function brewNow() {
   // v19.70 酿造成功反馈追加剩余材料（信息透明·纯显示）：v19.69 已补齐材料不足时的差额提示，
   // 但成功分支只报「酿造成功」——玩家交完材料后想确认包里还剩多少蘑菇/金币，还得再按 I 看状态页。
   // 直接读结算后的 hero.mushrooms / hero.gold，在成功文案末尾追加剩余数量，零结算变化。
-  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币；F/战斗[3]使用）`, SYS_MSG_MS);
+  // v23.18 酿造成功报文补「还可再酿 N 瓶」（体验打磨·信息透明·纯显示——承 v23.17 酿造面板
+  // 「当前材料还可酿造 N 瓶」同一主线）：面板端提示要站在锅前才看得到，连酿时每按一次 Enter 的
+  // 成功报文只报剩余材料——「下一锅还能不能酿」仍要心算 min(蘑菇÷2, 金币÷10) 或抬头看面板；
+  // 现与 v23.17 同式由 BREW_MUSHROOMS/BREW_GOLD 单一数据源派生计数（同读一份源、零裸字面量、
+  // 配方调整两端自动跟随），成功报文就地续报「· 还可再酿 N 瓶」；可酿 0 瓶时零噪音不显示
+  // （与 v23.17 面板端「可酿 0 瓶时不显示」同一语义，剩余材料数已自明），纯显示零结算零存档零数值变化。
+  const _canBrewMore = Math.min(Math.floor((hero.mushrooms || 0) / BREW_MUSHROOMS), Math.floor((hero.gold || 0) / BREW_GOLD));
+  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币${_canBrewMore > 0 ? ` · 还可再酿 ${_canBrewMore} 瓶` : ''}；F/战斗[3]使用）`, SYS_MSG_MS);
 }
 
 function doTravel() {

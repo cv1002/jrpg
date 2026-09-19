@@ -35,7 +35,7 @@ const coreSrc = read('../js/core.js');
 const worldSrc = read('../js/world.js');
 
 ok('data.js 含 v21.89 版本注释', dataSrc.includes('v21.89 旧档 visited 兜底与旅行端防御式读取'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.89', dataSrc.includes("const GAME_VERSION = 'v23.17';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.89', dataSrc.includes("const GAME_VERSION = 'v23.18';"));
 
 // —— 源级落位 ——
 ok('quests.js migrateQuests 含 visited 兜底（读档补 [\'village\']，newGame 起始值同式）',
@@ -187,7 +187,7 @@ for (const nm of suite85) {
 for (const nm of ['smoke_v2188_wander.mjs', 'smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.89`,
-    src.includes("const GAME_VERSION = 'v23.17';"));
+    src.includes("const GAME_VERSION = 'v23.18';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
