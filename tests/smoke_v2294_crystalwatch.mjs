@@ -82,7 +82,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.93（本版守 v22.94）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 99)), GAME_VERSION);
 ok('data.js 含 v22.94 注释（守晶人说明）', dSrc.includes('v22.94 新内容·纯风味'));
 ok('GAME_VERSION 字面量已为 v22.94（旧 v22.93 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.16';") && !dSrc.includes("const GAME_VERSION = 'v22." + "93';"));
+  dSrc.includes("const GAME_VERSION = 'v23.17';") && !dSrc.includes("const GAME_VERSION = 'v22." + "93';"));
 ok('data.js 仍保留 v22.93/v22.92 世代注释链（历史注释未动）',
   dSrc.includes('// v22.93 体验打磨·防误丢档·存档闭环收口') && dSrc.includes('// v22.92 新内容·纯风味'));
 
@@ -206,7 +206,7 @@ ok('CHANGELOG 顶部已追加 v22.94 条目', changelog.startsWith('## v23.16 ')
 const s2293 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2293_deadsave.mjs'), 'utf8');
 const s2292 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2292_cavewatch.mjs'), 'utf8');
 ok('smoke_v2293 的 GAME_VERSION 字面量 pin 已更新为 v22.94（旧 v22.93 零残留）',
-  s2293.includes("const GAME_VERSION = 'v23.16';") && !s2293.includes("const GAME_VERSION = 'v22." + "93';"));
+  s2293.includes("const GAME_VERSION = 'v23.17';") && !s2293.includes("const GAME_VERSION = 'v22." + "93';"));
 ok('smoke_v2293 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2293.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2293 的 package.json 件套计数 pin 已更新为 === 190', s2293.includes('testChain === 212'));

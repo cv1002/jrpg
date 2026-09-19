@@ -36,7 +36,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.13 版本注释', dataSrc.includes('// v23.13 新内容·社交向单成就：新成就「有口皆碑」'));
 ok('data.js GAME_VERSION 字面量已为 v23.13（旧 v23.12 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
 ok('data.js 仍保留 v23.12 历史注释（标题画面音量口径注释未动）',
   dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js ACH_LIST talkall 注释块落位（v23.13 新成就·社交向）',
@@ -240,7 +240,7 @@ const s2312 = read('smoke_v2312_voltitle.mjs');
 const s2297 = read('smoke_v2297_chestmid.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2312 的 CHANGELOG 顶 pin 已更新为 ## v23.13',
   s2312.includes("startsWith('## v23.16 "));
 ok('smoke_v2312 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2312.includes('二百一十二件套（二百一十一件套清除）'));

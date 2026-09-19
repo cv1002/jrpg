@@ -59,6 +59,13 @@ export function drawBrew(){
   text(`配方：${BREW_MUSHROOMS} 株魔法蘑菇 + ${BREW_GOLD} 金币 → 高级灵药 ×1`,320,180,'14px','#ffd24a','center');
   // 灵药描述由 ELIXIR_* 常量推导（v16.1 收口结算/战斗预览/商店文案时漏掉的最后一处旧字面量）：与 takePotion 逐字同源
   text(`高级灵药：恢复 ${Math.round(ELIXIR_HP_PCT * 100)}% HP + ${Math.round(ELIXIR_MP_PCT * 100)}% MP`,320,210,'13px','#7d93a3','center');
+  // v23.17 酿造界面补「还可酿造 N 瓶」（体验打磨·信息透明·纯显示）：材料行与配方行早已量化，
+  // 但「这些材料一共还能酿几瓶」要玩家心算 min(蘑菇÷2, 金币÷10)——采菇归来/支线交奖后站在锅前，
+  // 想确认「要不要现在多酿几瓶」只能逐次按 Enter 试；现由 BREW_MUSHROOMS/BREW_GOLD 单一数据源
+  // 派生计数（与 brewNow 结算判定同读一份源、零裸字面量），可酿 0 瓶时零噪音不显示（材料不足
+  // 红字已覆盖该语义），纯显示零结算零存档零数值变化。
+  const _canBrew = Math.min(Math.floor((hero.mushrooms || 0) / BREW_MUSHROOMS), Math.floor((hero.gold || 0) / BREW_GOLD));
+  if (_canBrew > 0) text(`当前材料还可酿造 ${_canBrew} 瓶`, 320, 236, '13px', '#8ff0a0', 'center');
   if(hero.mushrooms>=BREW_MUSHROOMS&&hero.gold>=BREW_GOLD) text('按 Enter/E 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
   else text(`材料不足（还差 ${Math.max(0,BREW_MUSHROOMS-hero.mushrooms)} 株蘑菇、${Math.max(0,BREW_GOLD-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
 }

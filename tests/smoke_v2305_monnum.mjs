@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.05 版本注释', dataSrc.includes('// v23.05 文档整理·数值说明·同源口径：README「数值速查」补「魔物数值」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.05（旧 v23.04 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "04';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "04';"));
 ok('data.js 仍保留 v23.04 历史注释（成就档位数值速查行注释未动）', dataSrc.includes('// v23.04 文档整理·数值说明·同源口径：README「数值速查」补「成就档位」行'));
 
 // —— MON_BASE 契约（八怪 hp/atk/def/xp/gold 五组 [基准,每级] 逐字，单一数据源）——
@@ -139,7 +139,7 @@ ok('CHANGELOG 仍保留 v23.04 条目（历史口径）', changelog.includes('##
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.04 pin 零残留 ——
 const s2304 = read('smoke_v2304_achgoal.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2304 的 GAME_VERSION 字面量 pin 已更新为 v23.05', s2304.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2304 的 GAME_VERSION 字面量 pin 已更新为 v23.05', s2304.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2304 的 CHANGELOG 顶 pin 已更新为 ## v23.05',
   s2304.includes("startsWith('## v23.16 "));
 ok('smoke_v2304 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',

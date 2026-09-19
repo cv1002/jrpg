@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.97 版本注释', dataSrc.includes('// v22.97 新内容·单成就·宝箱线中档里程碑：新成就「满载而归」'));
 ok('data.js GAME_VERSION 字面量已为 v22.97（旧 v22.96 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "96';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "96';"));
 ok('data.js 仍保留 v22.96 历史注释（尾声画面冒险进度行注释未动）', dataSrc.includes('// v22.96 体验打磨·信息透明·纯显示：尾声画面（drawEnding）补「冒险进度」五徽记行'));
 ok('data.js 导出 TREASURE2_GOAL（export 块落位，与 TREASURE_GOAL 相邻）',
   dataSrc.includes('LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,'));
@@ -238,7 +238,7 @@ const s2296 = read('smoke_v2296_endingprog.mjs');
 const s2274 = read('smoke_v2274_seen2.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2296 的 GAME_VERSION 字面量 pin 已更新为 v22.97', s2296.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2296 的 GAME_VERSION 字面量 pin 已更新为 v22.97', s2296.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2296 的 CHANGELOG 顶 pin 已更新为 ## v22.97', s2296.includes("startsWith('## v23.16 '"));
 ok('smoke_v2296 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2296.includes('冒烟二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2296 的 README 串尾 pin 已延伸至 smoke_v2297_chestmid',

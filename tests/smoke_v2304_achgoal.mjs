@@ -36,7 +36,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.04 版本注释', dataSrc.includes('// v23.04 文档整理·数值说明·同源口径：README「数值速查」补「成就档位」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.04（旧 v23.03 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "03';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "03';"));
 ok('data.js 仍保留 v23.03 历史注释（试炼/彩头数值速查行注释未动）', dataSrc.includes('// v23.03 文档整理·数值说明·同源口径：README「数值速查」补「试炼 / 彩头」行'));
 
 // —— 十三线档位常量契约（单一数据源：判定/描述/进度同读）——
@@ -99,7 +99,7 @@ ok('CHANGELOG 仍保留 v23.03 条目（历史口径）', changelog.includes('##
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.03 pin 零残留 ——
 const s2303 = read('smoke_v2303_rushnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2303 的 GAME_VERSION 字面量 pin 已更新为 v23.04', s2303.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2303 的 GAME_VERSION 字面量 pin 已更新为 v23.04', s2303.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2303 的 CHANGELOG 顶 pin 已更新为 ## v23.04',
   s2303.includes("startsWith('## v23.16 "));
 ok('smoke_v2303 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',

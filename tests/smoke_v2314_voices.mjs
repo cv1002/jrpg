@@ -33,7 +33,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.14 版本注释（灯下之声节）', dataSrc.includes('// v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节'));
 ok('data.js GAME_VERSION 字面量已为 v23.14（旧 v23.13 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23.13';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23.13';"));
 ok('data.js 仍保留 v23.13 历史注释（有口皆碑注释未动）',
   dataSrc.includes('// v23.13 新内容·社交向单成就：新成就「有口皆碑」'));
 ok('menus.js 含 voiceList 纯函数（Object.keys(NPCS) 单一数据源派生）',
@@ -185,7 +185,7 @@ ok('CHANGELOG 仍保留 v23.13 条目（历史口径）', changelog.includes('##
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.13 pin 零残留 ——
 const s2313 = read('smoke_v2313_talkall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2313 的 GAME_VERSION 字面量 pin 已更新为 v23.14', s2313.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2313 的 GAME_VERSION 字面量 pin 已更新为 v23.14', s2313.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2313 的 CHANGELOG 顶 pin 已更新为 ## v23.14', s2313.includes("startsWith('## v23.16 "));
 ok('smoke_v2313 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2313.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2313 的 README 串尾 pin 已延伸至 smoke_v2314_voices',

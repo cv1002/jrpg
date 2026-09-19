@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.52（本版守 v22.53）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 53)), GAME_VERSION);
 ok('data.js 含 v22.53 注释（无泉水补给指针说明）', dSrc.includes('v22.53 体验打磨·信息透明·纯文字'));
 ok('GAME_VERSION 字面量已为 v22.53（旧 v22.52 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.16';") && !dSrc.includes("const GAME_VERSION = 'v22." + "52';"));
+  dSrc.includes("const GAME_VERSION = 'v23.17';") && !dSrc.includes("const GAME_VERSION = 'v22." + "52';"));
 ok('data.js 仍保留 v22.52/v22.51 世代注释链（矿车轨道/记誓人累积注释未动）',
   dSrc.includes('v22.52 新内容·世界景观·纯显示') && dSrc.includes('v22.51 新内容·纯风味 NPC'));
 
@@ -215,7 +215,7 @@ ok('CHANGELOG 顶部已追加 v22.53 条目', changelog.startsWith('## v23.16'))
 // —— 姊妹 pin 复查（smoke_v2252 随新现实更新 + v2143-45「件套守护领先一位」哨兵推进至 150）——
 const s2252 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2252_rail.mjs'), 'utf8');
 ok('smoke_v2252 的 GAME_VERSION 字面量 pin 已更新为 v22.53（旧 v22.52 零残留）',
-  s2252.includes("const GAME_VERSION = 'v23.16';") && !s2252.includes("const GAME_VERSION = 'v22." + "52';"));
+  s2252.includes("const GAME_VERSION = 'v23.17';") && !s2252.includes("const GAME_VERSION = 'v22." + "52';"));
 ok('smoke_v2252 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2252.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2252 的 package.json 件套计数 pin 已更新为 === 149', s2252.includes('testChain === 212'));

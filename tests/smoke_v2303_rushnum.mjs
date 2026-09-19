@@ -30,7 +30,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.03 版本注释', dataSrc.includes('// v23.03 文档整理·数值说明·同源口径：README「数值速查」补「试炼 / 彩头」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.03（旧 v23.02 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "02';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "02';"));
 ok('data.js 仍保留 v23.02 历史注释（战斗指令栏效果预览注释未动）', dataSrc.includes('// v23.02 体验打磨·信息透明·纯显示：战斗指令栏'));
 
 // —— 试炼/彩头常量契约（单一数据源：结算/横幅/试炼碑/守碑人/战斗预览/成就标注同读）——
@@ -71,7 +71,7 @@ ok('CHANGELOG 仍保留 v23.02 条目（历史口径）', changelog.includes('##
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.02 pin 零残留 ——
 const s2302 = read('smoke_v2302_cmdprev.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2302 的 GAME_VERSION 字面量 pin 已更新为 v23.03', s2302.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2302 的 GAME_VERSION 字面量 pin 已更新为 v23.03', s2302.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2302 的 CHANGELOG 顶 pin 已更新为 ## v23.03',
   s2302.includes("startsWith('## v23.16 '"));
 ok('smoke_v2302 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',

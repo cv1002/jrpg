@@ -1,3 +1,10 @@
+## v23.17 酿造界面补「还可酿造 N 瓶」提示（体验打磨·信息透明·纯显示）——酿造锅面板（view/menus.js drawBrew）的材料行（蘑菇/金币/已酿）与配方行（2 株+10 金→1 瓶）早已量化，但「这些材料一共还能酿几瓶」要玩家心算 min(蘑菇÷2, 金币÷10)——采菇归来/支线交奖后站在锅前，想确认「要不要现在多酿几瓶」只能逐次按 Enter 试；现由 BREW_MUSHROOMS/BREW_GOLD 单一数据源派生计数 `_canBrew = min(floor(蘑菇/2), floor(金币/10))`，可酿 0 瓶时零噪音不显示（材料不足红字已覆盖该语义），可酿 ≥1 瓶时于 y=236 落 13px 绿行「当前材料还可酿造 N 瓶」，与 brewNow 结算判定同读一份源、零裸字面量；纯显示零结算零存档零数值变化。
+
+- 【改动】`js/view/menus.js`：drawBrew 补「还可酿造 N 瓶」派生计数行（+ v23.17 注释块）；`js/data.js`：`GAME_VERSION` v23.16→v23.17（附 v23.17 注释，v23.16 注释保留）。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能公式/成就判定/数据（纯显示：BREW_MUSHROOMS/BREW_GOLD 数值逐字未动、brewNow 酿造结算/材料扣减/成就判定零变化）；材料行/配方行/灵药描述行/页脚行（含材料不足红字）逐字保留；未动 world/battle/core/quests/data 其余/audio/hud/其余 view/main.js/index.html。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin 级联（v23.16→v23.17，137 件测试文件 sed 批量落位 + smoke_v2192 运行期值 pin 单独修补）；`package.json` test 串 212 份不变（本次未新增冒烟文件）；README 守护描述/件套口径不变（212 份）。
+- 【验证】`node --check` js/view/menus.js、js/data.js 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-20 cron 自动完善）
+
 ## v23.16 J 任务日志「灯下之声」节头补「N/37」进度（体验打磨·信息透明·纯显示——承 v23.13 新成就「有口皆碑」/ v23.14 任务日志「灯下之声」节 / v23.15 对话页脚进度行同一社交收集主线）——hero.talked 计数（core.openTalk 唯一写入点）的可见端此前有三：C 成就页一行 X/37 进度、v23.14 J 日志「灯下之声」节 37 行 ✓/· 对照表、v23.15 对话现场面板底缘页脚——唯独 J 日志节头本身只写「灯下之声」四字，玩家翻到该节时第一眼仍数不清还差几个（要逐行数 37 行 ✓ 才能得出总数，节头作为该节的第一视觉锚点却零信息）；现由 view/menus.js drawJournal 与同节 voiceList 同读派生计数：`_voices = voiceList(hero)` + `_voicesMet = _voices.filter((v) => v.met).length`，节头 label 直书「灯下之声 N/37」（模板串接，N 随 hero.talked 实时），与 C 页/对话页脚/成就判定同读 data.js NPCS·hero.talked 一份单一数据源（零裸字面量、加/删 NPC 自动跟随、(hero && hero.talked) || [] 防御式旧档零迁移零抛错）；节高/行高（head 16 + 37 行 16）与 v23.14 布局数学逐字一致——totalH/滚动钳制/页脚「还有 N 条」口径零变化；纯显示零结算零存档零数值变化。
 
 - 【改动】`js/view/menus.js`：drawJournal 灯下之声节头改模板 label（`_voicesMet/_voices.length` 派生计数，+ v23.16 注释块）；`js/data.js`：`GAME_VERSION` v23.15→v23.16（附 v23.16 注释，v23.15 注释保留）。

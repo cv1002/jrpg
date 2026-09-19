@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.51（本版守 v22.52）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 52)), GAME_VERSION);
 ok('data.js 含 v22.52 注释（矿车轨道说明）', dSrc.includes('v22.52 新内容·世界景观·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.52（旧 v22.51 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.16';") && !dSrc.includes("const GAME_VERSION = 'v22." + "51';"));
+  dSrc.includes("const GAME_VERSION = 'v23.17';") && !dSrc.includes("const GAME_VERSION = 'v22." + "51';"));
 ok('data.js 仍保留 v22.51/v22.50 世代注释链（记誓人/酿药师累积注释未动）',
   dSrc.includes('v22.51 新内容·纯风味 NPC') && dSrc.includes('v22.50 新内容·纯风味 NPC'));
 
@@ -249,7 +249,7 @@ ok('CHANGELOG 顶部已追加 v22.52 条目', changelog.startsWith('## v23.16'))
 // —— 姊妹 pin 复查（smoke_v2251 随新现实更新 + 哨兵链 149）——
 const s2251 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2251_oathkeep.mjs'), 'utf8');
 ok('smoke_v2251 的 GAME_VERSION 字面量 pin 已更新为 v22.52（旧 v22.51 零残留）',
-  s2251.includes("const GAME_VERSION = 'v23.16';") && !s2251.includes("const GAME_VERSION = 'v22." + "51';"));
+  s2251.includes("const GAME_VERSION = 'v23.17';") && !s2251.includes("const GAME_VERSION = 'v22." + "51';"));
 ok('smoke_v2251 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2251.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2251 的 package.json 件套计数 pin 已更新为 === 148', s2251.includes('testChain === 212'));

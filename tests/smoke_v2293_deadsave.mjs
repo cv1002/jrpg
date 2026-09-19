@@ -20,7 +20,7 @@ console.log('— v22.93 阵亡画面「未存档」提示与 P 存档入口 冒�
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.93', dataSrc.includes("const GAME_VERSION = 'v23.16';"));
+ok('data.js GAME_VERSION 字面量为 v22.93', dataSrc.includes("const GAME_VERSION = 'v23.17';"));
 ok('旧 v22.92 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "92';"));
 ok('data.js 含 v22.93 版本注释', dataSrc.includes('// v22.93 体验打磨·防误丢档·存档闭环收口'));
 ok('data.js 仍保留 v22.92 历史注释', dataSrc.includes('// v22.92 新内容·纯风味'));
@@ -222,7 +222,7 @@ const readTest = (name) => readFileSync(join(ROOT, 'tests', name), 'utf8');
 const s2292 = readTest('smoke_v2292_cavewatch.mjs');
 const s2291 = readTest('smoke_v2291_lampguide.mjs');
 const s2290 = readTest('smoke_v2290_statlink.mjs');
-ok('smoke_v2292 的 GAME_VERSION 字面量 pin 已更新为 v22.93', s2292.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2292 的 GAME_VERSION 字面量 pin 已更新为 v22.93', s2292.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2292 的 CHANGELOG 顶 pin 已更新为 ## v22.93', s2292.includes("startsWith('## v23.16 '"));
 ok('smoke_v2292 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2292.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2292 的 README 串尾 pin 已延伸至 smoke_v2293_deadsave',
@@ -230,9 +230,9 @@ ok('smoke_v2292 的 README 串尾 pin 已延伸至 smoke_v2293_deadsave',
 ok('smoke_v2292 的 package 串尾 pin 已延伸至 smoke_v2293_deadsave',
   s2292.includes('node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 ok('smoke_v2292 的 testChain pin 已更新为 189', s2292.includes('testChain === 212'));
-ok('smoke_v2291 的 GAME_VERSION 字面量 pin 已更新为 v22.93', s2291.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2291 的 GAME_VERSION 字面量 pin 已更新为 v22.93', s2291.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2291 的 testChain pin 已更新为 189', s2291.includes('testChain === 212'));
-ok('smoke_v2290 的 GAME_VERSION 字面量 pin 已更新为 v22.93', s2290.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2290 的 GAME_VERSION 字面量 pin 已更新为 v22.93', s2290.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2290 的 testChain pin 已更新为 189', s2290.includes('testChain === 212'));
 
 // 9. 旧代 v22.92 pin 全库零残留

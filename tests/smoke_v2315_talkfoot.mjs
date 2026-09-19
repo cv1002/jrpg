@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.15 版本注释（对话页脚灯下之声进度）', dataSrc.includes('// v23.15 体验打磨·信息透明·反馈不迟到：对话界面'));
 ok('data.js GAME_VERSION 字面量已为 v23.15（旧 v23.14 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23.14';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23.14';"));
 ok('data.js 仍保留 v23.14 历史注释（灯下之声节注释未动）',
   dataSrc.includes('// v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节'));
 ok('menus.js drawTalk 进度行落位（voiceList(S.G) 单一数据源 + 面板底缘 text）',
@@ -175,7 +175,7 @@ ok('CHANGELOG 仍保留 v23.14 条目（历史口径）', changelog.includes('##
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.14 pin 零残留 ——
 const s2314 = read('smoke_v2314_voices.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2314 的 GAME_VERSION 字面量 pin 已更新为 v23.15', s2314.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2314 的 GAME_VERSION 字面量 pin 已更新为 v23.15', s2314.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2314 的 CHANGELOG 顶 pin 已更新为 ## v23.16', s2314.includes("startsWith('## v23.16 "));
 ok('smoke_v2314 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2314.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2314 的 README 串尾 pin 已延伸至 smoke_v2315_talkfoot',

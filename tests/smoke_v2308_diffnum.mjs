@@ -31,7 +31,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.08 版本注释', dataSrc.includes('// v23.08 文档整理·数值说明·同源口径：README「数值速查」补「难度 / 倍率」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.08（旧 v23.07 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.16';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "07';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.17';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "07';"));
 ok('data.js 仍保留 v23.07 历史注释（强敌/变身机制数值速查行注释未动）', dataSrc.includes('// v23.07 文档整理·数值说明·同源口径：README「数值速查」补「强敌 / 变身机制」行'));
 
 // —— 难度常量逐值（单一数据源）——
@@ -92,7 +92,7 @@ ok('CHANGELOG 仍保留 v23.07 条目（历史口径）', changelog.includes('##
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.07 pin 零残留 ——
 const s2307 = read('smoke_v2307_bossnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2307 的 GAME_VERSION 字面量 pin 已更新为 v23.08', s2307.includes("const GAME_VERSION = 'v23.16';"));
+ok('smoke_v2307 的 GAME_VERSION 字面量 pin 已更新为 v23.08', s2307.includes("const GAME_VERSION = 'v23.17';"));
 ok('smoke_v2307 的 CHANGELOG 顶 pin 已更新为 ## v23.08',
   s2307.includes("startsWith('## v23.16 "));
 ok('smoke_v2307 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',

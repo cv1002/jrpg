@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.90（本版守 v22.91）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 99)), GAME_VERSION);
 ok('data.js 含 v22.91 注释（引灯人说明）', dSrc.includes('v22.91 新内容·纯风味'));
 ok('GAME_VERSION 字面量已为 v22.91（旧 v22.90 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.16';") && !dSrc.includes("const GAME_VERSION = 'v22." + "90';"));
+  dSrc.includes("const GAME_VERSION = 'v23.17';") && !dSrc.includes("const GAME_VERSION = 'v22." + "90';"));
 ok('data.js 仍保留 v22.90/v22.89 世代注释链（历史注释未动）',
   dSrc.includes('// v22.90 体验打磨·可发现性·纯文字') && dSrc.includes('// v22.89 体验打磨·信息透明·纯显示'));
 
@@ -217,7 +217,7 @@ ok('CHANGELOG 顶部已追加 v22.91 条目', changelog.startsWith('## v23.16 ')
 // 姊妹 pin 复查（smoke_v2290 随新现实更新）
 const s2290 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2290_statlink.mjs'), 'utf8');
 ok('smoke_v2290 的 GAME_VERSION 字面量 pin 已更新为 v22.91（旧 v22.90 零残留）',
-  s2290.includes("const GAME_VERSION = 'v23.16';") && !s2290.includes("const GAME_VERSION = 'v22." + "90';"));
+  s2290.includes("const GAME_VERSION = 'v23.17';") && !s2290.includes("const GAME_VERSION = 'v22." + "90';"));
 ok('smoke_v2290 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2290.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2290 的 package.json 件套计数 pin 已更新为 === 187', s2290.includes('testChain === 212'));
