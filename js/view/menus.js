@@ -719,6 +719,15 @@ export function drawTalk(){
   if (done && S.talkPage<S.talkPages.length-1 && Math.floor(Date.now()/UI_PULSE_MS)%2===0) {
     text('▼',bx+bw-28,by+bh-14,'bold 14px','#8fd0ff','center');
   }
+  // v23.15 对话面板底缘补「灯下之声 N/37」收集进度行（信息透明·反馈不迟到·纯显示）：v23.13 社交成就
+  // 「有口皆碑」的计数源 hero.talked（core.openTalk 唯一写入点）此前只在 C 成就页 X/37 与 v23.14 J 日志
+  // 「灯下之声」节可见，交谈现场本身毫无反馈——与一位新镇民/旅人/名字石碑开口的瞬间，玩家不知道进度
+  // 推进了多少；现与 voiceList/drawJournal/成就判定同读 data.js NPCS·hero.talked 一份单一数据源
+  // （voiceList 本文件纯函数，(hero && hero.talked) || [] 防御式旧档零迁移零抛错），11px 灰字落面板
+  // 底缘左下（bx+24, by+bh-14，与右侧 ▼ 翻页指示同基线互不冲突），纯显示零结算零存档零数值变化
+  const _voices = voiceList(S.G);
+  const _voicesMet = _voices.filter((v) => v.met).length;
+  text(`🗨️ 灯下之声 ${_voicesMet}/${_voices.length}`, bx + 24, by + bh - 14, '11px', '#7d93a3');
   CTX.restore();
 }
 

@@ -1026,6 +1026,12 @@
 // 上手表 / 教程行 / index.html 常驻帮助条）早已齐备，唯独标题画面提示行只列「M 静音」不列「[ / ] 音量」
 // ——按 M 与按 [ / ] 是同一层级音频键；现与 M 静音同列收口，与 VOL_STEP（10% 步进）/KEY 无 [ ] 冲突
 // 同口径；纯文字零逻辑零结算零存档零数值变化（详见 view/menus.js 行内注释）
+// v23.15 体验打磨·信息透明·反馈不迟到：对话界面（view/menus.js drawTalk）面板底缘补「灯下之声 N/37」
+// 收集进度行——v23.13 社交成就「有口皆碑」的计数（hero.talked，core.openTalk 唯一写入点）此前只在
+// C 成就页 X/37 与 v23.14 J 日志「灯下之声」节可见，交谈现场本身毫无反馈；现由 drawTalk 与
+// voiceList/成就判定同读 NPCS·hero.talked 一份单一数据源（防御式旧档零迁移），
+// 纯显示零结算零存档零数值变化（详见 view/menus.js 行内注释）
+const GAME_VERSION = 'v23.15';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -1035,7 +1041,6 @@
 // 成就版图自 v21.x 逐线核对以来唯一从未开垦的是「交谈」这条维度，计数源 hero.talked 由 core.openTalk
 // 全游戏唯一交谈入口写入（NPCS 单一数据源派生，加/删 NPC 两端自动跟随），migrateQuests 兜底 []；
 // 零数值零结算零存档结构变化
-const GAME_VERSION = 'v23.14';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
