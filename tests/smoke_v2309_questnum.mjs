@@ -4,7 +4,7 @@
 // FRAGMENTS.length 逐值 + QUESTS[].reward 逐值（蘑菇支线随等级实时 gold:(lv)=>40+lv*10 抽样逐值）+
 // quests.applyQuestReward 源级落位（gold 函数式/item/potion2 三通道与 README 行同读一份源））+ README
 // 数值速查「支线 / 奖励」行落位（与任务日志奖励行/交付结算同源口径，零裸字面量）+ README/package.json/
-// CHANGELOG 同步（冒烟二百零七件套（二百零六件套清除）/串尾/入库 205 份/顶 pin）+ 姊妹件套 pin
+// CHANGELOG 同步（冒烟二百零八件套（二百零七件套清除）/串尾/入库 205 份/顶 pin）+ 姊妹件套 pin
 // （smoke_v2308 随新现实更新）+ 哨兵链领先一位（206 口径）+ 旧代 v23.08 pin 全库零残留。
 import { GAME_VERSION, QUESTS, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, GRAIN_GOAL, BONE_GOAL, EMBER_GOAL, FRAGMENTS } from '../js/data.js';
 
@@ -31,7 +31,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.09 版本注释', dataSrc.includes('// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.09（旧 v23.08 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.11';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "08';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.12';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "08';"));
 ok('data.js 仍保留 v23.08 历史注释（难度/倍率数值速查行注释未动）', dataSrc.includes('// v23.08 文档整理·数值说明·同源口径：README「数值速查」补「难度 / 倍率」行'));
 
 // —— 支线目标常量逐值（单一数据源）——
@@ -85,13 +85,13 @@ ok('README 支线行位于难度 / 倍率行之后（表尾追加）',
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2309_questnum（v2308 后接 v2309）',
-  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev（npm test 串跑）'));
+  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle（npm test 串跑）'));
 ok('README 旧串尾零残留（v2308 后无串尾收口）',
   !readme.includes('smoke_v2307_bossnum + smoke_v2308_diffnum（npm test 串' + '跑）'));
-ok('README 件套口径为二百零七件套（二百零六件套清除）且旧 204 口径零残留',
-  readme.includes('冒烟二百零七件套（二百零六件套清除）') && !readme.includes('冒烟二百零四件套（二百零三件套清' + '除）'));
-ok('README 不含哨兵领先一位（二百零八件套（二百零七件套清除））',
-  !readme.includes('二百零八件套（二百零七件套清除）'));
+ok('README 件套口径为二百零八件套（二百零七件套清除）且旧 204 口径零残留',
+  readme.includes('冒烟二百零八件套（二百零七件套清除）') && !readme.includes('冒烟二百零四件套（二百零三件套清' + '除）'));
+ok('README 不含哨兵领先一位（二百零九件套（二百零八件套清除））',
+  !readme.includes('二百零九件套（二百零八件套清除）'));
 ok('README 含 v23.09 守护描述（支线/奖励数值速查行守护）',
   readme.includes('v23.09 起含「支线 / 奖励」数值速查行守护'));
 ok('README 含 smoke_v2309_questnum 入库（205 份）', readme.includes('smoke_v2309_questnum 入库（205 份）'));
@@ -99,29 +99,29 @@ ok('README 仍保留 v23.08 守护描述（历史口径）', readme.includes('v2
 ok('README 仍保留 smoke_v2308_diffnum 入库（204 份）历史口径', readme.includes('smoke_v2308_diffnum 入库（204 份）'));
 ok('package.json 已收录 smoke_v2309_questnum（npm test 串跑第 205 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2309_questnum.mjs'));
-ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs"',
-  pkg.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs"'));
+ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs"',
+  pkg.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 205 件套', testChain === 207, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.09 条目', changelog.startsWith('## v23.11 '));
+ok('package.json test 串共 205 件套', testChain === 208, String(testChain));
+ok('CHANGELOG 顶部已追加 v23.09 条目', changelog.startsWith('## v23.12 '));
 ok('CHANGELOG 仍保留 v23.08 条目（历史口径）', changelog.includes('## v23.08 README「数值速查」补「难度 / 倍率」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.08 pin 零残留 ——
 const s2308 = read('smoke_v2308_diffnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.09', s2308.includes("const GAME_VERSION = 'v23.11';"));
+ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.09', s2308.includes("const GAME_VERSION = 'v23.12';"));
 ok('smoke_v2308 的 CHANGELOG 顶 pin 已更新为 ## v23.09',
-  s2308.includes("startsWith('## v23.11 "));
-ok('smoke_v2308 的件套 pin 已更新为二百零七件套（二百零六件套清除）',
-  s2308.includes('二百零七件套（二百零六件套清除）'));
+  s2308.includes("startsWith('## v23.12 "));
+ok('smoke_v2308 的件套 pin 已更新为二百零八件套（二百零七件套清除）',
+  s2308.includes('二百零八件套（二百零七件套清除）'));
 ok('smoke_v2308 的 README 串尾 pin 已延伸至 smoke_v2309_questnum',
-  s2308.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev（npm test 串跑）'));
+  s2308.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle（npm test 串跑）'));
 ok('smoke_v2308 的 package 串尾 pin 已延伸至 smoke_v2309_questnum',
-  s2308.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs"'));
-ok('smoke_v2308 的 testChain pin 已更新为 205', s2308.includes('testChain === 207'));
+  s2308.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs"'));
+ok('smoke_v2308 的 testChain pin 已更新为 205', s2308.includes('testChain === 208'));
 ok('smoke_v2308 的版本锚已越过 v23.08 口径（>= 8 对 v23.09 恒真）', s2308.includes('_gv[1] >= 8'));
-ok('smoke_v2143 哨兵链已推进至二百零八件套（二百零七件套清除）',
-  s2143.includes('二百零八件套（二百零七件套清除）') && s2143.includes("!readme.includes('二百零八件套（二百零七件套清除）')"));
+ok('smoke_v2143 哨兵链已推进至二百零九件套（二百零八件套清除）',
+  s2143.includes('二百零九件套（二百零八件套清除）') && s2143.includes("!readme.includes('二百零九件套（二百零八件套清除）')"));
 
 // 旧代 v23.08 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2309_questnum.mjs');

@@ -1,3 +1,10 @@
+## v23.12 标题画面提示行补「[ / ] 音量」口径（体验打磨·可发现性·口径收尾——承 v22.12 主音量调节 / v22.15 教程行 [ / ] 音量 / v22.19 index.html 常驻帮助条同一「功能存在就必须能看到入口」主线收口）——v22.12 起全局快捷键 [ / ] 音量（main.js 全场景生效、含标题画面）的口径端中，H 页「静音 / 音量」行 / README 快速上手表 / 首次进图教程行 / index.html 常驻帮助条早在 v22.12/v22.15/v22.19 齐备，唯独标题画面提示行（drawTitle 行 779）只列「M 静音」不列「[ / ] 音量」——按 M 与按 [ / ] 是同一层级的音频键，玩家站在这行正下方按 [ / ] 却毫无提示（v21.18「按键提示必须如实反映可用键」同族、v22.19 注释自述「标题 L·R·X」同批修的是 index.html、本行同为漏网）；现与 M 静音同列收口「 · [ / ] 音量」：与 VOL_STEP（10% 步进）/H 页行/README 上手表/KEY 无 [ ] 冲突同口径，行数/字号/基线逐字未动（12px 全行 ≈597px ≤640 画布），纯文字零逻辑零结算零存档零数值变化，调音量步进只改 data.js VOL_STEP 一处跟随。
+
+- 【改动】`js/view/menus.js`：drawTitle 标题画面提示行（779 行）文本末追加「 · [ / ] 音量」+ v23.12 注释块；`js/data.js`：`GAME_VERSION` v23.11→v23.12（附 v23.12 注释，v23.11 注释保留）。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能/界面逻辑（纯文字）：提示行模板主体（选槽/←/→/L 读档/R 重开/WASD/Esc 菜单/P 存档/M 静音）逐字保留、仅后缀追加，第二行快捷一览（I/J/B/C/T/F/H）与页脚版本号逐字零变化；未动 world/battle/core/quests/shop/audio/hud/其余 view/main.js/index.html。
+- 【记录】`CHANGELOG.md`（本条）+ `package.json`（test 串第 208 份）+ `README.md`（tests 树串尾收 `smoke_v2312_voltitle`＋冒烟二百零八件套（二百零七件套清除）＋v23.12 守护描述＋入库 208 份，v23.11 历史口径保留）；新增 `tests/smoke_v2312_voltitle.mjs`（仓库常驻，承 v21.10-v23.11 冒烟入库先例）+ 全库 pin 级联 208 件套（含哨兵链 209 口径）。
+- 【验证】`node --check` js/view/menus.js、js/data.js 过；`npm run check`（25 模块）全部通过；`node tests/smoke_v2312_voltitle.mjs` 全绿；`npm test` 二百零八件套端到端全绿 EXIT=0。（编辑于 2026-09-19 cron 自动完善）
+
 ## v23.11 战斗「战利品预览」补「🧩 首胜必掉记忆碎片」（体验打磨·信息透明·同一口径——承 v21.25 圣光之剑预览 / v19.x 必掉蘑菇预览同一「战利品预览行只报结算同源收益」主线收口）——FRAGMENTS 四枚强敌首胜掉落（石心魔像/幽冥魔王/洞窟领主/终焉之神，battle.winBattle 按 canonicalName 归一 find 同读 data.js FRAGMENTS 一份源）是真结局关键收集：H 页「记忆碎片」规则 / J 日志灰占位 / 拾取「N/4」进度反馈早已齐备，唯独战前「战利品预览」行（drawBattle 行 257）一字不报——玩家在「7% 稀有精英石心魔像要不要追、三 Boss 要不要先清」的决策现场对真结局收集一无所知（打完终焉之神才知道还有四条记忆线）；现按 [🍄 必掉蘑菇 / ⚔️ 必掉圣光之剑 / 战胜另+N金] 同式收口：`FRAGMENTS.find` + `canonicalName` 归一 + `hero.fragments` 是否已集（与 winBattle `frag && !includes` 逐字同判——已集不再标「首胜」零噪音、试炼三连战同名强敌同判、普通怪零后缀零噪音）；纯显示零结算零存档零数值变化，调碎片掉落敌人只改 data.js FRAGMENTS 一处、预览/结算/H 页/J 日志四端自动跟随。
 
 - 【改动】`js/view/drawBattle.js`：战利品预览 bonus 链收口补 `fragBonus`（+ v23.11 注释块；drawBattle 行 255-268 区，import 增 `FRAGMENTS`）；`js/data.js`：`GAME_VERSION` v23.10→v23.11（附 v23.11 注释，v23.10 注释保留）。
