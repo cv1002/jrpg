@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe, potionRestore, elixirRestore } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -252,7 +252,17 @@ export function drawBattle() {
     // 幽冥魔王（isBoss）首次击败必掉圣光之剑（winBattle 的 isBoss 掉落分支 / 图鉴 codexTag「⚔️ 必掉圣光之剑」逐字同源）——
     // 这把攻+24 的传说剑是通关关键收益，预览行若不写，打赢之前它始终是黑盒；
     // 试炼战的通关奖励不再是黑盒——确切数额直接读 rushReward(S.G.level)（与 winBattle 结算逐字同源，随当前等级实时显示）
-    const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+' + TRUE_BONUS_GOLD + '金' : '') + (enemy.isBoss ? ' · ⚔️ 必掉圣光之剑' : '');
+    // v23.11 记忆碎片预览（体验打磨·信息透明·同一口径——承 v21.25 圣光之剑预览 / v19.x 必掉蘑菇预览
+    // 同一「战利品预览行只报结算同源收益」主线）：FRAGMENTS 四枚强敌首胜掉落（battle.winBattle 按
+    // canonicalName 归一 find 与本文件同读一份源——石心魔像/幽冥魔王/洞窟领主/终焉之神）是真结局关键
+    // 收集，H 页「记忆碎片」规则 / J 日志灰占位 / 拾取进度反馈齐备，唯独战前「战利品预览」行不报首胜
+    // 碎片——7% 稀有精英石心魔像要不要追、三 Boss 要不要先清，决策现场对真结局收集一无所知；现与
+    // winBattle 同源（FRAGMENTS.find + canonicalName 归一 + hero.fragments 是否已集——与 winBattle 的
+    // `frag && !hero.fragments.includes(frag.id)` 逐字同判，已集则不再标「首胜」，试炼三连战同名强敌
+    // 同判），纯显示零结算零存档零数值变化。
+    const fmark = FRAGMENTS.find((f) => f.enemy === canonicalName(enemy.name));
+    const fragBonus = (fmark && !(hero.fragments || []).includes(fmark.id)) ? ' · 🧩 首胜必掉记忆碎片' : '';
+    const bonus = (enemy.isElite ? ' · 🍄 必掉蘑菇' : '') + (enemy.isTrue ? ' · 战胜另+' + TRUE_BONUS_GOLD + '金' : '') + (enemy.isBoss ? ' · ⚔️ 必掉圣光之剑' : '') + fragBonus;
     const rushBonus = enemy.isRush ? `（试炼通关另奖 ${rushReward(S.G ? S.G.level : 1)} 金币，随等级提升）` : '';
     text(`战利品预览：经验 +${enemy.xp} 金币 +${enemy.gold}${wk}${res}${bonus}${rushBonus}`, ex0, 112, 'bold 13px', '#a8ff8a', 'center');
     // 石甲受击减伤标注（单一数据源）：与 enemyAI 凝甲提示 / 帮助页「石心魔像·石甲」同读 SHIELD_MULT——

@@ -1013,7 +1013,14 @@
 // DIFFS 单一数据源（DIFFS[1]='困难'）：困难档战绩行追加「 · 困难」、普通档零后缀零噪音零位移——
 // 调难度档名只改本文件 DIFFS 一处、五端（创建页/状态页/HUD/槽预览/总结屏）自动跟随；纯显示零结算
 // 零存档零数值变化（详见 view/menus.js drawDead/drawWin/drawEnding 行内注释）
-const GAME_VERSION = 'v23.10';
+// v23.11 体验打磨·信息透明·同一口径：战斗「战利品预览」行（view/drawBattle.js drawBattle 行 255-268 区）
+// 补「🧩 首胜必掉记忆碎片」——FRAGMENTS 四枚强敌首胜掉落（石心魔像/幽冥魔王/洞窟领主/终焉之神，与
+// battle.winBattle 的 FRAGMENTS.find 同读本文件一份源）是真结局关键收集，H 页「记忆碎片」规则/J 日志
+// 灰占位/拾取「N/4」进度反馈齐备，唯独战前战利品预览行不报——玩家在「7% 稀有精英要不要追/三 Boss 要
+// 不要先清」的决策现场对真结局收集一无所知；现按「🍄 必掉蘑菇 / ⚔️ 必掉圣光之剑 / 战胜另+N金」同式
+// 收口：已集对应碎片（hero.fragments）则不再标「首胜」零噪音，与 winBattle `frag && !includes` 逐字
+// 同判；纯显示零结算零存档零数值变化（详见 view/drawBattle.js 行内注释）
+const GAME_VERSION = 'v23.11';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
