@@ -970,6 +970,12 @@
 // v23.02 体验打磨·信息透明·纯显示：战斗指令栏 [5]防御/[6]蓄力 补效果预览（减伤%由 DEFEND_MULT 派生、
 // 蓄力×N 读 CHARGE_MULT——与「防御中」角标/敌方拟行动预判/结算同读单一数据源，详见
 // js/view/drawBattle.js 指令栏注释）；纯显示零结算零存档零数值变化
+// v23.07 文档整理·数值说明·同源口径：README「数值速查」补「强敌 / 变身机制」行（三 Boss 血过半变身线
+// PHASE2_AT 0.5 / 变身增益（SPECIES[].phase2：幽冥魔王 攻+7 防+3 回血15%HP · 洞窟领主 攻+5 防+2
+// 回血10%HP · 终焉之神 攻+7 防+3 回血15%HP·祸乱形态封印治愈 BOSS_TRUE_FORBID）/ 重击 HEAVY_MULT 1.9·
+// HEAVY_MULT_PHASED 2.3 / 三 Boss 回血招 HEAL_PCT 0.12 族（hpBelow 0.4 才用、逐怪显式覆盖）全部由
+// data.js 单一数据源派生、与 enemyAI 重击/变身结算·战斗变身角标·H 页机制预览同读一份源——调任何强敌
+// 数值只改 data.js 一处、README 自动跟随）；纯文档零逻辑零结算零存档零数值变化（详见 README「数值速查」行内注释）
 // v23.06 文档整理·数值说明·同源口径：README「数值速查」补「技能数值」行（七招 mp/倍率/灼烧·冻结·穿透·
 // 汲回·治愈全部由 SKILL_DATA 单一数据源派生、与技能菜单/战斗结算（battle.cmdSkill·rules.skillEstimate）
 // 同读一份源；灼烧 BURN_PCT / 冻结 SKIP_CHANCE / 汲回 DRAIN_PCT·DRAIN_HP_CAP·DRAIN_MP_PCT·
@@ -989,7 +995,7 @@
 // RUSH_RECOVER / 通关奖 RUSH_BASE_GOLD+RUSH_GOLD_PER_LV×等级 / 终焉之神击败另奖 TRUE_BONUS_GOLD /
 // 图鉴全收成就 PERFECTION_GOLD 全部由 data.js 单一数据源派生，与结算/横幅/试炼碑/守碑人/战斗预览/
 // 成就标注同读一份源）；纯文档零逻辑零结算零存档零数值变化（详见 README「数值速查」行内注释）
-const GAME_VERSION = 'v23.06';
+const GAME_VERSION = 'v23.07';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
