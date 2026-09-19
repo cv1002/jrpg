@@ -1031,7 +1031,12 @@
 // C 成就页 X/37 与 v23.14 J 日志「灯下之声」节可见，交谈现场本身毫无反馈；现由 drawTalk 与
 // voiceList/成就判定同读 NPCS·hero.talked 一份单一数据源（防御式旧档零迁移），
 // 纯显示零结算零存档零数值变化（详见 view/menus.js 行内注释）
-const GAME_VERSION = 'v23.15';
+// v23.16 体验打磨·信息透明·纯显示：J 任务日志「灯下之声」节头补「N/37」进度（view/menus.js drawJournal）——
+// 承 v23.14 节/v23.15 对话页脚同一社交收集主线：hero.talked 计数在 C 成就页 X/37、J 节 37 行 ✓/· 对照、
+// v23.15 对话现场页脚三端可见，唯独节头本身无数字；现与同节 voiceList 同读 NPCS·hero.talked 一份单一
+// 数据源派生计数（零裸字面量、加/删 NPC 自动跟随、防御式旧档零迁移），节头直书「灯下之声 N/37」；
+// 纯显示零结算零存档零数值变化（详见 view/menus.js 行内注释）
+const GAME_VERSION = 'v23.16';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

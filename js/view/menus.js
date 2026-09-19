@@ -461,8 +461,15 @@ export function drawJournal(){
   // v23.14 灯下之声节（信息透明·可发现性——承 v23.13 新成就「有口皆碑」：C 成就页只有一行 X/37，
   // 玩家补全路上不知道「还差谁」；节内 37 处全部由 voiceList 从 data.js NPCS 派生（加/删 NPC 自动
   // 跟随零裸字面量）、✓/· 读 hero.talked 防御式（旧档零迁移），纯显示零结算零存档零数值变化）
-  items.push({ kind: 'head', label: '灯下之声', color: '#ffd24a', h: 16 });
-  for (const v of voiceList(hero)) items.push({ kind: 'talk', v, h: 16 });
+  // v23.16 节头补「灯下之声 N/37」进度（信息透明·纯显示——承 v23.14 节/v23.15 对话页脚同一社交收集主线：
+  // hero.talked 计数在 C 成就页 X/37、J 节 37 行 ✓/·、v23.15 对话现场页脚三端可见，唯独节头本身无数字——
+  // 玩家翻到该节第一眼还要逐行数 ✓ 才知道还差几个；现与同节 voiceList 同读派生计数（NPCS·hero.talked 单一
+  // 数据源、零裸字面量、加/删 NPC 自动跟随、防御式旧档零迁移零抛错），节头直书「灯下之声 N/37」；
+  // 行高/滚动/页脚「还有 N 条」口径逐字未动，纯显示零结算零存档零数值变化）
+  const _voices = voiceList(hero);
+  const _voicesMet = _voices.filter((v) => v.met).length;
+  items.push({ kind: 'head', label: `灯下之声 ${_voicesMet}/${_voices.length}`, color: '#ffd24a', h: 16 });
+  for (const v of _voices) items.push({ kind: 'talk', v, h: 16 });
   const totalH = items.reduce((a, it) => a + it.h, 0);
   const maxScroll = Math.max(0, totalH - viewH);
   if (typeof S.journalScroll !== 'number' || S.journalScroll < 0) S.journalScroll = 0;
