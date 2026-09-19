@@ -1001,7 +1001,12 @@
 // 强敌一律适用，与创建页倍率标注/状态页 I「[困难 · 魔物HP×1.35 攻×1.15 防×1.12]」/HUD ⚡ 角标/成就
 // 「逆风行灯」（ACH_LIST.hardtrue，g.trueBoss && g.diff===1）同读一份源——调任何难度数值只改 data.js
 // 一处、README 自动跟随）；纯文档零逻辑零结算零存档零数值变化（详见 README「数值速查」行内注释）
-const GAME_VERSION = 'v23.08';
+// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行（八条支线目标/奖励全部由
+// data.js QUESTS[].reward 单一数据源派生——与任务日志奖励行/交付结算 quests.applyQuestReward 同读一份源
+// （蘑菇支线奖励随等级实时 gold:(lv)=>40+lv*10、目标 *_GOAL/FRAGMENTS.length 同源、药水 reward.item/
+// 高级灵药 reward.potion2 同读）——调任何支线奖励只改 data.js 一处、README 自动跟随）；
+// 纯文档零逻辑零结算零存档零数值变化（详见 README「数值速查」行内注释）
+const GAME_VERSION = 'v23.09';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
