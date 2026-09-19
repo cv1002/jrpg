@@ -6,7 +6,7 @@
 // （开局日志六支线全画 + 滚动偏移 translate + 越界钳制到 totalH-viewH（布局数学独立重算等价）+
 // journal.onKey ↑↓/s/S 分派 + J/Esc 关闭零回归）、README/package 同步、smoke_v2144 件套断言去硬化确认。
 import { S } from '../js/state.js';
-import { GAME_VERSION, FRAGMENTS } from '../js/data.js';
+import { GAME_VERSION, FRAGMENTS, NPCS } from '../js/data.js';
 import { questJournal } from '../js/quests.js';
 import { drawJournal } from '../js/view/index.js';
 import { CTX } from '../js/view/canvas.js';
@@ -143,6 +143,8 @@ try {
   if (jmains.length) { tot += 12; for (const e of jmains) tot += h(e) + 8; tot += 6; }
   if (jsides.length) { tot += 12; for (const e of jsides) tot += h(e) + 8; tot += 6; }
   tot += 16 + FRAGMENTS.length * 16;
+  // v23.14 灯下之声节入列（同源：head 16 + 每行 16，与绘制侧 items 同式；NPCS 单一数据源派生零字面量）
+  tot += 16 + Object.keys(NPCS).length * 16;
   const expectMax = Math.max(0, tot - 352);
   ok('scroll=99999 后被钳制到 totalH-viewH（独立布局重算等价：' + expectMax + '）', S.journalScroll === expectMax, S.journalScroll + ' vs ' + expectMax);
   ok('未出现负滚动（floor 0）', S.journalScroll >= 0);
@@ -188,7 +190,7 @@ ok('package.json 已收录 smoke_v2145_journalscroll（npm test 串跑第 41 份
 // —— smoke_v2144 的 README 件套口径断言已去硬化（v21.7 惯例）——
 const s2144 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2144_run.mjs'), 'utf8');
 ok('smoke_v2144 的 README 件套口径断言已去硬化（v21.7 惯例：改用存活性口径，旧精确表达式「readme.includes(四十件套（三十九件套清除）)」零残留，实件数由本版冒烟守护）',
-  s2144.includes("!readme.includes('二百一十件套（二百零九件套清除）')") &&
+  s2144.includes("!readme.includes('二百一十一件套（二百一十件套清除）')") &&
   !s2144.includes("readme.includes('四十件套（三十九件套清除）')"));
 
 console.log(`\n${n - failed}/${n} 通过`);

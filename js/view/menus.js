@@ -174,6 +174,20 @@ export function statusSideSuffix(sides) {
   return n > 1 ? `（还有 ${n - 1} 条）` : '';
 }
 
+// v23.14 体验打磨·信息透明·可发现性（纯函数·渲染层只画契约，与 statusSideSuffix 同款）：v23.13 有口皆碑
+// 成就在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」——J 日志此前零相关节；
+// 现由 voiceList 从 data.js NPCS 派生全部交谈对象（单一数据源：加/删 NPC 自动跟随、零裸字面量），
+// met 读 hero.talked（core.openTalk 唯一写入点）防御式 (hero.talked||[]) 旧档零迁移零抛错；
+// 纯显示零结算零存档零数值变化，drawJournal 只画不判。
+export function voiceList(hero) {
+  const met = (hero && hero.talked) || [];
+  return Object.keys(NPCS).map((id) => ({
+    id,
+    name: (NPCS[id] && NPCS[id].name) || id,
+    met: met.includes(id),
+  }));
+}
+
 function whereFind(name){
   // v14.5 图鉴位置标注与地图数据同源（data.js MAPS 的 extras）：
   // - v13.7 剧情重构后终焉之神已随主线迁至无字回廊东端祭坛（原「星井矿脉·终焉水晶」为旧位置，水晶已化为开门机关）；
@@ -444,6 +458,11 @@ export function drawJournal(){
   }
   items.push({ kind: 'head', label: '记忆碎片', color: '#8fd0ff', h: 16 });
   for (const f of FRAGMENTS) items.push({ kind: 'frag', f, h: 16 });
+  // v23.14 灯下之声节（信息透明·可发现性——承 v23.13 新成就「有口皆碑」：C 成就页只有一行 X/37，
+  // 玩家补全路上不知道「还差谁」；节内 37 处全部由 voiceList 从 data.js NPCS 派生（加/删 NPC 自动
+  // 跟随零裸字面量）、✓/· 读 hero.talked 防御式（旧档零迁移），纯显示零结算零存档零数值变化）
+  items.push({ kind: 'head', label: '灯下之声', color: '#ffd24a', h: 16 });
+  for (const v of voiceList(hero)) items.push({ kind: 'talk', v, h: 16 });
   const totalH = items.reduce((a, it) => a + it.h, 0);
   const maxScroll = Math.max(0, totalH - viewH);
   if (typeof S.journalScroll !== 'number' || S.journalScroll < 0) S.journalScroll = 0;
@@ -469,6 +488,9 @@ export function drawJournal(){
       } else {
         text('🕯️ ？？？', cx + 6, y, '12px', '#4a5a66');
       }
+    } else if (it.kind === 'talk') {
+      // v23.14 灯下之声行（voiceList 单一数据源派生，只画不判）：已交谈 ✓ 绿 / 未交谈 · 灰，零噪音零剧透
+      text((it.v.met ? '✓ ' : '· ') + it.v.name, cx + 6, y, '12px', it.v.met ? '#a8ff8a' : '#5a6a78');
     }
     y += it.h;
   }
@@ -479,7 +501,7 @@ export function drawJournal(){
   let acc = 0;
   for (const it of items) {
     acc += it.h;
-    if (acc > viewBottom && (it.kind === 'card' || it.kind === 'frag')) remain++;
+    if (acc > viewBottom && (it.kind === 'card' || it.kind === 'frag' || it.kind === 'talk')) remain++;
   }
   // v21.71 页脚补「I 状态页」互切提示（可发现性·口径一致，承 v21.4 帮助页 A/D 别名 /
   // v21.18「按键提示必须如实反映可用键」主线）：main.js journal.onKey 本就支持 `I` 直达状态页

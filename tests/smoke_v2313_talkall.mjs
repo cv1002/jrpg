@@ -36,7 +36,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.13 版本注释', dataSrc.includes('// v23.13 新内容·社交向单成就：新成就「有口皆碑」'));
 ok('data.js GAME_VERSION 字面量已为 v23.13（旧 v23.12 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.13';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.14';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
 ok('data.js 仍保留 v23.12 历史注释（标题画面音量口径注释未动）',
   dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js ACH_LIST talkall 注释块落位（v23.13 新成就·社交向）',
@@ -210,13 +210,13 @@ ok('运行期：成就页末页滚动渲染不抛错（60 项）', renderedEnd);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2313_talkall（v2312 后接 v2313）',
-  readme.includes('+ smoke_v2312_voltitle + smoke_v2313_talkall（npm test 串跑）'));
+  readme.includes('+ smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices（npm test 串跑）'));
 ok('README 旧串尾零残留（smoke_v2312_voltitle（npm test 串跑）不在树尾）',
   !readme.includes('smoke_v2312_voltitle（npm test 串跑）'));
-ok('README 件套口径为二百零九件套（二百零八件套清除）且旧 208 口径零残留',
-  readme.includes('冒烟二百零九件套（二百零八件套清除）') && !readme.includes('冒烟二百零八件套（二百零七件套清' + '除）'));
-ok('README 不含哨兵领先一位（二百一十件套（二百零九件套清除））',
-  !readme.includes('二百一十件套（二百零九件套清除）'));
+ok('README 件套口径为二百一十件套（二百零九件套清除）且旧 208 口径零残留',
+  readme.includes('冒烟二百一十件套（二百零九件套清除）') && !readme.includes('冒烟二百零八件套（二百零七件套清' + '除）'));
+ok('README 不含哨兵领先一位（二百一十一件套（二百一十件套清除））',
+  !readme.includes('二百一十一件套（二百一十件套清除）'));
 ok('README 含 v23.13 守护描述（新成就有口皆碑守护）', readme.includes('v23.13 起含 新成就「有口皆碑」守护'));
 ok('README 含 smoke_v2313_talkall 入库（209 份）', readme.includes('smoke_v2313_talkall 入库（209 份）'));
 ok('README 仍保留 v23.12 守护描述（历史口径）', readme.includes('v23.12 起含 标题画面提示行「[ / ] 音量」口径守护'));
@@ -228,11 +228,11 @@ ok('README 数值速查成就档位行含社交档「有口皆碑」与共 60 �
   readme.includes('社交向单档「有口皆碑」') && readme.includes('共 60 项'));
 ok('package.json 已收录 smoke_v2313_talkall（npm test 串跑第 209 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2313_talkall.mjs'));
-ok('package.json 串尾为 ... smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs"',
-  pkg.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs"'));
+ok('package.json 串尾为 ... smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs"',
+  pkg.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 209 件套', testChain === 209, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.13 条目', changelog.startsWith('## v23.13 '));
+ok('package.json test 串共 209 件套', testChain === 210, String(testChain));
+ok('CHANGELOG 顶部已追加 v23.13 条目', changelog.startsWith('## v23.14 '));
 ok('CHANGELOG 仍保留 v23.12 条目（历史口径）', changelog.includes('## v23.12 标题画面提示行补「[ / ] 音量」口径'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.12 pin 零残留 ——
@@ -240,18 +240,18 @@ const s2312 = read('smoke_v2312_voltitle.mjs');
 const s2297 = read('smoke_v2297_chestmid.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.13';"));
+ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.14';"));
 ok('smoke_v2312 的 CHANGELOG 顶 pin 已更新为 ## v23.13',
-  s2312.includes("startsWith('## v23.13 "));
-ok('smoke_v2312 的件套 pin 已更新为二百零九件套（二百零八件套清除）', s2312.includes('二百零九件套（二百零八件套清除）'));
+  s2312.includes("startsWith('## v23.14 "));
+ok('smoke_v2312 的件套 pin 已更新为二百一十件套（二百零九件套清除）', s2312.includes('二百一十件套（二百零九件套清除）'));
 ok('smoke_v2312 的 README 串尾 pin 已延伸至 smoke_v2313_talkall',
-  s2312.includes('smoke_v2312_voltitle + smoke_v2313_talkall（npm test 串跑）'));
+  s2312.includes('smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices（npm test 串跑）'));
 ok('smoke_v2312 的 package 串尾 pin 已延伸至 smoke_v2313_talkall',
-  s2312.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs"'));
-ok('smoke_v2312 的 testChain pin 已更新为 209', s2312.includes('testChain === 209'));
+  s2312.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs"'));
+ok('smoke_v2312 的 testChain pin 已更新为 209', s2312.includes('testChain === 210'));
 ok('smoke_v2297 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2297.includes('ACH_LIST.length === 60'));
 ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2229.includes('ACH_LIST.length === 60'));
-ok('smoke_v2143 哨兵链已推进至二百一十件套（二百零九件套清除）', s2143.includes('二百一十件套（二百零九件套清除）') && s2143.includes("!readme.includes('二百一十件套（二百零九件套清除）')"));
+ok('smoke_v2143 哨兵链已推进至二百一十一件套（二百一十件套清除）', s2143.includes('二百一十一件套（二百一十件套清除）') && s2143.includes("!readme.includes('二百一十一件套（二百一十件套清除）')"));
 
 // 旧代 v23.12 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2313_talkall.mjs');
