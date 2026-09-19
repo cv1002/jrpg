@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS, NPCS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -159,6 +159,20 @@ function openTalk(id) {
   S.talkLineAt = Date.now();
   S.talkStartAt = S.talkLineAt;
   S.talkPages = npcQuestPages(S.G, id);
+  // v23.13 社交成就「有口皆碑」交谈记录（新内容·单成就）：openTalk 是全游戏唯一交谈入口
+  // （world.interact → hooks.openTalk，NPC_SPOTS 全表都走这里），在此记录 hero.talked——
+  // 只记 NPCS 内 id（与 ACH_LIST talkall 同读 Object.keys(NPCS) 一份源，加/删 NPC 两端自动
+  // 跟随，绝无第二套口径）；(S.G.talked||[]) 防御式 + migrateQuests 兜底 [] + snapshotHero
+  // 全量快照自动持久化，旧档零迁移；新 id 记入当场 applyAchievements（承 world.onChestStep
+  // 开箱当场判定「反馈不迟到」惯例），最后一位聊到即解锁。
+  const th = S.G;
+  if (th && NPCS[id]) {
+    if (!Array.isArray(th.talked)) th.talked = [];
+    if (!th.talked.includes(id)) {
+      th.talked.push(id);
+      applyAchievements();
+    }
+  }
   goto('talk');
 }
 hooks.openTalk = openTalk;

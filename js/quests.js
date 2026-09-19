@@ -28,6 +28,10 @@ export function migrateQuests(hero) {
   // 与 newGame 起始值逐字一致），零迁移判定改动、不误解锁「走遍四方」（其余三图仍须真实到访）、
   // 既有含 visited 的存档逐字不动。
   if (!Array.isArray(hero.visited)) hero.visited = ['village'];
+  // v23.13 社交成就「有口皆碑」talked 兜底（存档兼容·承上方 seen/fragments/visited 兜底同族）：
+  // core.openTalk 交谈记录（全游戏唯一写入点），旧档无此字段 → []，零迁移、零误解锁
+  // （talkall 判定 (g.talked||[]) 防御式读取，旧档 0/N 不达标）。
+  if (!Array.isArray(hero.talked)) hero.talked = [];
   const quests = hero.quests;
   if (quests.side_mushroom == null) {
     if (hero.quest === 1) quests.side_mushroom = 'active';

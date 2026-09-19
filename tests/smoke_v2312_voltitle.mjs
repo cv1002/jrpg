@@ -34,7 +34,7 @@ const changelog = read('../CHANGELOG.md');
 // —— 版本落位 ——
 ok('data.js 含 v23.12 版本注释', dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js GAME_VERSION 字面量已为 v23.12（旧 v23.11 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.12';") && !dataSrc.includes("const GAME_VERSION = 'v23.11';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.13';") && !dataSrc.includes("const GAME_VERSION = 'v23.11';"));
 ok('data.js 仍保留 v23.11 历史注释（战利品预览记忆碎片注释未动）',
   dataSrc.includes('// v23.11 体验打磨·信息透明·同一口径：战斗「战利品预览」行'));
 
@@ -138,42 +138,42 @@ ok('运行期：第二行快捷一览逐字零回归（无 [ / ]）',
   CAPTURED.some((t) => t === 'I 状态 · J 日志 · B 记忆图鉴 · C 成就 · T 旅行 · F 喝药 · H 帮助'));
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README 件套口径为二百零八件套（二百零七件套清除）且旧 207 口径零残留',
-  readme.includes('冒烟二百零八件套（二百零七件套清除）') && !readme.includes('冒烟二百零七件套（二百零六件套清' + '除）'));
-ok('README 不含哨兵领先一位（二百零九件套（二百零八件套清除））',
-  !readme.includes('二百零九件套（二百零八件套清除）'));
+ok('README 件套口径为二百零九件套（二百零八件套清除）且旧 207 口径零残留',
+  readme.includes('冒烟二百零九件套（二百零八件套清除）') && !readme.includes('冒烟二百零七件套（二百零六件套清' + '除）'));
+ok('README 不含哨兵领先一位（二百一十件套（二百零九件套清除））',
+  !readme.includes('二百一十件套（二百零九件套清除）'));
 ok('README 含 v23.12 守护描述（标题画面提示行 [ / ] 音量口径守护）',
   readme.includes('v23.12 起含 标题画面提示行「[ / ] 音量」口径守护'));
 ok('README 含 smoke_v2312_voltitle 入库（208 份）', readme.includes('smoke_v2312_voltitle 入库（208 份）'));
 ok('README 仍保留 v23.11 守护描述（历史口径）', readme.includes('v23.11 起含 战斗「战利品预览」记忆碎片守护'));
 ok('README 仍保留 smoke_v2311_fragprev 入库（207 份）历史口径', readme.includes('smoke_v2311_fragprev 入库（207 份）'));
 ok('README tests 树串尾已延伸至 smoke_v2312_voltitle（v2311 后接 v2312）',
-  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle（npm test 串跑）'));
+  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall（npm test 串跑）'));
 ok('README 旧串尾零残留（v2311 后无串尾收口）',
   !readme.includes('smoke_v2310_diffsum + smoke_v2311_fragprev（npm test 串' + '跑）'));
 ok('package.json 已收录 smoke_v2312_voltitle', JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2312_voltitle.mjs'));
-ok('package.json 串尾为 ... smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs"',
-  pkg.includes('node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs"'));
+ok('package.json 串尾为 ... smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs"',
+  pkg.includes('node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 208 件套', testChain === 208, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.12 条目', changelog.startsWith('## v23.12 '));
+ok('package.json test 串共 208 件套', testChain === 209, String(testChain));
+ok('CHANGELOG 顶部已追加 v23.12 条目', changelog.startsWith('## v23.13 '));
 ok('CHANGELOG 仍保留 v23.11 条目（历史口径）', changelog.includes('## v23.11 战斗「战利品预览」补「🧩 首胜必掉记忆碎片」'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.11 pin 零残留 ——
 const s2311 = read('smoke_v2311_fragprev.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2311 的 GAME_VERSION 字面量 pin 已更新为 v23.12', s2311.includes("const GAME_VERSION = 'v23.12';"));
+ok('smoke_v2311 的 GAME_VERSION 字面量 pin 已更新为 v23.12', s2311.includes("const GAME_VERSION = 'v23.13';"));
 ok('smoke_v2311 的 CHANGELOG 顶 pin 已更新为 ## v23.12',
-  s2311.includes("startsWith('## v23.12 "));
-ok('smoke_v2311 的件套 pin 已更新为二百零八件套（二百零七件套清除）',
-  s2311.includes('二百零八件套（二百零七件套清除）'));
+  s2311.includes("startsWith('## v23.13 "));
+ok('smoke_v2311 的件套 pin 已更新为二百零九件套（二百零八件套清除）',
+  s2311.includes('二百零九件套（二百零八件套清除）'));
 ok('smoke_v2311 的 README 串尾 pin 已延伸至 smoke_v2312_voltitle',
-  s2311.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle（npm test 串跑）'));
+  s2311.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall（npm test 串跑）'));
 ok('smoke_v2311 的 package 串尾 pin 已延伸至 smoke_v2312_voltitle',
-  s2311.includes('node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs"'));
-ok('smoke_v2311 的 testChain pin 已更新为 208', s2311.includes('testChain === 208'));
-ok('smoke_v2143 哨兵链已推进至二百零九件套（二百零八件套清除）',
-  s2143.includes('二百零九件套（二百零八件套清除）') && s2143.includes("!readme.includes('二百零九件套（二百零八件套清除）')"));
+  s2311.includes('node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs"'));
+ok('smoke_v2311 的 testChain pin 已更新为 208', s2311.includes('testChain === 209'));
+ok('smoke_v2143 哨兵链已推进至二百一十件套（二百零九件套清除）',
+  s2143.includes('二百一十件套（二百零九件套清除）') && s2143.includes("!readme.includes('二百一十件套（二百零九件套清除）')"));
 
 // 旧代 v23.11 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2312_voltitle.mjs');

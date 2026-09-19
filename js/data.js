@@ -1026,7 +1026,11 @@
 // 上手表 / 教程行 / index.html 常驻帮助条）早已齐备，唯独标题画面提示行只列「M 静音」不列「[ / ] 音量」
 // ——按 M 与按 [ / ] 是同一层级音频键；现与 M 静音同列收口，与 VOL_STEP（10% 步进）/KEY 无 [ ] 冲突
 // 同口径；纯文字零逻辑零结算零存档零数值变化（详见 view/menus.js 行内注释）
-const GAME_VERSION = 'v23.12';
+// v23.13 新内容·社交向单成就：新成就「有口皆碑」（与全部 37 处灯下之声交谈过，见 ACH_LIST talkall 注释）——
+// 成就版图自 v21.x 逐线核对以来唯一从未开垦的是「交谈」这条维度，计数源 hero.talked 由 core.openTalk
+// 全游戏唯一交谈入口写入（NPCS 单一数据源派生，加/删 NPC 两端自动跟随），migrateQuests 兜底 []；
+// 零数值零结算零存档结构变化
+const GAME_VERSION = 'v23.13';
 // v22.92 新内容·纯风味：星井矿脉洞窟领主祭坛正北新 NPC「守洞人」（数据层三件套 cave.extras (20,7)/NPC_SPOTS '20,7'/NPCS.cavewatch，见 NPCS 行内注释）
 // v22.91 新内容·纯风味：无字回廊终焉之神祭坛北侧新 NPC「引灯人」（数据层三件套 gallery.extras (21,3)/NPC_SPOTS '21,3'/NPCS.lampguide，见 NPCS 行内注释）
 // v22.90 体验打磨·可发现性·纯文字：帮助页「操作说明」状态/任务日志两行补 I↔J 双向直达口径（见 HELP_PAGES 行内注释）
@@ -4055,6 +4059,21 @@ const ACH_LIST=[
   // ——已解锁不因任何变化而撤销；第 9 只箱开箱瞬间即解锁、反馈不迟到），ACH_LIST 58→59 项（末尾追加，
   // 既有 58 项 id/序位零回归）。
   {id:'chests2', name:'满载而归', d:`累计开启 ${TREASURE2_GOAL} 个宝箱`, ok:g=>chestCount(g)>=TREASURE2_GOAL, prog:g=>`${chestCount(g)}/${TREASURE2_GOAL}`},
+  // 有口皆碑（v23.13 新成就·社交向单成就·全新维度收口）：成就版图自 v21.x 起逐线核对
+  // （等级/金币/时长/讨伐/掉落/药水/灵药/酿造/蘑菇/探索/图鉴收录/图鉴遭遇/宝箱 十三线三档 + Boss/
+  // 装备/难度/精英/支线/收集等单档）已齐，唯独「与灯下之人交谈」这条社交维度从未被收集过——
+  // 玩家一路走完四图、聊遍 33 位镇民与旅人、读完 4 面名字石碑（名字石碑同为可交谈对象，
+  // NPC_SPOTS '5,1'…'20,1' → NPCS.stele1…stele4，world.interact → core.openTalk 同一入口），
+  // 却没有任何成就纪念「把所有灯下的声音都认了个遍」；与 perfection/allquests/memoir/skills/
+  // allchests/elites 同一「收集向里程碑」家族，此前收集的都是物（图鉴/宝箱/碎片/技能），
+  // 唯独「人」这一维从未开垦。判定/进度同读 Object.keys(NPCS) 单一数据源（加/删 NPC 只改 data.js
+  // 一处、本成就自动跟随，绝无第二套口径——与 wander 读 Object.keys(MAPS) 同式）；计数读
+  // core.openTalk 新写入的 hero.talked 数组（openTalk 是全游戏唯一交谈入口，只记 NPCS 内 id；
+  // 防御式 (g.talked||[])，旧档缺字段=0 不误解锁、零迁移——承 visited/seen/fragments 同款，
+  // migrateQuests 兜底 []）；无 r 字段纯里程碑（与 memoir/skills/aegis/hardtrue 同款——相识本身
+  // 就是奖励）；解锁时机：openTalk 记入新 id 当场 applyAchievements（承 world.onChestStep 开箱
+  // 当场判定「反馈不迟到」惯例），最后一位聊到即解锁、反馈不迟到。
+  {id:'talkall', name:'有口皆碑', d:`与全部 ${Object.keys(NPCS).length} 处灯下之声交谈过`, ok:g=>Object.keys(NPCS).every(id=>(g.talked||[]).includes(id)), prog:g=>`${Object.keys(NPCS).filter(id=>(g.talked||[]).includes(id)).length}/${Object.keys(NPCS).length}`},
 ];
 
 function codexTag(name) {
