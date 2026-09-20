@@ -1059,7 +1059,13 @@
 // v23.15 对话现场页脚三端可见，唯独节头本身无数字；现与同节 voiceList 同读 NPCS·hero.talked 一份单一
 // 数据源派生计数（零裸字面量、加/删 NPC 自动跟随、防御式旧档零迁移），节头直书「灯下之声 N/37」；
 // 纯显示零结算零存档零数值变化（详见 view/menus.js 行内注释）
-const GAME_VERSION = 'v23.21';
+// v23.22 音效反馈·语义修正：成就解锁专属铃声（audio.js SFX.ach + hero.js applyAchievements）——
+// applyAchievements（全游戏唯一成就解锁入口）对每个新成就此前播放 SFX.levelup()（升级琶音），升级与
+// 成就两种事件听感同音，且升级+成就同时达成（战斗胜利常见）时升级琶音连响两次（听感噪音）；现补
+// SFX.ach() 专属上行铃声（sine 三连，与 levelup 琶音/victory 号角一听即分），解锁瞬间「听声即知是
+// 成就非升级」——承 v21.3 alert/boss「强敌前奏」同一听觉信息透明主线；零结算零数值零存档零布局
+// （详见 audio.js / hero.js 行内注释）
+const GAME_VERSION = 'v23.22';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

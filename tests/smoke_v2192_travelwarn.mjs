@@ -24,7 +24,7 @@ console.log('— v21.92 快速旅行目的地等级达标预警冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.91', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已更新为 v21.92', GAME_VERSION === 'v23.21', GAME_VERSION);
+ok('data.js GAME_VERSION 字面量已更新为 v21.92', GAME_VERSION === 'v23.22', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -35,7 +35,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.92 版本注释', dataSrc.includes('v21.92 快速旅行目的地等级达标预警'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.92', dataSrc.includes("const GAME_VERSION = 'v23.21';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.92', dataSrc.includes("const GAME_VERSION = 'v23.22';"));
 ok('data.js 仍保留 v21.91 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.91 新成就「长明不熄」'));
 
 // —— MAPS.recLv 数据契约（与 TRAVEL_LIST 四图一一对应，单一数据源）——
@@ -207,7 +207,7 @@ const vers = ['smoke_v2191_ptime.mjs', 'smoke_v2190_launch.mjs', 'smoke_v2189_vi
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.92`,
-    src.includes("const GAME_VERSION = 'v23.21';"));
+    src.includes("const GAME_VERSION = 'v23.22';"));
 }
 // 旧代 pin 零残留：全部测试文件不得再含 v21.91 版本字面量 pin（拆串构造避免本文件扫描行自匹配）
 const OLD_GV = "const GAME_VERSION = 'v21.9" + "1';";

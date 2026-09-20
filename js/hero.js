@@ -116,7 +116,11 @@ export function applyAchievements() {
   for (const id of newly) {
     if (hero.ach.includes(id)) continue;
     hero.ach.push(id);
-    SFX.levelup();
+    // v23.22 成就解锁专属铃声（音效反馈·语义修正）：此前对每个新成就播放 SFX.levelup()（升级琶音）——
+    // 成就与升级同音，且升级+成就同时达成时琶音连响两次（听感噪音）；现改播音频专属 SFX.ach()
+    // （audio.js 上行铃声），解锁瞬间听声即知是成就非升级（与升级的 SFX.levelup 各归其位）；
+    // 零结算零数值零存档零布局，解锁判定/横幅/奖励逐字未动。
+    SFX.ach();
     const def = ACH_LIST.find((x) => x.id === id);
     if (id === 'perfection') {
       hero.gold += PERFECTION_GOLD;

@@ -1,3 +1,10 @@
+## v23.22 音效反馈·语义修正：成就解锁专属铃声（audio.js SFX.ach + hero.js applyAchievements——承 v21.3 alert/boss「强敌前奏」同一听觉信息透明主线）——applyAchievements（全游戏唯一成就解锁入口）对每个新成就此前播放 SFX.levelup()（升级琶音）：升级与成就两种事件听感同音，且升级+成就同时达成（战斗胜利常见）时升级琶音连响两次（听感噪音，玩家分不清「这是升级了还是拿了成就」）；现补 SFX.ach() 专属上行铃声（sine 三连 659→880→1319，与 levelup 琶音/victory 号角一听即分），解锁瞬间「听声即知是成就非升级」；零结算零数值零存档零布局零存档结构变化（升级本身的 levelup 音效调用点逐字未动——各归其位）。
+
+- 【改动】`js/audio.js`：SFX 新增 `ach()`（+ v23.22 注释块，tone 同族、主增益总线同出口）；`js/hero.js`：applyAchievements 成就解锁 `SFX.levelup()` → `SFX.ach()`（+ v23.22 注释，解锁判定/横幅 boxMsg/完美奖励 PERFECTION_GOLD 判发逐字未动）；`js/data.js`：`GAME_VERSION` v23.21→v23.22（附 v23.22 注释，v23.21 起各历史注释保留）。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能公式/成就判定/数据（纯音频反馈：applyAchievements 的解锁判定/横幅/奖励零变化；升级 SFX.levelup 调用点（checkSkills 等）逐字未动；SFX 家族其余与 MUSIC/BGM/音量/静音逐字未动）；未动 world/battle/core/quests/rules/encounter/enemyAI/shop/scene/bind/hooks/main/index.html/view 全部。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin 级联（v23.21→v23.22，137 件测试文件 sed 批量落位）；`package.json` test 串 212 份不变（本次未新增冒烟文件，承 v23.17-v23.21 先例）；README 守护描述/件套口径不变（212 份）。
+- 【验证】`node --check` js/audio.js、js/hero.js、js/data.js 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-20 cron 自动完善）
+
 ## v23.21 J 任务日志「主线」节头补「N/5」进度（体验打磨·信息透明·纯显示——承 v23.16 灯下之声节头「N/37」/ v23.19 记忆碎片节头「N/4」/ v23.20 支线节头「可交付 N」同一「节头第一眼就报进度」主线收口）——J 日志四节（主线/支线/记忆碎片/灯下之声）中主线节是最后一个无数字的节头：主线推进在 I 状态页五徽记、胜利画面（v22.89）、阵亡画面（v22.95）、尾声画面（v22.96）四端可见，唯独日志「主线」节头只写二字——玩家翻日志想确认「主线走到哪一步了」仍要逐卡找「已完成」标签；且五徽记中的「试炼场」（rushDone）在 J 日志无任何卡片承载（RUSH 非 QUESTS 条目），节头反而是该徽记在日志里的唯一锚点；现与四端同读 quests.adventureProgress(hero) 一份单一数据源（五徽记 灯芯/星井/回廊/初灯/试炼场，零裸字面量、增删徽记自动跟随），节头直书「主线 · N/5」（N=已达成徽记数，新档 0/5 起随推进实时）；节高 h12/滚动钳制/页脚「还有 N 条」口径逐字未动；纯显示零结算零存档零数值变化。
 
 - 【改动】`js/view/menus.js`：drawJournal 主线节头改派生 label（`_mainProg = adventureProgress(hero)` 单一数据源 + `_mainMet/_mainProg.length` 模板计数，+ v23.21 注释块）；`js/data.js`：`GAME_VERSION` v23.20→v23.21（附 v23.21 注释，v23.20 起各历史注释保留）。
