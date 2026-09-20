@@ -1116,7 +1116,13 @@
 // PERIOD 标签 ☀️白天/🌆黄昏/🌙夜晚/🌅黎明 与 drawTimeTint 画面着色三端同读一份源，调昼夜节奏只改本
 // 文件一处；无字回廊 curMap()==='gallery' 例外恒暗——HUD 标 🌑 恒暗、画面恒暗色，v14.8 起同一判定）
 // 在速查表查无一行；现补录（纯文档零逻辑零结算零存档零数值变化，DAY_PHASE_S 数值逐字未动）。
-const GAME_VERSION = 'v23.30';
+// v23.31 新机制·数值平衡·单一数据源：遇敌槽昼夜修正——昼夜（v14.6 起纯世界时钟+HUD 标签+画面着色）首次
+// 接入机制：夜晚（night 相位）危险格遇敌槽步进 ×1.25、黎明（dawn 相位）×0.85（ENCOUNTER.phaseGauge 单一
+// 数据源，world.tickEncounter 危险格步进同乘、H 页「遇敌槽 / 危险格」机制行/README 数值速查同读一份源，
+// 调修正只改本文件一处；只调危险格步进，安全格 -6/喷泉 -25/槽满 100/预警线 70 逐字未动）；相位判定收口
+// 为本文件 dayPhase() 纯函数（view/drawWorld.js timeOfDay 与 world.tickEncounter 同读，与旧 view 内实现
+// 在 t∈[0,9999] 逐值恒等）；无字回廊例外恒暗不乘修正（「被忘掉的地方没有晨昏」——curMap()==='gallery'）。
+const GAME_VERSION = 'v23.31';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -1643,7 +1649,12 @@ const MAPS={
 // v19.12 收口 warn 后本家族最后一员——v19.12/v19.15 条目与 UI_PULSE_MS 注释都把它明确标为
 // 「预警态闪烁 330ms」留白），现一并归入，调「⚠️ 危险逼近」快闪节奏也只改这一处。
 // 数值逐字不变（满槽仍 100、预警线仍 70、预警闪烁仍 330），零遇敌/UI 回归。
-const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 100, warn: 70, warnFlash: 330 };
+const ENCOUNTER = { dangerMin: 10, dangerVar: 9, fountain: -25, calm: -6, full: 100, warn: 70, warnFlash: 330,
+  // v23.31 遇敌槽昼夜修正（单一数据源·只调危险格步进）：夜晚（night）危险格步进 ×1.25 / 黎明（dawn）×0.85，
+  // 白天/黄昏 ×1——world.tickEncounter 危险格分支同乘（Math.round 后入槽），H 页「遇敌槽 / 危险格」机制行
+  // 与 README 数值速查「昼夜 / 时段」行同读此源；安全格 -6/喷泉 -25/槽满 100/预警线 70/快闪 330 逐字不动；
+  // 无字回廊恒暗例外（curMap()==='gallery' 不乘修正，「被忘掉的地方没有晨昏」）；调修正只改本文件一处。
+  phaseGauge: { day: 1, dusk: 1, night: 1.25, dawn: 0.85 } };
 
 const CAVE_TREASURE = MAPS.cave.treasure;
 const INN_PRICE = 10;
@@ -2571,6 +2582,14 @@ const IDLE_BOB = { period: 500, phase: 0.13 };
 // 「动画时序数据化」体系——本家族此前收口的都是 ms 级 UI/反馈节奏，唯独「一轮昼夜 4×90=360 秒」
 // 的世界时钟节奏仍是裸奔数值）。结构：4 相位（day/dusk/night/dawn）各 DAY_PHASE_S 秒轮转
 const DAY_PHASE_S = 90;
+// v23.31 昼夜相位纯函数（单一数据源·机制与显示同读）：view/drawWorld.js 的 timeOfDay()（HUD 标签/画面
+// 着色）与 world.tickEncounter 的遇敌槽昼夜修正同读此源——相位判定由此前 view 层私有实现收口进本文件，
+// 与旧实现在 t∈[0,9999] 全扫下逐值恒等（['day','dusk','night','dawn'][Math.floor(t/DAY_PHASE_S)%4]）；
+// 调昼夜节奏/相位序列只改本文件一处（与 DAY_PHASE_S 同一「动画时序数据化」体系收口）。
+export function dayPhase(time) {
+  const t = (time || 0);
+  return ['day', 'dusk', 'night', 'dawn'][Math.floor(t / DAY_PHASE_S) % 4];
+}
 // 战斗战报窗口「每屏行数」（单一数据源，纯显示）：view/drawBattle 战报区的可见行数阈值——
 // 此前裸写 3 三处（回看偏移上限 `S.blog.length-3`、切片窗口 `S.blog.length-3-S.blogView`、
 // 溢出指示 `S.blog.length>3`），互不引用：想调战报窗口高度（如放宽到 4 行让更多信息常驻）要改
@@ -4403,7 +4422,10 @@ const HELP_PAGES=[
     // 派生（与 world.tickEncounter 结算/小地图读数同读一份源，调遇敌节奏只改 ENCOUNTER 一处、帮助页
     // 自动跟随零裸字面量）；行数 7→8 仍 ≤10 保 sp=34 档、r[2] 数 2→3、末行（通关之路）基线 366 不触
     // 页脚 452（v22.37 基线 316 + r[2] 16 + sp 34 派生）；纯文字零逻辑零结算零存档变化。
-    ['遇敌槽 / 危险格','深绿高草=危险格 · 踩上每步+' + ENCOUNTER.dangerMin + '~' + (ENCOUNTER.dangerMin + ENCOUNTER.dangerVar - 1) + ' · 槽满(' + ENCOUNTER.full + ')必遇敌','雾语林/矿脉/回廊全图皆危险格 · 安全格-' + Math.abs(ENCOUNTER.calm) + ' · 喷泉-' + Math.abs(ENCOUNTER.fountain) + ' · 槽达' + ENCOUNTER.warn + ' ⚠️危险逼近'],
+    // v22.43 帮助页「遇敌槽 / 危险格」机制行（本文件 HELP_PAGES·喷泉-25 即由 ENCOUNTER.fountain 派生）
+    // + v23.31 同款：次行末尾补昼夜修正（🌙夜×N/🌅黎×M 由 ENCOUNTER.phaseGauge 派生——H 页机制行与
+    // world.tickEncounter/README 同读一份源，调修正只改 data.js 一处；12px estW ≈467.5 ≤470 预算）
+    ['遇敌槽 / 危险格','深绿高草=危险格 · 踩上每步+' + ENCOUNTER.dangerMin + '~' + (ENCOUNTER.dangerMin + ENCOUNTER.dangerVar - 1) + ' · 槽满(' + ENCOUNTER.full + ')必遇敌','雾语林/矿脉/回廊全图皆危险格 · 安全格-' + Math.abs(ENCOUNTER.calm) + ' · 喷泉-' + Math.abs(ENCOUNTER.fountain) + ' · 槽达' + ENCOUNTER.warn + ' ⚠️危险逼近' + ' 🌙夜×' + ENCOUNTER.phaseGauge.night + '/🌅黎×' + ENCOUNTER.phaseGauge.dawn],
     // v22.87 通关之路行补 r[2]「真结局/记忆碎片」指针（体验打磨·信息透明·纯文字，承 v22.77-82
     // 地图指南行内指针补全同一主线——「信息透明」主题的早期收口）：通关之路行是「怎么通关」的
     // 最终一栏（drawHelp 金色收尾行），此前只列主线（讨回灯芯→击败洞窟领主→双徽记开门→回廊

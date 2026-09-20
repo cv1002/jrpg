@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BOSS_ALTAR, MB_ALTAR } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, dayPhase, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BOSS_ALTAR, MB_ALTAR } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -34,10 +34,9 @@ export function cam() {
 }
 
 function timeOfDay() {
-  const t = (S.G && S.G.time) || 0;
-  // 昼夜相位时长单一数据源：data.js DAY_PHASE_S（=90 秒一档）——调昼夜节奏只改 data.js 一处，
-  // 与 hud.js 注释/界面标签同读此源，绝无第二套口径（与 HIT_FB_MS / UI_PULSE_MS 同一「动画时序数据化」体系）
-  return ['day', 'dusk', 'night', 'dawn'][Math.floor(t / DAY_PHASE_S) % 4];
+  // v23.31 相位判定收口（单一数据源·机制与显示同读）：相位计算已收口进 data.js dayPhase() 纯函数
+  // （HUD 标签/画面着色与 world 遇敌槽修正同读一份源）——此处仅转发，与旧实现在 t∈[0,9999] 逐值恒等
+  return dayPhase((S.G && S.G.time) || 0);
 }
 
 function drawTimeTint() {

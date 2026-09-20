@@ -12,7 +12,7 @@
 // 姊妹件套 pin（v2242..v2237 随新现实更新）复查 + 旧代 v22.42 字面量/恒等/件套/串尾 pin 全库零残留 +
 // 坏链防回归。
 import { S } from '../js/state.js';
-import { GAME_VERSION, HELP_PAGES, HELP_TITLES, ENCOUNTER, NPC_SPOTS, MAPS } from '../js/data.js';
+import { GAME_VERSION, HELP_PAGES, HELP_TITLES, ENCOUNTER, NPC_SPOTS, MAPS, dayPhase } from '../js/data.js';
 import { newGame } from '../js/core.js';
 import { loadMap } from '../js/world.js';
 import fs from 'node:fs';
@@ -93,7 +93,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.42（本版守 v22.43）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 43)), GAME_VERSION);
 ok('data.js 含 v22.43 注释（机制行说明）', dSrc.includes('v22.43 体验打磨'));
 ok('GAME_VERSION 字面量已为 v22.43（旧 v22.42 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.30';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
+  dSrc.includes("const GAME_VERSION = 'v23.31';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('data.js 仍保留 v22.42/v22.40 世代注释链（菌盖灯油/高草显形累积注释未动）',
   dSrc.includes('v22.42 新内容·世界景观·纯显示') && dSrc.includes('v22.40 高草显形'));
 
@@ -113,7 +113,8 @@ ok('既有 7 行标签逐字零回归（四图 Lv 行/图例两行/通关之路�
 const rowEnc = page.find((r) => r[0] === '遇敌槽 / 危险格');
 // 期望逐字（与 data.js 源码同式派生：全部数值来自 ENCOUNTER 单一数据源）
 const expR1 = '深绿高草=危险格 · 踩上每步+' + ENCOUNTER.dangerMin + '~' + (ENCOUNTER.dangerMin + ENCOUNTER.dangerVar - 1) + ' · 槽满(' + ENCOUNTER.full + ')必遇敌';
-const expR2 = '雾语林/矿脉/回廊全图皆危险格 · 安全格-' + Math.abs(ENCOUNTER.calm) + ' · 喷泉-' + Math.abs(ENCOUNTER.fountain) + ' · 槽达' + ENCOUNTER.warn + ' ⚠️危险逼近';
+// v23.31 次行末尾补昼夜修正段（由 ENCOUNTER.phaseGauge 派生——H 页机制行/README/world.tickEncounter 同读一份源）
+const expR2 = '雾语林/矿脉/回廊全图皆危险格 · 安全格-' + Math.abs(ENCOUNTER.calm) + ' · 喷泉-' + Math.abs(ENCOUNTER.fountain) + ' · 槽达' + ENCOUNTER.warn + ' ⚠️危险逼近' + ' 🌙夜×' + ENCOUNTER.phaseGauge.night + '/🌅黎×' + ENCOUNTER.phaseGauge.dawn;
 ok('机制行 r[1] 逐字（深绿高草=危险格/步进区间/满槽必遇敌·全由 ENCOUNTER 派生）',
   !!rowEnc && rowEnc[1] === expR1, rowEnc && rowEnc[1]);
 ok('机制行 r[2] 逐字（全图皆危险/安全格-6/喷泉-25/槽达70逼近·全由 ENCOUNTER 派生）',
@@ -123,7 +124,10 @@ ok('ENCOUNTER 数据契约未漂移（dangerMin/dangerVar/calm/fountain/full/war
   ENCOUNTER.fountain === -25 && ENCOUNTER.full === 100 && ENCOUNTER.warn === 70,
   JSON.stringify(ENCOUNTER));
 ok('data.js 源级含机制行字面量（防运行期拼接漂移）',
-  dSrc.includes("['遇敌槽 / 危险格','深绿高草=危险格 · 踩上每步+' + ENCOUNTER.dangerMin + '~' + (ENCOUNTER.dangerMin + ENCOUNTER.dangerVar - 1) + ' · 槽满(' + ENCOUNTER.full + ')必遇敌','雾语林/矿脉/回廊全图皆危险格 · 安全格-' + Math.abs(ENCOUNTER.calm) + ' · 喷泉-' + Math.abs(ENCOUNTER.fountain) + ' · 槽达' + ENCOUNTER.warn + ' ⚠️危险逼近']"));
+  dSrc.includes("['遇敌槽 / 危险格','深绿高草=危险格 · 踩上每步+' + ENCOUNTER.dangerMin + '~' + (ENCOUNTER.dangerMin + ENCOUNTER.dangerVar - 1) + ' · 槽满(' + ENCOUNTER.full + ')必遇敌','雾语林/矿脉/回廊全图皆危险格 · 安全格-' + Math.abs(ENCOUNTER.calm) + ' · 喷泉-' + Math.abs(ENCOUNTER.fountain) + ' · 槽达' + ENCOUNTER.warn + ' ⚠️危险逼近' + ' 🌙夜×' + ENCOUNTER.phaseGauge.night + '/🌅黎×' + ENCOUNTER.phaseGauge.dawn]"));
+ok('机制行次行昼夜修正段由 ENCOUNTER.phaseGauge 派生（v23.31·零裸字面量）',
+  !!rowEnc && rowEnc[2].endsWith(' 🌙夜×' + ENCOUNTER.phaseGauge.night + '/🌅黎×' + ENCOUNTER.phaseGauge.dawn),
+  rowEnc && rowEnc[2].slice(-30));
 ok('help 机制行零裸字面量（数字全部经 ENCOUNTER 派生，源级无写死 10/18/100/6/25/70 类直拼）',
   dSrc.includes('+ ENCOUNTER.dangerMin +') && dSrc.includes('+ ENCOUNTER.dangerVar - 1) +') &&
   dSrc.includes('Math.abs(ENCOUNTER.calm)') && dSrc.includes('Math.abs(ENCOUNTER.fountain)') &&
@@ -213,6 +217,29 @@ ok('运行期：图例两行仍按 264/314 落位（随 v22.53/v22.78 让位下�
 ok('NPC 总数保持 30（零 NPC 变更）', Object.keys(NPC_SPOTS).length === 38, String(Object.keys(NPC_SPOTS).length));
 ok('本版零新增文件之外：仅 data.js 文案 + README/package.json/CHANGELOG/测试（纯文字零逻辑）', true);
 
+// —— v23.31 遇敌槽昼夜修正（机制·数值平衡·单一数据源）守护 ——
+ok('GAME_VERSION 已至 v23.31', GAME_VERSION === 'v23.31', GAME_VERSION);
+ok('ENCOUNTER.phaseGauge 四相位逐值（day/dusk/night/dawn = 1/1/1.25/0.85）',
+  ENCOUNTER.phaseGauge && ENCOUNTER.phaseGauge.day === 1 && ENCOUNTER.phaseGauge.dusk === 1 &&
+  ENCOUNTER.phaseGauge.night === 1.25 && ENCOUNTER.phaseGauge.dawn === 0.85, JSON.stringify(ENCOUNTER.phaseGauge));
+ok('dayPhase 纯函数四相位边界逐值（day@0·89 / dusk@90·179 / night@180·269 / dawn@270·359 / 360 循环回 day）',
+  dayPhase(0) === 'day' && dayPhase(89) === 'day' && dayPhase(90) === 'dusk' && dayPhase(179) === 'dusk' &&
+  dayPhase(180) === 'night' && dayPhase(269) === 'night' && dayPhase(270) === 'dawn' && dayPhase(359) === 'dawn' &&
+  dayPhase(360) === 'day' && dayPhase(9999) === 'dawn');
+ok('data.js 源级含 phaseGauge 定义（v23.31·四相位字面量）',
+  dSrc.includes('phaseGauge: { day: 1, dusk: 1, night: 1.25, dawn: 0.85 }') && dSrc.includes('v23.31 遇敌槽昼夜修正'));
+const worldSrc = fs.readFileSync(path.join(ROOT, 'js', 'world.js'), 'utf8');
+ok('world.js tickEncounter 危险格步进已按相位修正（ENCOUNTER.phaseGauge + dayPhase 同源）',
+  worldSrc.includes('ENCOUNTER.phaseGauge') && worldSrc.includes('dayPhase((S.G && S.G.time) || 0)') &&
+  worldSrc.includes("curMap() === 'gallery' ? 1"));
+ok('drawWorld.js timeOfDay 已转发 dayPhase（view 显示与 world 机制同读一份源）',
+  fs.readFileSync(path.join(ROOT, 'js', 'view', 'drawWorld.js'), 'utf8').includes('dayPhase((S.G && S.G.time) || 0)') &&
+  !fs.readFileSync(path.join(ROOT, 'js', 'view', 'drawWorld.js'), 'utf8').includes('Math.floor(t / DAY_PHASE_S) % 4'));
+ok('README 数值速查「昼夜 / 时段」行已补 v23.31 遇敌槽昼夜修正口径',
+  readmeSrc.includes('v23.31 起昼夜接入机制——遇敌槽昼夜修正') && readmeSrc.includes('×1.25 / 🌅黎明 ×0.85'));
+ok('运行期：机制行次行实际渲染含昼夜修正段（y=382 12px 次级灰）',
+  (() => { const c = calls.find((x) => x.t.startsWith('雾语林/矿脉/回廊') && x.y === 382 && x.font === '12px sans-serif'); return !!c && c.t.includes('🌙夜×1.25/🌅黎×0.85'); })());
+
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (pkgSrc.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 139 件套（含 smoke_v2243_encguide）', testChain === 212, String(testChain));
@@ -226,7 +253,7 @@ ok('README 含 v22.43 守护描述（帮助页遇敌槽/危险格机制行守护
   readmeSrc.includes('v22.43 起含帮助页「地图指南」遇敌槽/危险格机制行守护'));
 ok('README 视觉 bullet 含机制行指针（H 帮助页·地图指南）',
   readmeSrc.includes('遇敌槽 / 危险格机制行') && readmeSrc.includes('H 帮助页·地图指南新增'));
-ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v23.30'));
+ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v23.31'));
 
 // —— 姊妹件套 pin（v2242..v2237 随新现实更新）复查 + 旧代零残留 ——
 const readTest = (name) => fs.readFileSync(path.join(ROOT, 'tests', name), 'utf8');
@@ -235,7 +262,7 @@ const s2237 = readTest('smoke_v2237_minimaplegend.mjs');
 const s2238 = readTest('smoke_v2238_starwell.mjs');
 const s2234 = readTest('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2242 的 GAME_VERSION 字面量 pin 已更新为 v22.43（旧 v22.42 零残留）',
-  s2242.includes("const GAME_VERSION = 'v23.30';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
+  s2242.includes("const GAME_VERSION = 'v23.31';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('smoke_v2237 的地图指南行数 pin 已更新为 === 8', s2237.includes('page.length === 8'));
 ok('smoke_v2237 的机制行/通关之路下标 pin 已更新（labels[6]=机制行 labels[7]=通关之路）',
   s2237.includes("labels[6] === '遇敌槽 / 危险格'") && s2237.includes("labels[7] === '通关之路'"));

@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -203,7 +203,12 @@ function portalDest(mapName, tile) {
 
 function tickEncounter(x, y) {
   if (dangerAt(x, y)) {
-    S.encGauge = Math.min(ENCOUNTER.full, S.encGauge + ENCOUNTER.dangerMin + Math.floor(Math.random() * ENCOUNTER.dangerVar));
+    // v23.31 遇敌槽昼夜修正（机制·数值平衡·单一数据源）：夜晚（night）危险格步进 ×1.25 / 黎明（dawn）×0.85，
+    // 白天/黄昏 ×1——ENCOUNTER.phaseGauge 与 H 页「遇敌槽 / 危险格」机制行/README 数值速查同读一份源，
+    // 与 HUD 昼夜标签/画面着色同读 dayPhase() 相位（v23.31 起显示与机制同源）；只调危险格步进，
+    // 安全格 -6/喷泉 -25/槽满 100/预警线 70 逐字未动；无字回廊例外恒暗不乘修正（「被忘掉的地方没有晨昏」）。
+    const gmult = curMap() === 'gallery' ? 1 : ((ENCOUNTER.phaseGauge || {})[dayPhase((S.G && S.G.time) || 0)] || 1);
+    S.encGauge = Math.min(ENCOUNTER.full, S.encGauge + Math.round((ENCOUNTER.dangerMin + Math.floor(Math.random() * ENCOUNTER.dangerVar)) * gmult));
     if (S.encGauge >= ENCOUNTER.full) {
       S.encGauge = 0;
       startBattle(randomEncounter());
