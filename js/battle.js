@@ -111,8 +111,17 @@ function startBattle(enemyDef) {
   // v21.37 已遭遇计数化（信息透明·纯状态）：v19.41 只记布尔「撞见过」→ 图鉴侧显示写死的「✕0」，
   // 玩家刷某怪多次（含逃跑/战败反复撞见）却永远看不到一个数字——现改为计数（每次进战 +1），
   // 与 bestiary 讨伐计数同族；旧档布尔 true 由图鉴侧 |0 归一为 1（至少撞见一次），零存档格式变化。
+  // v23.24 初见记忆图鉴遭遇反馈（体验打磨·信息透明·纯显示——承 v19.41 已遭遇揭示 / v21.37 已遭遇
+  // 计数 / v23.23 首杀收录反馈同一「遇见 = 被记下」主线）：一进战即记入 hero.seen（下方），但进战
+  // 报文「⚔️ 遭遇了 X！」只报遭遇不报图鉴——玩家首次撞见一只新怪的瞬间没有任何提示告诉「它被记下了」，
+  // 图鉴「已遭遇」条目要事后按 B 才发现；「见过 vs 打过」正是图鉴页脚双口径（已遭遇 N/13），
+  // 达成当下却零回声。现与图鉴页脚同读 data.js BESTIARY_TARGET · hero.seen 一份单一数据源，仅初见
+  // （seen[key] 0→1）补一条「📖 记忆图鉴新遭遇」战报（带 N/13 已遭遇进度）；再遇同怪零噪音零变化，
+  // 旧档布尔 seen（true+1=2≠1；|0 归一同图鉴侧）不误报，纯显示零结算零存档零数值变化。
+  let _firstSeen = false;
   {
     const _seenKey = canonicalName(S.enemy.name);
+    _firstSeen = !((S.G.seen || {})[_seenKey] | 0);
     if (S.G.seen) S.G.seen[_seenKey] = (S.G.seen[_seenKey] || 0) + 1;
     else S.G.seen = { [_seenKey]: 1 };
   }
@@ -134,6 +143,13 @@ function startBattle(enemyDef) {
   goto('battle');
   S.battleBusy = true;
   S.blog = [`⚔️ 遭遇了 ${S.enemy.name}！${threatWarn()}`];
+  // v23.24（续）初见图鉴战报：仅 _firstSeen（seen[key] 0→1 的当场回声）追加一条——与图鉴页脚 met
+  // 同式派生（BESTIARY_TARGET · hero.seen 单一数据源、|0 归一防御式），名字经 canonicalName 归一
+  // 与图鉴「已遭遇」行同口径（真身→本体）；BLOG_WIN=3 两行同窗零溢出，再遇同怪零追加零噪音。
+  if (_firstSeen) {
+    const _seenN = BESTIARY_TARGET.filter((n) => ((S.G.seen || {})[n] | 0) > 0).length;
+    S.blog.push(`📖 记忆图鉴新遭遇：【${canonicalName(S.enemy.name)}】（已遭遇 ${_seenN}/${BESTIARY_TARGET.length} 种 · 世界画面按 B 查看）`);
+  }
   S.blogView = 0;
   S.battleTurn = 1;
   // v21.3 战斗开场警报音（音效反馈）：进战瞬间的听觉钩子——Boss/试炼=低沉警报（SFX.boss），

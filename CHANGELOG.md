@@ -1,3 +1,10 @@
+## v23.24 初见记忆图鉴遭遇反馈：进战首遇补「📖 记忆图鉴新遭遇」战报（battle.js startBattle——承 v19.41 已遭遇揭示 / v21.37 已遭遇计数 / v23.23 首杀收录反馈同一「遇见 = 被记下」主线）——一进战即记入 hero.seen（startBattle 唯一写入点），但进战报文「⚔️ 遭遇了 X！」只报遭遇不报图鉴：玩家首次撞见一只新怪的瞬间没有任何提示告诉「它被记下了」，图鉴「已遭遇」条目要事后按 B 才发现（「见过 vs 打过」正是图鉴页脚双口径「已遭遇 N/13」，达成当下却零回声）；现与图鉴页脚同读 data.js `BESTIARY_TARGET` · `hero.seen` 一份单一数据源（|0 归一防御式、名字经 `canonicalName` 归一真身→本体与图鉴「已遭遇」行同口径），仅初见（seen[key] 0→1）补一条「📖 记忆图鉴新遭遇：【X】（已遭遇 N/13 种 · 世界画面按 B 查看）」战报（`BLOG_WIN`=3 两行同窗零溢出）；再遇同怪零噪音零变化，旧档布尔 seen（true+1=2≠1）不误报；纯显示零结算零存档零数值变化。
+
+- 【改动】`js/battle.js`：startBattle seen 计数块补 `_firstSeen` 判定（0→1）+ 其后再补一条图鉴战报（+ v23.24 注释块；`BESTIARY_TARGET` 走既有 import 行零新增，met 与图鉴页脚同式派生）；`js/data.js`：`GAME_VERSION` v23.23→v23.24（附 v23.24 注释，v23.23 起各历史注释保留）。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能公式/成就判定/数据（纯显示：seen 计数写入点逐字未动、bestiary 写入点/升级/胜利/掉落全链逐字未动）；未动 hero/quests/rules/world/encounter/enemyAI/shop/core/audio/view/main.js/index.html。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin 级联（v23.23→v23.24，137 件测试文件 sed 批量落位）；`package.json` test 串 212 份不变（本次未新增冒烟文件，承 v23.17-v23.23 先例）；README 守护描述/件套口径不变（212 份）。
+- 【验证】`node --check` js/battle.js、js/data.js 过；`npm run check`（25 模块）全部通过；运行期实证脚本（承冒烟桩先例，真实 startBattle 四场景：初见 1/13 · 再遇零噪音 · 布尔旧档零误报 · 双怪 2/13）9 项全过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-20 cron 自动完善）
+
 ## v23.23 首杀记忆图鉴收录反馈：胜利报文补「📕 已记起」回声（battle.js winBattle——承 v19.41 已遭遇揭示 / v21.37 已遭遇计数同一「击败 = 被记起」主线）——击败即写入记忆图鉴（winBattle `hero.bestiary` 累计，全游戏唯一写入点），但胜利报文（升级/胜利/额外掉落/碎片/支线进度）只报金币经验：玩家首杀一只新怪的瞬间没有任何提示告诉「它被记下了」，图鉴新条目要事后按 B 才发现——「讨伐 = 被记起」是潮灯记·记忆图鉴的主题支柱，达成当下却零回声（图鉴页/状态页资源行/收集四件套六端早已齐备，唯独「首次收录那一下」没有反馈）；现仅首杀（`bestiary[bookName]` 0→1）时补一条「📕 记忆图鉴新收录：【怪名】（已记起 N/13 种 · 世界画面按 B 查看）」报文，N 与图鉴页/收集四件套同读 data.js `BESTIARY_TARGET` · `hero.bestiary` 一份单一数据源（零裸字面量、加/删怪自动跟随）；再杀同怪零噪音零变化，旧档布尔 bestiary（true+1=2≠1）不误报；零结算零数值零存档零布局变化（bestiary 写入点/升级/胜利/掉落/碎片/支线进度/回 world 全部逐字未动）。
 
 - 【改动】`js/battle.js`：winBattle 首杀分支补「📕 记忆图鉴新收录」报文（+ v23.23 注释块；`BESTIARY_TARGET` 加入既有 data.js import 行，`codexGotN` 与图鉴页同式派生）；`js/data.js`：`GAME_VERSION` v23.22→v23.23（附 v23.23 注释，v23.22 起各历史注释保留）。

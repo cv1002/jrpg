@@ -34,7 +34,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.11 版本注释', dataSrc.includes('// v23.11 体验打磨·信息透明·同一口径：战斗「战利品预览」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.11（旧 v23.10 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.23';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "10';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.24';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "10';"));
 ok('data.js 仍保留 v23.10 历史注释（run 总结屏困难档标注注释未动）', dataSrc.includes('// v23.10 体验打磨·信息透明·同一口径：run 总结屏三屏'));
 
 // —— FRAGMENTS 单源契约（与 battle.winBattle 同读一份源）——
@@ -204,15 +204,15 @@ ok('package.json 串尾为 ... node tests/smoke_v2310_diffsum.mjs && node tests/
   pkg.includes('node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 207 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.11 条目', changelog.startsWith('## v23.23 '));
+ok('CHANGELOG 顶部已追加 v23.11 条目', changelog.startsWith('## v23.24 '));
 ok('CHANGELOG 仍保留 v23.10 条目（历史口径）', changelog.includes('## v23.10 run 总结屏三屏「困难档」标注'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.10 pin 零残留 ——
 const s2310 = read('smoke_v2310_diffsum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2310 的 GAME_VERSION 字面量 pin 已更新为 v23.11', s2310.includes("const GAME_VERSION = 'v23.23';"));
+ok('smoke_v2310 的 GAME_VERSION 字面量 pin 已更新为 v23.11', s2310.includes("const GAME_VERSION = 'v23.24';"));
 ok('smoke_v2310 的 CHANGELOG 顶 pin 已更新为 ## v23.12',
-  s2310.includes("startsWith('## v23.23 "));
+  s2310.includes("startsWith('## v23.24 "));
 ok('smoke_v2310 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2310.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2310 的 README 串尾 pin 已延伸至 smoke_v2311_fragprev',
