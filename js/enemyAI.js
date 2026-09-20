@@ -6,7 +6,7 @@ import { S } from './state.js';
 import { cmdDmg } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
-import { BURN_PCT, SHIELD_MULT, POISON_PCT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN, FX_ENEMY, FX_HERO } from './data.js';
+import { BURN_PCT, SHIELD_MULT, POISON_PCT, POISON_TURNS, DEFEND_MULT, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, HIT_FB_MS, DOT_MIN, FX_ENEMY, FX_HERO, DEFLECT_GOAL } from './data.js';
 
 export function pickAct(enemy) {
   const acts = enemy.acts || [{ type: 'attack', w: 100 }];
@@ -158,7 +158,15 @@ export function enemyAct(deps) {
       // 白赚一下反击时，同样想一眼看清「这刀下去怪还剩多少」；直接读结算后（enemy.hp = Math.max(0, …)
       // 之后）的 enemy.hp / enemy.hpMax，与 attackMove 扣减后追加剩余 HP 同源；反杀（enemy.hp <= 0）
       // 不追加，避免与随后「被反杀倒地」重复（同 v20.0 击杀时不追加敌方剩余 HP 的口径）。零结算变化。
-      S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！${enemy.hp > 0 ? `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）` : ''}`);
+      // v23.38 体验打磨·信息透明·反馈不迟到·纯显示：防御反击战报补「以守为攻 N/M」进度——v23.36 新成就的
+      // 计数写入点就在本分支（下方 hero.deflects 自增），但反击战报只报伤害与敌方剩血，「离 15 次还差
+      // 几次」要事后按 C 到成就页才知道（承 v21.60 讨伐支线「击杀现场报进度」/ v23.23 首杀「达成现场报
+      // 收录」同一「计数现场报进度」主线）；现与 data.js DEFLECT_GOAL · hero.deflects 同读一份源，
+      // dfc = 本次反击后的累计数（自增前 +1 预估，与下方写入逐值同源），「 · 以守为攻 N/M」紧接敌方
+      // 剩血之后同列，未达标告进展、达标即 15/15（成就横幅随后同刻出现，双响分层）；纯显示零结算
+      // 零数值零存档（反击伤害/概率/计数/解锁时机/既有文案逐字未动）。
+      const dfc = (hero.deflects || 0) + 1;
+      S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！${enemy.hp > 0 ? `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）` : ''} · 以守为攻 ${dfc}/${DEFLECT_GOAL}`);
       // v23.36 成就「以守为攻」计数（战斗维度里程碑·新维度收口）：等级/金币/讨伐/时长/掉落/药水/
       // 灵药/酿造/蘑菇/探索/图鉴/宝箱/支线/碎片/技能/装备/难度/精英/交谈各线都有成就印记，唯独
       // 「战斗操作」从未开垦——防御反击（防御中被命中 COUNTER_CHANCE 50% 触发）是玩家主动按 [5]
