@@ -1128,7 +1128,12 @@
 // 零新逻辑（quests.js 状态机全通用：cond/condProg/talk 四档/reward 走既有 applyQuestReward 三通道，
 // migrateQuests 无固定清单零迁移），成就「灯火同心」（allquests）经 Object.values(QUESTS)
 // 自动扩为九条支线，README 数值速查「支线 / 奖励」行同源补录。
-const GAME_VERSION = 'v23.32';
+// v23.33 音效反馈·语义修正：酿造成功专属音效（audio.js SFX.craft + core.js brewNow）——承 v23.22
+// SFX.ach 同一「事件音效各归其位」主线的收口：brewNow 酿造成功此前播放 SFX.levelup()（升级琶音），
+// 酿造是制作行为不是升级，听感与升级同音且首次酿造（灵药初成成就）时升级琶音与成就铃声连响两次；
+// 现补 SFX.craft() 气泡上行三连（sine 440→554→698，与 heal/item/coin/levelup/ach/victory 一听即分），
+// 酿成瞬间「听声即知是出锅非升级」；零结算零数值零存档零布局（详见 audio.js / core.js 行内注释）。
+const GAME_VERSION = 'v23.33';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
