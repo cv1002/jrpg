@@ -1122,7 +1122,13 @@
 // 调修正只改本文件一处；只调危险格步进，安全格 -6/喷泉 -25/槽满 100/预警线 70 逐字未动）；相位判定收口
 // 为本文件 dayPhase() 纯函数（view/drawWorld.js timeOfDay 与 world.tickEncounter 同读，与旧 view 内实现
 // 在 t∈[0,9999] 逐值恒等）；无字回廊例外恒暗不乘修正（「被忘掉的地方没有晨昏」——curMap()==='gallery'）。
-const GAME_VERSION = 'v23.31';
+// v23.32 新内容·新支线：雾语林蘑菇田拾菇人升格为讨伐支线「树精的菌库」委托人（QUESTS.side_tree，
+// TREE_GOAL 单一数据源）——树精是唯一无任务挂钩的中期普通怪（Lv.3 起出没、弱火），拾菇人
+// 「菌盖是灯油」守田人身份与树精搬菌盖入树洞的钩子同脉（残焰魔像「没人记得的火」同族）；数据层
+// 零新逻辑（quests.js 状态机全通用：cond/condProg/talk 四档/reward 走既有 applyQuestReward 三通道，
+// migrateQuests 无固定清单零迁移），成就「灯火同心」（allquests）经 Object.values(QUESTS)
+// 自动扩为九条支线，README 数值速查「支线 / 奖励」行同源补录。
+const GAME_VERSION = 'v23.32';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -1723,6 +1729,13 @@ const BONE_GOAL = 3;        // 拾骨人支线需讨伐的骷髅兵只数
 // 家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步
 const GRAIN_GOAL = 3;       // 粮铺掌柜支线需驱赶的哥布林只数
 
+// 树精讨伐目标（单一数据源）：拾菇人支线「树精的菌库」需驱赶的树精只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL / BONE_GOAL / GRAIN_GOAL 同一
+// 「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
+// 接取对话（offer）全同步；树精 Lv.3 起出没、弱火（MON_BASE 单一数据源，active 页「火焰斩」提示
+// 与图鉴 codexTag「弱点·火×1.35」同口径）。
+const TREE_GOAL = 3;        // 拾菇人支线需驱赶的树精只数
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -2037,7 +2050,9 @@ const NPCS={
   // 可对话角色）；台词走既有 NPCS.lines 兜底 + trueBoss 后 after 彩蛋（villager/掌灯童/说书人
   // 同款机制、npcQuestPages 无待办任务回退直落，零新逻辑、零裸字面量）；mark:'basket' 复用
   // 既有程序化绘制分支（装菇竹篮，与镇民/粮铺掌柜同款标记），造型复用 mwVillager（镇民短衫
-  // 身形，与同图雾径猎手斗篷区分）；无任务、无顶标、零结算零存档。
+  // 身形，与同图雾径猎手斗篷区分）；v23.32 起有支线「树精的菌库」（QUESTS.side_tree 委托人，
+  // 见 QUESTS.side_tree 行内注释——有任务后 npcQuestPages 走四档任务页、after 彩蛋并入 done
+  // 真结局分档），零结算零存档。
   picker:{name:'拾菇人', mark:'basket', lines:[
     ['拾菇人：北头的菌盖，夜里会发光——','镇上灯油，就是拿它熬的。','采的时候轻些，别惊了雾。 [Enter] 继续'],
     ['拾菇人：攒够两株，回镇找酿造锅，','能熬一小瓶高级灵药。不想熬，','杂货铺十金一株也收。 [Enter] 结束'],
@@ -3728,6 +3743,60 @@ const QUESTS={
       ]],
     },
   },
+  // 拾菇人·树精的菌库（v23.32 新支线）：讨伐 TREE_GOAL 只树精（bestiary 计数）——八条支线版图
+  // 逐怪核对后，唯一没有任何任务挂钩的中期普通怪只剩树精（四基础怪是开荒池、雾灵/骷髅兵/石魔像/
+  // 哥布林/残焰魔像皆已入线）；树精 Lv.3 起在雾语林/星井矿脉出没、弱火（MON_BASE 单一数据源），
+  // 而拾菇人（蘑菇田看田人）是雾语林资源链场景人物里唯一没有委托的——「菌盖是灯油」的看田人
+  // 守着的田被树精把发光的菌盖搬回树洞当灯用（与残焰魔像「没人记得的火」同脉：树精是「学着
+  // 用灯的老木头」，菌盖被偷走的田就熬不出灯油）；与 side_mist / side_stone / side_bone /
+  // side_grain 同一「讨伐采集型支线」模式（无 unlockOn → 从开局即 offer，保留完整接取流程），
+  // 阈值单一数据源 TREE_GOAL（判定/进度/目标文案/接取对话同读），奖励 70 金 + 1 生命药水——
+  // 介于护粮（50 金+药水）与未归的矿灯（80 金+灵药）之间的中期档；active 页按 hero 实时报进度
+  // （与 side_stone/side_bone 同款函数页）；done 页按 hero.trueBoss 分档（承 side_ember /
+  // side_bone done 页先例，把 picker 原有 trueBoss after 彩蛋「雾散了菌盖光没散/记得灯」并入
+  // 真结局档文案——npcQuestPages 有任务后不再单独展示 after，转由 done 分档承载，零内容丢失）。
+  side_tree:{
+    id:'side_tree', kind:'side', store:true, npc:'picker', giver:'picker',
+    cond:(g)=>(((g.bestiary||{})['树精'])||0) >= TREE_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['树精'])||0}/${TREE_GOAL} 只`,
+    name:'树精的菌库', where:'雾语林',
+    obj:`讨伐 ${TREE_GOAL} 只雾语林蘑菇田的【树精】`,
+    offer:'去雾语林蘑菇田找拾菇人，接下赶走树精的委托',
+    turnin:'树精赶走了！回蘑菇田找拾菇人',
+    done:'菌盖重新亮了起来，灯油不缺了。',
+    reward:{ gold:70, item:1 },
+    talk:{
+      offer:[[
+        '拾菇人：菌盖夜里发光——镇上灯油，就是拿它熬的。',
+        '可那帮【树精】把发光的菌盖一丛一丛',
+        `搬回树洞里当灯使。帮我赶走 ${TREE_GOAL} 只，菌田才能安生。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '拾菇人：树精怕火，火焰斩烧起来最够劲。',
+        '它们就在林子里转悠，多踩几片高草就能撞见。',
+        `（已驱赶 ${((hero.bestiary||{})['树精'])||0}/${TREE_GOAL} 只）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '拾菇人：树洞里的菌盖，我替你一丛丛搬回田里。',
+        '这些是谢礼——灯油管够，路上就有底气。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [[
+        '拾菇人：雾散了，菌盖上的光没散。',
+        '树精也学着把菌盖放回树洞外——',
+        '原来不是雾喂的它们，是它们一直记得灯。',
+        '（支线任务·已完成）',
+        '[Enter] 结束',
+      ]] : [[
+        '拾菇人：菌盖又亮了。往后你在林子里赶路，',
+        '一眼就能看见这片田的光。',
+        '（支线任务·已完成）',
+        '[Enter] 结束',
+      ]],
+    },
+  },
   // 粮铺掌柜·护粮的委托（v21.80 新支线）：讨伐 GRAIN_GOAL 只哥布林（bestiary 计数）——
   // 潮灯镇此前只有灯长「采集型」（side_mushroom 蘑菇）与守书记「雾语林讨伐型」（side_stone）两条
   // 支线，唯独镇子自家田里晃的「四基础怪」没有任何任务挂钩；哥布林是潮灯镇遇敌池限定怪
@@ -4587,7 +4656,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

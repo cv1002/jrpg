@@ -1,12 +1,14 @@
-// v22.16 专项冒烟：雾语林新风味 NPC「拾菇人」——纯内容扩充（无任务、零结算、零新逻辑）：
-// 数据层三件套（dungeon.extras (15,2) + NPC_SPOTS '15,2' + NPCS.picker），台词走既有 lines +
+// v22.16 专项冒烟：雾语林新风味 NPC「拾菇人」——数据层三件套（dungeon.extras (15,2) + NPC_SPOTS '15,2' + NPCS.picker），台词走既有 lines +
 // trueBoss after 彩蛋机制（villager 同款：npcQuestPages 无待办任务回退时 trueBoss 优先 after、
 // 否则 lines），mark:'basket' 复用既有程序化绘制分支（装菇竹篮），造型复用 mwVillager。
+// v23.32 随新现实更新：拾菇人升格为讨伐支线「树精的菌库」（QUESTS.side_tree）委托人——本件
+// 选段/顶标/交互断言改为「有任务」口径（offer 页优先、trueBoss after 彩蛋并入任务 done 真结局
+// 分档），原 NPCS.lines/after 数据契约断言逐字保留（数据仍在，仅供任务四档之外的回退面）。
 // 本冒烟守护：版本锚点、全局坐标防撞（NPC_SPOTS 跨地图共用键、唯一映射、既有 20 键未动、
 // 全图 extras 扫描 (15,2) 仅 dungeon 一处）、NPCS 契约（name/mark/lines 2 页/after 2 页/
 // 每页结构/[Enter] 收尾/行宽预算）、运行期（loadMap 落位 + 四邻可行走 + 雾径猎手/泉水/宝箱/
-// 祭坛零回归 + Enter/E 真实交互开对话 + default 与 trueBoss 两档选段）、npcQuestMark 无任务
-// 顶标、resolveNpcTalk 零任务契约、sprites 造型映射与既有 basket mark、README/package.json
+// 祭坛零回归 + Enter/E 真实交互开对话 + offer 单页选段）、npcQuestMark 有任务顶标、
+// resolveNpcTalk 接取契约、sprites 造型映射与既有 basket mark、README/package.json
 // 同步（tests 树尾 + 件套口径 + v22.16 守护描述 + 入库 112 份）、姊妹件套 pin（v22.15/v22.14
 // 随新现实更新 + v22.13/v22.11 NPC 总数 pin 21）复查 + 旧代 v22.15 字面量/恒等/件套/树尾 pin
 // 零残留。
@@ -88,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.15', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 16)), GAME_VERSION);
 ok('data.js 含 v22.16 注释（拾菇人说明）', dSrc.includes('v22.16 雾语林新风味 NPC「拾菇人」'));
 ok('GAME_VERSION 字面量已为 v22.16（旧 v22.15 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.31';") && !dSrc.includes("const GAME_VERSION = 'v22." + "15';"));
+  dSrc.includes("const GAME_VERSION = 'v23.32';") && !dSrc.includes("const GAME_VERSION = 'v22." + "15';"));
 ok('data.js 仍保留 v22.15 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.15 新手教程行补 [ / ] 音量口径'));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
@@ -127,16 +129,20 @@ ok('lines 第 2 页含蘑菇线情报（酿造 2 株→灵药 / 卖菇 10 金）
 ok('after 首页含散雾后彩蛋（雾散了 + 记得灯）',
   pk.after[0].some((ln) => ln.includes('雾散了')) && pk.after[0].some((ln) => ln.includes('记得灯')));
 
-// —— 选段（npcQuestPages 运行期求值，无任务 → 直落 NPCS 数据）——
+// —— 选段（npcQuestPages 运行期求值；v23.32 起拾菇人有支线 → 任务四档优先，after 彩蛋并入 done 真结局分档）——
 const p0 = npcQuestPages({}, 'picker');
-ok('无旗标选段落到 lines（菌盖发光）', p0 && p0[0].some((ln) => ln.includes('菌盖')), p0 && p0[0][0]);
-const pT = npcQuestPages({ trueBoss: true }, 'picker');
-ok('trueBoss 走 after 彩蛋（雾散了 + 认得回家的路）',
-  pT && pT.some((pg) => pg.some((ln) => ln.includes('雾散了'))) &&
-  pT.some((pg) => pg.some((ln) => ln.includes('认得回家的路'))));
-ok('无任务：npcQuestMark===null（无 ❕ 顶标）', npcQuestMark(S.G, 'picker') === null);
-ok('无支线绑定拾菇人：resolveNpcTalk 不推进任何任务（纯风味零任务）',
-  (await import('../js/quests.js')).resolveNpcTalk(S.G, 'picker') === null);
+ok('无旗标选段为支线 offer 页（树精/菌盖/灯油口径不丢）', p0 && p0[0].some((ln) => ln.includes('树精')) && p0[0].some((ln) => ln.includes('菌盖')) && p0[0].some((ln) => ln.includes('灯油')), p0 && p0[0][0]);
+const pT0 = npcQuestPages({ trueBoss: true }, 'picker');
+ok('trueBoss 但未接取 → 仍 offer 页（任务优先于 after 彩蛋）', pT0 && pT0[0].some((ln) => ln.includes('树精')));
+const pDoneT = npcQuestPages({ trueBoss: true, quests: { side_tree: 'done' } }, 'picker');
+ok('任务 done + trueBoss → done 真结局分档（原 after 彩蛋「雾散了/记得灯」并入零丢失）',
+  pDoneT && pDoneT.some((pg) => pg.some((ln) => ln.includes('雾散了'))) &&
+  pDoneT.some((pg) => pg.some((ln) => ln.includes('记得灯'))));
+const pDone = npcQuestPages({ quests: { side_tree: 'done' } }, 'picker');
+ok('任务 done 未真结局 → done 普通档（菌盖又亮了）', pDone && pDone.some((pg) => pg.some((ln) => ln.includes('菌盖又亮了'))));
+ok('有任务：npcQuestMark===「❕ 可接委托」（世界头顶任务顶标出现）', npcQuestMark({}, 'picker') === '❕ 可接委托');
+ok('拾菇人绑定支线：resolveNpcTalk 接取 side_tree（返回 accept 契约）',
+  (await import('../js/quests.js')).resolveNpcTalk({ quests: {} }, 'picker').kind === 'accept');
 
 // —— 运行期：loadMap 落位 + 四邻可行走 + 同图关键点零回归 + Enter/E 真实交互开对话 ——
 loadMap('dungeon');
@@ -151,9 +157,10 @@ S.G.x = 15; S.G.y = 3; S.dir = 'U'; S.scene = 'world';
 await screens.world.onKey({ key: 'Enter' });
 ok('面向拾菇人按 Enter：进入对话（S.scene==talk）且 curNpc===picker',
   S.scene === 'talk' && S.curNpc === 'picker', S.scene + '/' + S.curNpc);
-ok('对话第 1 页为 lines 默认台词（菌盖/灯油）——S.G 无旗标',
-  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('菌盖')));
-ok('对话共 2 页（第 1 页 [Enter] 继续 → 第 2 页 [Enter] 结束）', S.talkPages && S.talkPages.length === 2);
+ok('对话第 1 页为支线 offer 页（树精委托/菌盖灯油）——S.G 未接取',
+  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('菌盖')) &&
+  S.talkPages[0].some((ln) => ln.includes('树精')));
+ok('对话共 1 页（offer 单页，末行 [Enter] 接下委托 → [Esc] 离开）', S.talkPages && S.talkPages.length === 1);
 S.scene = 'world';
 await screens.world.onKey({ key: 'E' });
 ok('E 键同效（v21.29 交互别名对 NPC 零回归）', S.scene === 'talk' && S.curNpc === 'picker', S.scene + '/' + S.curNpc);
@@ -189,20 +196,20 @@ const s2179 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2179_titlerecap.mjs'
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
 ok('smoke_v2215 件套 pin 已随新现实更新为一百一十二件套', s2215.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2215 的 README 树尾 pin 已更新为 + smoke_v2216_picker', s2215.includes('smoke_v2215_tutorvol + smoke_v2216_picker'));
-ok('smoke_v2215 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2215.includes("const GAME_VERSION = 'v23.31';"));
-ok('smoke_v2215 的 GAME_VERSION 恒等 pin 已更新为 === v22.16', s2215.includes("GAME_VERSION === 'v23.31'"));
+ok('smoke_v2215 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2215.includes("const GAME_VERSION = 'v23.32';"));
+ok('smoke_v2215 的 GAME_VERSION 恒等 pin 已更新为 === v22.16', s2215.includes("GAME_VERSION === 'v23.32'"));
 ok('smoke_v2214 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2214.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2214 的 README 树尾 pin 已更新为 + smoke_v2216_picker', s2214.includes('smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker'));
-ok('smoke_v2214 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2214.includes("const GAME_VERSION = 'v23.31';"));
-ok('smoke_v2213 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2213.includes("const GAME_VERSION = 'v23.31';"));
+ok('smoke_v2214 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2214.includes("const GAME_VERSION = 'v23.32';"));
+ok('smoke_v2213 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2213.includes("const GAME_VERSION = 'v23.32';"));
 ok('smoke_v2213 的 NPC 总数 pin 已随新现实更新为 21（拾菇人落位）', s2213.includes('总数 29'));
-ok('smoke_v2212 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2212.includes("const GAME_VERSION = 'v23.31';"));
-ok('smoke_v2211 的 GAME_VERSION 字面量 pin 已更新为 v22.16（防 v22.15 残留）', s2211.includes("const GAME_VERSION = 'v23.31';") && !s2211.includes("const GAME_VERSION = 'v22." + "15';"));
+ok('smoke_v2212 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2212.includes("const GAME_VERSION = 'v23.32';"));
+ok('smoke_v2211 的 GAME_VERSION 字面量 pin 已更新为 v22.16（防 v22.15 残留）', s2211.includes("const GAME_VERSION = 'v23.32';") && !s2211.includes("const GAME_VERSION = 'v22." + "15';"));
 ok('smoke_v2211 的 NPC 总数 pin 已随新现实更新为 21（拾菇人落位）', s2211.includes('总数 29'));
-ok('smoke_v2192 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2192.includes("const GAME_VERSION = 'v23.31';"));
-ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2181.includes("const GAME_VERSION = 'v23.31';"));
-ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2179.includes("const GAME_VERSION = 'v23.31';"));
+ok('smoke_v2192 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2192.includes("const GAME_VERSION = 'v23.32';"));
+ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2181.includes("const GAME_VERSION = 'v23.32';"));
+ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2179.includes("const GAME_VERSION = 'v23.32';"));
 ok('smoke_v2176 件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2176.includes('二百一十二件套（二百一十一件套清除）'));
 

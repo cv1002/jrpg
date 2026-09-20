@@ -1,12 +1,12 @@
 // smoke_v2309_questnum.mjs —— v23.09 README「数值速查」支线/奖励行守护（文档整理·数值说明·同源口径）
 // 承 v21.10-v23.08 冒烟入库先例：版本锚点 + 源级落位（data.js v23.09 注释/GAME_VERSION 字面量 v23.09/
-// v23.08 历史注释保留零 v23.08 字面量残留）+ 支线契约（八条支线 kind==='side' + 六组 *_GOAL 逐值 +
+// v23.08 历史注释保留零 v23.08 字面量残留）+ 支线契约（九条支线 kind==='side' + 七组 *_GOAL 逐值 +
 // FRAGMENTS.length 逐值 + QUESTS[].reward 逐值（蘑菇支线随等级实时 gold:(lv)=>40+lv*10 抽样逐值）+
 // quests.applyQuestReward 源级落位（gold 函数式/item/potion2 三通道与 README 行同读一份源））+ README
 // 数值速查「支线 / 奖励」行落位（与任务日志奖励行/交付结算同源口径，零裸字面量）+ README/package.json/
 // CHANGELOG 同步（冒烟二百一十二件套（二百一十一件套清除）/串尾/入库 205 份/顶 pin）+ 姊妹件套 pin
 // （smoke_v2308 随新现实更新）+ 哨兵链领先一位（206 口径）+ 旧代 v23.08 pin 全库零残留。
-import { GAME_VERSION, QUESTS, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, GRAIN_GOAL, BONE_GOAL, EMBER_GOAL, FRAGMENTS } from '../js/data.js';
+import { GAME_VERSION, QUESTS, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, GRAIN_GOAL, BONE_GOAL, EMBER_GOAL, TREE_GOAL, FRAGMENTS } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -30,10 +30,12 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.09 版本注释', dataSrc.includes('// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行'));
-ok('data.js GAME_VERSION 字面量已为 v23.09（旧 v23.08 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.31';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "08';"));
+ok('data.js GAME_VERSION 字面量已为 v23.32（旧 v23.31 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v23.32';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "31';"));
 ok('data.js 仍保留 v23.08 历史注释（难度/倍率数值速查行注释未动）', dataSrc.includes('// v23.08 文档整理·数值说明·同源口径：README「数值速查」补「难度 / 倍率」行'));
 
+ok('data.js 含 v23.32 版本注释（新支线「树精的菌库」/TREE_GOAL 单一数据源）',
+  dataSrc.includes('// v23.32 新内容·新支线：雾语林蘑菇田拾菇人升格为讨伐支线「树精的菌库」委托人'));
 // —— v23.30 昼夜/时段数值速查行（文档整理·同源口径：HUD 标签/画面着色同读一份源）——
 ok('data.js 含 v23.30 版本注释（README「数值速查」补「昼夜 / 时段」行）',
   dataSrc.includes('// v23.30 文档整理·数值说明·同源口径：README「数值速查」补「昼夜 / 时段」行'));
@@ -42,13 +44,13 @@ ok('data.js 仍保留 v23.29 历史注释（标题页存档预览·徽记 N/5 �
   dataSrc.includes('// v23.29 体验打磨·信息透明·纯显示：标题页存档预览补「·徽记 N/5」冒险进度计数'));
 
 // —— 支线目标常量逐值（单一数据源）——
-ok('六组支线目标逐值：蘑菇 3 / 雾灵 3 / 石魔像 3 / 哥布林 3 / 骷髅兵 3 / 残焰魔像 1',
-  MUSHROOM_GOAL === 3 && MIST_GOAL === 3 && STONE_GOAL === 3 && GRAIN_GOAL === 3 && BONE_GOAL === 3 && EMBER_GOAL === 1);
+ok('七组支线目标逐值：蘑菇 3 / 雾灵 3 / 石魔像 3 / 哥布林 3 / 骷髅兵 3 / 残焰魔像 1 / 树精 3',
+  MUSHROOM_GOAL === 3 && MIST_GOAL === 3 && STONE_GOAL === 3 && GRAIN_GOAL === 3 && BONE_GOAL === 3 && EMBER_GOAL === 1 && TREE_GOAL === 3);
 ok('记忆碎片 FRAGMENTS.length = 4（旧灯卫的名字支线目标同源）', Array.isArray(FRAGMENTS) && FRAGMENTS.length === 4);
 
-// —— QUESTS 支线契约：八条 kind==='side'（主线四条零回归）——
+// —— QUESTS 支线契约：九条 kind==='side'（主线四条零回归）——
 const sides = Object.values(QUESTS).filter((q) => q.kind === 'side');
-ok('QUESTS 共 12 条（主线 4 + 支线 8）', Object.keys(QUESTS).length === 12 && sides.length === 8, String(Object.keys(QUESTS).length));
+ok('QUESTS 共 13 条（主线 4 + 支线 9）', Object.keys(QUESTS).length === 13 && sides.length === 9, String(Object.keys(QUESTS).length));
 
 // —— QUESTS[].reward 逐值（与任务日志奖励行/quests.applyQuestReward 同读一份源）——
 ok('灯长的委托：3 株蘑菇（MUSHROOM_GOAL）+ 奖励随等级实时（lv1=50 金 / lv10=140 金）+ 2 药水',
@@ -65,10 +67,18 @@ ok('星砂之约：80 金（击败洞窟领主后、对话即完成，零物品�
 ok('旧灯卫的名字：120 金 + 1 高级灵药（击败幽冥魔王后解锁、集齐 FRAGMENTS.length 枚）',
   QUESTS.side_name.reward.gold === 120 && QUESTS.side_name.reward.potion2 === 1 && !QUESTS.side_name.reward.item &&
   QUESTS.side_name.unlockOn === 'bossDefeated');
+// v23.32 树精的菌库（新支线·拾菇人委托人）：契约与既有「讨伐采集型支线」同构（无 unlockOn → 开局即 offer）
+ok('树精的菌库：70 金 + 1 药水（拾菇人委托人、无 unlockOn 开局即 offer、bestiary 树精计数）',
+  QUESTS.side_tree.reward.gold === 70 && QUESTS.side_tree.reward.item === 1 && !QUESTS.side_tree.reward.potion2 &&
+  QUESTS.side_tree.npc === 'picker' && QUESTS.side_tree.giver === 'picker' && !QUESTS.side_tree.unlockOn &&
+  QUESTS.side_tree.cond({ bestiary: { '树精': 3 } }) === true && QUESTS.side_tree.cond({ bestiary: { '树精': 2 } }) === false &&
+  QUESTS.side_tree.condProg({ bestiary: { '树精': 2 } }) === `2/${TREE_GOAL} 只`);
 
 // —— data.js QUESTS 字面量 源级落位（零散值漂移）——
 ok('data.js 蘑菇支线奖励字面量逐字（reward:{ gold:(lv)=>40+lv*10, item:2 }）', dataSrc.includes('reward:{ gold:(lv)=>40+lv*10, item:2 },'));
 ok('data.js 旧灯卫的名字奖励字面量逐字（reward:{ gold:120, potion2:1 }）', dataSrc.includes('reward:{ gold:120, potion2:1 },'));
+ok('data.js 树精的菌库字面量逐字（reward:{ gold:70, item:1 } / const TREE_GOAL = 3; / export 落位）',
+  dataSrc.includes('reward:{ gold:70, item:1 }') && dataSrc.includes('const TREE_GOAL = 3;') && dataSrc.includes('GRAIN_GOAL, TREE_GOAL, MUSHROOM_PRICE'));
 ok('data.js 星砂谢礼字面量逐字（reward:{ gold:80 }）', dataSrc.includes('reward:{ gold:80 },'));
 ok('data.js 旧灯卫的名字 cond 源级落位（FRAGMENTS.length 单一数据源）',
   dataSrc.includes('cond:(g)=>((g.fragments||[]).length >= FRAGMENTS.length)'));
@@ -82,11 +92,12 @@ ok('quests.applyQuestReward 源级落位（金币函数式/药水 item/灵药 po
   questsSrc.includes('if (reward.potion2) hero.potion2 = (hero.potion2 || 0) + reward.potion2;'));
 
 // —— README 数值速查「支线 / 奖励」行落位（全部由 data.js 派生、与任务日志/交付结算同源）——
-ok('README 支线行开头逐字（八条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生）', readme.includes('| 支线 / 奖励 | 八条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生'));
+ok('README 支线行开头逐字（九条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生）', readme.includes('| 支线 / 奖励 | 九条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生'));
 ok('README 支线行 任务日志/交付结算同源逐字', readme.includes('与任务日志奖励行/交付结算 `quests.applyQuestReward` 同读一份源'));
 ok('README 支线行 蘑菇奖励随等级实时逐字', readme.includes('`40+10×等级` 金 + 2 药水'));
 ok('README 支线行 旧灯卫的名字 FRAGMENTS.length 逐字', readme.includes('集齐 `FRAGMENTS.length` 4 枚记忆碎片'));
-ok('README 支线行 常量为 (v23.09 补录)', readme.includes('（v23.09 补录） | `QUESTS` `MUSHROOM_GOAL` `MIST_GOAL` `STONE_GOAL` `GRAIN_GOAL` `BONE_GOAL` `EMBER_GOAL` `FRAGMENTS` |'));
+ok('README 支线行 树精的菌库 v23.32 逐字', readme.includes('树精的菌库（拾菇人 · 3 只树精 `TREE_GOAL`）70 金 + 1 药水'));
+ok('README 支线行 常量为 (v23.09 补录)', readme.includes('（v23.09 补录） | `QUESTS` `MUSHROOM_GOAL` `MIST_GOAL` `STONE_GOAL` `GRAIN_GOAL` `TREE_GOAL` `BONE_GOAL` `EMBER_GOAL` `FRAGMENTS` |'));
 // —— v23.30 昼夜 / 时段 行落位（与 v23.09 同式：开头/关键口径/补录标记/行序）——
 ok('README 昼夜行开头逐字（世界时钟 S.G.time 秒数·每档 90 秒四档循环）',
   readme.includes('| 昼夜 / 时段 | 世界时钟 `S.G.time` 秒数：每档 `DAY_PHASE_S`(90) 秒四档循环 白天→黄昏→夜晚→黎明'));
@@ -119,15 +130,15 @@ ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v231
   pkg.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 205 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.09 条目', changelog.startsWith('## v23.31 '));
+ok('CHANGELOG 顶部已追加 v23.32 条目', changelog.startsWith('## v23.32 '));
 ok('CHANGELOG 仍保留 v23.08 条目（历史口径）', changelog.includes('## v23.08 README「数值速查」补「难度 / 倍率」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.08 pin 零残留 ——
 const s2308 = read('smoke_v2308_diffnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.09', s2308.includes("const GAME_VERSION = 'v23.31';"));
-ok('smoke_v2308 的 CHANGELOG 顶 pin 已更新为 ## v23.09',
-  s2308.includes("startsWith('## v23.31 "));
+ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.32', s2308.includes("const GAME_VERSION = 'v23.32';"));
+ok('smoke_v2308 的 CHANGELOG 顶 pin 已更新为 ## v23.32',
+  s2308.includes("startsWith('## v23.32 "));
 ok('smoke_v2308 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2308.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2308 的 README 串尾 pin 已延伸至 smoke_v2309_questnum',

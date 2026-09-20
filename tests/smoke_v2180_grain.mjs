@@ -141,10 +141,10 @@ ok('ACH_LIST 含 grain「护粮安民」且 id 唯一',
 ok('ACH_LIST 由 28 → 29 项（v21.84 起精确总数由新版冒烟守护，本件存活性口径 >= 29）', ACH_LIST.length >= 29, String(ACH_LIST.length));
 ok('grain 成就判定读 quests.side_grain（未做 false / 已做 true）',
   achGrain.ok({ quests: {} }) === false && achGrain.ok({ quests: { side_grain: 'done' } }) === true);
-// 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（7 → 8，v21.80 随新现实更新）
+// 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（7 → 8 → 9，v23.32 side_tree 入列后随新现实更新）
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心支线分母自动跟随为 8（side_grain 入列，无需改 achievement 本体）',
-  achAll && achAll.prog({ quests: {} }) === '0/8' && achAll.d.includes('8 个支线'), achAll && achAll.prog({ quests: {} }));
+ok('灯火同心支线分母自动跟随为 9（side_tree 入列，无需改 achievement 本体）',
+  achAll && achAll.prog({ quests: {} }) === '0/9' && achAll.d.includes('9 个支线'), achAll && achAll.prog({ quests: {} }));
 ok('allquests 对只做 side_grain 的存档不误判完成',
   achAll.ok({ quests: { side_grain: 'done' } }) === false);
 
@@ -239,9 +239,9 @@ ok('smoke_v2168 的 README 成就 pin 已随新现实更新（28 项 pin 零残�
 ok('smoke_v2159 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，31 项双处落位）',
   fs.readFileSync(path.join(ROOT, 'tests/smoke_v2159_skillach.mjs'), 'utf8')
     .includes("readme.includes('成就一览（全部 60 项进度'"));
-ok('灯火同心 0/7 pin 已悉数随新现实更新为 0/8（v2152/v2159/v2168/v2173/v2176/v2177 六件源级复查）',
+ok('灯火同心 0/8 pin 已悉数随新现实更新为 0/9（v2152/v2159/v2168/v2173/v2176/v2177 六件源级复查）',
   ['smoke_v2152_bonequest.mjs', 'smoke_v2159_skillach.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2176_allchests.mjs', 'smoke_v2177_elites.mjs']
-    .every((f) => fs.readFileSync(path.join(ROOT, 'tests/' + f), 'utf8').includes("=== '0/8'")));
+    .every((f) => fs.readFileSync(path.join(ROOT, 'tests/' + f), 'utf8').includes("=== '0/9'")));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);

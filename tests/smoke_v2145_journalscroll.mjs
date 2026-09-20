@@ -120,9 +120,9 @@ try {
   S.journalScroll = 0;
   drawnCalls.length = 0; translated.length = 0;
   drawJournal();
-  const names = ['讨回灯芯', '星井之守', '灯长的委托', '星砂之约', '旧灯卫的名字', '雾里的新住客', '石壳里的记忆', '残焰的安息', '未归的矿灯', '护粮的委托'];
+  const names = ['讨回灯芯', '星井之守', '灯长的委托', '星砂之约', '旧灯卫的名字', '雾里的新住客', '石壳里的记忆', '残焰的安息', '未归的矿灯', '护粮的委托', '树精的菌库'];
   const absent = names.filter((nm) => !drawnCalls.some((c) => c.t.includes(nm)));
-  ok('滚动=0 时日志全量条目落画（5 主线/支线名 + 此前被裁的 星砂之约/旧灯卫的名字/石壳里的记忆/残焰的安息 + v21.80 新入列 未归的矿灯/护粮的委托）', absent.length === 0, '缺: ' + absent.join(','));
+  ok('滚动=0 时日志全量条目落画（5 主线/支线名 + 此前被裁的 星砂之约/旧灯卫的名字/石壳里的记忆/残焰的安息 + v21.80 新入列 未归的矿灯/护粮的委托 + v23.32 新入列 树精的菌库）', absent.length === 0, '缺: ' + absent.join(','));
   ok('滚动=0 时记忆碎片区已画（头 + 4 行占领位）', drawnCalls.some((c) => c.t.includes('记忆碎片')) && drawnCalls.filter((c) => c.t.includes('🕯️')).length === FRAGMENTS.length, drawnCalls.filter((c) => c.t.includes('🕯️')).length);
   ok('滚动=0 时页脚含「↑↓ 滚动浏览（还有 N 条）」提示', drawnCalls.some((c) => c.t.includes('按 J / Esc 关闭') && c.t.includes('↑↓ 滚动浏览（还有')));
   ok('滚动=0 时 translate 为 (0,-0)（零平移零回归）', translated.length > 0 && translated[translated.length - 1][0] === 0 && translated[translated.length - 1][1] === 0, JSON.stringify(translated));

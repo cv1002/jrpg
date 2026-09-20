@@ -133,8 +133,8 @@ ok('既有 24 个成就 id 全部保留（零回归）',
    'trueboss', 'rush', 'perfection', 'legend', 'cartman', 'names', 'mist', 'stone', 'ember', 'bone',
    'chests', 'allquests', 'memoir', 'skills'].every((id) => ACH_LIST.some((a) => a.id === id)));
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母 v21.80 随新现实更新为 0/8（side_grain 是支线，hardtrue 不是）',
-  achAll && achAll.prog({ quests: {} }) === '0/8', achAll && achAll.prog({ quests: {} }));
+ok('灯火同心（allquests）支线分母 v23.32 随新现实更新为 0/9（side_grain/side_tree 是支线，hardtrue 不是）',
+  achAll && achAll.prog({ quests: {} }) === '0/9', achAll && achAll.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：困难通关档新解锁含 hardtrue；普通通关档不含',
