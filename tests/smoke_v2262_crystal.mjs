@@ -24,7 +24,7 @@ import { S } from '../js/state.js';
 import { GAME_VERSION, NPC_SPOTS, TY, SOLID, CAVE_CRYSTAL, TRUE_ALTAR } from '../js/data.js';
 import { newGame } from '../js/core.js';
 import { loadMap, at } from '../js/world.js';
-import { drawWorld, cam, trueCrystalState, trueAltarState } from '../js/view/drawWorld.js';
+import { drawWorld, cam, trueCrystalState, trueAltarState, bossAltarState, mbAltarState } from '../js/view/drawWorld.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -101,7 +101,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.61（本版守 v22.62）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 62)), GAME_VERSION);
 ok('data.js 含 v22.62 注释（新内容·世界景观·纯显示）', dSrc.includes('v22.62 星井矿脉/无字回廊「终焉水晶·终焉之神祭坛」补脸'));
 ok('GAME_VERSION 字面量已为 v22.62（旧 v22.61 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.27';") && !dSrc.includes("const GAME_VERSION = 'v22." + "61';"));
+  dSrc.includes("const GAME_VERSION = 'v23.28';") && !dSrc.includes("const GAME_VERSION = 'v22." + "61';"));
 ok('data.js 仍保留 v22.61 历史注释（富甲一方成就注释未动）', dSrc.includes('v22.61 新成就·金币线第三档里程碑「富甲一方」'));
 
 // —— 数据契约：CAVE_CRYSTAL / TRUE_ALTAR ——
@@ -294,6 +294,106 @@ ok('gallery 战后档：全捕获零 rgba(240,192,64,*)（金核/金晕/芯亮�
     !capD.rects.some((r) => r.w === 22 && r.h === 22 && r.fs === 'rgba(95,216,255,.3)'));
 }
 
+// —— v23.28 幽冥魔王祭坛/洞窟领主祭坛补脸（承 v22.62 同族先例的收口）——
+ok('data.js 含 v23.28 注释（幽冥魔王祭坛/洞窟领主祭坛补脸）', dSrc.includes('v23.28 幽冥魔王祭坛位置'));
+ok('data.js GAME_VERSION 已为 v23.28（旧 v23.27 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v23.28';") && !dSrc.includes("const GAME_VERSION = 'v23.27';"));
+ok('data.js 常量声明逐字（BOSS_ALTAR = { x: 20, y: 13 } / MB_ALTAR = { x: 20, y: 8 }）',
+  dSrc.includes('const BOSS_ALTAR = { x: 20, y: 13 };') && dSrc.includes('const MB_ALTAR = { x: 20, y: 8 };'));
+ok('data.js 导出 BOSS_ALTAR/MB_ALTAR（export 块落位，与 TRUE_ALTAR 相邻）',
+  dSrc.includes('TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR'));
+ok('drawWorld.js 导入 BOSS_ALTAR/MB_ALTAR（data.js 单一数据源）',
+  wSrc.includes('CAMP_FIRE, BOSS_ALTAR, MB_ALTAR'));
+ok('drawWorld.js 含 v23.28 注释与 bossAltarState/mbAltarState 状态纯函数（两档）',
+  wSrc.includes('v23.28 幽冥魔王祭坛') && wSrc.includes('v23.28 洞窟领主祭坛') &&
+  wSrc.includes('export function bossAltarState(hero)') && wSrc.includes('export function mbAltarState(hero)'));
+ok('drawWorld.js 魔王祭坛几何（32×64 石台 #3a4148 整幅 + 台面 #5a6472 + 台基 #2e333c + 芯火 #ffd24a 4×6）',
+  wSrc.includes('CTX.fillRect(px, py, 32, 64);') && wSrc.includes("CTX.fillStyle = '#5a6472'") &&
+  wSrc.includes("CTX.fillStyle = '#ffd24a'") && wSrc.includes('CTX.fillRect(cx - 2, py + 2, 4, 6);'));
+ok('drawWorld.js 领主祭坛几何（32×64 岩地盘面 #2a2f38 整幅 + 断镐 #8a5a2b 9×4 + 星砂微光 rgba(95,216,255,.18)）',
+  wSrc.includes("CTX.fillStyle = '#2a2f38'") && wSrc.includes('CTX.fillRect(cx - 8, py + 10, 9, 4);') &&
+  wSrc.includes('rgba(95,216,255,.18)'));
+ok('drawWorld.js 调用落位（dungeon drawBossAltar / cave drawMbAltar）',
+  wSrc.includes("curMap() === 'dungeon') drawBossAltar(c.x, c.y)") &&
+  wSrc.includes("curMap() === 'cave') drawMbAltar(c.x, c.y)"));
+ok('bossAltarState 逐值：新档 → lit / bossDefeated → dead / 缺旗标防御 lit',
+  bossAltarState({}) === 'lit' && bossAltarState({ bossDefeated: true }) === 'dead' && bossAltarState(null) === 'lit');
+ok('mbAltarState 逐值：新档 → lit / caveBoss → dead / 缺旗标防御 lit',
+  mbAltarState({}) === 'lit' && mbAltarState({ caveBoss: true }) === 'dead' && mbAltarState(null) === 'lit');
+
+// dungeon 魔王祭坛未战档（新档）
+const capBL = captureMap('dungeon', 20, 11);
+const cBL = capBL.cam;
+const pxB = 20 * T - cBL.x, pyB = 13 * T - cBL.y;
+const cxB = pxB + 16;
+ok('dungeon 魔王祭坛未战档：无抛错且石台 32×64 #3a4148 落位（盖住通用门贴图）',
+  !capBL.rects.some((r) => r.fs.startsWith('THREW:')) &&
+  !!capBL.rects.find((r) => r.x === pxB && r.y === pyB && r.w === 32 && r.h === 64 && r.fs === '#3a4148'));
+ok('dungeon 魔王祭坛未战档：芯火 4×6 #ffd24a + 金晕 24×12 rgba(255,210,74,.2) 落位且恰 1 组',
+  !!capBL.rects.find((r) => r.x === cxB - 2 && r.y === pyB + 2 && r.w === 4 && r.h === 6 && r.fs === '#ffd24a') &&
+  !!capBL.rects.find((r) => r.x === pxB + 4 && r.y === pyB + 2 && r.w === 24 && r.h === 12 && r.fs === 'rgba(255,210,74,.2)') &&
+  capBL.rects.filter((r) => r.x === cxB - 2 && r.y === pyB + 2 && r.w === 4 && r.h === 6 && r.fs === '#ffd24a').length === 1);
+
+// dungeon 魔王祭坛战后档（bossDefeated）
+S.G = newGame('测试'); S.G.map = 'dungeon'; S.G.x = 20; S.G.y = 11; S.G.bossDefeated = true;
+S.dir = 'R'; S.scene = 'world'; S.walk = null;
+let rectsBL2 = [];
+const origFRB = CTX.fillRect;
+CTX.fillRect = (x, y, w, h) => { rectsBL2.push({ x, y, w, h, fs: String(CTX.fillStyle) }); return origFRB.call(CTX, x, y, w, h); };
+try { loadMap('dungeon'); drawWorld(); } catch (e) { rectsBL2.push({ fs: 'THREW:' + e.message, x: -1, y: -1, w: 0, h: 0 }); }
+CTX.fillRect = origFRB;
+const capBL2 = { rects: rectsBL2, cam: cam() };
+const cBL2 = capBL2.cam;
+const pxB2 = 20 * T - cBL2.x, pyB2 = 13 * T - cBL2.y;
+const cxB2 = pxB2 + 16;
+ok('dungeon 魔王祭坛战后档：无抛错且灰芯 4×6 #5a6472 落位、零金晕（灯芯回来了）',
+  !capBL2.rects.some((r) => r.fs.startsWith('THREW:')) &&
+  !!capBL2.rects.find((r) => r.x === cxB2 - 2 && r.y === pyB2 + 2 && r.w === 4 && r.h === 6 && r.fs === '#5a6472') &&
+  !capBL2.rects.some((r) => r.w === 24 && r.h === 12 && r.fs === 'rgba(255,210,74,.2)') &&
+  !capBL2.rects.some((r) => r.w === 4 && r.h === 6 && r.fs === '#ffd24a'));
+
+// cave 洞窟领主祭坛未战档（新档）
+const capML = captureMap('cave', 20, 5);
+const cML = capML.cam;
+const pxM = 20 * T - cML.x, pyM = 8 * T - cML.y;
+const cxM = pxM + 16;
+ok('cave 洞窟领主祭坛未战档：无抛错且岩地盘面 32×64 #2a2f38 落位 + 断镐 #8a5a2b 9×4',
+  !capML.rects.some((r) => r.fs.startsWith('THREW:')) &&
+  !!capML.rects.find((r) => r.x === pxM && r.y === pyM && r.w === 32 && r.h === 64 && r.fs === '#2a2f38') &&
+  !!capML.rects.find((r) => r.x === cxM - 8 && r.y === pyM + 10 && r.w === 9 && r.h === 4 && r.fs === '#8a5a2b'));
+ok('cave 洞窟领主祭坛未战档：星砂微光 20×10 rgba(95,216,255,.18) 落位且恰 1 组',
+  !!capML.rects.find((r) => r.x === pxM + 6 && r.y === pyM + 6 && r.w === 20 && r.h === 10 && r.fs === 'rgba(95,216,255,.18)') &&
+  capML.rects.filter((r) => r.w === 20 && r.h === 10 && r.fs === 'rgba(95,216,255,.18)').length === 1);
+
+// cave 洞窟领主祭坛战后档（caveBoss）
+S.G = newGame('测试'); S.G.map = 'cave'; S.G.x = 20; S.G.y = 5; S.G.caveBoss = true;
+S.dir = 'R'; S.scene = 'world'; S.walk = null;
+let rectsML2 = [];
+const origFRM = CTX.fillRect;
+CTX.fillRect = (x, y, w, h) => { rectsML2.push({ x, y, w, h, fs: String(CTX.fillStyle) }); return origFRM.call(CTX, x, y, w, h); };
+try { loadMap('cave'); drawWorld(); } catch (e) { rectsML2.push({ fs: 'THREW:' + e.message, x: -1, y: -1, w: 0, h: 0 }); }
+CTX.fillRect = origFRM;
+const capML2 = { rects: rectsML2, cam: cam() };
+ok('cave 洞窟领主祭坛战后档：无抛错且零星砂微光（星砂车卸空/星砂堆不亮同族）',
+  !capML2.rects.some((r) => r.fs.startsWith('THREW:')) &&
+  !capML2.rects.some((r) => r.w === 20 && r.h === 10 && r.fs === 'rgba(95,216,255,.18)'));
+
+// village / gallery：零祭坛新签名防泄漏（魔王/领主签名在无 BOSS/MB 的地图零触发）
+{
+  const capV2 = captureMap('village', 12, 7);
+  ok('village 运行期：零魔王/领主祭坛签名（无 32×64 #3a4148 险台、无 24×12 金晕、无 20×10 星砂微光）',
+    !capV2.rects.some((r) => r.fs.startsWith('THREW:')) &&
+    !capV2.rects.some((r) => r.w === 32 && r.h === 64 && (r.fs === '#3a4148' || r.fs === '#2a2f38')) &&
+    !capV2.rects.some((r) => r.w === 24 && r.h === 12 && r.fs === 'rgba(255,210,74,.2)') &&
+    !capV2.rects.some((r) => r.w === 20 && r.h === 10 && r.fs === 'rgba(95,216,255,.18)'));
+  const capG2 = captureMap('gallery', 20, 4);
+  ok('gallery 运行期：零魔王/领主祭坛签名（v22.62 金核/灰核零回归）',
+    !capG2.rects.some((r) => r.fs.startsWith('THREW:')) &&
+    !capG2.rects.some((r) => r.w === 32 && r.h === 64 && (r.fs === '#3a4148' || r.fs === '#2a2f38')) &&
+    !capG2.rects.some((r) => r.w === 24 && r.h === 12 && r.fs === 'rgba(255,210,74,.2)') &&
+    !capG2.rects.some((r) => r.w === 20 && r.h === 10 && r.fs === 'rgba(95,216,255,.18)'));
+}
+
 // —— 契约：零碰撞 / 零 NPC 变更 / 两处 SB 落位 / 重载重建 ——
 loadMap('cave');
 ok('契约：TY.SB 不在 SOLID（晶簇/祭坛可行走——interact 判定零碰撞变化）', !SOLID.has(TY.SB));
@@ -302,6 +402,15 @@ ok('契约：loadMap 重载后 at(12,11) 仍 SB（重载重建·v22.52 轨道零
 loadMap('gallery');
 ok('契约：at(21,4) === TY.SB（终焉之神祭坛原位）', at(21, 4) === TY.SB, String(at(21, 4)));
 ok('契约：loadMap 重载后 at(21,4) 仍 SB（重载重建·名字之门 v22.41 零回归）', at(21, 4) === TY.SB);
+ok('契约：TY.BOSS/TY.MB 不在 SOLID（祭坛可行走——踩踏开战判定零碰撞变化）', !SOLID.has(TY.BOSS) && !SOLID.has(TY.MB));
+loadMap('dungeon');
+ok('契约：at(20,13)/at(20,14) === TY.BOSS（幽冥魔王祭坛原位 2×1 纵排）', at(20, 13) === TY.BOSS && at(20, 14) === TY.BOSS,
+  String(at(20, 13)) + ',' + String(at(20, 14)));
+ok('契约：loadMap 重载后 at(20,13) 仍 BOSS（重载重建·守夜人 v22.45 零回归）', at(20, 13) === TY.BOSS);
+loadMap('cave');
+ok('契约：at(20,8)/at(20,9) === TY.MB（洞窟领主祭坛原位 2×1 纵排）', at(20, 8) === TY.MB && at(20, 9) === TY.MB,
+  String(at(20, 8)) + ',' + String(at(20, 9)));
+ok('契约：loadMap 重载后 at(20,8) 仍 MB（重载重建·守洞人 v22.92 零回归）', at(20, 8) === TY.MB);
 ok('契约：NPC 总数保持 34（零 NPC 变更，v22.51 pin 续守）', Object.keys(NPC_SPOTS).length === 38,
   String(Object.keys(NPC_SPOTS).length));
 
@@ -326,7 +435,7 @@ ok('package.json 串尾为 smoke_v2261_rich3.mjs && node tests/smoke_v2262_cryst
   pkg.includes('smoke_v2261_rich3.mjs && node tests/smoke_v2262_crystal.mjs && node tests/smoke_v2263_ptime3.mjs && node tests/smoke_v2264_hunt3.mjs && node tests/smoke_v2265_lucky3.mjs && node tests/smoke_v2266_stock3.mjs && node tests/smoke_v2267_elixir3.mjs && node tests/smoke_v2268_brew3.mjs && node tests/smoke_v2269_mush3.mjs && node tests/smoke_v2270_outstep.mjs && node tests/smoke_v2271_outstep2.mjs && node tests/smoke_v2272_scholar2.mjs && node tests/smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs && node tests/smoke_v2278_mushguide.mjs && node tests/smoke_v2279_lampwell.mjs && node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 158 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶为 v22.62 条目', changelog.startsWith('## v23.27 '));
+ok('CHANGELOG 顶为 v22.62 条目', changelog.startsWith('## v23.28 '));
 ok('CHANGELOG 含 v22.61 条目', changelog.includes('## v22.61 '));
 
 // —— 姊妹件套 pin 复查（v2261/v2260 随新现实更新 + 哨兵链 159 就位）——
@@ -335,18 +444,18 @@ const s2260 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2260_fountripple.mjs
 const s2259 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2259_sandpile.mjs'), 'utf8');
 const s2143 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
 const s2144 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2144_run.mjs'), 'utf8');
-ok('smoke_v2261 的 GAME_VERSION 字面量 pin 已更新为 v22.62', s2261.includes("const GAME_VERSION = 'v23.27';"));
+ok('smoke_v2261 的 GAME_VERSION 字面量 pin 已更新为 v22.62', s2261.includes("const GAME_VERSION = 'v23.28';"));
 ok('smoke_v2260 的 GAME_VERSION 恒等 pin 族已随新现实全库更新（v22.62 字面量 pin 落位）',
-  s2260.includes("const GAME_VERSION = 'v23.27';"));
+  s2260.includes("const GAME_VERSION = 'v23.28';"));
 ok('smoke_v2260 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2260.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2260 的 package.json 件套计数 pin 已更新为 === 158', s2260.includes('testChain === 212'));
-ok('smoke_v2260 的 CHANGELOG 顶 pin 已更新为 ## v22.62', s2260.includes("startsWith('## v23.27')") || s2260.includes("startsWith('## v22.78 ')"));
+ok('smoke_v2260 的 CHANGELOG 顶 pin 已更新为 ## v22.62', s2260.includes("startsWith('## v23.28')") || s2260.includes("startsWith('## v22.78 ')"));
 ok('smoke_v2260 的 README 串尾 pin 已随新现实延伸至 smoke_v2262_crystal',
   s2260.includes('smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2261 的 package.json 串尾 plain pin 已延伸至 smoke_v2262_crystal',
   s2261.includes('smoke_v2261_rich3.mjs && node tests/smoke_v2262_crystal.mjs && node tests/smoke_v2263_ptime3.mjs && node tests/smoke_v2264_hunt3.mjs && node tests/smoke_v2265_lucky3.mjs && node tests/smoke_v2266_stock3.mjs && node tests/smoke_v2267_elixir3.mjs && node tests/smoke_v2268_brew3.mjs && node tests/smoke_v2269_mush3.mjs && node tests/smoke_v2270_outstep.mjs && node tests/smoke_v2271_outstep2.mjs && node tests/smoke_v2272_scholar2.mjs && node tests/smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs && node tests/smoke_v2278_mushguide.mjs && node tests/smoke_v2279_lampwell.mjs && node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
-ok('smoke_v2259 的 GAME_VERSION 字面量 pin 已更新为 v22.62', s2259.includes("const GAME_VERSION = 'v23.27';"));
+ok('smoke_v2259 的 GAME_VERSION 字面量 pin 已更新为 v22.62', s2259.includes("const GAME_VERSION = 'v23.28';"));
 ok('v2143-45「件套守护领先一位」哨兵链已推进至 159（二百一十二件套（二百一十一件套清除））',
   s2143.includes('二百一十三件套（二百一十二件套清除）') && s2143.includes("!readme.includes('二百一十三件套（二百一十二件套清除）')"));
 ok('smoke_v2144 的哨兵链 pin 已随新现实推进（!readme.includes(\'一百五十九件套\')）',

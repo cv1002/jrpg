@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, DAY_PHASE_S, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BOSS_ALTAR, MB_ALTAR } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -687,6 +687,22 @@ export function trueAltarState(hero) {
   return 'lit';
 }
 
+// v23.28 幽冥魔王祭坛状态纯函数（新内容·世界景观·纯显示）：与 ALTAR_TAG done 判定（g.bossDefeated）/
+// 胜利画面「灯芯回来了」同读 S.G 一份源两档（未战「一截还没灭的灯芯」/ 战后灰芯零光）。只读不改，
+// 零结算零存档零数值变化。
+export function bossAltarState(hero) {
+  if (hero && hero.bossDefeated) return 'dead';
+  return 'lit';
+}
+
+// v23.28 洞窟领主祭坛状态纯函数（新内容·世界景观·纯显示）：与 ALTAR_TAG done 判定（g.caveBoss）/
+// 星砂车夫 done「矿脉安静了」同读 S.G 一份源两档（未战星砂微光 / 战后零蓝零晕）。只读不改，
+// 零结算零存档零数值变化。
+export function mbAltarState(hero) {
+  if (hero && hero.caveBoss) return 'dead';
+  return 'lit';
+}
+
 function drawGalleryArch(camX, camY) {
   const st = galleryArchState(S.G);
   const px = GALLERY_ARCH.x * T - camX;
@@ -761,6 +777,106 @@ function drawCampFire(camX, camY) {
   CTX.fillStyle = '#ffe9a8';
   CTX.fillRect(px + 8 + (dh % 3), py + 6, 1, 1);
   CTX.fillRect(px + 20 + (dh % 2), py + 3, 1, 1);
+}
+
+// v23.28 幽冥魔王祭坛（新内容·世界景观·纯显示，承 v22.62 终焉之神祭坛补脸先例的收口）：雾语林 BOSS
+// 瓦片 (20,13)-(20,14) 2×1 纵排的祭坛此前与 v22.62 修复前的水晶/祭坛一样共用通用门贴图——v22.62 只给
+// 两块 SB（终焉水晶/终焉之神祭坛）补了脸，全游第一块强敌地标（守夜人「影子爬上祭坛时袍子还是旧灯卫的
+// 袍子」/巡灯人「我见过祭坛上的影子」/掌灯阿婆「旧灯卫变的」）却仍是「门」；现按 data.js BOSS_ALTAR
+// 单一数据源分档补脸（状态与 ALTAR_TAG done 判定/胜利画面「灯芯回来了」同读 S.G 一份源两档）：32×64
+// 纵排石砌祭坛（台面 #5a6472/台身 #3a4148/台基 #2e333c，名字之门/石碑灰石同族——整幅盖住通用门贴图）
+// 上立旧灯卫的铜灯（铜 #8a5a2b/暗铜 #6b5138，村井辘轳/星砂车木料同族）：未战「一截还没灭的灯芯」——
+// 灯油金 #ffd24a 芯火 + 金白 #ffe9a8 焰心 + rgba(255,210,74,.2) 金晕（营火/大灯/菌盖同族）+
+// 火星金白（坐标哈希确定性）；bossDefeated 后灰芯 #5a6472·#39414f 零光零晕（「灯芯回来了」同口径）。
+// 几何确定性零时间依赖（不含 ph）；纯显示零结算零存档零数值变化（BOSS 不在 SOLID、踩踏开战/遇敌/传送
+// 判定逐字未动，不设小地图标记——无决策信息，与水晶/祭坛/星砂车同口径）。
+function drawBossAltar(camX, camY) {
+  const px = BOSS_ALTAR.x * T - camX;
+  const py = BOSS_ALTAR.y * T - camY;
+  const cx = px + 16;
+  const dh = BOSS_ALTAR.x * 19 + BOSS_ALTAR.y * 37;
+  // 石台整幅（盖住通用门贴图）：台身/台面/台基
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(px, py, 32, 64);
+  CTX.fillStyle = '#5a6472';
+  CTX.fillRect(px, py + 6, 32, 4);
+  CTX.fillStyle = '#5a6472';
+  CTX.fillRect(px + 3, py + 6, 26, 1);
+  CTX.fillStyle = '#2e333c';
+  CTX.fillRect(px, py + 58, 32, 6);
+  // 旧灯卫的铜灯（灯油家族木料同族）：灯盏/灯柱/底座
+  CTX.fillStyle = '#6b5138';
+  CTX.fillRect(cx - 6, py + 8, 12, 4);
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(cx - 6, py + 8, 12, 1);
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(cx - 2, py + 12, 4, 34);
+  CTX.fillStyle = '#6b5138';
+  CTX.fillRect(cx - 4, py + 46, 8, 4);
+  if (bossAltarState(S.G) === 'lit') {
+    // 未战：芯火未灭（灯油金 + 金白焰心 + 金晕——营火/大灯/菌盖同族，「手里握着一截还在烧的灯芯」）
+    CTX.fillStyle = 'rgba(255,210,74,.2)';
+    CTX.fillRect(px + 4, py + 2, 24, 12);
+    CTX.fillStyle = '#ffd24a';
+    CTX.fillRect(cx - 2, py + 2, 4, 6);
+    CTX.fillStyle = '#ffe9a8';
+    CTX.fillRect(cx - 1, py + 3, 2, 4);
+    CTX.fillStyle = '#ffe9a8';
+    CTX.fillRect(px + 6 + (dh % 3), py + 4, 1, 1);
+  } else {
+    // 战后：灯芯熄了（灰芯零光零晕——「灯芯回来了」）
+    CTX.fillStyle = '#5a6472';
+    CTX.fillRect(cx - 2, py + 2, 4, 6);
+    CTX.fillStyle = '#39414f';
+    CTX.fillRect(cx - 2, py + 6, 4, 2);
+  }
+}
+
+// v23.28 洞窟领主祭坛（新内容·世界景观·纯显示，承 v22.62 终焉之神祭坛同款先例的收口）：星井矿脉 MB
+// 瓦片 (20,8)-(20,9) 2×1 纵排的祭坛此前同样只有通用门贴图——「迷你Boss」洞窟领主（星砂车夫「它霸着
+// 矿脉，也霸着那车没运走的星砂——镇上的灯就缺这一车」/守洞人预习台词「雷鸣劈它，比别的招都疼」）
+// 没有一张自己的脸；现按 data.js MB_ALTAR 单一数据源分档补脸（状态与 ALTAR_TAG done 判定同读
+// S.G 一份源两档）：32×64 纵排岩地盘面（#2a2f38 + #333a45 岩块，与周格 CAVE 地面同色同纹——盖住
+// 通用门贴图）+ 中央石台（#1c222c/#262d3a，终焉之神祭坛同族）上立断裂矿镐（柄 #6b5138/镐头残段
+// #8a5a2b，木料同族）+ 碎石（#5a6472/#3a4148）：未战星砂微光 rgba(95,216,255,.18) 光晕 + #cfeaff
+// 浮光（星井/星砂车亮档同族）/caveBoss 后零蓝零晕（星砂车卸空/星砂堆不亮同族）。纯显示零结算零存档
+// 零数值变化（MB 不在 SOLID、踩踏/遇敌/传送判定逐字未动，不设小地图标记）。
+function drawMbAltar(camX, camY) {
+  const px = MB_ALTAR.x * T - camX;
+  const py = MB_ALTAR.y * T - camY;
+  const cx = px + 16;
+  // 岩地盘面整幅（与周格 CAVE 同色同纹——盖住通用门贴图）
+  CTX.fillStyle = '#2a2f38';
+  CTX.fillRect(px, py, 32, 64);
+  CTX.fillStyle = '#333a45';
+  CTX.fillRect(px + 3, py + 3, 6, 4);
+  CTX.fillRect(px + 20, py + 14, 7, 5);
+  CTX.fillRect(px + 9, py + 46, 8, 5);
+  // 中央石台（终焉之神祭坛同族）
+  CTX.fillStyle = '#1c222c';
+  CTX.fillRect(px + 5, py + 20, 22, 28);
+  CTX.fillStyle = '#262d3a';
+  CTX.fillRect(px + 5, py + 20, 22, 2);
+  // 断裂矿镐（木料同族）：镐头残段/断口/半截柄
+  CTX.fillStyle = '#8a5a2b';
+  CTX.fillRect(cx - 8, py + 10, 9, 4);
+  CTX.fillStyle = '#5a6472';
+  CTX.fillRect(cx + 1, py + 10, 3, 3);
+  CTX.fillStyle = '#6b5138';
+  CTX.fillRect(cx - 1, py + 13, 3, 15);
+  // 碎石（灰石族）
+  CTX.fillStyle = '#5a6472';
+  CTX.fillRect(cx - 9, py + 32, 3, 3);
+  CTX.fillStyle = '#3a4148';
+  CTX.fillRect(cx + 7, py + 38, 2, 2);
+  if (mbAltarState(S.G) === 'lit') {
+    // 未战：星砂微光（星井/星砂车亮档同族）
+    CTX.fillStyle = 'rgba(95,216,255,.18)';
+    CTX.fillRect(px + 6, py + 6, 20, 10);
+    CTX.fillStyle = '#cfeaff';
+    CTX.fillRect(px + 8, py + 14, 1, 1);
+    CTX.fillRect(px + 22, py + 8, 1, 1);
+  }
 }
 
 // 祭坛 ⚠Lv 标签：推荐等级与战斗界 enemyLv 同读 data.js SPECIES[].lv
@@ -1106,6 +1222,9 @@ export function drawWorld() {
   // 两档状态光效见 drawCaveSand 注释；位置读 data.js CAVE_SAND 单一数据源。只读旗标，零结算零存档
   // （与星井/星砂车同读 S.G.trueBoss 一份源两档——筛砂人 after「砂堆不亮了」同口径）。
   if (S.G && curMap() === 'cave') drawCaveSand(c.x, c.y);
+  // v23.28 洞窟领主祭坛（纯显示·先于角色层）：位置读 data.js MB_ALTAR 单一数据源（状态与 ALTAR_TAG
+  // done 判定同读 S.G 一份源两档——纯显示，先于星砂宝箱层）。
+  if (S.G && curMap() === 'cave') drawMbAltar(c.x, c.y);
   // v22.41 名字之门（纯显示·先于角色层）：两档状态光效见 drawGalleryArch 注释；位置读 data.js
   // GALLERY_ARCH 单一数据源。只读旗标，零结算零存档（与守名者 done「名字回灯下」同读 S.G.trueBoss
   // 一份源两档）。
@@ -1113,6 +1232,9 @@ export function drawWorld() {
   // v22.56 雾语林营地篝火（纯显示·先于角色层）：位置读 data.js CAMP_FIRE 单一数据源。零结算零存档
   // （与泉水/菌盖/高草同层的地貌——林间雨幕之下营火仍燃，镇子灯油之火的设定同源）。
   if (S.G && curMap() === 'dungeon') drawCampFire(c.x, c.y);
+  // v23.28 幽冥魔王祭坛（纯显示·先于角色层，承 v22.62 补脸先例的收口）：位置读 data.js BOSS_ALTAR
+  // 单一数据源（状态与 ALTAR_TAG done/「灯芯回来了」同读 S.G 一份源两档——纯显示）。
+  if (S.G && curMap() === 'dungeon') drawBossAltar(c.x, c.y);
   if (S.G && curMap() !== 'village') {
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
