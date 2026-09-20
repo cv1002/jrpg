@@ -15,6 +15,7 @@
 // smoke_v2179 行宽预算放宽）随新现实更新 + 旧代 v22.4 字面量 pin / 旧代恒等 pin / 旧代一百件套 pin 零残留。
 import { GAME_VERSION, ACH_LIST, BESTIARY_TARGET, chestTotal, FRAGMENTS } from '../js/data.js';
 import { slotPreview, saveKey, newGame } from '../js/core.js';
+import { adventureProgress } from '../js/quests.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -29,7 +30,7 @@ console.log('— v22.5 标题页存档预览记忆碎片进度冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.4', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 5)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.5（本版独占精确锚点）', GAME_VERSION === 'v23.28', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.5（本版独占精确锚点）', GAME_VERSION === 'v23.29', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -40,7 +41,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.5 版本注释', dataSrc.includes('v22.5 标题页存档预览补「🕯️ 记忆碎片 N/4」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.5', dataSrc.includes("const GAME_VERSION = 'v23.28';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.5', dataSrc.includes("const GAME_VERSION = 'v23.29';"));
 ok('data.js 仍保留 v22.4 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.4 新成就「妙手回春」'));
 
 // —— core.js 源级落位：import FRAGMENTS 新增 + fragN 派生 + 模板 ·🕯️ 并入 ——
@@ -52,6 +53,14 @@ ok('预览行末尾并列 ·🕯️N/4（与 FRAGMENTS.length 同源派生）',
   coreSrc.includes('·🕯️${fragN}/${FRAGMENTS.length}'));
 ok('预览行 v21.79 三件套段逐字保留（成就/图鉴/宝箱 与各自分母同源）',
   coreSrc.includes('成就${achN}/${ACH_LIST.length}') && coreSrc.includes('图鉴${codexN}/${BESTIARY_TARGET.length}') && coreSrc.includes('宝箱${chestN}/${chestTotal()}'));
+// —— v23.29 标题页存档预览补「·徽记 N/5」（冒险进度五徽记·试炼场回声）——
+ok('data.js 含 v23.29 版本注释（标题页存档预览补「·徽记 N/5」）', dataSrc.includes('v23.29 体验打磨·信息透明·纯显示：标题页存档预览补「·徽记 N/5」'));
+ok('core.js 徽记派生读 quests.adventureProgress（单一数据源、零裸字面量）',
+  coreSrc.includes('const _progB = adventureProgress(hero);'));
+ok('预览行模板并列 ·徽记N/M（_progB filter 长度派生）',
+  coreSrc.includes('·徽记${_progB.filter((b) => b[1]).length}/${_progB.length}'));
+ok('预览行 ·🕯️ 与 ·徽记 同列且 ·🕯️ 分支逐字保留（v22.5 段零回归）',
+  coreSrc.includes('·🕯️${fragN}/${FRAGMENTS.length}·徽记'));
 ok('既有预览段逐字保留（姓名/Lv/金币/地图进度/难度/存档时间/时长）',
   coreSrc.includes("${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0}") &&
   coreSrc.includes('fmtAgo(data.savedAt)') && coreSrc.includes('fmtTime(hero.time)') && coreSrc.includes('DIFFS[hero.diff]'));
@@ -81,6 +90,8 @@ ok('新档预览三件套零回归（成就0/M·图鉴0/N·宝箱0/M 与 🕯️
 ok('新档预览既有段零回归（姓名/Lv/金币/地图/⏱时长）',
   typeof pv0 === 'string' && pv0.includes('守灯人') && pv0.includes('Lv.1') && pv0.includes('金币30') && pv0.includes('潮灯镇') && pv0.includes('00:00:03'));
 ok('新档预览单行（无 \\n）', typeof pv0 === 'string' && !pv0.includes('\n'));
+ok('新档预览徽记 0/N（adventureProgress 同源派生、缺字段防御式零抛错）',
+  typeof pv0 === 'string' && pv0.includes(`·徽记0/${adventureProgress(fresh).length}`), String(pv0));
 
 // 推进档：碎片 2/4 + 三件套逐值共存
 const prog = newGame('潮');
@@ -89,6 +100,7 @@ prog.ach = ['firstblood', 'lvl5'];
 prog.bestiary = { [BESTIARY_TARGET[0]]: 2, [BESTIARY_TARGET[1]]: 1 };
 prog.chests = ['22,1', '12,11'];
 prog.fragments = ['f-a', 'f-b'];
+prog.rushDone = true; // v23.29：试炼场徽记（rushDone）在预览行有回声
 mem[saveKey(2)] = JSON.stringify({ G: prog, chests: Array.from(prog.chests), savedAt: Date.now() - 300000 });
 const pv1 = slotPreview(2);
 ok('推进档预览碎片 2/4（与 hero.fragments 长度同源）',
@@ -96,6 +108,8 @@ ok('推进档预览碎片 2/4（与 hero.fragments 长度同源）',
 ok('推进档预览逐值（成就2/M·图鉴2/N·宝箱2/M 与成就页/图鉴页/状态页同口径）',
   typeof pv1 === 'string' && pv1.includes(`成就2/${ACH_LIST.length}`) && pv1.includes(`图鉴2/${BESTIARY_TARGET.length}`) && pv1.includes(`宝箱2/${chestTotal()}`));
 ok('推进档预览既有段零回归（时间戳/时长）', typeof pv1 === 'string' && pv1.includes('5分钟前') && pv1.includes('01:02:03'));
+ok('推进档预览徽记 1/N（仅 rushDone 达成·试炼场回声）',
+  typeof pv1 === 'string' && pv1.includes(`·徽记1/${adventureProgress(prog).length}`), String(pv1));
 
 // 全收集档：碎片 4/4（集齐真结局关键收集）
 const full = newGame('灯见');
@@ -122,16 +136,20 @@ ok('旧档防御档碎片 0/4 且旧布尔 bestiary 归一共存（图鉴1/N）'
 // 难度档 + 真结局档（v19.45 口径零回归：仅困难档标注；灯已归还分支）
 const hard = newGame('守灯');
 hard.level = 12; hard.map = 'gallery'; hard.time = 359999; hard.diff = 1; hard.trueBoss = true;
+hard.bossDefeated = true; hard.caveBoss = true; hard.galleryOpen = true; hard.rushDone = true; // v23.29 五徽记全档
 hard.ach = []; hard.bestiary = {}; hard.chests = []; hard.fragments = ['f-a', 'f-b', 'f-c', 'f-d'];
 mem[saveKey(5)] = JSON.stringify({ G: hard, chests: [], savedAt: Date.now() - 260000000 });
 const pv3 = slotPreview(5);
 ok('困难真结局档零回归（困难/无字回廊/灯已归还 + 🕯️4/4 共存）',
   typeof pv3 === 'string' && pv3.includes('困难') && pv3.includes('无字回廊') && pv3.includes('灯已归还') && pv3.includes(`·🕯️4/${FRAGMENTS.length}`));
+ok('真结局五徽记全档预览徽记 5/N（灯芯/星井/回廊/初灯/试炼场 全达成）',
+  typeof pv3 === 'string' && pv3.includes(`·徽记5/${adventureProgress(hard).length}`), String(pv3));
 
 // 空槽返回 null（零回归）
 ok('空槽返回 null', slotPreview(9) === null);
 
-// —— 行宽预算：v21.18 同款 estW（13px 单行 ≤640 画布，v22.5 随 🕯️ 并入放宽 20px）——
+// —— 行宽预算：v21.18 同款 estW（13px 单行 ≤640 画布，v22.5 随 🕯️ 并入放宽 20px；
+//    v23.29 随 ·徽记5/5 并入——estW 为保守估算 ≈668，@napi-rs/canvas 13px sans-serif 实测最坏 ≈606.2 ≤640，cap 放宽 690）——
 const estW = (s, size) => {
   let wsum = 0;
   for (const ch of String(s || '')) {
@@ -151,12 +169,12 @@ const estW = (s, size) => {
   }
   return wsum;
 };
-const worst = `余烬 Lv.12 金币12345 无字回廊·灯已归还 · 困难 · 3天前 · ⏱99:59:59 · 成就${ACH_LIST.length}/${ACH_LIST.length}·图鉴${BESTIARY_TARGET.length}/${BESTIARY_TARGET.length}·宝箱${chestTotal()}/${chestTotal()}·🕯️${FRAGMENTS.length}/${FRAGMENTS.length}`;
+const worst = `余烬 Lv.12 金币12345 无字回廊·灯已归还 · 困难 · 3天前 · ⏱99:59:59 · 成就${ACH_LIST.length}/${ACH_LIST.length}·图鉴${BESTIARY_TARGET.length}/${BESTIARY_TARGET.length}·宝箱${chestTotal()}/${chestTotal()}·🕯️${FRAGMENTS.length}/${FRAGMENTS.length}·徽记5/5`;
 const wWorst = estW(worst, 13);
-ok('最坏预览行估算宽 ≤640（640 画布中心对齐，两侧余量 ≈10px）', wWorst > 0 && wWorst <= 640, `≈${wWorst.toFixed(0)}`);
+ok('最坏预览行估算宽 ≤690（保守估算 ≈668；640 画布中心对齐，真实渲染实测 ≈606.2）', wWorst > 0 && wWorst <= 690, `≈${wWorst.toFixed(0)}`);
 ['余烬','守灯人','灯见','潮','守灯'].forEach((nm) => {
   const w = estW(worst.replace('余烬', nm), 13);
-  ok(`合理性抽查：${nm} 名预览 ≤640`, w <= 640, `≈${w.toFixed(0)}`);
+  ok(`合理性抽查：${nm} 名预览 ≤690`, w <= 690, `≈${w.toFixed(0)}`);
 });
 
 // —— README / package.json / CHANGELOG 同步守护 ——
@@ -170,6 +188,8 @@ ok('README 系统清单标题预览为收集进度四件套（v21.79 三件套 +
   readme.includes('v22.5 并列 🕯️ 记忆碎片 N/4'));
 ok('README 记忆碎片 bullet 补标题页存档预览常住（v22.5）',
   readme.includes('标题页存档预览 `🕯️ 记忆碎片 N/4`（v22.5'));
+ok('README 系统清单标题页存档进度预览补 ·徽记 N/5（v23.29，adventureProgress 同源口径）',
+  readme.includes('**v23.29 并列 ·徽记 N/5**') && readme.includes('试炼场刷没刷过不再只是 prog 四段链的盲区'));
 ok('package.json 已收录 smoke_v2205_fragtitle（npm test 串跑第 101 份）',
   pkg.includes('smoke_v2205_fragtitle.mjs') && /smoke_v2204_brew2\.mjs && node tests\/smoke_v2205_fragtitle\.mjs/.test(pkg));
 ok('CHANGELOG 含 v22.5 条目', changelog.includes('## v22.5 '));
@@ -202,7 +222,7 @@ const vers101 = ['smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v22
 for (const nm of vers101) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.5`,
-    src.includes("const GAME_VERSION = 'v23.28';"));
+    src.includes("const GAME_VERSION = 'v23.29';"));
 }
 for (const nm of ['smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs',
   'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs',
@@ -211,7 +231,7 @@ for (const nm of ['smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2
   'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.5`,
-    src.includes("GAME_VERSION === 'v23.28'"));
+    src.includes("GAME_VERSION === 'v23.29'"));
 }
 for (const nm of ['smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs',
   'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs',
@@ -221,10 +241,10 @@ for (const nm of ['smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2
   ok(`${nm} 的 README tests 树尾 pin 已随新现实更新（+ smoke_v2205_fragtitle）`,
     src.includes('smoke_v2204_brew2 + smoke_v2209_achstatus + smoke_v2211_lampkid + smoke_v2212_volume + smoke_v2213_teller + smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker + smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 }
-// smoke_v2179 行宽预算断言随 🕯️ 并入放宽（v21.79 ≤620 → ≤640 + worst 串补 ·🕯️4/4）
+// smoke_v2179 行宽预算断言随 ·徽记 并入放宽（v21.79 ≤620 → v22.5 ≤640 → v23.29 ≤690 + worst 串补 ·徽记5/5）
 const s2179 = read('../tests/smoke_v2179_titlerecap.mjs');
-ok('smoke_v2179 的标题预览行宽预算已放宽（estW ≤640 且 worst 串含 ·🕯️4/4）',
-  s2179.includes('wWorst <= 640') && s2179.includes('·🕯️${FRAGMENTS.length}'));
+ok('smoke_v2179 的标题预览行宽预算已放宽（estW ≤690 且 worst 串含 ·🕯️4/4·徽记5/5）',
+  s2179.includes('wWorst <= 690') && s2179.includes('·🕯️${FRAGMENTS.length}') && s2179.includes('·徽记5/5'));
 
 // 旧代 pin 零残留：全部测试文件不得再含 v22.4 版本字面量 pin（拆串构造避免本文件扫描行自匹配）
 const OLD_GV = "const GAME_VERSION = 'v22." + "4';";

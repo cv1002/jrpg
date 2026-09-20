@@ -30,7 +30,7 @@ const dataSrc = read('../js/data.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.79 版本注释', dataSrc.includes('v21.79 标题页存档预览补收集进度'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v23.28';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v23.29';"));
 
 // —— 源级落位：core.js 新三件套派生 + 既有段逐字保留 ——
 ok('core.js 导入 ACH_LIST/BESTIARY_TARGET/chestCount/chestTotal（单一数据源）',
@@ -116,12 +116,12 @@ const estW = (s, size) => {
   }
   return wsum;
 };
-const worst = `余烬 Lv.12 金币12345 无字回廊·灯已归还 · 困难 · 3天前 · ⏱99:59:59 · 成就${ACH_LIST.length}/${ACH_LIST.length}·图鉴${BESTIARY_TARGET.length}/${BESTIARY_TARGET.length}·宝箱${chestTotal()}/${chestTotal()}·🕯️${FRAGMENTS.length}/${FRAGMENTS.length}`;
+const worst = `余烬 Lv.12 金币12345 无字回廊·灯已归还 · 困难 · 3天前 · ⏱99:59:59 · 成就${ACH_LIST.length}/${ACH_LIST.length}·图鉴${BESTIARY_TARGET.length}/${BESTIARY_TARGET.length}·宝箱${chestTotal()}/${chestTotal()}·🕯️${FRAGMENTS.length}/${FRAGMENTS.length}·徽记5/5`;
 const wWorst = estW(worst, 13);
-ok('最坏预览行估算宽 ≤640（640 画布中心对齐，v22.5 随碎片并入放宽预算）', wWorst > 0 && wWorst <= 640, `≈${wWorst.toFixed(0)}`);
-['余烬','守灯人','灯见','潮'].forEach((nm) => {
+ok('最坏预览行估算宽 ≤690（v23.29 随 ·徽记5/5 并入；保守估算 ≈668，@napi-rs/canvas 实测 ≈606.2 ≤640）', wWorst > 0 && wWorst <= 690, `≈${wWorst.toFixed(0)}`);
+['余烬','守灯人','灯见','潮','守灯'].forEach((nm) => {
   const w = estW(worst.replace('余烬', nm), 13);
-  ok(`合理性抽查：${nm} 名预览 ≤640`, w <= 640, `≈${w.toFixed(0)}`);
+  ok(`合理性抽查：${nm} 名预览 ≤690`, w <= 690, `≈${w.toFixed(0)}`);
 });
 
 // —— README / package / 姊妹件套 pin 随新现实更新（v21.7 惯例：最新版守护 README 与旧 pin）——

@@ -305,7 +305,15 @@ function slotPreview(slot) {
     const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
     const chestN = chestCount(hero);
     const fragN = (hero.fragments || []).length;
-    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)} · 成就${achN}/${ACH_LIST.length}·图鉴${codexN}/${BESTIARY_TARGET.length}·宝箱${chestN}/${chestTotal()}·🕯️${fragN}/${FRAGMENTS.length}`;
+    // v23.29 标题页存档预览补「·徽记 N/5」冒险进度计数（体验打磨·信息透明·纯显示——承 v23.21 J 日志
+    // 「主线 · N/5」节头同一「五徽记 N/M 汇总」家族收口：冒险进度五徽记（灯芯/星井/回廊/初灯/试炼场，
+    // quests.adventureProgress 唯一实现）在 状态页/v22.89 胜利画面/v22.95 阵亡画面/v22.96 尾声/J 日志
+    // 五端齐备，唯独标题页存档预览（slotPreview 的 prog 链只覆盖主线四段、试炼场 rushDone 无回声）——
+    // 多档挑续玩时「这个档试炼场刷没刷过」选槽第一屏看不到；现与五端同读 quests.adventureProgress 一份
+    // 单一数据源（core.js 既有 import 零新增依赖），模板并列 ·徽记N/5（N=已达成徽记数，加/删徽记自动
+    // 跟随零裸字面量），纯显示零结算零存档零数值变化。
+    const _progB = adventureProgress(hero);
+    return `${hero.name || '守灯人'} Lv.${hero.level} 金币${hero.gold || 0} ${mapName}·${prog}${hero.diff ? ' · ' + (DIFFS[hero.diff] || '困难') : ''}${fmtAgo(data.savedAt)} · ⏱${fmtTime(hero.time)} · 成就${achN}/${ACH_LIST.length}·图鉴${codexN}/${BESTIARY_TARGET.length}·宝箱${chestN}/${chestTotal()}·🕯️${fragN}/${FRAGMENTS.length}·徽记${_progB.filter((b) => b[1]).length}/${_progB.length}`;
   } catch (e) {
     return null;
   }
