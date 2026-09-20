@@ -24,7 +24,7 @@ console.log('— v21.92 快速旅行目的地等级达标预警冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.91', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已更新为 v21.92', GAME_VERSION === 'v23.26', GAME_VERSION);
+ok('data.js GAME_VERSION 字面量已更新为 v21.92', GAME_VERSION === 'v23.27', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -35,7 +35,8 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.92 版本注释', dataSrc.includes('v21.92 快速旅行目的地等级达标预警'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.92', dataSrc.includes("const GAME_VERSION = 'v23.26';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.92', dataSrc.includes("const GAME_VERSION = 'v23.27';"));
+ok('data.js 含 v23.27 版本注释（快速旅行已探索计数）', dataSrc.includes('v23.27 体验打磨·信息透明·纯显示：快速旅行面板标题右侧补「已探索 N/4」计数'));
 ok('data.js 仍保留 v21.91 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.91 新成就「长明不熄」'));
 
 // —— MAPS.recLv 数据契约（与 TRAVEL_LIST 四图一一对应，单一数据源）——
@@ -61,6 +62,12 @@ ok('menus.js 既有行逐字零回归（forEach 行/desc/提示/页脚随 v22.83
   menusSrc.includes("text(hint,478,110+i*52,'bold 11px','#ffd24a','right')") &&
   menusSrc.includes("text('↑↓ 选择  ·  Enter/E 传送  ·  Esc 取消',320,travelFootY(TRAVEL_LIST.length),'12px','#7d93a3','center')") &&
   menusSrc.includes("const here=k===curMap()"));
+// v23.27 已探索 N/4 计数（体验打磨·信息透明·纯显示）：与行态/成就 prog 同读 hero.visited 一份源
+ok('menus.js 含 v23.27 已探索计数注释', menusSrc.includes('v23.27 快速旅行面板标题右「已探索 N/4」计数'));
+ok('menus.js 已探索计数落位（行态同源 (hero.visited||[]) 防御式 + TRAVEL_LIST.length 总数）',
+  menusSrc.includes('_visitedN = TRAVEL_LIST.filter(([k]) => (hero.visited || []).includes(k)).length') &&
+  menusSrc.includes('已探索 ${_visitedN}/${TRAVEL_LIST.length}') &&
+  menusSrc.includes("text(`已探索 ${_visitedN}/${TRAVEL_LIST.length}`, 510, 86, '12px', '#7d93a3', 'right')"));
 
 // —— 运行期实证：DOM/音频/存储桩 + main.js 真实导入后 drawTravel 四档 ——
 const noop = () => {};
@@ -136,6 +143,8 @@ ok('运行期：Lv.1 选中雾语林 → 「⚠️ 目的地推荐 Lv.3 · 你�
   CAPTURED.includes('⚠️ 目的地推荐 Lv.3 · 你当前 Lv.1 · 先补给再战！'), CAPTURED.join('|'));
 ok('运行期：命中档页脚与原名行零回归（页脚 + ？？？占位，页脚随 v22.83 Enter/E 口径）',
   CAPTURED.includes('↑↓ 选择  ·  Enter/E 传送  ·  Esc 取消') && CAPTURED.some((t) => t.includes('？？？ · 未探索')));
+ok('运行期：新档（已到访潮灯镇）页头画「已探索 1/4」（v23.27 计数，行态同源）',
+  CAPTURED.includes('已探索 1/4'), CAPTURED.join('|'));
 
 // 档 2：Lv.1 在村，选中星井矿脉（推荐 Lv.6）→ 预警数值同源派生
 thr = runTravel(newGame('灯见'), 2);
@@ -159,6 +168,8 @@ thr = runTravel(h, 1);
 ok('运行期：当前所在地档 drawTravel 不抛错', thr === null, thr && String(thr.stack || thr));
 ok('运行期：Lv.1 选中当前所在地（雾语林 📍）→ 零预警行（k!==curMap() 守卫）',
   !CAPTURED.some((t) => t.includes('目的地推荐')));
+ok('运行期：已到访两图档页头画「已探索 2/4」（v23.27 计数随 visited 推进）',
+  CAPTURED.includes('已探索 2/4'), CAPTURED.join('|'));
 
 // 档 5：Lv.1 在村，选中潮灯镇（安全区 recLv=1）→ 恒不触发
 h = newGame('星');
@@ -175,6 +186,8 @@ h.visited = ['village', 'dungeon', 'cave', 'gallery'];
 thr = runTravel(h, 3);
 ok('运行期：Lv.10 选中无字回廊（恰达标）→ 零预警行',
   !CAPTURED.some((t) => t.includes('目的地推荐')));
+ok('运行期：四图全到访档页头画「已探索 4/4」（v23.27 计数封顶与成就走遍四方同源）',
+  CAPTURED.includes('已探索 4/4'), CAPTURED.join('|'));
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树收录 smoke_v2191_ptime（v21.91 漏树，本版补录）', readme.includes('smoke_v2191_ptime'));
@@ -207,7 +220,7 @@ const vers = ['smoke_v2191_ptime.mjs', 'smoke_v2190_launch.mjs', 'smoke_v2189_vi
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.92`,
-    src.includes("const GAME_VERSION = 'v23.26';"));
+    src.includes("const GAME_VERSION = 'v23.27';"));
 }
 // 旧代 pin 零残留：全部测试文件不得再含 v21.91 版本字面量 pin（拆串构造避免本文件扫描行自匹配）
 const OLD_GV = "const GAME_VERSION = 'v21.9" + "1';";

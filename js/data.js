@@ -1088,7 +1088,14 @@
 // 现行首补「优先灵药·」（纯文字零裸字面量），行数不变仍 14、真实渲染实测（@napi-rs/canvas 14px
 // sans-serif）全行 ≈464.95 ≤470 面板预算，其余 13 行与三页逐字零回归
 // （详见本文件 HELP_PAGES 行内注释）。
-const GAME_VERSION = 'v23.26';
+// v23.27 体验打磨·信息透明·纯显示：快速旅行面板标题右侧补「已探索 N/4」计数——承 v23.13-21
+// 灯下之声/图鉴/成就/碎片各「N/M 汇总」同一收集计数家族：TRAVEL_LIST 四图是探索线收集面
+// （成就「踏出灯影/灯影渐远/走遍四方」同读 hero.visited），快速旅行面板却是唯一没有 N/M 汇总的
+// 收集界面——四行目的地各自显形/？？？，但「还差几张图没到访」要逐行数；现与 drawTravel 行态
+// （(hero.visited||[]) 防御式）及成就 prog 同读 hero.visited 一份单一数据源，总数读
+// TRAVEL_LIST.length（与 Object.keys(MAPS) 四图一一对应），纯显示零结算零存档零数值变化
+// （详见 js/view/menus.js 行内注释）。
+const GAME_VERSION = 'v23.27';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

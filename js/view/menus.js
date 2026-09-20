@@ -589,6 +589,17 @@ export function travelFootY(n) {
 export function drawTravel(){
   const hero = S.G;
   drawWorld(); panel(120,60,400,320,'🧭 快速旅行');
+  // v23.27 快速旅行面板标题右「已探索 N/4」计数（体验打磨·信息透明·纯显示——承 v23.13-21
+  // 灯下之声/图鉴/成就/碎片各「N/M 汇总」同一收集计数家族收口：TRAVEL_LIST 四图是探索线收集面
+  // （成就「踏出灯影/灯影渐远/走遍四方」与行态同读 hero.visited），快速旅行面板却是唯一没有
+  // N/M 汇总的收集界面——四行目的地各自显形/？？？，但「还差几张图没到访」要逐行数；现与行态
+  // （(hero.visited||[]) 防御式旧档零迁移）及成就 prog 同读 hero.visited 一份单一数据源，总数读
+  // TRAVEL_LIST.length（与 Object.keys(MAPS) 四图一一对应，加/删地图自动跟随零裸字面量），
+  // 落面板标题右缘（与 drawShop 金币同款右上元信息位：右对齐 510 距面板右缘 520 留 10px 边距、
+  // 12px 灰字与 16px 金色标题零重叠——标题居中宽 ≈90px 至 365、计数左起 ≈435，
+  // 承 progressSpacing/travelFootY「派生化防回归」族），纯显示零结算零存档零数值变化。
+  const _visitedN = TRAVEL_LIST.filter(([k]) => (hero.visited || []).includes(k)).length;
+  text(`已探索 ${_visitedN}/${TRAVEL_LIST.length}`, 510, 86, '12px', '#7d93a3', 'right');
   TRAVEL_LIST.forEach(([k,nm,desc,hint],i)=>{
     const on=i===S.travelSel, unlocked=(hero.visited||[]).includes(k);
     // 当前所在地标注（信息透明·纯显示）：绿色 📍 一眼看出自己在哪，避免误传送

@@ -1,3 +1,10 @@
+## v23.27 快速旅行面板标题右「已探索 N/4」计数（体验打磨·信息透明·收集计数家族收口·纯显示——承 v23.13-21 灯下之声/图鉴/成就/碎片各「N/M 汇总」同一主线）——TRAVEL_LIST 四图是探索线收集面（成就「踏出灯影/灯影渐远/走遍四方」同读 hero.visited），快速旅行面板此前却是唯一没有「N/M 汇总」的收集界面：四行目的地各自 显形/？？？·未探索，但「还差几张图没到访」要逐行数；现与 drawTravel 行态（(hero.visited||[]) 防御式旧档零迁移）及成就 prog 同读 hero.visited 一份单一数据源，总数读 TRAVEL_LIST.length（与 Object.keys(MAPS) 四图一一对应，加/删地图自动跟随零裸字面量），落面板标题右缘（与 drawShop 金币同款右上元信息位：右对齐 510 距面板右缘 520 留 10px 边距、12px 灰字与 16px 金色标题零重叠——标题居中宽 ≈90px 至 365、计数左起 ≈435），纯显示零结算零存档零数值变化。
+
+- 【改动】`js/view/menus.js`：drawTravel 面板标题右侧新增 12px 灰字「已探索 N/4」（_visitedN 与行态同源、TRAVEL_LIST.length 派生总数、v23.27 行内注释）；`js/data.js`：`GAME_VERSION` v23.26→v23.27（附 v23.27 注释，v23.26 起各历史注释保留）；`tests/smoke_v2192_travelwarn.mjs`：源级/运行期断言随新现实更新（版本 pin + menus.js 落位 + 运行期 1/4·2/4·4/4 三档计数实证），既有预警/页脚/行态断言逐字保留。
+- 【零回归面】未动任何按键/结算/数值/存档/布局（drawTravel 行距/desc/提示/预警行/页脚逐字未动，新增行不触任何既有绘制行，行态判定 (hero.visited||[]) 逐字同款）；未动 battle/core/world/hero/quests/rules/encounter/enemyAI/shop/audio/state/scene/bind/hooks/main.js/view 其余·index.html；未新增/删除文件（件套 212 份不变，承 v23.17-v23.26 先例）。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin·CHANGELOG 顶 pin 级联（v23.26→v23.27，tests/ 211 件 smoke 全量 sed 落位零残留——仅历史注释引用与 v23.26 旧条目保留）；`package.json` test 串 212 份不变；README 守护描述/件套口径不变（212 份）。
+- 【验证】`node --check` js/data.js·js/view/menus.js 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-20 cron 自动完善）
+
 ## v23.26 帮助页「喝药」行补「优先灵药」口径（体验打磨·口径一致·纯文字，承 v22.58 喝药行恢复量口径同一「功能存在就必须能看到入口」主线）——F 喝药 / 战斗 [3] 的优先语义（takePotion 先耗高级灵药（可同时补 MP）、普通药水只在掉血时用、满状态不浪费——hero.js takePotion/potionAvailability 唯一实现）在 README 快速上手表 F 行「优先高级灵药；满状态时不浪费」与战斗指令栏 [3] 预览「（自动先喝🧪）」早有口径，唯独 H 页「操作说明」「喝药（普通/灵药）」行（战前知识中枢）只写恢复量、没说先喝哪瓶——玩家在矿脉/回廊按 F 想确认「这口烧的是不是舍不得的灵药」仍要事后看战报/README（v22.58 同批补的是恢复量、优先语义是同一行的漏网）；现行首补「优先灵药·」（纯文字零裸字面量，与 takePotion 先耗 potion2 的实际行为同口径），行数不变仍 14、真实渲染实测（@napi-rs/canvas 14px sans-serif）全行 ≈464.95 ≤470 面板预算，其余 13 行与三页逐字零回归。
 
 - 【改动】`js/data.js`：HELP_PAGES 操作说明「喝药（普通/灵药）」行 r[1] 行首补「优先灵药·」（+ v23.26 行内注释，v22.58 注释块保留）；`GAME_VERSION` v23.25→v23.26（附 v23.26 注释，v23.25 起各历史注释保留）；`tests/smoke_v2258_potionhelp.mjs`：exp/逐值断言随行首更新 + 新增「优先灵药」口径断言（恢复量派生/行数 14/r[2] 数 2/行宽预算断言逐字保留，承 v23.25「测试随口径更新」先例）。
