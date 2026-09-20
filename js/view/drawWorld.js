@@ -1145,7 +1145,17 @@ function drawMinimap() {
     // 预警闪烁节奏读 data.js ENCOUNTER.warnFlash（单一数据源）：与满槽 full / 预警线 warn 同属遇敌槽口径，调「⚠️ 危险逼近」快闪节奏只改 data.js 一处
     CTX.fillStyle = encDanger && (Math.floor(Date.now() / ENCOUNTER.warnFlash) % 2 === 0) ? '#ff8a5b' : '#e14b3f';
     CTX.fillRect(mx, my + mh + 3, mw * (encPct / ENCOUNTER.full), 6);
-    const encLab = `遇敌 ${Math.round(encPct)}%${encDanger ? ' ⚠️ 危险逼近' : ''}${fullDanger ? ' · 全域危险' : ''}`;
+    // v23.35 体验打磨·信息透明·纯显示：遇敌槽标签补「当前昼夜相位倍率」（承 v23.31 昼夜接入机制 /
+    // v22.44 全域危险标注同一「遇敌槽看得见→读得懂」主线收口）——v23.31 起夜晚危险格步进 ×1.25、
+    // 黎明 ×0.85，H 页机制行/README 数值速查早有口径，唯独小地图遇敌槽（玩家盯着它涨的现场）不标
+    // 当前倍率：夜晚涨得比白天快 25%、黎明慢 15%，玩家只看到 % 涨速变了却不知道此刻 ×N；现与
+    // world.tickEncounter 同读 ENCOUNTER.phaseGauge + dayPhase() 一份单一数据源（乘数由 phaseGauge
+    // 派生零裸字面量；🌙夜/🌅黎 为视图层短标签，与 hud.js PERIOD 同款显示映射风格——显示映射非数据），
+    // 乘数=1 的白天/黄昏与无字回廊恒暗例外（curMap()==='gallery'→1，与 tickEncounter 同判）零噪音
+    // 不显示；纯显示零结算零存档零数值变化（遇敌槽累加/触发/喷泉/安全格逐字未动）。
+    const phaseK = curMap() === 'gallery' ? 1 : ((ENCOUNTER.phaseGauge || {})[dayPhase((S.G && S.G.time) || 0)] || 1);
+    const phaseTag = phaseK !== 1 ? ` · ${({ night: '🌙夜', dawn: '🌅黎' })[dayPhase((S.G && S.G.time) || 0)] || ''}×${phaseK}` : '';
+    const encLab = `遇敌 ${Math.round(encPct)}%${phaseTag}${encDanger ? ' ⚠️ 危险逼近' : ''}${fullDanger ? ' · 全域危险' : ''}`;
     CTX.font = 'bold 12px sans-serif';
     const encW = Math.max(mw, Math.ceil(CTX.measureText(encLab).width) + 16);
     const encX = mx + mw - encW;

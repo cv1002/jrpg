@@ -94,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.46（本版守 v22.47）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 47)), GAME_VERSION);
 ok('data.js 含 v22.47 注释（村井补脸说明）', dSrc.includes('v22.47 新内容·世界景观·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.47（旧 v22.46 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.34';") && !dSrc.includes("const GAME_VERSION = 'v22." + "46';"));
+  dSrc.includes("const GAME_VERSION = 'v23.35';") && !dSrc.includes("const GAME_VERSION = 'v22." + "46';"));
 ok('data.js 仍保留 v22.46/v22.45 世代注释链（喷泉反馈/守夜人累积注释未动）',
   dSrc.includes('v22.46 体验打磨·信息透明·纯显示') && dSrc.includes('v22.45 新内容·纯风味 NPC'));
 
@@ -218,12 +218,12 @@ ok('package.json 已收录 smoke_v2247_villagewell（npm test 串跑第 143 份�
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2247_villagewell.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 143 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.47 条目', changelog.startsWith('## v23.34'));
+ok('CHANGELOG 顶部已追加 v22.47 条目', changelog.startsWith('## v23.35'));
 
 // —— 姊妹 pin 复查（smoke_v2246 随新现实更新 + v2143-45「件套守护领先一位」哨兵推进至 144）——
 const s2246 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2246_fountgauge.mjs'), 'utf8');
 ok('smoke_v2246 的 GAME_VERSION 字面量 pin 已更新为 v22.47（旧 v22.46 零残留）',
-  s2246.includes("const GAME_VERSION = 'v23.34';") && !s2246.includes("const GAME_VERSION = 'v22." + "46';"));
+  s2246.includes("const GAME_VERSION = 'v23.35';") && !s2246.includes("const GAME_VERSION = 'v22." + "46';"));
 ok('smoke_v2246 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2246.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2246 的 package.json 件套计数 pin 已更新为 === 143', s2246.includes('testChain === 212'));
