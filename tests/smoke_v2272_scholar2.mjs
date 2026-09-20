@@ -45,7 +45,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.72 版本注释', dataSrc.includes('v22.72 新成就·图鉴收录线中档里程碑「见多识广」'));
 ok('data.js GAME_VERSION 字面量已为 v22.72（旧 v22.71 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.40';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "71';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.41';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "71';"));
 ok('data.js 仍保留 v22.71 历史注释（灯影渐远成就注释未动）', dataSrc.includes('v22.71 新成就·探索线第二档里程碑「灯影渐远」'));
 ok('data.js 导出 SCHOLAR2_GOAL（export 块落位，与 SCHOLAR_GOAL 相邻）',
   dataSrc.includes('SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL,'));
@@ -233,13 +233,13 @@ ok('package.json 已收录 smoke_v2272_scholar2（npm test 串跑第 168 份）'
   pkg.includes('smoke_v2271_outstep2.mjs && node tests/smoke_v2272_scholar2.mjs && node tests/smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 168 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 含 v22.72 条目（顶 pin）', changelog.startsWith('## v23.40 '));
+ok('CHANGELOG 含 v22.72 条目（顶 pin）', changelog.startsWith('## v23.41 '));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.71 pin 零残留 ——
 const s2271 = read('smoke_v2271_outstep2.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
-ok('smoke_v2271 的 GAME_VERSION 字面量 pin 已更新为 v22.72', s2271.includes("const GAME_VERSION = 'v23.40';"));
-ok('smoke_v2271 的 CHANGELOG 顶 pin 已更新为 ## v22.72', s2271.includes("startsWith('## v23.40'") || s2271.includes("startsWith('## v22.78 '"));
+ok('smoke_v2271 的 GAME_VERSION 字面量 pin 已更新为 v22.72', s2271.includes("const GAME_VERSION = 'v23.41';"));
+ok('smoke_v2271 的 CHANGELOG 顶 pin 已更新为 ## v22.72', s2271.includes("startsWith('## v23.41'") || s2271.includes("startsWith('## v22.78 '"));
 ok('smoke_v2271 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2271.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2271 的 README 串尾 pin 已延伸至 smoke_v2272_scholar2', s2271.includes('smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2271 的 package.json 串尾 plain pin 已延伸至 smoke_v2272_scholar2', s2271.includes('smoke_v2271_outstep2.mjs && node tests/smoke_v2272_scholar2.mjs && node tests/smoke_v2273_seen5.mjs && node tests/smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));

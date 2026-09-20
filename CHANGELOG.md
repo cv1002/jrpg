@@ -1,3 +1,11 @@
+## v23.41 README「BGM / 音效」行补「事件专属音效」家族（文档整理·数值说明·同源口径——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee 同一「事件音效各归其位」主线的速读侧收口）——README 快速上手表「BGM / 音效」行此前只强调战斗开场警报音（alert/boss，与威胁预警同一强敌口径），v23.22/v23.33/v23.40 三版建立的「事件专属音效」家族（成就铃声 sine 三连上行 / 酿造气泡上行 / 逃跑成功下行三步——与升级琶音、胜利号角一听即分）散见 audio.js 行内注释与 CHANGELOG，维护者与玩家速读查无一句（v23.40 版本注释自称「承 v23.22/v23.33 同族收口」，但家族口径始终没落进速读文档）；现补录：警报音括号之后追加「事件专属音效」括号（成就铃声 sine 三连上行 v23.22 / 酿造气泡上行 v23.33 / 逃跑成功下行三步 v23.40——音频语义与 audio.js SFX.ach/craft/flee 行内注释逐字同源，调音色/事件归属只改 audio.js 一处、文档自动跟随）；纯文档零逻辑零结算零存档零数值变化，SFX 家族其余逐字未动。
+
+- 【改动】`README.md`：快速上手表「BGM / 音效」行警报音括号后追加「**事件专属音效**：成就铃声（sine 三连上行，v23.22）/ 酿造气泡上行（v23.33）/ 逃跑成功下行三步（v23.40）——与升级琶音、胜利号角一听即分，同一「事件音效各归其位」主线」；`js/data.js`：`GAME_VERSION` v23.40→v23.41（附 v23.41 注释，v23.40 起各历史注释保留）。
+- 【零回归面】未动任何结算/数值/存档/音效/布局（audio.js SFX 家族逐字未动；README 既有 警报音/主音量调节/视觉/系统 各段逐字未动）；未动 audio/battle/core/hero/quests/rules/world/view/main/index.html/package.json（件套 212 份不变——本次扩展既有 smoke_v2313_talkall 家族随新现实更新，未新增/删除文件）。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin·CHANGELOG 顶 pin 级联（v23.40→v23.41，136 件测试文件约 750 处 pin 落位零残留——仅 v23.40 特性标签保留）；`package.json` test 串 212 份不变；README 件套口径不变（212 份）。
+- 【验证】`node --check` js/data.js·tests/smoke_v2313_talkall.mjs 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-21 cron 自动完善）
+
+
 ## v23.40 逃跑成功专属音效——弃用菜单移动音（音效反馈·语义修正，承 v23.22 SFX.ach / v23.33 SFX.craft 同族收口：battle.doFlee 逃脱成功分支此前播 SFX.select()（菜单移动轻点），逃跑是「离场脱战」不是「选择/翻行」——脱战瞬间与翻菜单/换行同音无可分辨；现补 audio.js SFX.flee 下行快三步 square 523→392→294（末音 0.12s 略长如脚步远去收尾），与 select 单音/cancel 单音下降/alert 两连下坠/victory 号角一听即分——逃脱成功「听声即知已脱战」；零结算零数值零存档，Boss 气场压制/逃脱失败仍 SFX.cancel 逐字未动）。
 
 - 【改动】`js/audio.js`：SFX 新增 `flee()`（v23.40 注释块，置于 craft 之后）；`js/battle.js`：`doFlee` 逃脱成功分支 `SFX.select()`→`SFX.flee()`（+ v23.40 注释块）；`js/data.js`：`GAME_VERSION` v23.39→v23.40（附 v23.40 注释，v23.39 起各历史注释保留）。
