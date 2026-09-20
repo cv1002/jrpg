@@ -30,7 +30,7 @@ console.log('— v21.95 彻夜长明游玩时长第二档里程碑冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.94', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v21.95', GAME_VERSION === 'v23.36', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v21.95', GAME_VERSION === 'v23.37', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -41,7 +41,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.95 版本注释', dataSrc.includes('v21.95 新成就「彻夜长明」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.95', dataSrc.includes("const GAME_VERSION = 'v23.36';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.95', dataSrc.includes("const GAME_VERSION = 'v23.37';"));
 ok('data.js 仍保留 v21.94 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.94 状态页资源行补图鉴进度'));
 ok('data.js 导出 PLAY_TIME2_GOAL（export 块落位，POTIONS_GOAL/POTIONS2_GOAL 随其后——v22.6 起 v2206 冒烟守护；v22.63 起 PLAY_TIME3_GOAL 并入同族）', dataSrc.includes(', PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD'));
 
@@ -230,7 +230,7 @@ const vers = ['smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs', 'smoke_v
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.95`,
-    src.includes("const GAME_VERSION = 'v23.36';"));
+    src.includes("const GAME_VERSION = 'v23.37';"));
 }
 const achFiles = ['smoke_v2193_hunt100.mjs', 'smoke_v2191_ptime.mjs', 'smoke_v2188_wander.mjs',
   'smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2180_grain.mjs',

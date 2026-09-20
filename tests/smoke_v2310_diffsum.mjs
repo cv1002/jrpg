@@ -33,7 +33,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.10 版本注释', dataSrc.includes('// v23.10 体验打磨·信息透明·同一口径：run 总结屏三屏'));
 ok('data.js GAME_VERSION 字面量已为 v23.10（旧 v23.09 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.36';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "09';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.37';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "09';"));
 ok('data.js 仍保留 v23.09 历史注释（支线/奖励数值速查行注释未动）', dataSrc.includes('// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行'));
 
 // —— DIFFS 单源契约（与 v23.08 难度行同读一份源）——
@@ -212,15 +212,15 @@ ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v231
   pkg.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 206 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.10 条目', changelog.startsWith('## v23.36 '));
+ok('CHANGELOG 顶部已追加 v23.10 条目', changelog.startsWith('## v23.37 '));
 ok('CHANGELOG 仍保留 v23.09 条目（历史口径）', changelog.includes('## v23.09 README「数值速查」补「支线 / 奖励」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.09 pin 零残留 ——
 const s2309 = read('smoke_v2309_questnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2309 的 GAME_VERSION 字面量 pin 已更新为 v23.10', s2309.includes("const GAME_VERSION = 'v23.36';"));
+ok('smoke_v2309 的 GAME_VERSION 字面量 pin 已更新为 v23.10', s2309.includes("const GAME_VERSION = 'v23.37';"));
 ok('smoke_v2309 的 CHANGELOG 顶 pin 已更新为 ## v23.10',
-  s2309.includes("startsWith('## v23.36 "));
+  s2309.includes("startsWith('## v23.37 "));
 ok('smoke_v2309 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2309.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2309 的 README 串尾 pin 已延伸至 smoke_v2310_diffsum',

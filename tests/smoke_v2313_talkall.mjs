@@ -38,7 +38,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.13 版本注释', dataSrc.includes('// v23.13 新内容·社交向单成就：新成就「有口皆碑」'));
 ok('data.js GAME_VERSION 字面量已为 v23.13（旧 v23.12 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.36';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.37';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
 ok('data.js 仍保留 v23.12 历史注释（标题画面音量口径注释未动）',
   dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js ACH_LIST talkall 注释块落位（v23.13 新成就·社交向）',
@@ -105,11 +105,11 @@ ok('battle.js BATTLE_DEPS 追加 applyAchievements（enemyAI 侧零新增 import
   battleSrc.includes('const BATTLE_DEPS = { addFx, winBattle, loseBattle, applyAchievements };'));
 ok('data.js 含 v23.36 版本注释与 deflect 条目注释', dataSrc.includes('v23.36 新内容·战斗维度里程碑') && dataSrc.includes('// 以守为攻（v23.36'));
 ok('data.js 导出具 DEFLECT_GOAL（export 单一出口）', dataSrc.includes('TREE_GOAL, DEFLECT_GOAL,'));
-ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.36', dataSrc.includes("const GAME_VERSION = 'v23.36';") && !dataSrc.includes("const GAME_VERSION = 'v23.35';"));
+ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.36', dataSrc.includes("const GAME_VERSION = 'v23.37';") && !dataSrc.includes("const GAME_VERSION = 'v23.35';"));
 ok('README 同步（C 行 61 项 / 成就 bullet 61 项·以守为攻 X/15 次 / 成就档位行 DEFLECT_GOAL(15)·共 61 项 / 战斗防御句）',
   readme.includes('全部 61 项进度') && readme.includes('**61 项成就**') && readme.includes('以守为攻 X/15 次（防御反击累计，v23.36）') &&
   readme.includes('DEFLECT_GOAL`(15) 次，v23.36') && readme.includes('共 61 项') && readme.includes('15 次解锁成就「以守为攻」'));
-ok('CHANGELOG 顶部已追加 v23.36 条目', changelog.startsWith('## v23.36 '));
+ok('CHANGELOG 顶部已追加 v23.36 条目', changelog.startsWith('## v23.37 '));
 
 // —— ok/prog 谓词逐值 ——
 const allButOne = ALL.slice(0, N - 1);
@@ -262,7 +262,7 @@ ok('package.json 串尾为 ... smoke_v2313_talkall.mjs && node tests/smoke_v2314
   pkg.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 209 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.13 条目', changelog.startsWith('## v23.36 '));
+ok('CHANGELOG 顶部已追加 v23.13 条目', changelog.startsWith('## v23.37 '));
 ok('CHANGELOG 仍保留 v23.12 条目（历史口径）', changelog.includes('## v23.12 标题画面提示行补「[ / ] 音量」口径'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.12 pin 零残留 ——
@@ -270,9 +270,9 @@ const s2312 = read('smoke_v2312_voltitle.mjs');
 const s2297 = read('smoke_v2297_chestmid.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.36';"));
+ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.37';"));
 ok('smoke_v2312 的 CHANGELOG 顶 pin 已更新为 ## v23.13',
-  s2312.includes("startsWith('## v23.36 "));
+  s2312.includes("startsWith('## v23.37 "));
 ok('smoke_v2312 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2312.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2312 的 README 串尾 pin 已延伸至 smoke_v2313_talkall',
   s2312.includes('smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
