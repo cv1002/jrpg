@@ -454,7 +454,17 @@ export function drawJournal(){
   const cardH = (e) => (e.status === 'done' ? 34 : e.status === 'locked' ? 50 : 70);
   const items = [];
   if (mains.length) {
-    items.push({ kind: 'head', label: '主线', color: '#ffd24a', h: 12 });
+    // v23.21 主线节头补「N/5」进度（体验打磨·信息透明·纯显示——承 v23.16 灯下之声节头「N/37」/
+    // v23.19 记忆碎片节头「N/4」/ v23.20 支线节头「可交付 N」同一「节头第一眼就报进度」主线收口：
+    // J 日志四节中主线节是最后一个无数字的节头——主线推进在 I 状态页五徽记/胜利（v22.89）/阵亡
+    // （v22.95）/尾声（v22.96）四端可见，且五徽记里的「试炼场」（rushDone）在 J 日志无任何卡片承载
+    // （RUSH 非 QUESTS 条目，节头反而是该徽记在日志里的唯一锚点），唯独日志主线节头只写「主线」二字；
+    // 现与四端同读 quests.adventureProgress(hero) 一份单一数据源（五徽记 灯芯/星井/回廊/初灯/试炼场，
+    // 零裸字面量、增删徽记自动跟随），节头直书「主线 · N/5」（N=已达成徽记数，新档 0/5 随推进实时）；
+    // 节高 h12/滚动钳制/页脚「还有 N 条」口径逐字未动，纯显示零结算零存档零数值变化。
+    const _mainProg = adventureProgress(hero);
+    const _mainMet = _mainProg.filter(([, ok]) => ok).length;
+    items.push({ kind: 'head', label: `主线 · ${_mainMet}/${_mainProg.length}`, color: '#ffd24a', h: 12 });
     for (const e of mains) items.push({ kind: 'card', e, h: cardH(e) + 8 }); // +8 = drawQuestCard 的间距步距（原 y += drawQuestCard 返回值 h+8）
     items.push({ kind: 'gap', h: 6 });
   }

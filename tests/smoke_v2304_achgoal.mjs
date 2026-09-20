@@ -36,7 +36,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.04 版本注释', dataSrc.includes('// v23.04 文档整理·数值说明·同源口径：README「数值速查」补「成就档位」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.04（旧 v23.03 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.20';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "03';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.21';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "03';"));
 ok('data.js 仍保留 v23.03 历史注释（试炼/彩头数值速查行注释未动）', dataSrc.includes('// v23.03 文档整理·数值说明·同源口径：README「数值速查」补「试炼 / 彩头」行'));
 
 // —— 十三线档位常量契约（单一数据源：判定/描述/进度同读）——
@@ -93,15 +93,15 @@ ok('package.json 串尾为 ... smoke_v2302_cmdprev.mjs && node tests/smoke_v2303
   pkg.includes('node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 200 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.04 条目', changelog.startsWith('## v23.20 '));
+ok('CHANGELOG 顶部已追加 v23.04 条目', changelog.startsWith('## v23.21 '));
 ok('CHANGELOG 仍保留 v23.03 条目（历史口径）', changelog.includes('## v23.03 README「数值速查」补「试炼 / 彩头」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.03 pin 零残留 ——
 const s2303 = read('smoke_v2303_rushnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2303 的 GAME_VERSION 字面量 pin 已更新为 v23.04', s2303.includes("const GAME_VERSION = 'v23.20';"));
+ok('smoke_v2303 的 GAME_VERSION 字面量 pin 已更新为 v23.04', s2303.includes("const GAME_VERSION = 'v23.21';"));
 ok('smoke_v2303 的 CHANGELOG 顶 pin 已更新为 ## v23.04',
-  s2303.includes("startsWith('## v23.20 "));
+  s2303.includes("startsWith('## v23.21 "));
 ok('smoke_v2303 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2303.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2303 的 README 串尾 pin 已延伸至 smoke_v2304_achgoal',
