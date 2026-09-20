@@ -31,8 +31,15 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.09 版本注释', dataSrc.includes('// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.09（旧 v23.08 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.29';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "08';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.30';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "08';"));
 ok('data.js 仍保留 v23.08 历史注释（难度/倍率数值速查行注释未动）', dataSrc.includes('// v23.08 文档整理·数值说明·同源口径：README「数值速查」补「难度 / 倍率」行'));
+
+// —— v23.30 昼夜/时段数值速查行（文档整理·同源口径：HUD 标签/画面着色同读一份源）——
+ok('data.js 含 v23.30 版本注释（README「数值速查」补「昼夜 / 时段」行）',
+  dataSrc.includes('// v23.30 文档整理·数值说明·同源口径：README「数值速查」补「昼夜 / 时段」行'));
+ok('data.js DAY_PHASE_S 字面量仍为 90（时长真源逐值未动）', dataSrc.includes('const DAY_PHASE_S = 90;'));
+ok('data.js 仍保留 v23.29 历史注释（标题页存档预览·徽记 N/5 注释未动）',
+  dataSrc.includes('// v23.29 体验打磨·信息透明·纯显示：标题页存档预览补「·徽记 N/5」冒险进度计数'));
 
 // —— 支线目标常量逐值（单一数据源）——
 ok('六组支线目标逐值：蘑菇 3 / 雾灵 3 / 石魔像 3 / 哥布林 3 / 骷髅兵 3 / 残焰魔像 1',
@@ -80,6 +87,15 @@ ok('README 支线行 任务日志/交付结算同源逐字', readme.includes('�
 ok('README 支线行 蘑菇奖励随等级实时逐字', readme.includes('`40+10×等级` 金 + 2 药水'));
 ok('README 支线行 旧灯卫的名字 FRAGMENTS.length 逐字', readme.includes('集齐 `FRAGMENTS.length` 4 枚记忆碎片'));
 ok('README 支线行 常量为 (v23.09 补录)', readme.includes('（v23.09 补录） | `QUESTS` `MUSHROOM_GOAL` `MIST_GOAL` `STONE_GOAL` `GRAIN_GOAL` `BONE_GOAL` `EMBER_GOAL` `FRAGMENTS` |'));
+// —— v23.30 昼夜 / 时段 行落位（与 v23.09 同式：开头/关键口径/补录标记/行序）——
+ok('README 昼夜行开头逐字（世界时钟 S.G.time 秒数·每档 90 秒四档循环）',
+  readme.includes('| 昼夜 / 时段 | 世界时钟 `S.G.time` 秒数：每档 `DAY_PHASE_S`(90) 秒四档循环 白天→黄昏→夜晚→黎明'));
+ok('README 昼夜行 无字回廊恒暗口径逐字（HUD 🌑 恒暗·画面恒暗色）',
+  readme.includes("无字回廊例外恒暗：`curMap()==='gallery'` 时 HUD 标 🌑 恒暗"));
+ok('README 昼夜行 补录标记与常量源逐字（v23.30 补录）',
+  readme.includes('（v23.30 补录） | `DAY_PHASE_S`（data.js，时长真源）`timeOfDay`/`PERIOD`（view/drawWorld.js·hud.js，相位/标签） |'));
+ok('README 昼夜行位于支线/奖励行之后（行序位置正确）',
+  readme.indexOf('| 昼夜 / 时段 |') > readme.indexOf('| 支线 / 奖励 |'));
 ok('README 支线行位于难度 / 倍率行之后（表尾追加）',
   readme.indexOf('| 支线 / 奖励 |') > readme.indexOf('| 难度 / 倍率 |'));
 
@@ -103,15 +119,15 @@ ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v231
   pkg.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 205 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.09 条目', changelog.startsWith('## v23.29 '));
+ok('CHANGELOG 顶部已追加 v23.09 条目', changelog.startsWith('## v23.30 '));
 ok('CHANGELOG 仍保留 v23.08 条目（历史口径）', changelog.includes('## v23.08 README「数值速查」补「难度 / 倍率」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.08 pin 零残留 ——
 const s2308 = read('smoke_v2308_diffnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.09', s2308.includes("const GAME_VERSION = 'v23.29';"));
+ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.09', s2308.includes("const GAME_VERSION = 'v23.30';"));
 ok('smoke_v2308 的 CHANGELOG 顶 pin 已更新为 ## v23.09',
-  s2308.includes("startsWith('## v23.29 "));
+  s2308.includes("startsWith('## v23.30 "));
 ok('smoke_v2308 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2308.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2308 的 README 串尾 pin 已延伸至 smoke_v2309_questnum',
