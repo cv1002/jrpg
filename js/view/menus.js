@@ -463,7 +463,14 @@ export function drawJournal(){
     for (const e of sides) items.push({ kind: 'card', e, h: cardH(e) + 8 });
     items.push({ kind: 'gap', h: 6 });
   }
-  items.push({ kind: 'head', label: '记忆碎片', color: '#8fd0ff', h: 16 });
+  // v23.19 记忆碎片节头补「N/4」进度（体验打磨·信息透明·纯显示——承 v23.16 灯下之声节头「N/37」同一
+  // 「节头第一眼就报进度」主线）：真结局关键收集的碎片进度在 I 状态页资源行/胜利/阵亡/尾声战绩行/
+  // 战斗预览五端可见，J 日志「记忆碎片」节内 4 行也有 🕯️/？？？ 对照——唯独节头本身只写「记忆碎片」
+  // 四字，玩家翻到该节要逐行数 🕯️ 才知道集了几枚；现与节内 frag 行同读 hero.fragments / FRAGMENTS.length
+  // 一份单一数据源（(hero.fragments||[]) 防御式旧档零迁移零抛错、零裸字面量、增删碎片自动跟随），
+  // 节头直书「记忆碎片 N/4」；行高 h16/滚动钳制/页脚「还有 N 条」口径逐字未动，纯显示零结算零存档零数值变化。
+  const _fragsGot = (hero.fragments || []);
+  items.push({ kind: 'head', label: `记忆碎片 ${_fragsGot.length}/${FRAGMENTS.length}`, color: '#8fd0ff', h: 16 });
   for (const f of FRAGMENTS) items.push({ kind: 'frag', f, h: 16 });
   // v23.14 灯下之声节（信息透明·可发现性——承 v23.13 新成就「有口皆碑」：C 成就页只有一行 X/37，
   // 玩家补全路上不知道「还差谁」；节内 37 处全部由 voiceList 从 data.js NPCS 派生（加/删 NPC 自动
