@@ -509,7 +509,9 @@ function finishPlayer(fmt, dmg) {
 }
 
 // 敌方行动的编排回调（enemyAI.js 不反向 import battle.js，经 deps 传入）
-const BATTLE_DEPS = { addFx, winBattle, loseBattle };
+// v23.36 deps 追加 applyAchievements（战斗维度新成就「以守为攻」在反击落账当场判定——
+// 承 v23.13 openTalk 当场判定「反馈不迟到」惯例；enemyAI 侧零新增 import）。
+const BATTLE_DEPS = { addFx, winBattle, loseBattle, applyAchievements };
 
 function afterPlayer() {
   // v14.1 回合计数只在行动被「实际消耗」时推进：此前 battle.js 在 playerAction 起手无条件 battleTurn++，

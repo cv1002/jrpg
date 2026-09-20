@@ -1139,6 +1139,14 @@
 // 菜单内查无一行（状态页「📖 下一技能」提示要回世界按 I 才看得到）；现与状态页「已学技能」列表/
 // 下一技能提示同读 hero.skills.length · SKILL_DATA.length 一份单一数据源（加/删技能自动跟随
 // 零裸字面量），标题「— 技能 · 已学 N/7 —」战斗内一眼即知；零结算零数值零存档零布局。
+// v23.36 新内容·战斗维度里程碑：新成就「以守为攻」（防御反击累计 DEFLECT_GOAL 次，见 ACH_LIST
+// deflect 注释）——成就版图自 v21.x 逐线核对以来从未开垦的最后维度是「战斗操作」：等级/金币/讨伐/
+// 时长/掉落/药水/灵药/酿造/蘑菇/探索/图鉴/宝箱/支线/碎片/技能/装备/难度/精英/交谈各线都有印记，
+// 唯独玩家主动用「防御」换来的趁隙反击（COUNTER_CHANCE 50% 触发）没有任何纪念；计数由
+// js/enemyAI.js 反击唯一产生点写入 hero.deflects（随 snapshotHero 全量快照自动持久化、防御式读取
+// 旧档零迁移），阈值 DEFLECT_GOAL 单一数据源（调门槛只改 data.js 一处、C 页进度/判定/描述三端
+// 自动跟随），解锁当场 deps.applyAchievements（承 v23.13 openTalk「反馈不迟到」惯例）；
+// 零结算零数值变化（反击伤害/概率/战报逐字未动）。
 // v23.35 体验打磨·信息透明·纯显示：小地图遇敌槽标签补「当前昼夜相位倍率」（view/drawWorld.js
 // drawMinimap——承 v23.31 昼夜接入机制/v22.44 小地图「全域危险」标注同一「遇敌槽看得见→读得懂」
 // 主线收口：v23.31 起夜晚（night）危险格遇敌槽步进 ×1.25、黎明（dawn）×0.85，H 页机制行/README
@@ -1148,7 +1156,7 @@
 // 为视图层短标签，与 view/hud.js PERIOD 同款显示映射风格——显示映射非数据），乘数=1 的白天/黄昏
 // 与无字回廊恒暗例外（curMap()==='gallery'→1，与 tickEncounter 同判）零噪音不显示；纯显示零结算
 // 零存档零数值变化（遇敌槽累加/触发/喷泉/安全格逐字未动）。
-const GAME_VERSION = 'v23.35';
+const GAME_VERSION = 'v23.36';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -2885,6 +2893,11 @@ const DEFEND_MULT = 0.5;    // 防御中受到的最终伤害 ×N（保底 1）
 const DEFEND_MP = 2;        // 防御回合恢复的 MP 点数
 const COUNTER_CHANCE = 0.5; // 防御中被命中触发反击的概率
 const COUNTER_MULT = 0.7;   // 反击伤害倍率（无浮动、值确定，预判可放心展示）
+// v23.36 成就「以守为攻」阈值（战斗维度里程碑·单一数据源）：防御反击累计 N 次解锁 ——
+// 与 ACH_LIST.deflect 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；
+// 数值据防御使用节奏取中期档（防御被命中才计数、每次 50% 触发，主动用防御的玩家
+// 一个流程内可达；纯里程碑零奖励零结算影响）。
+const DEFLECT_GOAL = 15;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4293,6 +4306,17 @@ const ACH_LIST=[
   // 就是奖励）；解锁时机：openTalk 记入新 id 当场 applyAchievements（承 world.onChestStep 开箱
   // 当场判定「反馈不迟到」惯例），最后一位聊到即解锁、反馈不迟到。
   {id:'talkall', name:'有口皆碑', d:`与全部 ${Object.keys(NPCS).length} 处灯下之声交谈过`, ok:g=>Object.keys(NPCS).every(id=>(g.talked||[]).includes(id)), prog:g=>`${Object.keys(NPCS).filter(id=>(g.talked||[]).includes(id)).length}/${Object.keys(NPCS).length}`},
+  // 以守为攻（v23.36 新成就·战斗维度里程碑）：成就版图自 v21.x 逐线核对以来唯一从未开垦的维度
+  // 是「战斗操作」——等级/金币/讨伐/时长/掉落/药水/灵药/酿造/蘑菇/探索/图鉴/宝箱/支线/碎片/技能/
+  // 装备/难度/精英/交谈各线都有印记，唯独玩家主动按 [5] 防御换来的趁隙反击（防御中被命中
+  // COUNTER_CHANCE 50% 触发、COUNTER_MULT 0.7 结算，战报「⚔️ 趁隙反击」）没有任何纪念；判定/进度/
+  // 描述同读 DEFLECT_GOAL 单一数据源（与 hunt10/lucky 同「阈值数据化」家族——调门槛只改 data.js
+  // 一处自动跟随，绝无第二套口径）；计数读 js/enemyAI.js 反击唯一产生点新写入的 hero.deflects
+  // （随 snapshotHero 全量快照自动持久化），(g.deflects||0) 防御式读取——旧档无此字段=0 不误解锁、
+  // 零迁移（承 v19.41 seen 同款）；无 r 字段纯里程碑（与 memoir/skills/aegis/hardtrue 同款——
+  // 以守为攻本身就是奖励）；解锁时机：反击落账当场 deps.applyAchievements（承 v23.13 openTalk
+  // 当场判定「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。
+  {id:'deflect', name:'以守为攻', d:`防御反击累计 ${DEFLECT_GOAL} 次`, ok:g=>(g.deflects||0)>=DEFLECT_GOAL, prog:g=>`${g.deflects||0}/${DEFLECT_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -4676,7 +4700,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, DEFLECT_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

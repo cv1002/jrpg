@@ -9,7 +9,7 @@
 // 真实解锁、未满不误解锁、旧档缺字段不抛错不解锁、drawAch 60 项滚动渲染不抛错）+
 // README/package.json/CHANGELOG 同步（成就 60 项双处/成就有口皆碑数值速查行/串尾/件套 209/顶 pin）+
 // 姊妹件套 pin（v2312 随新现实更新）+ 旧代 v23.12 pin 全库零残留 + 哨兵链领先一位（210 口径）。
-import { GAME_VERSION, ACH_LIST, NPCS, NPC_SPOTS } from '../js/data.js';
+import { GAME_VERSION, ACH_LIST, NPCS, NPC_SPOTS, DEFLECT_GOAL } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -30,13 +30,15 @@ const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 
 const dataSrc = read('../js/data.js');
 const coreSrc = read('../js/core.js');
 const questsSrc = read('../js/quests.js');
+const enemyAISrc = read('../js/enemyAI.js');
+const battleSrc = read('../js/battle.js');
 const readme = read('../README.md');
 const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.13 版本注释', dataSrc.includes('// v23.13 新内容·社交向单成就：新成就「有口皆碑」'));
 ok('data.js GAME_VERSION 字面量已为 v23.13（旧 v23.12 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.35';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.36';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
 ok('data.js 仍保留 v23.12 历史注释（标题画面音量口径注释未动）',
   dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js ACH_LIST talkall 注释块落位（v23.13 新成就·社交向）',
@@ -62,7 +64,7 @@ ok('NPC_SPOTS 全部值 ∈ NPCS（交谈入口全表可记录，无孤儿 id）
 const ach = ACH_LIST.find((a) => a.id === 'talkall');
 ok('ACH_LIST 含 talkall「有口皆碑」且 id 唯一',
   !!ach && ach.name === '有口皆碑' && ACH_LIST.filter((a) => a.id === 'talkall').length === 1);
-ok('ACH_LIST 精确总数 60 项（v2229 精确计数 pin 随新现实更新 59→60）', ACH_LIST.length === 60, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 61 项（v23.36 战斗维度新成就入列 60→61）', ACH_LIST.length === 61, String(ACH_LIST.length));
 ok('talkall 描述全部由 Object.keys(NPCS).length 派生（零裸字面量 37）',
   ach.d === `与全部 ${N} 处灯下之声交谈过`, ach.d);
 ok('talkall 判定/进度同读 Object.keys(NPCS)（ok/prog 同式，与 wander 读 MAPS 同族）',
@@ -80,6 +82,34 @@ const EXPECTED = ['firstblood', 'hunt10', 'lucky', 'lvl5', 'lvl10', 'lvl12', 'ri
 ok('既有 59 成就 id 零回归', EXPECTED.every((id) => ACH_LIST.some((a) => a.id === id)));
 ok('talkall 追加在末尾序位（chests2 仍 58、talkall 59，既有序位零位移）',
   ACH_LIST.findIndex((a) => a.id === 'chests2') === 58 && ACH_LIST.findIndex((a) => a.id === 'talkall') === 59);
+
+// —— v23.36 战斗维度新成就「以守为攻」（防御反击累计 DEFLECT_GOAL 次）——
+const defl = ACH_LIST.find((a) => a.id === 'deflect');
+ok('ACH_LIST 含 deflect「以守为攻」且 id 唯一（末尾追加，既有 60 项序位零位移）',
+  !!defl && defl.name === '以守为攻' && ACH_LIST.filter((a) => a.id === 'deflect').length === 1 &&
+  ACH_LIST.findIndex((a) => a.id === 'deflect') === 60);
+ok('DEFLECT_GOAL 数据契约（阈值单一数据源，判定/进度/描述三端同读）', DEFLECT_GOAL === 15, String(DEFLECT_GOAL));
+ok('deflect 描述由 DEFLECT_GOAL 派生（零裸字面量）', defl.d === `防御反击累计 ${DEFLECT_GOAL} 次`, defl.d);
+ok('deflect 判定/进度读 (g.deflects||0) 防御式（旧档无字段=0 不误解锁零迁移）',
+  String(defl.ok).includes('(g.deflects||0)') && String(defl.prog).includes('g.deflects||0'));
+ok('deflect 无 r 字段纯里程碑（与 talkall/memoir/skills 同款）', !('r' in defl));
+ok('deflect 0 次（缺字段旧档）→ false 且 prog 0/15', defl.ok({}) === false && defl.prog({}) === `0/${DEFLECT_GOAL}`);
+ok('deflect 14 次（恰差 1）→ false 且 prog 14/15', defl.ok({ deflects: 14 }) === false && defl.prog({ deflects: 14 }) === `14/${DEFLECT_GOAL}`);
+ok('deflect 15 次（恰好达标）→ true 且 prog 15/15', defl.ok({ deflects: 15 }) === true && defl.prog({ deflects: 15 }) === `${DEFLECT_GOAL}/${DEFLECT_GOAL}`);
+ok('deflect 30 次（超阈值）→ true 且 prog 不钳制 30/15（与 hunt10 同式）', defl.ok({ deflects: 30 }) === true && defl.prog({ deflects: 30 }) === `30/${DEFLECT_GOAL}`);
+ok('enemyAI.js 含 v23.36 注释（以守为攻计数说明）', enemyAISrc.includes('v23.36 成就「以守为攻」计数'));
+ok('enemyAI.js 反击唯一产生点源级落位（hero.deflects 自增 + 当场 applyAchievements 经 deps）',
+  enemyAISrc.includes('hero.deflects = (hero.deflects || 0) + 1;') &&
+  enemyAISrc.includes('if (deps.applyAchievements) deps.applyAchievements();'));
+ok('battle.js BATTLE_DEPS 追加 applyAchievements（enemyAI 侧零新增 import，不反向 import battle.js）',
+  battleSrc.includes('const BATTLE_DEPS = { addFx, winBattle, loseBattle, applyAchievements };'));
+ok('data.js 含 v23.36 版本注释与 deflect 条目注释', dataSrc.includes('v23.36 新内容·战斗维度里程碑') && dataSrc.includes('// 以守为攻（v23.36'));
+ok('data.js 导出具 DEFLECT_GOAL（export 单一出口）', dataSrc.includes('TREE_GOAL, DEFLECT_GOAL,'));
+ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.36', dataSrc.includes("const GAME_VERSION = 'v23.36';") && !dataSrc.includes("const GAME_VERSION = 'v23.35';"));
+ok('README 同步（C 行 61 项 / 成就 bullet 61 项·以守为攻 X/15 次 / 成就档位行 DEFLECT_GOAL(15)·共 61 项 / 战斗防御句）',
+  readme.includes('全部 61 项进度') && readme.includes('**61 项成就**') && readme.includes('以守为攻 X/15 次（防御反击累计，v23.36）') &&
+  readme.includes('DEFLECT_GOAL`(15) 次，v23.36') && readme.includes('共 61 项') && readme.includes('15 次解锁成就「以守为攻」'));
+ok('CHANGELOG 顶部已追加 v23.36 条目', changelog.startsWith('## v23.36 '));
 
 // —— ok/prog 谓词逐值 ——
 const allButOne = ALL.slice(0, N - 1);
@@ -222,17 +252,17 @@ ok('README 含 smoke_v2313_talkall 入库（209 份）', readme.includes('smoke_
 ok('README 仍保留 v23.12 守护描述（历史口径）', readme.includes('v23.12 起含 标题画面提示行「[ / ] 音量」口径守护'));
 ok('README 仍保留 smoke_v2312_voltitle 入库（208 份）历史口径', readme.includes('smoke_v2312_voltitle 入库（208 份）'));
 ok('README 成就口径「60 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 60 项进度') && readme.includes('**60 项成就**') &&
+  readme.includes('成就一览（全部 61 项进度') && readme.includes('**61 项成就**') &&
   !readme.includes('成就一览（全部 59 项进' + '度') && !readme.includes('**59 项成' + '就**'));
-ok('README 数值速查成就档位行含社交档「有口皆碑」与共 60 项',
-  readme.includes('社交向单档「有口皆碑」') && readme.includes('共 60 项'));
+ok('README 数值速查成就档位行含社交档「有口皆碑」与共 61 项',
+  readme.includes('社交向单档「有口皆碑」') && readme.includes('共 61 项'));
 ok('package.json 已收录 smoke_v2313_talkall（npm test 串跑第 209 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2313_talkall.mjs'));
 ok('package.json 串尾为 ... smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"',
   pkg.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 209 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.13 条目', changelog.startsWith('## v23.35 '));
+ok('CHANGELOG 顶部已追加 v23.13 条目', changelog.startsWith('## v23.36 '));
 ok('CHANGELOG 仍保留 v23.12 条目（历史口径）', changelog.includes('## v23.12 标题画面提示行补「[ / ] 音量」口径'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.12 pin 零残留 ——
@@ -240,17 +270,17 @@ const s2312 = read('smoke_v2312_voltitle.mjs');
 const s2297 = read('smoke_v2297_chestmid.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.35';"));
+ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.36';"));
 ok('smoke_v2312 的 CHANGELOG 顶 pin 已更新为 ## v23.13',
-  s2312.includes("startsWith('## v23.35 "));
+  s2312.includes("startsWith('## v23.36 "));
 ok('smoke_v2312 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2312.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2312 的 README 串尾 pin 已延伸至 smoke_v2313_talkall',
   s2312.includes('smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2312 的 package 串尾 pin 已延伸至 smoke_v2313_talkall',
   s2312.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 ok('smoke_v2312 的 testChain pin 已更新为 209', s2312.includes('testChain === 212'));
-ok('smoke_v2297 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2297.includes('ACH_LIST.length === 60'));
-ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2229.includes('ACH_LIST.length === 60'));
+ok('smoke_v2297 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2297.includes('ACH_LIST.length === 61'));
+ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2229.includes('ACH_LIST.length === 61'));
 ok('smoke_v2143 哨兵链已推进至二百一十三件套（二百一十二件套清除）', s2143.includes('二百一十三件套（二百一十二件套清除）') && s2143.includes("!readme.includes('二百一十三件套（二百一十二件套清除）')"));
 
 // 旧代 v23.12 pin 全库零残留（不含本件）

@@ -27,7 +27,7 @@ const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 
 const dataSrc = read('../js/data.js');
 
 ok('data.js 含 v21.81 版本注释', dataSrc.includes('v21.81 帮助页「战斗」行补技能菜单数字键快捷直发口径'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v23.35';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v23.36';"));
 
 // —— HELP_PAGES 数据契约：战斗行 r[1] 主行逐字零回归（含 FLEE_SUCCESS 派生），r[2] 追加新段 ——
 const page0 = HELP_PAGES[0] || [];
@@ -96,7 +96,7 @@ ok('smoke_v2180 的 README 件套 pin 已随新现实更新为二百一十二件
 ok('smoke_v2179 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2179.includes('二百一十二件套（二百一十一件套清除）') && !s2179.includes('七十六件套（七十五件套清除）'));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2179.includes("const GAME_VERSION = 'v23.35';"));
+  s2179.includes("const GAME_VERSION = 'v23.36';"));
 ok('smoke_v2178 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2178.includes('二百一十二件套（二百一十一件套清除）') && !s2178.includes('七十六件套（七十五件套清除）'));
 ok('smoke_v2177 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',

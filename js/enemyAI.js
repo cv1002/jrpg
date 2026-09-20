@@ -159,6 +159,17 @@ export function enemyAct(deps) {
       // 之后）的 enemy.hp / enemy.hpMax，与 attackMove 扣减后追加剩余 HP 同源；反杀（enemy.hp <= 0）
       // 不追加，避免与随后「被反杀倒地」重复（同 v20.0 击杀时不追加敌方剩余 HP 的口径）。零结算变化。
       S.blog.push(`⚔️ ${hero.name} 趁隙反击，对 ${enemy.name} 造成 ${counter} 伤害！${enemy.hp > 0 ? `（敌方 HP 剩余 ${enemy.hp}/${enemy.hpMax}）` : ''}`);
+      // v23.36 成就「以守为攻」计数（战斗维度里程碑·新维度收口）：等级/金币/讨伐/时长/掉落/药水/
+      // 灵药/酿造/蘑菇/探索/图鉴/宝箱/支线/碎片/技能/装备/难度/精英/交谈各线都有成就印记，唯独
+      // 「战斗操作」从未开垦——防御反击（防御中被命中 COUNTER_CHANCE 50% 触发）是玩家主动按 [5]
+      // 防御换来的奖励动作，此前零纪念；计数写在反击唯一产生点（本分支，与 COUNTER_CHANCE/反击
+      // 结算同处一行防漏记），读 hero.deflects（enemyAct 局部 const hero = S.G、随 snapshotHero
+      // 全量快照自动持久化），防御式 (hero.deflects||0) 旧档零迁移；阈值 DEFLECT_GOAL 单一数据源
+      // 见 data.js；落账当场 deps.applyAchievements（承 v23.13 openTalk 当场判定「反馈不迟到」惯例；
+      // 经 BATTLE_DEPS 传入——enemyAI 不新增 import，保持「不反向 import battle.js」既定约束）。
+      // 零结算零数值变化（反击伤害/概率/战报逐字未动）。
+      hero.deflects = (hero.deflects || 0) + 1;
+      if (deps.applyAchievements) deps.applyAchievements();
     }
     if (enemy.poison && Math.random() < enemy.poison) {
       hero.poison = POISON_TURNS;
