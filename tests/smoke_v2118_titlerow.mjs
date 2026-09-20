@@ -34,10 +34,10 @@ ok('提示行已补「R 重开新档」', !!hintLine && hintLine.includes('R 重
 ok('提示行已注明「连按两次」确认口径（与 v21.16 两按确认同口径）', !!hintLine && hintLine.includes('连按两次'));
 ok('提示行既有 token 逐字保留（L 读档/Esc/P 存档/M 静音/选槽）',
   !!hintLine && tokens.every((t) => hintLine.includes(t)));
-// v23.25 口径收口：title.onKey 无 W/S 分支（W/S 仅在 world 移动/create 选难度消费），本行「WASD 移动」
+// v23.26 口径收口：title.onKey 无 W/S 分支（W/S 仅在 world 移动/create 选难度消费），本行「WASD 移动」
 // 自 v10.0 起承袭的混列项属「提示讲的键按了没反应」漏网（承 v21.18 按键提示如实口径）：现删除该
 // token，改为断言「已不含」反向守护——行内其余 token 全部与 title.onKey 分派逐字同源。
-ok('提示行已不含「WASD 移动」（标题画面无移动功能，v23.25 口径收口）',
+ok('提示行已不含「WASD 移动」（标题画面无移动功能，v23.26 口径收口）',
   !!hintLine && !hintLine.includes('WASD 移动'));
 
 // —— 模板串提取 + 宽度预算（纯估算，零依赖；系数沿 v21.11/v21.13/v21.14 官方冒烟标定口径）——

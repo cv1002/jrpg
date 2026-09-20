@@ -34,7 +34,7 @@ const changelog = read('../CHANGELOG.md');
 // —— 版本落位 ——
 ok('data.js 含 v23.12 版本注释', dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js GAME_VERSION 字面量已为 v23.12（旧 v23.11 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.25';") && !dataSrc.includes("const GAME_VERSION = 'v23.11';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.26';") && !dataSrc.includes("const GAME_VERSION = 'v23.11';"));
 ok('data.js 仍保留 v23.11 历史注释（战利品预览记忆碎片注释未动）',
   dataSrc.includes('// v23.11 体验打磨·信息透明·同一口径：战斗「战利品预览」行'));
 
@@ -43,7 +43,7 @@ ok('menus.js 标题画面提示行与 M 静音同列收口「 · [ / ] 音量」
   menuSrc.includes('P 存档 · M 静音 · [ / ] 音量'));
 ok('menus.js 提示行模板主体逐字保留（选槽/←/→/L 读档/R 重开/Esc/P 存档/M 静音）',
   menuSrc.includes("L 读档 · R 重开新档(连按两次) · Esc 菜单 · P 存档 · M 静音 · [ / ] 音量"));
-ok('menus.js 提示行已不含「WASD 移动」不实 token（v23.25 口径收口——title.onKey 无 W/S 分支）',
+ok('menus.js 提示行已不含「WASD 移动」不实 token（v23.26 口径收口——title.onKey 无 W/S 分支）',
   !menuSrc.includes('WASD 移动 · Esc 菜单'));
 ok('menus.js 含 v23.12 注释块（标题页提示行口径收尾）',
   menuSrc.includes('v23.12 标题页提示行补「[ / ] 音量」口径'));
@@ -68,7 +68,7 @@ const estW12 = (s) => {
   }
   return w;
 };
-// v23.25 口径收口：主行已删「WASD 移动」（title.onKey 无 W/S 分支），行宽模型串随之更新（不含该 token）
+// v23.26 口径收口：主行已删「WASD 移动」（title.onKey 无 W/S 分支），行宽模型串随之更新（不含该 token）
 const hintOld = '按 1/2/3 或 ←/→ 选择存档槽 · L 读档 · R 重开新档(连按两次) · Esc 菜单 · P 存档 · M 静音';
 const hintNew = hintOld + ' · [ / ] 音量';
 const wOld = estW12(hintOld), wNew = estW12(hintNew);
@@ -159,15 +159,15 @@ ok('package.json 串尾为 ... smoke_v2311_fragprev.mjs && node tests/smoke_v231
   pkg.includes('node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 208 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.12 条目', changelog.startsWith('## v23.25 '));
+ok('CHANGELOG 顶部已追加 v23.12 条目', changelog.startsWith('## v23.26 '));
 ok('CHANGELOG 仍保留 v23.11 条目（历史口径）', changelog.includes('## v23.11 战斗「战利品预览」补「🧩 首胜必掉记忆碎片」'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.11 pin 零残留 ——
 const s2311 = read('smoke_v2311_fragprev.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2311 的 GAME_VERSION 字面量 pin 已更新为 v23.12', s2311.includes("const GAME_VERSION = 'v23.25';"));
+ok('smoke_v2311 的 GAME_VERSION 字面量 pin 已更新为 v23.12', s2311.includes("const GAME_VERSION = 'v23.26';"));
 ok('smoke_v2311 的 CHANGELOG 顶 pin 已更新为 ## v23.12',
-  s2311.includes("startsWith('## v23.25 "));
+  s2311.includes("startsWith('## v23.26 "));
 ok('smoke_v2311 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2311.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2311 的 README 串尾 pin 已延伸至 smoke_v2312_voltitle',
