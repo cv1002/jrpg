@@ -2,7 +2,7 @@
 // view/hud.js
 // ============================================================
 import { S, curMap } from '../state.js';
-import { MAPS } from '../data.js';
+import { MAPS, ENCOUNTER, DAY_PHASE_S } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -30,7 +30,18 @@ export function renderHUD() {
   // 现与 drawTimeTint 同判 curMap()==='gallery'、同读 S.G.time：回廊改标 🌑 恒暗，其余四图照常
   // 显示每档 90 秒的昼夜标签（时长读 data.js DAY_PHASE_S 单一数据源，与 drawWorld 昼夜判定同源，
   // 调昼夜节奏只改 data.js 一处）。纯显示、零结算变化，不新增任何状态。
-  const periodTag = curMap() === 'gallery' ? '🌑 恒暗' : (PERIOD[timeOfDay()] || '');
+  // v23.39 相位标签补「×倍率 · 剩Xs」（体验打磨·信息透明·纯显示——承 v23.31 昼夜接入遇敌机制
+  // （夜间危险格步进 ×1.25/黎明 ×0.85，只调步进不调遇敌池）/ v23.35 小地图遇敌槽标签补倍率同一
+  // 「昼夜信息看得见→读得懂」家族收口：顶部标签此前只报相位名，「这个相位遇敌是快是慢、还剩几秒
+  // 换挡」查无一行（倍率只在小地图、节奏只能靠猜）；现与 world.tickEncounter/小地图同读 data.js
+  // ENCOUNTER.phaseGauge + DAY_PHASE_S 一份单一数据源（乘数由 phaseGauge 派生零裸字面量；×1 的
+  // 白天/黄昏与无字回廊恒暗（curMap()==='gallery'→1）零噪音不显示；剩余秒数 = DAY_PHASE_S −
+  // floor(time)%DAY_PHASE_S，与 dayPhase 分档同式同源、t=整倍时即新一轮满 90s）。纯显示零结算零存档。
+  const gtime = (S.G && S.G.time) || 0;
+  const phaseK = curMap() === 'gallery' ? 1 : ((ENCOUNTER.phaseGauge || {})[timeOfDay()] || 1);
+  const phaseLeft = DAY_PHASE_S - (Math.floor(gtime) % DAY_PHASE_S);
+  const periodTag = curMap() === 'gallery' ? '🌑 恒暗'
+    : (PERIOD[timeOfDay()] || '') + (phaseK !== 1 ? '×' + phaseK : '') + ' ·剩' + phaseLeft + 's';
   set('s-map', (hero.name || '守灯人') + ' · ' + ((MAPS[curMap()] && MAPS[curMap()].name) || curMap()) + ' · ' + periodTag + (hero.diff ? ' ⚡' : '') + zoneTag);
   set('s-lv', hero.level);
   set('s-xp', `${Math.max(0, hero.xp)}/${hero.xpNext}`);

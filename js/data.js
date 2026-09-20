@@ -1168,7 +1168,15 @@
 // 为视图层短标签，与 view/hud.js PERIOD 同款显示映射风格——显示映射非数据），乘数=1 的白天/黄昏
 // 与无字回廊恒暗例外（curMap()==='gallery'→1，与 tickEncounter 同判）零噪音不显示；纯显示零结算
 // 零存档零数值变化（遇敌槽累加/触发/喷泉/安全格逐字未动）。
-const GAME_VERSION = 'v23.38';
+// v23.39 体验打磨·信息透明·纯显示：HUD 昼夜标签补「相位遇敌倍率 × 相位剩余秒数」（js/view/hud.js
+// renderHUD——承 v23.31 昼夜接入遇敌机制（夜×1.25/黎×0.85 只调危险格步进）/ v23.35 小地图遇敌槽
+// 补当前倍率同一「昼夜信息看得见→读得懂」家族收口：顶部标签此前只报「🌙 夜晚」一个相位名——
+// 这个相位遇敌是快是慢（×N）、还剩几秒换挡，玩家盯 HUD 时查无一行（倍率只在小地图、节奏只靠
+// 猜）；现与 world.tickEncounter/小地图同读本文件 ENCOUNTER.phaseGauge + DAY_PHASE_S + dayPhase()
+// 一份单一数据源（乘数由 phaseGauge 派生零裸字面量，×1 白天/黄昏与无字回廊恒暗例外
+// （curMap()==='gallery'→1）零噪音不显示；剩余秒数 = DAY_PHASE_S − floor(time)%DAY_PHASE_S，与
+// dayPhase 分档同式同源）；纯显示零结算零存档零数值变化（倍率/相位序列/遇敌槽逐字未动）。
+const GAME_VERSION = 'v23.39';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

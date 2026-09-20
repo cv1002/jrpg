@@ -24,7 +24,7 @@ console.log('— v22.3 阵亡画面记忆碎片进度冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.2', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 3)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.3', GAME_VERSION === 'v23.38', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.3', GAME_VERSION === 'v23.39', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -35,7 +35,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.3 版本注释', dataSrc.includes('v22.3 阵亡画面收集行补「🕯️ 记忆碎片 N/4」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.3', dataSrc.includes("const GAME_VERSION = 'v23.38';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.3', dataSrc.includes("const GAME_VERSION = 'v23.39';"));
 ok('data.js 仍保留 v22.2 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.2 胜利画面收集行补「🕯️ 记忆碎片 N/4」'));
 
 // —— 源级落位：drawDead 碎片派生与收集行并入 ——
@@ -247,7 +247,7 @@ for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smok
   'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.3`,
-    src.includes("const GAME_VERSION = 'v23.38';"));
+    src.includes("const GAME_VERSION = 'v23.39';"));
 }
 for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs',
   'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
@@ -255,7 +255,7 @@ for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smok
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.3`,
-    src.includes("GAME_VERSION === 'v23.38'"));
+    src.includes("GAME_VERSION === 'v23.39'"));
 }
 for (const nm of ['smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs', 'smoke_v2200_stock.mjs',
   'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
