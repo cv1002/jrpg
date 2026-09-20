@@ -1076,7 +1076,12 @@
 // 要事后按 B 才发现）；现仅初见（seen[key] 0→1）补「📖 记忆图鉴新遭遇」战报，带 BESTIARY_TARGET 同源
 // N/13 已遭遇进度（与图鉴页脚 met 同式派生）；再遇零噪音，纯显示零结算零存档零数值变化
 // （详见 battle.js 行内注释）
-const GAME_VERSION = 'v23.24';
+// v23.25 体验打磨·口径收口：标题画面提示行（view/menus.js drawTitle y=420）删「 · WASD 移动」不实
+// token——承 v21.18「按键提示必须如实反映可用键」/ v23.12 标题页「[ / ] 音量」同一主线收口：标题画面
+// （main.js title.onKey = 1-3/←→(A/D) 选槽 + L/R/X/P/Enter/E）实际无任何移动/走格子功能（W/S 按下零
+// 反应），v10.0 起承袭的「WASD 移动」字样与其并排混列属漏网；删除纯文字零逻辑零结算零存档零数值变化
+// （详见 view/menus.js 行内注释）
+const GAME_VERSION = 'v23.25';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
