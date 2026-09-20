@@ -116,7 +116,15 @@ function drawArena() {
 export function drawSkillMenu() {
   const hero = S.G;
   const enemy = S.enemy;
-  panel(150, 96, 340, 308, '— 技能 —');
+  // v23.34 体验打磨·信息透明·纯显示：技能菜单标题补「已学 N/7」计数（承 v23.16-21 J 日志节头计数 /
+  // v23.27 快速旅行标题「已探索 N/4」同一「面板/节头第一眼报进度」家族收口）——战斗内按 2 开技能菜单
+  // 是施放决策现场，「几招已学、还差几招没领悟」此前在菜单内查无一行（状态页「📖 下一技能」提示要回
+  // 世界按 I 才看得到）；现与状态页「已学技能」列表同读 hero.skills.length · SKILL_DATA.length 一份
+  // 单一数据源（SKILL_DATA 既有 import 零新增、加/删技能自动跟随零裸字面量——总数读
+  // Object.keys(SKILL_DATA).length，与 smoke_v2306「七招」契约同源），标题「— 技能 · 已学
+  // N/7 —」战斗内一眼即知「已学全 N 招 / 还差几招」；纯显示零结算零数值零存档零布局（技能行/MP 列/
+  // 封印/蓄力保留/页脚逐字未动）。
+  panel(150, 96, 340, 308, '— 技能 · 已学 ' + hero.skills.length + '/' + Object.keys(SKILL_DATA).length + ' —');
   // v19.48 技能菜单光标（输入体验·信息透明）：技能菜单此前只能按数字键 1-7 直发技能，是
   // 全游戏唯一不能用 ↑↓ 导航的菜单（商店/快速旅行/暂停都走 onArrow 惯例）——新增 S.skillSel
   // 光标（state.js 注册），高亮当前行、Enter 施放、↑↓ 移动；数字键快捷原行为逐字保留，

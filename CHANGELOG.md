@@ -1,3 +1,10 @@
+## v23.34 战斗技能菜单标题补「已学 N/7」计数（体验打磨·信息透明·纯显示——承 v23.16-21 J 日志节头「灯下之声 N/37 / 记忆碎片 N/4 / 支线 可交付 N / 主线 N/5」与 v23.27 快速旅行标题「已探索 N/4」同一「面板/节头第一眼报进度」家族的收口）——战斗内按 2 打开技能菜单（施放决策现场）时，标题只写「— 技能 —」：「几招已学、还差几招没领悟」在菜单内查无一行（状态页「📖 下一技能」提示要回世界按 I 才看得到；v21.83 起七招容量——Lv11 星砂回响是最后一招）；现与状态页「已学技能」列表同读 hero.skills.length · Object.keys(SKILL_DATA).length 一份单一数据源（SKILL_DATA 为 drawBattle.js 既有 import 零新增依赖、加/删技能自动跟随零裸字面量），标题改为「— 技能 · 已学 N/7 —」（N=已学招数、M=总数 7——调和总容量只改 data.js 一处两端自动跟随），战斗内开菜单一眼即知「已学全 7 招 / 还差几招」；纯显示零结算零数值零存档零布局。
+
+- 【改动】`js/view/drawBattle.js`：drawSkillMenu 面板标题 `'— 技能 —'` → `'— 技能 · 已学 ' + hero.skills.length + '/' + Object.keys(SKILL_DATA).length + ' —'`（+ v23.34 注释块，置于函数首部、v19.48 注释之前；技能行/MP 列/封印/蓄力保留/页脚逐字未动）；`js/data.js`：`GAME_VERSION` v23.33→v23.34（附 v23.34 注释，v23.33 起各历史注释保留）；`tests/smoke_v2284_skillekey.mjs`：GAME_VERSION/CHANGELOG 顶 pin 级联 v23.34 + 新增 v23.34 断言（drawBattle 标题表达式源级落位/`Object.keys(SKILL_DATA).length===7` 数据契约/v23.34 注释落位）随新现实更新。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能公式/成就判定/数据（纯显示：drawSkillMenu 行距/高亮/数字键 1-7/MP 列/封印/蓄力保留/页脚逐字未动，标题仅模板串接计数零裸字面量）；未动 battle/hero/quests/rules/world/core/shop/audio/main/index.html/README；未新增/删除文件（件套 212 份不变，承 v23.17-v23.33 先例）。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin·CHANGELOG 顶 pin 级联（v23.33→v23.34，tests/ 全量落位零残留——仅 v23.33 历史注释引用保留）。
+- 【验证】`node --check` js/view/drawBattle.js·js/data.js 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-21 cron 自动完善）
+
 ## v23.33 酿造成功专属音效：弃用升级琶音（音效反馈·语义修正——承 v23.22 SFX.ach 同一「事件音效各归其位」主线的收口）——brewNow 酿造成功此前播放 SFX.levelup()（升级琶音）：酿造是制作行为不是升级，听感与升级同音，且首次酿造（「灵药初成」成就当场触发）时升级琶音与 v23.22 成就铃声连响两次（两种事件共用同一庆祝音，v23.22 修好成就侧后酿造侧是本族最后一个漏网）；现补专属气泡上行三连（sine 440→554→698，与 heal 单音/item 双音/coin 双音/levelup 琶音/ach 铃声/victory 号角一听即分），酿成瞬间「听声即知是出锅非升级」——首次酿造 = craft+ach 双响（两事件分层不重叠），再酿仅 craft；零结算零数值零存档零布局。
 
 - 【改动】`js/audio.js`：SFX 表追加 `craft()`（v23.33 注释块，置于 ach 之后、victory 之前）；`js/core.js`：brewNow 酿造成功分支 `SFX.levelup()` → `SFX.craft()`（+ v23.33 注释块，hero.brews 计数/applyAchievements/库存结算/成功报文逐字未动）；`js/data.js`：`GAME_VERSION` v23.32→v23.33（附 v23.33 注释，v23.32 起各历史注释保留）。
