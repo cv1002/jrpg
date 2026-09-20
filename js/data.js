@@ -1176,7 +1176,13 @@
 // 一份单一数据源（乘数由 phaseGauge 派生零裸字面量，×1 白天/黄昏与无字回廊恒暗例外
 // （curMap()==='gallery'→1）零噪音不显示；剩余秒数 = DAY_PHASE_S − floor(time)%DAY_PHASE_S，与
 // dayPhase 分档同式同源）；纯显示零结算零存档零数值变化（倍率/相位序列/遇敌槽逐字未动）。
-const GAME_VERSION = 'v23.39';
+// v23.40 音效反馈·语义修正：逃跑成功专属音效（audio.js SFX.flee + battle.js doFlee）——承 v23.22
+// SFX.ach / v23.33 SFX.craft 同一「事件音效各归其位」主线收口：battle.doFlee 逃脱成功分支此前播放
+// SFX.select()（菜单移动轻点），逃跑是「离场脱战」不是「选择/翻行」——脱战瞬间与菜单操作同音无可
+// 分辨；现补 SFX.flee() 下行快三步（square 523→392→294，末音略长如脚步远去收尾），与 select 单音/
+// cancel 单音下降/alert 两连下坠/victory 号角一听即分；零结算零数值零存档（Boss 气场压制与逃脱
+// 失败分支仍 SFX.cancel 逐字未动）。
+const GAME_VERSION = 'v23.40';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

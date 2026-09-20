@@ -1,3 +1,11 @@
+## v23.40 逃跑成功专属音效——弃用菜单移动音（音效反馈·语义修正，承 v23.22 SFX.ach / v23.33 SFX.craft 同族收口：battle.doFlee 逃脱成功分支此前播 SFX.select()（菜单移动轻点），逃跑是「离场脱战」不是「选择/翻行」——脱战瞬间与翻菜单/换行同音无可分辨；现补 audio.js SFX.flee 下行快三步 square 523→392→294（末音 0.12s 略长如脚步远去收尾），与 select 单音/cancel 单音下降/alert 两连下坠/victory 号角一听即分——逃脱成功「听声即知已脱战」；零结算零数值零存档，Boss 气场压制/逃脱失败仍 SFX.cancel 逐字未动）。
+
+- 【改动】`js/audio.js`：SFX 新增 `flee()`（v23.40 注释块，置于 craft 之后）；`js/battle.js`：`doFlee` 逃脱成功分支 `SFX.select()`→`SFX.flee()`（+ v23.40 注释块）；`js/data.js`：`GAME_VERSION` v23.39→v23.40（附 v23.40 注释，v23.39 起各历史注释保留）。
+- 【零回归面】未动任何结算/数值/存档/按键/布局（FLEE_SUCCESS、回合推进、Boss 气场分支、逃脱失败分支逐字未动）；未动 world/enemyAI/hero/ui/index.html/README/package.json（件套 212 份不变——本次扩展既有 smoke_v2313_talkall 家族随新现实更新，未新增/删除文件）。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin·CHANGELOG 顶 pin 级联（v23.39→v23.40，136 件测试文件落位零残留——仅 v23.39 特性标签保留）。
+- 【验证】`node --check` js/audio.js·js/battle.js·js/data.js·tests/smoke_v2313_talkall.mjs 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-21 cron 自动完善）
+
+
 ## v23.39 HUD 昼夜标签补「×相位倍率 · 剩Xs」（体验打磨·信息透明·纯显示——承 v23.31 昼夜接入遇敌机制（夜×1.25/黎×0.85 只调危险格步进）/ v23.35 小地图遇敌槽标签补当前倍率同一「昼夜信息看得见→读得懂」家族收口）——v23.31 起夜间危险格步进 ×1.25、黎明 ×0.85，H 页机制行/README 数值速查/小地图标签早有口径，唯独顶部 HUD 昼夜标签（进图第一眼）只报「🌙 夜晚」一个相位名——「这个相位遇敌是快是慢（×N）、还剩几秒换挡」查无一行（倍率只在小地图、节奏只能靠猜）；现与 world.tickEncounter/小地图同读 data.js ENCOUNTER.phaseGauge + DAY_PHASE_S + dayPhase() 一份单一数据源：标签补「×1.25」（phaseGauge 派生零裸字面量；×1 的白天/黄昏与无字回廊恒暗例外（curMap()==='gallery'→1）零噪音不显示，与 tickEncounter 同判）+「·剩Xs」（DAY_PHASE_S − floor(time)%DAY_PHASE_S，与 dayPhase 分档同式同源、t=整倍即新一轮满 90s）；HUD 一屏即知当前相位遇敌快慢与换挡倒计时；纯显示零结算零数值零存档（倍率/相位序列/遇敌槽累加逐字未动）。
 
 - 【改动】`js/view/hud.js`：data.js import 追加 `ENCOUNTER, DAY_PHASE_S`（+ v23.39 注释块，置于 v14.8 注释之后）+ renderHUD periodTag 派生段（gtime/phaseK/phaseLeft 三行 + 模板 `×${phaseK}`/`·剩${phaseLeft}s`，恒暗分支与既有字段（图名/⚡/zone 倍率）逐字未动）；`js/data.js`：`GAME_VERSION` v23.38→v23.39（附 v23.39 注释，v23.38 起各历史注释保留）；`tests/smoke_v2313_talkall.mjs`：GAME_VERSION/CHANGELOG 顶 pin 级联 v23.39 + 新增 v23.39 断言 10 项（data.js 版本注释/hud.js import·phaseK·phaseLeft·模板·恒暗源级落位 + 运行期四档：夜晚×1.25·剩70s / 白天×1 零噪音·剩90s / 黄昏整倍回满 90s / 回廊恒暗零剩秒）+ 旧代 v23.38 pin 全库零残留扫描。

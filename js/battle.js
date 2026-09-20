@@ -415,7 +415,12 @@ function doFlee() {
   }
   if (Math.random() < FLEE_SUCCESS) {
     S.blog.push('🏃 成功逃脱了！');
-    SFX.select();
+    // v23.40 逃跑成功专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft 同一
+    // 「事件音效各归其位」主线收口）：逃脱成功此前播 SFX.select()（菜单移动轻点）——逃跑是
+    // 「离场脱战」不是「选择/翻行」，脱战瞬间与菜单操作同音无可分辨；现改播 audio.js SFX.flee()
+    // （square 下行快三步，与 select/cancel/alert/victory 一听即分），脱离战斗瞬间听声即知；
+    // 零结算零数值零存档（回合推进/Boss 气场压制/逃脱失败分支逐字未动）。
+    SFX.flee();
     hero.charge = false;
     hero.poison = 0;
     cancelBattleQueue();

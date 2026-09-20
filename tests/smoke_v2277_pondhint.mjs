@@ -17,7 +17,7 @@ console.log('— v22.78 帮助页地图指南潮灯镇行「水塘灯影」r[2] 
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok(dataSrc.includes("const GAME_VERSION = 'v23.39'"), 'data.js GAME_VERSION 字面量为 v22.79');
+ok(dataSrc.includes("const GAME_VERSION = 'v23.40'"), 'data.js GAME_VERSION 字面量为 v22.79');
 ok(dataSrc.includes('// v22.78 体验打磨'), 'data.js 含 v22.78 版本注释');
 ok(dataSrc.includes('// v22.76 新 NPC'), 'data.js 仍保留 v22.76 历史注释');
 
