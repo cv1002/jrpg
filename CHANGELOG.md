@@ -1,3 +1,10 @@
+## v23.23 首杀记忆图鉴收录反馈：胜利报文补「📕 已记起」回声（battle.js winBattle——承 v19.41 已遭遇揭示 / v21.37 已遭遇计数同一「击败 = 被记起」主线）——击败即写入记忆图鉴（winBattle `hero.bestiary` 累计，全游戏唯一写入点），但胜利报文（升级/胜利/额外掉落/碎片/支线进度）只报金币经验：玩家首杀一只新怪的瞬间没有任何提示告诉「它被记下了」，图鉴新条目要事后按 B 才发现——「讨伐 = 被记起」是潮灯记·记忆图鉴的主题支柱，达成当下却零回声（图鉴页/状态页资源行/收集四件套六端早已齐备，唯独「首次收录那一下」没有反馈）；现仅首杀（`bestiary[bookName]` 0→1）时补一条「📕 记忆图鉴新收录：【怪名】（已记起 N/13 种 · 世界画面按 B 查看）」报文，N 与图鉴页/收集四件套同读 data.js `BESTIARY_TARGET` · `hero.bestiary` 一份单一数据源（零裸字面量、加/删怪自动跟随）；再杀同怪零噪音零变化，旧档布尔 bestiary（true+1=2≠1）不误报；零结算零数值零存档零布局变化（bestiary 写入点/升级/胜利/掉落/碎片/支线进度/回 world 全部逐字未动）。
+
+- 【改动】`js/battle.js`：winBattle 首杀分支补「📕 记忆图鉴新收录」报文（+ v23.23 注释块；`BESTIARY_TARGET` 加入既有 data.js import 行，`codexGotN` 与图鉴页同式派生）；`js/data.js`：`GAME_VERSION` v23.22→v23.23（附 v23.23 注释，v23.22 起各历史注释保留）。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能公式/成就判定/数据（纯显示：`hero.bestiary[bookName] = (hero.bestiary[bookName] || 0) + 1` 写入点逐字未动、升级/胜利/额外掉落/碎片/支线进度/`applyVictoryWorld` 全链逐字未动）；图鉴页 drawCodex/状态页资源行/收集四件套/标题预览全部逐字未动；未动 hero/quests/rules/world/encounter/enemyAI/shop/core/audio/view/main.js/index.html。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin 级联（v23.22→v23.23，137 件测试文件 sed 批量落位）；`package.json` test 串 212 份不变（本次未新增冒烟文件，承 v23.17-v23.22 先例）；README 守护描述/件套口径不变（212 份）。
+- 【验证】`node --check` js/battle.js、js/data.js 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-20 cron 自动完善）
+
 ## v23.22 音效反馈·语义修正：成就解锁专属铃声（audio.js SFX.ach + hero.js applyAchievements——承 v21.3 alert/boss「强敌前奏」同一听觉信息透明主线）——applyAchievements（全游戏唯一成就解锁入口）对每个新成就此前播放 SFX.levelup()（升级琶音）：升级与成就两种事件听感同音，且升级+成就同时达成（战斗胜利常见）时升级琶音连响两次（听感噪音，玩家分不清「这是升级了还是拿了成就」）；现补 SFX.ach() 专属上行铃声（sine 三连 659→880→1319，与 levelup 琶音/victory 号角一听即分），解锁瞬间「听声即知是成就非升级」；零结算零数值零存档零布局零存档结构变化（升级本身的 levelup 音效调用点逐字未动——各归其位）。
 
 - 【改动】`js/audio.js`：SFX 新增 `ach()`（+ v23.22 注释块，tone 同族、主增益总线同出口）；`js/hero.js`：applyAchievements 成就解锁 `SFX.levelup()` → `SFX.ach()`（+ v23.22 注释，解锁判定/横幅 boxMsg/完美奖励 PERFECTION_GOLD 判发逐字未动）；`js/data.js`：`GAME_VERSION` v23.21→v23.22（附 v23.22 注释，v23.21 起各历史注释保留）。

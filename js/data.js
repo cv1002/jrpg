@@ -1065,7 +1065,12 @@
 // SFX.ach() 专属上行铃声（sine 三连，与 levelup 琶音/victory 号角一听即分），解锁瞬间「听声即知是
 // 成就非升级」——承 v21.3 alert/boss「强敌前奏」同一听觉信息透明主线；零结算零数值零存档零布局
 // （详见 audio.js / hero.js 行内注释）
-const GAME_VERSION = 'v23.22';
+// v23.23 首杀记忆图鉴收录反馈（battle.js winBattle + 本文件 BESTIARY_TARGET）——承 v19.41 已遭遇揭示 /
+// v21.37 已遭遇计数同一「击败 = 被记起」主线：击败即写入记忆图鉴（hero.bestiary 累计），但胜利报文只报
+// 金币经验，首杀新怪的瞬间没有任何「被记下了」的反馈（图鉴新条目要按 B 才发现）；现仅首杀（0→1）时补
+// 「📕 记忆图鉴新收录」报文，带 BESTIARY_TARGET 同源 N/M 已记起进度；再杀零噪音，纯显示零结算零存档
+// 零数值变化（详见 battle.js 行内注释）
+const GAME_VERSION = 'v23.23';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

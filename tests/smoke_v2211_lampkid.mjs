@@ -84,7 +84,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.10', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 11)), GAME_VERSION);
 ok('data.js 含 v22.11 注释（掌灯童说明）', dSrc.includes('v22.11'));
 ok('GAME_VERSION 字面量已更新为 v22.11（旧 v22.10 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.22';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
+  dSrc.includes("const GAME_VERSION = 'v23.23';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[14,3]===lampkid', NPC_SPOTS['14,3'] === 'lampkid', NPC_SPOTS['14,3']);

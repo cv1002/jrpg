@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -549,6 +549,17 @@ function winBattle() {
     // 收入想确认「兜里还剩多少」仍需再按 I 看状态页。直接读结算后的 hero.gold（line 399 已加 enemy.gold），
     // 零数值变化，只追加显示。
     bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）`, WIN_MSG_MS);
+  }
+  // v23.23 首杀记忆图鉴收录反馈（体验打磨·信息透明·纯显示——承 v19.41 已遭遇揭示 / v21.37 已遭遇
+  // 计数同一「击败 = 被记起」主线）：击败即写入记忆图鉴（上方 hero.bestiary 累计），但胜利报文（升级/
+  // 胜利/额外掉落/碎片/支线进度）只报金币经验——玩家首杀一只新怪的瞬间没有任何提示告诉「它被记下了」，
+  // 图鉴新条目要事后按 B 才发现（「讨伐 = 被记起」是潮灯记·记忆图鉴的主题，达成当下却零回声）；现与
+  // 图鉴页/收集四件套同读 data.js BESTIARY_TARGET · hero.bestiary 一份单一数据源，仅首杀
+  // （bestiary[bookName] 0→1）补一条「📕 记忆图鉴新收录」报文（带 N/M 已记起进度）；再杀同怪零噪音
+  // 零变化，旧档布尔 bestiary（true+1=2≠1）不误报，纯显示零结算零存档零数值变化。
+  const codexGotN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
+  if (hero.bestiary[bookName] === 1) {
+    bind.boxMsg(`📕 记忆图鉴新收录：【${bookName}】（已记起 ${codexGotN}/${BESTIARY_TARGET.length} 种 · 世界画面按 B 查看）`, WIN_MSG_MS);
   }
   bind.renderHUD();
   applyAchievements();

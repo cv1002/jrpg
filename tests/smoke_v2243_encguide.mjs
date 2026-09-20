@@ -93,7 +93,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.42（本版守 v22.43）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 43)), GAME_VERSION);
 ok('data.js 含 v22.43 注释（机制行说明）', dSrc.includes('v22.43 体验打磨'));
 ok('GAME_VERSION 字面量已为 v22.43（旧 v22.42 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.22';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
+  dSrc.includes("const GAME_VERSION = 'v23.23';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('data.js 仍保留 v22.42/v22.40 世代注释链（菌盖灯油/高草显形累积注释未动）',
   dSrc.includes('v22.42 新内容·世界景观·纯显示') && dSrc.includes('v22.40 高草显形'));
 
@@ -226,7 +226,7 @@ ok('README 含 v22.43 守护描述（帮助页遇敌槽/危险格机制行守护
   readmeSrc.includes('v22.43 起含帮助页「地图指南」遇敌槽/危险格机制行守护'));
 ok('README 视觉 bullet 含机制行指针（H 帮助页·地图指南）',
   readmeSrc.includes('遇敌槽 / 危险格机制行') && readmeSrc.includes('H 帮助页·地图指南新增'));
-ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v23.22'));
+ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v23.23'));
 
 // —— 姊妹件套 pin（v2242..v2237 随新现实更新）复查 + 旧代零残留 ——
 const readTest = (name) => fs.readFileSync(path.join(ROOT, 'tests', name), 'utf8');
@@ -235,7 +235,7 @@ const s2237 = readTest('smoke_v2237_minimaplegend.mjs');
 const s2238 = readTest('smoke_v2238_starwell.mjs');
 const s2234 = readTest('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2242 的 GAME_VERSION 字面量 pin 已更新为 v22.43（旧 v22.42 零残留）',
-  s2242.includes("const GAME_VERSION = 'v23.22';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
+  s2242.includes("const GAME_VERSION = 'v23.23';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('smoke_v2237 的地图指南行数 pin 已更新为 === 8', s2237.includes('page.length === 8'));
 ok('smoke_v2237 的机制行/通关之路下标 pin 已更新（labels[6]=机制行 labels[7]=通关之路）',
   s2237.includes("labels[6] === '遇敌槽 / 危险格'") && s2237.includes("labels[7] === '通关之路'"));
