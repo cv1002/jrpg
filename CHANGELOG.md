@@ -1,3 +1,10 @@
+## v23.20 J 任务日志「支线」节头补「可交付 N」计数（体验打磨·信息透明·动作提示·纯显示——承 v23.16 灯下之声节头「N/37」/ v23.19 记忆碎片节头「N/4」同一「节头第一眼就报进度」主线）——支线的「可交付」态（quests.js questStatus：active 且条件达成即 turnin，QUEST_TAG「可交付」）此前只以卡片右缘 10px 小标签呈现：玩家翻到「支线」节想确认「有没有可以回去交付的任务」仍要逐卡找绿标，节头作为该节第一视觉锚点却零信息；现与下方 sides 卡片列表同源派生 `_turninCt = sides.filter(e => e.status === 'turnin').length`（与卡片/世界横幅/NPC 任务页同读 quests.js 一份源、零裸字面量、新增支线自动跟随），>0 时节头直书「支线 · 可交付 N」（与 turnin 绿 #a8ff8a 同色族）、=0 零噪音保持「支线」原样（承 v23.17/v23.18「可酿 0 瓶时不显示」同一语义）；行高 h12/滚动钳制/页脚「还有 N 条」口径逐字未动；纯显示零结算零存档零数值变化。
+
+- 【改动】`js/view/menus.js`：drawJournal 支线节头改派生 label（`_turninCt` 计数，>0 显示、=0 零噪音，+ v23.20 注释块）；`js/data.js`：`GAME_VERSION` v23.19→v23.20（附 v23.20 注释，v23.19 注释保留）。
+- 【零回归面】未动任何结算/数值/存档/遇敌/掉落/技能公式/成就判定/数据（纯显示：sides 列表/questStatus/QUEST_TAG 逐字未动、卡片渲染/行高/滚动/页脚口径逐字保留）；「主线」「记忆碎片 N/4」（v23.19）「灯下之声 N/37」（v23.16）三节头逐字未动；未动 world/battle/core/quests/data 其余/audio/hud/其余 view/main.js/index.html。
+- 【记录】`CHANGELOG.md`（本条）+ 全库 GAME_VERSION 字面量/恒等 pin 级联（v23.19→v23.20，137 件测试文件 752 处 sed 批量落位）；`package.json` test 串 212 份不变（本次未新增冒烟文件，承 v23.17-v23.19 先例）；README 守护描述/件套口径不变（212 份）。
+- 【验证】`node --check` js/view/menus.js、js/data.js 过；`npm run check`（25 模块）全部通过；`npm test` 二百一十二件套端到端全绿 EXIT=0。（编辑于 2026-09-20 cron 自动完善）
+
 ## v23.19 J 任务日志「记忆碎片」节头补「N/4」进度（体验打磨·信息透明·纯显示——承 v23.16 灯下之声节头「N/37」同一「节头第一眼就报进度」主线）——真结局关键收集「记忆碎片」（FRAGMENTS 四枚强敌首胜掉落）的进度可见端此前有六：I 状态页资源行 🕯️ N/4、胜利画面收集行、阵亡画面收集行、尾声战绩行、战斗战利品预览「🧩 首胜必掉记忆碎片」、J 日志节内 4 行 🕯️ 名/？？？ 对照——唯独 J 日志「记忆碎片」节头本身只写「记忆碎片」四字，玩家翻到该节第一眼仍数不清集了几枚（要逐行数 🕯️ 才能得出总数，节头作为该节第一视觉锚点却零信息；v23.16 为「灯下之声」节头补 N/37 时同屏的碎片节头就是漏网之鱼）；现由 view/menus.js drawJournal 与同节 frag 行同读派生计数：`_fragsGot = (hero.fragments || [])`，节头 label 直书「记忆碎片 N/4」（模板串接，N 随 hero.fragments 实时），与状态页资源行/胜利/阵亡/尾声/战斗预览同读 data.js FRAGMENTS·hero.fragments 一份单一数据源（零裸字面量、增删碎片自动跟随、(hero.fragments||[]) 防御式旧档零迁移零抛错）；节高 h16/滚动钳制/页脚「还有 N 条」口径逐字未动（节头文案变长不改布局数学）；纯显示零结算零存档零数值变化。
 
 - 【改动】`js/view/menus.js`：drawJournal 记忆碎片节头改模板 label（`_fragsGot.length/FRAGMENTS.length` 派生计数，+ v23.19 注释块）；`js/data.js`：`GAME_VERSION` v23.18→v23.19（附 v23.19 注释，v23.18 注释保留）。

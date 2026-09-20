@@ -90,7 +90,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.84', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
 ok('data.js 含 v21.85 注释（试炼碑通关后状态如实分档说明）', dSrc.includes('v21.85 体验打磨'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.85', dSrc.includes("const GAME_VERSION = 'v23.19';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.85', dSrc.includes("const GAME_VERSION = 'v23.20';"));
 
 // —— 源级落位：drawWorld.js 三处分档 + 既有档逐字零回归 ——
 ok('drawWorld.js 碑上标签已通关档落位（✅ 试炼三连战 · 已通关（可再战））', wSrc.includes('✅ 试炼三连战 · 已通关（可再战）'));
@@ -178,7 +178,7 @@ for (const nm of suite81) {
 for (const nm of ['smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.85`,
-    src.includes("const GAME_VERSION = 'v23.19';"));
+    src.includes("const GAME_VERSION = 'v23.20';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过`);

@@ -459,7 +459,17 @@ export function drawJournal(){
     items.push({ kind: 'gap', h: 6 });
   }
   if (sides.length) {
-    items.push({ kind: 'head', label: '支线', color: '#a8ff8a', h: 12 });
+    // v23.20 支线节头补「可交付 N」计数（体验打磨·信息透明·动作提示·纯显示——承 v23.16 灯下之声节头
+    // 「N/37」/ v23.19 记忆碎片节头「N/4」同一「节头第一眼就报进度」主线：支线的「可交付」态（quests.js
+    // questStatus：active 且条件达成即 turnin，QUEST_TAG「可交付」）此前只以卡片右缘 10px 小标签呈现——
+    // 玩家翻到「支线」节想确认「有没有可以回去交付的任务」仍要逐卡找绿标，节头作为该节第一视觉锚点却
+    // 零信息；现与下方 sides 卡片列表同源派生 `_turninCt = sides.filter(e => e.status === 'turnin').length`
+    // （与卡片/世界横幅/NPC 任务页同读 quests.js 一份源、零裸字面量、新增支线自动跟随），>0 时节头直书
+    // 「支线 · 可交付 N」（与 turnin 绿 #a8ff8a 同色族）、=0 零噪音保持「支线」原样（承 v23.17/v23.18
+    // 「可酿 0 瓶时不显示」同一语义）；行高 h12/滚动钳制/页脚「还有 N 条」口径逐字未动，纯显示零结算
+    // 零存档零数值变化。
+    const _turninCt = sides.filter((e) => e.status === 'turnin').length;
+    items.push({ kind: 'head', label: `支线${_turninCt > 0 ? ` · 可交付 ${_turninCt}` : ''}`, color: '#a8ff8a', h: 12 });
     for (const e of sides) items.push({ kind: 'card', e, h: cardH(e) + 8 });
     items.push({ kind: 'gap', h: 6 });
   }
