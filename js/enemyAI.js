@@ -109,7 +109,15 @@ export function enemyAct(deps) {
   const act = pickAct(enemy);
   if (act.type === 'shield') {
     enemy.shield = (enemy.shield || 0) + 1;
-    SFX.block();
+    // v23.51 敌方石甲专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
+    // v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge / v23.48 SFX.darkheal / v23.49 SFX.chest /
+    // v23.50 SFX.quest 同一「事件音效各归其位」主线收口后复查的最后一格，与 audio.js SFX.armor 同源）：
+    // 石甲凝结（act.type==='shield'）此前与 battle.doDefend（[5]防御）同播 SFX.block()（triangle 320→480
+    // 双音块响）——自己刚按 [5] 防御、紧接着 Boss/精英凝结石甲，两声同响分不清哪声是自己的架势（且石甲
+    // 层数叠加是「这怪开始变硬」的威胁信号）；现改播 SFX.armor()（sine 98→147→196 低鸣上行），与玩家
+    // 防御 block 一听即分；零结算零数值零存档（盾层判定/累计层数/🪨 战报/所受伤害降低 X% 逐字未动，
+    // doDefend 仍 SFX.block 逐字未动）。
+    SFX.armor();
     hero.hurt = 0;
     S.blog.push(`🪨 ${enemy.name} 凝结【石甲】！（累计 ${enemy.shield} 层，所受伤害降低 ${Math.round((1 - SHIELD_MULT) * 100)}%）`);
     S.battleBusy = false;

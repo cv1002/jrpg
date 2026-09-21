@@ -150,6 +150,17 @@ const SFX = {
   tick() { tone(1150 + Math.random() * 150, 0.015, 'square', 0.018); },
   cancel() { tone(330, 0.07, 'square', 0.08); },
   block() { tone(320, 0.06, 'triangle', 0.1); tone(480, 0.08, 'triangle', 0.08, 0.05); },
+  // v23.51 敌方石甲专属音效（音效反馈·语义修正——承 v21.3 alert/boss「先闻其声」/ v23.22 SFX.ach /
+  // v23.33 SFX.craft / v23.40 SFX.flee / v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge /
+  // v23.48 SFX.darkheal / v23.49 SFX.chest / v23.50 SFX.quest 同一「事件音效各归其位」主线收口后复查
+  // 的最后一格）：enemyAI enemyAct 的「石甲」凝结招（石心魔像 hp<50% 起 w45 / 洞窟领主 w30，至多 3/2 层）
+  // 此前与 battle.doDefend（[5]防御摆架势）同播 SFX.block()（triangle 320→480 双音块响）——石甲是敌方
+  // 的「🪨 坚硬防御」（每层下一击伤害 -40%，层数叠加=这怪开始变硬的威胁信号），听感却与自己按 [5]
+  // 摆出的防御架势无从分辨（自己刚按 [5] 防御、紧接着 Boss 凝结石甲，两声同响分不清哪声是自己的架势）；
+  // 现补「岩壳凝结」低鸣三连（sine 98→147→196 低音上行，末音略长如岩壳合拢收尾），与 block 三角波上行
+  // 双音/darkheal 下行低吟/charge 方波上挑一听即分——先闻其声即知是它在叠甲而非自己防御；零结算零数值
+  // 零存档，家族其余逐字未动（doDefend 防御仍 SFX.block 逐字未动）。
+  armor() { tone(98, 0.14, 'sine', 0.12); tone(147, 0.1, 'triangle', 0.1, 0.12); tone(196, 0.2, 'sine', 0.07, 0.2); },
   // v23.47 蓄力专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
   // v23.43 SFX.crit / v23.46 SFX.transform 同一「事件音效各归其位」主线收口）：battle.doCharge（[6]蓄力）
   // 此前与 doDefend（[5]防御摆架势）/enemyAI 石甲格挡同播 SFX.block()（triangle 320→480 双音块响）——
