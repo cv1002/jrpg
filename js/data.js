@@ -1228,7 +1228,16 @@
 // 同响，分不清自己摆的是守势还是攻势；现补 audio.js SFX.charge() 上挑三连（square 392→523→659），
 // doCharge 改播之，与 block 低音块响/select 单音/crit 上挑/levelup 琶音一听即分；零结算零数值零存档
 // （蓄力判定/×CHARGE_MULT 结算/战报「凝神蓄力」逐字未动，doDefend 与石甲格挡仍 SFX.block 逐字未动）。
-const GAME_VERSION = 'v23.47';
+// v23.48 音效反馈·语义修正：敌方暗影回血专属音效（承 v21.3 alert/boss「先闻其声」/ v23.22 SFX.ach /
+// v23.33 SFX.craft / v23.40 SFX.flee / v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge 同一
+// 「事件音效各归其位」主线的收口，详见 js/audio.js SFX.darkheal 与 js/enemyAI.js enemyAct 行内注释）——
+// 「暗影回血」招（幽冥魔王 w20 / 洞窟领主 w15 / 终焉之神 w25，hp 低于 40% 才用）此前播放 SFX.heal()
+// （玩家治愈术/喝药/住店/清泉同款 sine 520 单音）：Boss 的黑暗恢复听感与玩家自己的治疗无从分辨
+// （玩家刚用治愈术、紧接着 Boss 暗影回血，两声同响分不清哪声是自己的奶）；现补 audio.js SFX.darkheal()
+// （triangle 220→185→147 小三度下行 + 末音 sine 低沉拖尾），enemyAct 回血分支改播之，与 heal 单音
+// 上扬/craft 上行/flee 下行/transform 上涌一听即分；零结算零数值零存档（回血判定/恢复量/🟣 战报逐字
+// 未动，玩家端 heal 四调用点与变身回血 SFX.transform 逐字未动）。
+const GAME_VERSION = 'v23.48';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

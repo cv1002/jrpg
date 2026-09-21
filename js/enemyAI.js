@@ -119,7 +119,14 @@ export function enemyAct(deps) {
   if (act.type === 'heal') {
     const heal = Math.round(enemy.hpMax * (act.pct || HEAL_PCT));
     enemy.hp += heal;
-    SFX.heal();
+    // v23.48 敌方暗影回血专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40
+    // SFX.flee / v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge 同一「事件音效各归其位」主线
+    // 收口，与 audio.js SFX.darkheal 同源）：暗影回血招（act.type==='heal'）此前播放 SFX.heal()（玩家
+    // 治愈术/喝药/住店/清泉同款 sine 520 单音）——Boss 的黑暗回血听感与玩家自己的治疗无从分辨（玩家
+    // 刚用治愈术、紧接着 Boss 暗影回血，两声同响分不清哪声是自己的奶）；现改播 SFX.darkheal()（triangle
+    // 220→185→147 小三度下行 + 末音 sine 低沉拖尾），与玩家 heal 单音上扬一听即分；零结算零数值零存档
+    // （回血判定/恢复量/🟣 战报/敌方 HP 反馈逐字未动，变身回血仍 SFX.transform 逐字未动）。
+    SFX.darkheal();
     // v20.1 敌方回血反馈追加当前 HP（信息透明·纯显示）：v20.0 已给玩家攻击命中后追加敌方剩余 HP，
     // 但敌方使用回血技能时仍只报恢复量，玩家无法确认「这怪又回上来了多少、当前还剩多少血」；
     // 直接读结算后的 enemy.hp / enemy.hpMax，与 v20.0 敌方剩余 HP / HUD 血条同源，零数值变化。
