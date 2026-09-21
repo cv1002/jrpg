@@ -121,6 +121,14 @@ const SFX = {
   tick() { tone(1150 + Math.random() * 150, 0.015, 'square', 0.018); },
   cancel() { tone(330, 0.07, 'square', 0.08); },
   block() { tone(320, 0.06, 'triangle', 0.1); tone(480, 0.08, 'triangle', 0.08, 0.05); },
+  // v23.47 蓄力专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
+  // v23.43 SFX.crit / v23.46 SFX.transform 同一「事件音效各归其位」主线收口）：battle.doCharge（[6]蓄力）
+  // 此前与 doDefend（[5]防御摆架势）/enemyAI 石甲格挡同播 SFX.block()（triangle 320→480 双音块响）——
+  // 蓄力是进攻准备（「⚡ 凝神蓄力：下一次攻击或技能×N」），不是守势或格挡：按完 [5] 再按 [6] 两声
+  // 同响，分不清自己摆的是守势还是攻势；现补上挑三连（square 392→523→659，末音略长如蓄势收尾），
+  // 与 block 低音块响/select 单音/crit saw 上挑/levelup 琶音一听即分——按 [6] 听声即知在蓄力；
+  // 零结算零数值零存档，家族其余逐字未动（doDefend 与石甲格挡仍 SFX.block 逐字未动）。
+  charge() { tone(392, 0.06, 'square', 0.09); tone(523, 0.06, 'square', 0.1, 0.06); tone(659, 0.13, 'square', 0.1, 0.12); },
   door() { tone(440, 0.1, 'triangle', 0.1, 0, 200); },
   shop() { tone(880, 0.08, 'sine', 0.1); tone(1100, 0.1, 'sine', 0.1, 0.07); },
   // v21.3 战斗开场警报音（音效反馈）：此前进战斗只有 BGM 换轨、无瞬间听觉钩子，「⚔️ 遭遇了 X」弹出时全静默，

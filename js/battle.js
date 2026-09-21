@@ -402,7 +402,13 @@ function doCharge() {
     return abortAction('⛔ 气场压制，无法蓄力！');
   }
   hero.charge = true;
-  SFX.block();
+  // v23.47 蓄力专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
+  // v23.43 SFX.crit / v23.46 SFX.transform 同一「事件音效各归其位」主线收口，与 audio.js SFX.charge 同源）：
+  // 蓄力此前与 doDefend（[5]防御）/enemyAI 石甲格挡同播 SFX.block()（triangle 低音块响）——蓄力是进攻
+  // 准备不是守势或格挡，按完 [5] 再按 [6] 两声同响无可分辨；现改播 SFX.charge()（square 上挑三连，
+  // 与 block 一听即分）；零结算零数值零存档（蓄力判定/×CHARGE_MULT 结算/「凝神蓄力」战报逐字未动，
+  // doDefend 与 enemyAI 石甲分支仍 SFX.block 逐字未动）。
+  SFX.charge();
   S.blog.push(`⚡ ${hero.name} 凝神蓄力：下一次【攻击或技能】威力 ×${CHARGE_MULT}！`);
   afterPlayer();
 }

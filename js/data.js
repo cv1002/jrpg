@@ -1220,7 +1220,15 @@
 // 哪声是自己的招）；现 enemyAct 变身分支改播 SFX.transform()（低音上涌+中音上滑+高音尾音渐弱，与
 // thunder 瞬发落雷/boss 低沉警报一听即分），零结算零数值零存档（变身判定/攻防加算/回血/战报/闪光
 // 逐字未动，雷鸣技能施放仍走 SFX[sfx] 不受影响）。
-const GAME_VERSION = 'v23.46';
+// v23.47 音效反馈·语义修正：蓄力专属音效（承 v21.3 alert/boss「先闻其声」/ v23.22 SFX.ach /
+// v23.33 SFX.craft / v23.40 SFX.flee / v23.43 SFX.crit / v23.46 SFX.transform 同一「事件音效各归其位」
+// 主线的收口，详见 js/audio.js SFX.charge 与 js/battle.js doCharge 行内注释）——[6]蓄力（doCharge）
+// 此前与 [5]防御摆架势（doDefend）、enemyAI 石甲格挡同播 SFX.block()（triangle 320→480 双音块响）：
+// 蓄力是进攻准备（「⚡ 凝神蓄力：下一次攻击或技能×N」），不是守势或格挡——按完 [5] 再按 [6] 两声
+// 同响，分不清自己摆的是守势还是攻势；现补 audio.js SFX.charge() 上挑三连（square 392→523→659），
+// doCharge 改播之，与 block 低音块响/select 单音/crit 上挑/levelup 琶音一听即分；零结算零数值零存档
+// （蓄力判定/×CHARGE_MULT 结算/战报「凝神蓄力」逐字未动，doDefend 与石甲格挡仍 SFX.block 逐字未动）。
+const GAME_VERSION = 'v23.47';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
