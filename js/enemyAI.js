@@ -83,7 +83,13 @@ export function enemyAct(deps) {
     if (phase.forbid) enemy.forbid = phase.forbid;
     const heal = Math.round(enemy.hpMax * (phase.heal || PHASE2_HEAL_PCT));
     enemy.hp = Math.min(enemy.hpMax, enemy.hp + heal);
-    SFX.thunder();
+    // v23.46 真身变身专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40
+    // SFX.flee / v23.43 SFX.crit 同一「事件音效各归其位」主线收口，与 audio.js SFX.transform 同源）：
+    // 变身（现出真身）此前播放 SFX.thunder()（玩家技能雷鸣的落雷音）——变身是 Boss 的仪式事件（全屏
+    // 白金闪光/回血/攻防暴涨/封印治愈），听感却与玩家自己的雷鸣无从分辨；现改播 SFX.transform()
+    // （低音上涌+中音上滑+高音尾音渐弱），先闻其声即知是它现出真身而非落雷；零结算零数值零存档
+    // （变身判定/攻防加算/回血/战报/闪光/S.battleBusy 逐字未动，雷鸣技能施放仍走 SFX[sfx] 不受影响）。
+    SFX.transform();
     S.flash = { t0: Date.now() }; // 变身全屏闪光（纯显示）
     // v21.9 变身回血结算反馈追加敌方当前 HP（信息透明·纯显示）：v20.1 已给普通回血（暗影回血）追加「敌方 HP X/Y」，
     // 但变身（现出真身）的 HP 恢复仍只报恢复量——Boss 变身的这一口血是玩家最关心的一次回复（变身线/增益已常驻血条，

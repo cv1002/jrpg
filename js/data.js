@@ -1212,7 +1212,15 @@
 // 此前只在已生效角标与 README 战斗行可见，首次按 [5] 的决策现场只见「减伤50%」；现指令栏同读
 // DEFEND_MP/COUNTER_CHANCE/COUNTER_MULT 单一数据源补齐；[4] 逃跑 token 压缩「·成功率约N%」→「·N%」
 // 为 [5] 让位；零结算零数值零存档，全部常量逐字未动。
-const GAME_VERSION = 'v23.45';
+// v23.46 音效反馈·语义修正：Boss 现出真身（变身）专属音效（承 v21.3 alert/boss「先闻其声」/ v23.22
+// SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee / v23.43 SFX.crit 同一「事件音效各归其位」主线的收口，
+// 详见 js/audio.js SFX.transform 与 js/enemyAI.js enemyAct 行内注释）——变身（血量过半现出真身）此前
+// 播放 SFX.thunder()（玩家技能雷鸣的落雷音）：变身是 Boss 的仪式事件（全屏白金闪光/回血/攻防暴涨/
+// 封印治愈），听感却与玩家自己的雷鸣无从分辨（终焉之神现出祸乱形态瞬间若正握着雷鸣，两声同响分不清
+// 哪声是自己的招）；现 enemyAct 变身分支改播 SFX.transform()（低音上涌+中音上滑+高音尾音渐弱，与
+// thunder 瞬发落雷/boss 低沉警报一听即分），零结算零数值零存档（变身判定/攻防加算/回血/战报/闪光
+// 逐字未动，雷鸣技能施放仍走 SFX[sfx] 不受影响）。
+const GAME_VERSION = 'v23.46';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
