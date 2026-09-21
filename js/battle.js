@@ -659,6 +659,12 @@ function winBattle() {
   hooks.applyVictoryWorld(result);
 
   if (enemy.isRush) {
+    // v23.56 试炼战报补「获得 N 经验」（体验打磨·信息透明·反馈不迟到——承 v19.80 普通胜利「距升级还
+    // 需 N 经验」/ v19.82 试炼通关余额 同一「收入现场报收入」主线）：grantXp 对试炼各关照常结算
+    // （RUSH_BOSSES[].xp 60/60/90，与普通怪同一调用），但 isRush 分支此前只报下一关现身（682 行）与
+    // 通关赏金（674 行）——每关赢得多少经验查无一行（升级瞬间才有 🎉 横幅、未升级则全程静默），恰是
+    // 「经验另计少给」奖励盘面的盲区；现与结算同读 enemy.xp（本关刚击败之敌），674/682 两报文末括号
+    // 追加「获得 N 经验」，零结算零数值零存档。
     const stage = hero.rushStage;
     if (stage >= RUSH_BOSSES.length) {
       hero.rushStage = 0;
@@ -671,7 +677,7 @@ function winBattle() {
       // 但三连战真正通关后的横幅只报奖励数额——玩家刚拿到一笔大额金币收入，想确认「兜里还剩多少」
       // 仍需再按 I 看状态页；直接读结算后的 hero.gold（line 444 已加 reward），与 v19.80 普通胜利/
       // v19.81 升级余额提示同源，零数值变化。
-      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！（剩余 ${hero.gold} 金）`, ACH_MSG_MS);
+      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！（获得 ${enemy.xp} 经验 · 剩余 ${hero.gold} 金）`, ACH_MSG_MS);
       setTimeout(() => { goto('world'); S.enemy = null; S.battleBusy = false; resumeBgm(); }, WRAP_GAP_MS);
     } else {
       // 连胜换关自动回血（data.js RUSH_RECOVER 单一数据源）：与战斗横幅/帮助页标注同读此源，数值结算逐字不变
@@ -679,7 +685,7 @@ function winBattle() {
       hero.mp = Math.min(hero.mpMax, hero.mp + Math.round(hero.mpMax * RUSH_RECOVER.mp));
       bind.renderHUD();
       hero.rushStage = stage + 1;
-      bind.boxMsg(`🚩 试炼第 ${stage + 1} 关：${RUSH_BOSSES[stage].name} 现身！（已自动恢复${Math.round(RUSH_RECOVER.hp * 100)}%HP / ${Math.round(RUSH_RECOVER.mp * 100)}%MP）`, SYS_MSG_MS);
+      bind.boxMsg(`🚩 试炼第 ${stage + 1} 关：${RUSH_BOSSES[stage].name} 现身！（获得 ${enemy.xp} 经验 · 已自动恢复${Math.round(RUSH_RECOVER.hp * 100)}%HP / ${Math.round(RUSH_RECOVER.mp * 100)}%MP）`, SYS_MSG_MS);
       setTimeout(() => { startBattle(deep(RUSH_BOSSES[stage])); }, BATTLE_GAP_MS);
     }
     return result;
