@@ -1187,7 +1187,14 @@
 // 强调战斗开场警报音（alert/boss），成就铃声/酿造气泡上行/逃跑下行三步三个事件专属音效散见 audio.js
 // 行内注释与 CHANGELOG，维护者/玩家速读查无一句；现补录（与升级琶音/胜利号角一听即分，各事件专属
 // 音效语义同源派生）；纯文档零逻辑零结算零数值零存档，SFX 家族其余逐字未动。
-const GAME_VERSION = 'v23.41';
+// v23.42 新内容·新支线：潮灯镇旅馆东侧门外客栈老板娘升格为讨伐支线「夜路的狼嚎」委托人（QUESTS.side_wolf，
+// WOLF_GOAL 单一数据源）——四基础怪版图逐怪核对后，开荒池里唯一没有任务挂钩的只剩野狼（史莱姆/毒蛇
+// 仍是纯粹的开荒刷级池、哥布林已有护粮的委托）；夜路「灯芯熄了之后狼嚎成夜」与老板娘「夜路人先落脚」
+// 身份同脉（护粮的委托「哥布林啃镇南庄稼」同在镇内即可完成的全流程开荒期讨伐支线先例）；数据层
+// 零新逻辑（quests.js 状态机全通用：cond/condProg/talk 四档/reward 走既有 applyQuestReward 三通道，
+// migrateQuests 无固定清单零迁移），成就「灯火同心」（allquests）经 Object.values(QUESTS)
+// 自动扩为十条支线，README 数值速查「支线 / 奖励」行同源补录。
+const GAME_VERSION = 'v23.42';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -1795,6 +1802,13 @@ const GRAIN_GOAL = 3;       // 粮铺掌柜支线需驱赶的哥布林只数
 // 与图鉴 codexTag「弱点·火×1.35」同口径）。
 const TREE_GOAL = 3;        // 拾菇人支线需驱赶的树精只数
 
+// 野狼讨伐目标（单一数据源）：客栈老板娘支线「夜路的狼嚎」需驱赶的野狼只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL / BONE_GOAL / GRAIN_GOAL / TREE_GOAL
+// 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
+// 接取对话（offer）全同步；野狼是潮灯镇遇敌池限定四基础怪之一（village.pool，Lv.1 即可撞见、
+// 镇北/镇南高草危险格出没——与护粮的委托同池不同怪，开荒期即可完成）。
+const WOLF_GOAL = 3;        // 客栈老板娘支线需驱赶的野狼只数
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -2265,6 +2279,8 @@ const NPCS={
   // 暖汤是「灯下那碗汤」的实际承载，与旅馆设施同一语义），造型复用 mwVillager 镇民短衫身形（与同图
   // 镇民/守书记/锻灯师同款短衫、跨图不重名；老板娘围裙意象由 kettle mark 区分，与灯长魁梧/井巫·掌灯阿婆
   // 长者袍/说书人斗篷/粮铺掌柜商贩/巡灯人行脚均区分）；无任务、无顶标、零结算零存档。
+  // v23.42 起有支线「夜路的狼嚎」（QUESTS.side_wolf 委托人，见其行内注释——有任务后 npcQuestPages
+  // 走四档任务页、after 彩蛋并入 done 真结局档，上方「无任务」为 v22.34 历史口径）。
   innkeeper:{name:'客栈老板娘', mark:'kettle', lines:[
     ['客栈老板娘：进镇的夜路人，先在我这儿落脚。','炉火是旺的，汤是热的——','灯芯的事，喝口热汤再说。 [Enter] 继续'],
     ['客栈老板娘：要往雾语林、矿脉里去，先睡一晚。','血蓝睡满，汤也暖肚。','星井矿脉和无字回廊，可没有泉水，也没有旅店。 [Enter] 结束'],
@@ -3906,6 +3922,59 @@ const QUESTS={
       ]],
     },
   },
+  // 客栈老板娘·夜路的狼嚎（v23.42 新支线）：讨伐 WOLF_GOAL 只野狼（bestiary 计数）——承 v21.80
+  // side_grain（护粮的委托）先例：潮灯镇遇敌池限定四基础怪（史莱姆/野狼/哥布林/毒蛇）此前只有
+  // 哥布林有任务挂钩（其余三怪是开荒刷级池），而老板娘（v22.34 纯风味·「夜路人先落脚」）
+  // 是全游唯一花钱恢复点旅馆的门面人——「灯芯熄了以后镇外野狼一到夜里就成群地嚎」与她的
+  // 「炉火是旺的、汤是热的——夜路人先落脚」身份同脉（护粮「哥布林啃镇南庄稼」同在镇内即可
+  // 完成全流程的开荒期讨伐支线先例）；与 side_mist / side_stone / side_bone / side_grain /
+  // side_tree 同一「讨伐采集型支线」模式（无 unlockOn → 从开局即 offer，保留完整接取流程），
+  // 阈值单一数据源 WOLF_GOAL（判定/进度/目标文案/接取对话同读），奖励 40 金 + 2 生命药水——
+  // 介于灯长采集（40+10lv）与护粮（50 金+药水）之间的开荒档；active 页按 hero 实时报进度
+  // （与 side_stone/side_bone 同款函数页）；done 页按 hero.trueBoss 分档（承 side_ember /
+  // side_bone / side_tree done 页先例，把 innkeeper 原有 trueBoss after 彩蛋「灯全亮回来的那晚
+  // 整条街来喝汤/名字都回来了这锅汤才没白煮」并入真结局档文案——npcQuestPages 有任务后不再
+  // 单独展示 after，转由 done 分档承载，零内容丢失）。
+  side_wolf:{
+    id:'side_wolf', kind:'side', store:true, npc:'innkeeper', giver:'innkeeper',
+    cond:(g)=>(((g.bestiary||{})['野狼'])||0) >= WOLF_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['野狼'])||0}/${WOLF_GOAL} 只`,
+    name:'夜路的狼嚎', where:'潮灯镇·镇外高草',
+    obj:`讨伐 ${WOLF_GOAL} 只镇外高草里的【野狼】`,
+    offer:'去潮灯镇旅馆找客栈老板娘，接下夜路的委托',
+    turnin:'狼群消停了！回镇找客栈老板娘',
+    done:'镇外的夜路又安稳了。',
+    reward:{ gold:40, item:2 },
+    talk:{
+      offer:[[
+        '客栈老板娘：进镇的夜路人，先在我这儿落脚。炉火是旺的，汤是热的——',
+        '可灯芯熄了以后，镇外的野狼一到夜里就成群地嚎，',
+        `夜路的人都不敢走。替我赶走 ${WOLF_GOAL} 只，夜路才亮堂。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '客栈老板娘：野狼就蹲在镇外的高草里——镇北、镇南都是。',
+        '听着狼嚎走，一踩高草就能撞见。',
+        `（已驱赶 ${((hero.bestiary||{})['野狼'])||0}/${WOLF_GOAL} 只）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '客栈老板娘：狼嚎歇了，夜路清静了。',
+        '这两瓶药水你带着。夜路再黑，也有口热汤等你回来。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [[
+        '客栈老板娘：灯全亮回来的那晚，整条街都来我这儿喝汤——',
+        '我数人头，一个都没少。名字都回来了，这锅汤才没白煮。',
+        '往后夜路再黑，也有个地方是亮的、是热的。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]] : [[
+        '客栈老板娘：狼嚎歇了，镇外的夜路安稳了。',
+        '炉火是旺的，汤是热的——夜路人，先落脚。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -4731,7 +4800,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, DEFLECT_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, TREE_GOAL, DEFLECT_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

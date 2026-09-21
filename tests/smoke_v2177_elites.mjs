@@ -151,10 +151,10 @@ const achEmber = ACH_LIST.find((a) => a.id === 'ember');
 ok('残焰已熄（ember 支线成就）零回归（仍判定 side_ember done，不受本成就影响）',
   !!achEmber && achEmber.name === '残焰已熄' && achEmber.ok({ quests: { side_ember: 'done' } }) === true && achEmber.ok({ bestiary: { '残焰魔像': 1 } }) === false);
 const achAllQuests = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母 v23.32 随新现实更新为 0/9（side_grain/side_tree 是支线，elites 不是）',
-  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/9', achAllQuests && achAllQuests.prog({ quests: {} }));
-ok('QUESTS side 支线 9 条（v21.80 side_grain 入列、v23.32 side_tree 入列，随新现实更新）',
-  Object.values(QUESTS).filter((q) => q.kind === 'side').length === 9);
+ok('灯火同心（allquests）支线分母 v23.42 随新现实更新为 0/10（side_grain/side_tree/side_wolf 是支线，elites 不是）',
+  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/10', achAllQuests && achAllQuests.prog({ quests: {} }));
+ok('QUESTS side 支线 10 条（v21.80 side_grain 入列、v23.32 side_tree 入列、v23.42 side_wolf 入列，随新现实更新）',
+  Object.values(QUESTS).filter((q) => q.kind === 'side').length === 10);
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：双精英档新解锁含 elites；单档/空档不含',

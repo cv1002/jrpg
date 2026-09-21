@@ -99,7 +99,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.43（本版守 v22.44）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 44)), GAME_VERSION);
 ok('data.js 含 v22.44 注释（小地图全域危险标注说明）', dSrc.includes('v22.44 体验打磨·信息透明·纯显示'));
 ok('GAME_VERSION 字面量已为 v22.44（旧 v22.43 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.41';") && !dSrc.includes("const GAME_VERSION = 'v22.43';"));
+  dSrc.includes("const GAME_VERSION = 'v23.42';") && !dSrc.includes("const GAME_VERSION = 'v22.43';"));
 ok('data.js 仍保留 v22.43/v22.42 世代注释链（机制行/菌盖灯油累积注释未动）',
   dSrc.includes('v22.43 体验打磨·信息透明·纯文字') && dSrc.includes('v22.42 新内容·世界景观·纯显示'));
 
@@ -230,12 +230,12 @@ ok('README 含 v22.44 守护描述（小地图全域危险标注守护）',
 ok('README 视觉 bullet 含小地图全域危险标注（v22.44）',
   readmeSrc.includes('**小地图全域危险标注**（v22.44'));
 ok('README 含 smoke_v2244_fulldanger 入库（140 份）', readmeSrc.includes('smoke_v2244_fulldanger 入库（140 份）'));
-ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v23.41'));
+ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v23.42'));
 
 // —— 姊妹件套 pin（v2243 随新现实更新）复查 + 旧代零残留 ——
 const s2243 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2243_encguide.mjs'), 'utf8');
 ok('smoke_v2243 的 GAME_VERSION 字面量 pin 已更新为 v22.44（旧 v22.43 零残留）',
-  s2243.includes("const GAME_VERSION = 'v23.41';") && !s2243.includes("const GAME_VERSION = 'v22.43';"));
+  s2243.includes("const GAME_VERSION = 'v23.42';") && !s2243.includes("const GAME_VERSION = 'v22.43';"));
 ok('smoke_v2243 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2243.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2243 的 package.json 件套计数 pin 已更新为 === 140', s2243.includes('testChain === 212'));

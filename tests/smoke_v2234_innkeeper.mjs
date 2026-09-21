@@ -1,20 +1,23 @@
-// v22.34 专项冒烟：潮灯镇新风味 NPC「客栈老板娘」——纯内容扩充（无任务、零结算、零新逻辑）：
+// v22.34 专项冒烟：潮灯镇新 NPC「客栈老板娘」——v23.42 起升格为讨伐支线「夜路的狼嚎」委托人
+// （QUESTS.side_wolf，承 v21.80 side_grain / v23.32 side_tree 先例，状态机全通用零新逻辑）：
 // 数据层三件套（village.extras (7,14) + NPC_SPOTS '7,14' + NPCS.innkeeper），旅馆（INN_PRICE=10
 // 住店回满 HP/MP、全游唯一花钱恢复点）此前只是「一间没有人的房子」，老板娘把「先回镇睡满」
-// 的补给口径（v21.40 矿脉/回廊没有泉水旅店 ↔ v22.32 旅行面板提醒）落到镇内一端；台词走既有
-// lines + trueBoss after 彩蛋机制（villager/锻灯师同款：npcQuestPages 无待办任务回退时 trueBoss
-// 优先 after、否则 lines），mark:'kettle' 新增一档程序化绘制分支（承 v22.13 fan / v22.27 qin /
-// v22.31 hammer 专属先例），造型复用 mwVillager 镇民短衫身形。
+// 的补给口径（v21.40 矿脉/回廊没有泉水旅店 ↔ v22.32 旅行面板提醒）落到镇内一端；v22.34 台词走
+// lines + trueBoss after 彩蛋机制（villager/锻灯师同款），v23.42 起有任务后 npcQuestPages 走
+// 支线四档任务页、after 彩蛋并入 done 真结局分档（拾菇人 v23.32 同款先例，零内容丢失），mark:'kettle'
+// 新增一档程序化绘制分支（承 v22.13 fan / v22.27 qin / v22.31 hammer 专属先例），造型复用
+// mwVillager 镇民短衫身形。
 // 本冒烟守护：版本锚点、全局坐标防撞（NPC_SPOTS 跨地图共用键、唯一映射、既有 29 键未动、
 // 全图 extras 扫描 (7,14) 仅 village 一处）、NPCS 契约（name/mark/lines 2 页/after 2 页/
 // 每页结构/[Enter] 收尾/行宽预算/旅店与补给主题/散尽彩蛋）、运行期（loadMap 落位 + 四邻可行走
-// （西邻 (6,14) 旅馆外墙）+ 同图 NPC/设施零回归 + Enter/E 真实交互开对话 + 默认与 trueBoss 两档
-// 选段）、npcQuestMark 无任务顶标、resolveNpcTalk 零任务契约、sprites 造型映射与新增 kettle mark、
+// （西邻 (6,14) 旅馆外墙）+ 同图 NPC/设施零回归 + Enter/E 真实交互开对话 + 支线四档
+// 选段（offer→active→turnin→done·真结局分档，v23.42 随新现实更新））、npcQuestMark 可接委托顶标、
+// resolveNpcTalk 接取契约、sprites 造型映射与新增 kettle mark、
 // README/package.json 同步（tests 树尾 + 件套口径 130 + v22.34 守护描述 + 入库 130 份）、
 // 姊妹件套 pin（v22.33..v2226 随新现实更新 + NPC 总数 pin 30）复查 + 旧代 v22.33 字面量/恒等/
 // 件套/树尾 pin 零残留。
 import { S } from '../js/state.js';
-import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY, SOLID } from '../js/data.js';
+import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY, SOLID, WOLF_GOAL } from '../js/data.js';
 import { npcQuestPages, npcQuestMark } from '../js/quests.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -91,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.33', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 34)), GAME_VERSION);
 ok('data.js 含 v22.34 注释（客栈老板娘说明）', dSrc.includes('v22.34 新 NPC'));
 ok('GAME_VERSION 字面量已为 v22.34（旧 v22.33 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.41';") && !dSrc.includes("const GAME_VERSION = 'v22." + "33';"));
+  dSrc.includes("const GAME_VERSION = 'v23.42';") && !dSrc.includes("const GAME_VERSION = 'v22." + "33';"));
 ok('data.js 仍保留 v22.33 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.33 新内容：创建角色页「姓名寓意」'));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
@@ -134,15 +137,15 @@ ok('after 首页含散尽彩蛋（灯全亮回来 + 一个都没少）',
 ok('after 第 2 页含收尾（没白煮 + 亮的/热的）',
   ik.after[1].some((ln) => ln.includes('没白煮')) && ik.after[1].some((ln) => ln.includes('是热的')));
 
-// —— 选段（npcQuestPages 运行期求值，无任务 → 直落 NPCS 数据）——
+// —— 选段（npcQuestPages 运行期求值；v23.42 起老板娘有支线 → 任务四档优先，after 彩蛋并入 done 真结局分档）——
 const p0 = npcQuestPages({}, 'innkeeper');
-ok('无旗标选段落到 lines（落脚）', p0 && p0[0].some((ln) => ln.includes('落脚')), p0 && p0[0][0]);
-const pT = npcQuestPages({ trueBoss: true }, 'innkeeper');
-ok('trueBoss 走 after 彩蛋（没白煮）',
-  pT && pT.some((pg) => pg.some((ln) => ln.includes('没白煮'))));
-ok('无任务：npcQuestMark===null（无 ❕ 顶标）', npcQuestMark(S.G, 'innkeeper') === null);
-ok('无支线绑定 innkeeper：resolveNpcTalk 不推进任何任务（纯风味零任务）',
-  (await import('../js/quests.js')).resolveNpcTalk(S.G, 'innkeeper') === null);
+ok('无旗标选段为支线 offer 页（老板娘/野狼/炉火·落脚口径不丢）', p0 && p0[0].some((ln) => ln.includes('客栈老板娘')) && p0[0].some((ln) => ln.includes('野狼')) && p0[0].some((ln) => ln.includes('炉火')), p0 && p0[0][0]);
+const pT = npcQuestPages({ trueBoss: true, quests: { side_wolf: 'done' } }, 'innkeeper');
+ok('trueBoss 走 done 真结局分档（并入 after 彩蛋：没白煮 + 亮回来的）',
+  pT && pT.some((pg) => pg.some((ln) => ln.includes('没白煮'))) && pT.some((pg) => pg.some((ln) => ln.includes('亮回来的'))));
+ok('有可接委托：npcQuestMark===❕ 可接委托（不再是无任务 null）', npcQuestMark(S.G, 'innkeeper') === '❕ 可接委托', npcQuestMark(S.G, 'innkeeper'));
+ok('支线绑定 innkeeper：resolveNpcTalk 接取 side_wolf（返回 accept 契约，WOLF_GOAL 单一数据源）',
+  (await import('../js/quests.js')).resolveNpcTalk(S.G, 'innkeeper')?.kind === 'accept' && S.G.quests.side_wolf === 'active' && WOLF_GOAL === 3);
 
 // —— 运行期：loadMap 落位 + 四邻可行走 + 同图关键点零回归 + Enter/E 真实交互开对话 ——
 loadMap('village');
@@ -163,9 +166,9 @@ S.G.x = 8; S.G.y = 14; S.dir = 'L'; S.scene = 'world';
 await screens.world.onKey({ key: 'Enter' });
 ok('面向客栈老板娘按 Enter：进入对话（S.scene==talk）且 curNpc===innkeeper',
   S.scene === 'talk' && S.curNpc === 'innkeeper', S.scene + '/' + S.curNpc);
-ok('对话第 1 页为 lines 默认台词（落脚）——S.G 无旗标',
-  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('落脚')));
-ok('对话共 2 页（第 1 页 [Enter] 继续 → 第 2 页 [Enter] 结束）', S.talkPages && S.talkPages.length === 2);
+ok('对话第 1 页为支线 active 页（已接取 side_wolf——S.G.quests.side_wolf==active，野狼/高草口径）',
+  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('野狼')) && S.talkPages[0].some((ln) => ln.includes('高草')));
+ok('对话共 1 页（支线 active 单页 [Enter] 继续）', S.talkPages && S.talkPages.length === 1);
 S.scene = 'world';
 await screens.world.onKey({ key: 'E' });
 ok('E 键同效（v21.29 交互别名对 NPC 零回归）', S.scene === 'talk' && S.curNpc === 'innkeeper', S.scene + '/' + S.curNpc);
@@ -201,24 +204,24 @@ const s2229 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2229_metall.mjs'), '
 const s2228 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2228_titlesave.mjs'), 'utf8');
 const s2227 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2227_minstrel.mjs'), 'utf8');
 const s2226 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2226_chestprogress.mjs'), 'utf8');
-ok('smoke_v2233 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2233.includes("const GAME_VERSION = 'v23.41';"));
-ok('smoke_v2233 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2233.includes("GAME_VERSION === 'v23.41'"));
+ok('smoke_v2233 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2233.includes("const GAME_VERSION = 'v23.42';"));
+ok('smoke_v2233 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2233.includes("GAME_VERSION === 'v23.42'"));
 ok('smoke_v2233 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2233.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2233 的 README 串尾 pin 已更新为 + smoke_v2234_innkeeper',
   s2233.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2233 的 package.json 件套计数 pin 已更新为 === 130', s2233.includes('testChain === 212'));
-ok('smoke_v2232 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2232.includes("const GAME_VERSION = 'v23.41';"));
+ok('smoke_v2232 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2232.includes("const GAME_VERSION = 'v23.42';"));
 ok('smoke_v2232 的 README 串尾 pin 已更新为 + smoke_v2234_innkeeper',
   s2232.includes('smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2231 的 NPC 总数 pin 已随新现实更新为 30（客栈老板娘落位）',
   s2231.includes('NPC_SPOTS).length === 38'));
-ok('smoke_v2230 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2230.includes("const GAME_VERSION = 'v23.41';"));
-ok('smoke_v2229 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2229.includes("GAME_VERSION === 'v23.41'"));
+ok('smoke_v2230 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2230.includes("const GAME_VERSION = 'v23.42';"));
+ok('smoke_v2229 的 GAME_VERSION 恒等 pin 已更新为 === v22.34', s2229.includes("GAME_VERSION === 'v23.42'"));
 ok('smoke_v2228 的 README 串尾 pin 已更新为 + smoke_v2234_innkeeper',
   s2228.includes('smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2227 的 NPC 总数 pin 已随新现实更新为 30', s2227.includes('NPC_SPOTS).length === 38'));
-ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2226.includes("const GAME_VERSION = 'v23.41';"));
+ok('smoke_v2226 的 GAME_VERSION 字面量 pin 已更新为 v22.34', s2226.includes("const GAME_VERSION = 'v23.42';"));
 // 旧代 v22.33 pin 全库零残留
 const allTests = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs'));
 const stale = [];
