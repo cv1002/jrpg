@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -409,7 +409,17 @@ function doCharge() {
   // 与 block 一听即分）；零结算零数值零存档（蓄力判定/×CHARGE_MULT 结算/「凝神蓄力」战报逐字未动，
   // doDefend 与 enemyAI 石甲分支仍 SFX.block 逐字未动）。
   SFX.charge();
-  S.blog.push(`⚡ ${hero.name} 凝神蓄力：下一次【攻击或技能】威力 ×${CHARGE_MULT}！`);
+  // v23.54 成就「蓄势待发」计数（战斗维度第二枚里程碑·承 v23.36 以守为攻先例）：[6]蓄力是玩家主动
+  // 花一回合的战术选择（下一次攻击/技能 ×CHARGE_MULT、可叠暴击），与 [5]防御（以守为攻）并列成对——
+  // 防御的反击已有纪念，蓄力却无；计数写在蓄力唯一产生点（本函数，与置位/战报同处一处防漏记），
+  // 读 hero.charges（doCharge 局部 const hero = S.G、随 snapshotHero 全量快照自动持久化），防御式
+  // (hero.charges||0) 旧档零迁移；阈值 CHARGE_GOAL 单一数据源见 data.js；落账当场 applyAchievements
+  // （承 v23.36 反击落账当场判定「反馈不迟到」惯例；applyAchievements 为本模块既有 import，零新增依赖）。
+  // 零结算零数值变化（蓄力判定/×CHARGE_MULT 结算/「凝神蓄力」战报主体逐字未动）。
+  const chg = (hero.charges || 0) + 1;
+  hero.charges = chg;
+  applyAchievements();
+  S.blog.push(`⚡ ${hero.name} 凝神蓄力：下一次【攻击或技能】威力 ×${CHARGE_MULT}！ · 蓄势待发 ${chg}/${CHARGE_GOAL}`);
   afterPlayer();
 }
 
