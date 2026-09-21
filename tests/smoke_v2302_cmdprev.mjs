@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.02 版本注释', dataSrc.includes('// v23.02 体验打磨·信息透明·纯显示：战斗指令栏'));
 ok('data.js GAME_VERSION 字面量已为 v23.02（旧 v23.01 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.58';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "01';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.59';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "01';"));
 ok('data.js 仍保留 v23.01 历史注释（出没生态行注释未动）', dataSrc.includes('// v23.01 文档整理·数值说明·同源口径'));
 
 // —— drawBattle.js 源级落位：新指令栏模板 + 旧裸式零残留 + 既有标注零回归 ——
@@ -188,15 +188,15 @@ ok('package.json 串尾为 ... smoke_v2301_eco.mjs && node tests/smoke_v2302_cmd
   pkg.includes('node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 198 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.02 条目', changelog.startsWith('## v23.58 '));
+ok('CHANGELOG 顶部已追加 v23.02 条目', changelog.startsWith('## v23.59 '));
 ok('CHANGELOG 仍保留 v23.01 条目（历史口径）', changelog.includes('## v23.01 README「数值速查」补「出没生态」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.01 pin 零残留 ——
 const s2301 = read('smoke_v2301_eco.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2301 的 GAME_VERSION 字面量 pin 已更新为 v23.02', s2301.includes("const GAME_VERSION = 'v23.58';"));
+ok('smoke_v2301 的 GAME_VERSION 字面量 pin 已更新为 v23.02', s2301.includes("const GAME_VERSION = 'v23.59';"));
 ok('smoke_v2301 的 CHANGELOG 顶 pin 已更新为 ## v23.02',
-  s2301.includes("startsWith('## v23.58 '"));
+  s2301.includes("startsWith('## v23.59 '"));
 ok('smoke_v2301 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2301.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2301 的 README 串尾 pin 已延伸至 smoke_v2302_cmdprev',

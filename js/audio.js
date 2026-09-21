@@ -91,6 +91,8 @@ const SFX = {
   // 逐字未动（玩家端 heal 四调用点与变身回血 SFX.transform 逐字未动）。
   darkheal() { tone(220, 0.11, 'triangle', 0.1); tone(185, 0.11, 'triangle', 0.1, 0.1); tone(147, 0.26, 'sine', 0.09, 0.2); },
   heal() { tone(520, 0.1, 'sine', 0.1); },
+  // v23.59 记忆碎片拾取音效归位后成为全库唯一「拾取」语义调用点（与 v23.49 宝箱移出同源：700→900
+  // 双音「拾取」专响，音效定义逐字未动；调用点 battle.winBattle 碎片块）。
   item() { tone(700, 0.08, 'sine', 0.1); tone(900, 0.08, 'sine', 0.1, 0.08); },
   coin() { tone(880, 0.07, 'square', 0.1); tone(1320, 0.12, 'square', 0.1, 0.07); },
   // v23.49 宝箱开启专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
