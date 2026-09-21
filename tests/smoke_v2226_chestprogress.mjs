@@ -68,8 +68,8 @@ await import('../js/main.js');
 const { STEP_HANDLERS } = await import('../js/world.js');
 const { SFX } = await import('../js/audio.js');
 const { bind } = await import('../js/bind.js');
-// 音效桩：开箱路径会调 SFX.item/coin，测试只关心报文与结算
-SFX.item = () => {}; SFX.coin = () => {}; SFX.levelup = () => {};
+// 音效桩：开箱路径会调 SFX.chest（v23.49 起弃用 item/coin），测试只关心报文与结算
+SFX.chest = () => {}; SFX.item = () => {}; SFX.coin = () => {}; SFX.levelup = () => {};
 // 报文间谍：直接捕获 bind.boxMsg 调用（绕开消息队列定时器，逐条精确）
 let lastMsg = '';
 bind.boxMsg = (t) => { lastMsg = t; };
@@ -96,7 +96,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.25', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 26)), GAME_VERSION);
 ok('data.js 含 v22.26 注释（宝箱开启反馈追加进度）', dSrc.includes('v22.26 宝箱开启反馈追加进度'));
 ok('GAME_VERSION 字面量已为 v22.26（旧 v22.25 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.48';") && !dSrc.includes("const GAME_VERSION = 'v22." + "25';"));
+  dSrc.includes("const GAME_VERSION = 'v23.49';") && !dSrc.includes("const GAME_VERSION = 'v22." + "25';"));
 ok('data.js 仍保留 v22.25 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.25 无字回廊新风味 NPC「刻碑人」'));
 
 // —— world.js 源级落位 ——
@@ -187,9 +187,9 @@ for (const f of ['v2225_stonecarver', 'v2224_sifter', 'v2223_lampman', 'v2222_pe
 }
 const sibNames = Object.keys(sib);
 ok('姊妹件套（v2225..v2215）GAME_VERSION 字面量 pin 已更新为 v22.26',
-  sibNames.every((k) => sib[k].includes("const GAME_VERSION = 'v23.48';")));
+  sibNames.every((k) => sib[k].includes("const GAME_VERSION = 'v23.49';")));
 ok('姊妹件套（v2225..v2215）GAME_VERSION 恒等 pin 已更新为 === v22.26',
-  sibNames.every((k) => sib[k].includes("GAME_VERSION === 'v23.48'")));
+  sibNames.every((k) => sib[k].includes("GAME_VERSION === 'v23.49'")));
 ok('姊妹件套（v2225..v2215）README 件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   sibNames.every((k) => sib[k].includes('二百一十二件套（二百一十一件套清除）')));
 ok('姊妹件套（v2225..v2215）README 树尾 pin 已更新为 + smoke_v2226_chestprogress',

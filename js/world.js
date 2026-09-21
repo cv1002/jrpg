@@ -235,11 +235,18 @@ function onChestStep(x, y, hero) {
   // （chestCount 三形态防御式、chestTotal 由 MAPS/CAVE_TREASURE 派生），在三条报文补「已开 X/全图 N」，
   // 纯显示零结算零存档变化；成就判定/掉落判定/库存计数逐字未动。
   const opened = chestCount(hero), total = chestTotal();
+  // v23.49 宝箱开启专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
+  // v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge / v23.48 SFX.darkheal 同一「事件音效各归其位」
+  // 主线收口，与 audio.js SFX.chest 同源）：开箱三分支（雾语林蘑菇/金币/药水）此前与商店购买/任务奖励同播
+  // SFX.coin()、与拾取同播 SFX.item()——宝箱是冒险探索的「📦 开箱」惊喜事件，听感却与买东西/交任务/拾取
+  // 无从分辨（刚在商店买完药、紧接着开箱得金币，两声同响分不清是买是捡）；现三分支改播 SFX.chest()（低暖
+  // 木质三连），与 coin 高音双音/item 双音一听即分——先闻其声即知在开箱；零结算零数值零存档（掉落判定/
+  // 金币公式/库存计数/开箱报文逐字未动，coin/item 定义与商店购买/任务奖励调用点逐字未动）。
   // 开箱掉落（data.js CHEST_* 单一数据源）：与帮助页「宝箱掉落」标注同读此源，数值逐字不变——
   // 雾语林先判 60% 蘑菇，余 40% 再判 45% 金币（12+级×5），余 22% 药水；城镇/矿脉直接 45% 金币 / 55% 药水
   if (curMap() === 'dungeon' && Math.random() < CHEST_MUSHROOM) {
     hero.mushrooms++;
-    SFX.item();
+    SFX.chest();
     // v19.93 宝箱蘑菇反馈追加任务进度（信息透明·纯显示）：此前只报总株数，玩家接取灯长支线后
     // 想确认「还差几株可交付」仍需再按 I/J 查看；现与酿造/出售保护提示同源读 MUSHROOM_GOAL，
     // 支线未激活或已集齐时不额外显示，零结算变化。
@@ -253,11 +260,11 @@ function onChestStep(x, y, hero) {
   } else if (Math.random() < CHEST_GOLD) {
     const gold = CHEST_GOLD_BASE + hero.level * CHEST_GOLD_PER_LV;
     hero.gold += gold;
-    SFX.coin();
+    SFX.chest();
     bind.boxMsg(`📦 宝箱！获得 ${gold} 金币（共 ${hero.gold} 枚 · 已开 ${opened}/${total}）`);
   } else {
     hero.item++;
-    SFX.item();
+    SFX.chest();
     bind.boxMsg(`📦 宝箱！获得 1 个🍖 生命药水（共 ${hero.item} 瓶 · 已开 ${opened}/${total}）`);
   }
   bind.renderHUD();
