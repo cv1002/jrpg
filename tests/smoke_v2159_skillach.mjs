@@ -90,10 +90,10 @@ ok('data.js 含 v21.59 注释（诸技通明/技能全领悟里程碑说明）',
 // —— 数据层：LEARN_AT 技能全表扫描（learnsAt 单一数据源调用面）——
 const allSkills = [];
 for (let lv = 1; lv <= 30; lv++) { const sk = learnsAt(lv); if (sk && !allSkills.includes(sk)) allSkills.push(sk); }
-ok('learnsAt 扫描得 7 招且按领悟级排序（火焰斩/冰霜击/治愈术/雷鸣/陨石术/汲光击/星砂回响）',
-  allSkills.length === 7 &&
-  allSkills.join(',') === ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击', '星砂回响'].join(','), allSkills.join(','));
-ok('七招全部存在于 SKILL_DATA（领悟表与技能数据一致，无悬空条目）',
+ok('learnsAt 扫描得 8 招且按领悟级排序（火焰斩/冰霜击/治愈术/雷鸣/陨石术/汲光击/星砂回响/灯焰长明）',
+  allSkills.length === 8 &&
+  allSkills.join(',') === ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击', '星砂回响', '灯焰长明'].join(','), allSkills.join(','));
+ok('八招全部存在于 SKILL_DATA（领悟表与技能数据一致，无悬空条目）',
   allSkills.every((s) => !!SKILL_DATA[s]));
 
 // —— ACH_LIST：诸技通明契约（承 memoir/perfection 收集向里程碑模式）——
@@ -106,7 +106,7 @@ ok('ACH_LIST 由 23 → 24 项（v21.59 新增一项；v21.68 起精确总数由
   ACH_LIST.length >= 24, String(ACH_LIST.length));
 ok('skills 成就无 r 字段（与 lvl5/lvl10/memoir 同款纯里程碑，成长本身即奖励）',
   !!achSkills && !('r' in achSkills));
-ok('skills 成就描述由 LEARN_AT 派生（「领悟全部 7 个技能」，数量非裸字面量，v21.83 随新现实更新）',
+ok('skills 成就描述由 LEARN_AT 派生（「领悟全部 8 个技能」，数量非裸字面量，v21.83/v23.55 随新现实更新）',
   !!achSkills && achSkills.d === `领悟全部 ${allSkills.length} 个技能` &&
   dSrc.includes('领悟全部 ${Object.keys(LEARN_AT).length} 个技能'), achSkills && achSkills.d);
 ok('skills 成就源级落位（data.js 含 id/name 行与 v21.59 注释）',
@@ -118,9 +118,9 @@ ok('ok 谓词：空技能表 → false', achSkills.ok({ skills: [] }) === false)
 ok('ok 谓词：仅起始火焰斩 → false', achSkills.ok({ skills: ['火焰斩'] }) === false);
 ok('ok 谓词：缺最后一招（星砂回响，v21.83 随新现实更新：缺末两招亦 false）→ false',
   achSkills.ok({ skills: allSkills.slice(0, 6) }) === false);
-ok('ok 谓词：七招俱全 → true（顺序无关，v21.83 随新现实更新）',
+ok('ok 谓词：八招俱全 → true（顺序无关，v21.83/v23.55 随新现实更新）',
   achSkills.ok({ skills: [...allSkills].reverse() }) === true);
-ok('prog 进度：无字段 0/7 · 仅起始 1/7 · 六招 6/7 · 七招 7/7',
+ok('prog 进度：无字段 0/8 · 仅起始 1/8 · 七招 7/8 · 八招 8/8',
   achSkills.prog({}) === `0/${allSkills.length}` &&
   achSkills.prog({ skills: ['火焰斩'] }) === `1/${allSkills.length}` &&
   achSkills.prog({ skills: allSkills.slice(0, 6) }) === `6/${allSkills.length}` &&
@@ -136,7 +136,7 @@ ok('灯火同心（allquests）支线分母 v23.42 随新现实更新为 0/10（
   achAll && achAll.prog({ quests: {} }) === '0/10', achAll && achAll.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
-ok('unlockedAchievements：七招俱全的 hero 新解锁含 skills；缺一招不含（v21.83 随新现实更新）',
+ok('unlockedAchievements：八招俱全的 hero 新解锁含 skills；缺一招不含（v21.83/v23.55 随新现实更新）',
   unlockedAchievements({ skills: allSkills }).includes('skills') &&
   !unlockedAchievements({ skills: allSkills.slice(0, 5) }).includes('skills'));
 ok('unlockedAchievements：已解锁过的 hero 不重复报 skills',
@@ -151,9 +151,9 @@ ok('新档起始技能仅火焰斩（newGame 播种 learnsAt(1)），skills 成�
 applyAchievements();
 ok('applyAchievements：起始档不误解锁 skills（ach 仍不含）',
   !(S.G.ach || []).includes('skills'), (S.G.ach || []).join(','));
-S.G.skills = [...allSkills]; // 模拟练到 Lv11 领悟全部七招（checkSkills 逐招补学的终态）
+S.G.skills = [...allSkills]; // 模拟练到 Lv12 领悟全部八招（checkSkills 逐招补学的终态）
 applyAchievements();
-ok('applyAchievements：七招俱全后真实解锁 skills 落 hero.ach（winBattle 同场胜利即时解锁通路，v21.83 随新现实更新）',
+ok('applyAchievements：八招俱全后真实解锁 skills 落 hero.ach（winBattle 同场胜利即时解锁通路，v21.83/v23.55 随新现实更新）',
   (S.G.ach || []).includes('skills'), (S.G.ach || []).join(','));
 const achCount = (S.G.ach || []).length;
 applyAchievements();

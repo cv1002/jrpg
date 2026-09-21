@@ -1278,7 +1278,17 @@
 // 防御式读取旧档零迁移），阈值 CHARGE_GOAL 单一数据源（调门槛只改 data.js 一处、C 页进度/判定/描述
 // 三端自动跟随），解锁当场 applyAchievements（承 v23.36 反馈不迟到惯例）；零结算零数值变化
 // （蓄力判定/×CHARGE_MULT 结算/「凝神蓄力」战报逐字未动）。
-const GAME_VERSION = 'v23.54';
+// v23.55 新内容·战斗机制：Lv12 终章新技能「灯焰长明」（第八招，承 v21.48 汲光击 / v21.83 星砂回响
+// 「汲取型」家族收口——v21.83 补 Lv11 时自述「Lv10-12 是最后一段无招空白」，Lv11 填后 Lv12（成就
+// 三档的封顶级）仍是领悟表唯一空白：玩家练到 Lv12 升无可升的瞬间什么也不给；现补全：伤害 ×3.4
+// （介于汲光击 2.0/星砂回响 2.4 与雷鸣 2.8 · 陨石术 4.2 之间，低于陨石故不撼动「最高伤」位）、
+// 命中给敌方挂 2 回合灼烧（每回合约 4% 最大HP，BURN_PCT/DOT_MIN 与火焰斩同式同源）、伤害的
+// DRAIN_MP_PCT(50%) 汲回为 MP（单次上限 DRAIN_MP_CAP(25%)×最大MP，与星砂回响同式）——「灼烧 +
+// 汲蓝」的终局持久战引擎：灼烧不靠攻击力、汲蓝自足净 MP≈1/发，与星砂回响（纯汲蓝）错位互补；
+// 光元素恒 ×1 中性（无魔物弱/抗 'light'，与汲光击/星砂回响同族）；不含治疗 → drainMp 招不入
+// heal 封印（skillForbidden 只并 kind==='heal' 与 drain 招），祸乱形态「封印治愈」刻意封不住它
+// （承 v21.83 星砂先例——终焉之神战被封印治愈后仍可运转的伤害+回蓝引擎，详见 SKILL_DATA 行内注释）。
+const GAME_VERSION = 'v23.55';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -2547,7 +2557,9 @@ export function hasRecoveryPoint(def) {
 // 互不相关：想换起始技能/重命名初招要改两处、还极易只改领悟表漏改建档，新档会带一个
 // SKILL_DATA 里不存在的技能（技能菜单/状态页渲染空行）。收口后 起始技能与升级领悟 绝无第二套口径
 // （与 DEFAULT_NAME / SKIP_CHANCE / PHASE2_AT 同一「单一数据源收口」体系）
-const LEARN_AT = { 1: '火焰斩', 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术', 9: '汲光击', 11: '星砂回响' };
+// v23.55 追加 Lv12「灯焰长明」（第八招·终章收口）：MAX_LEARN_LV 自动派生为 12，「距下一技能」提示
+// 扫描上界与「已习得全部技能」判定（Lv12 学满 8 招）全部自动跟随，零第二套口径。
+const LEARN_AT = { 1: '火焰斩', 3: '冰霜击', 4: '治愈术', 5: '雷鸣', 7: '陨石术', 9: '汲光击', 11: '星砂回响', 12: '灯焰长明' };
 function learnsAt(lv) { return LEARN_AT[lv] || null; }
 
 // 技能领悟等级上界（单一数据源）：由 LEARN_AT 最大领悟等级推导——hero.skillXpHint 的
@@ -2665,6 +2677,16 @@ const SKILL_DATA={
   // drain 招，drainMp 招零改动保持可用——被封印治愈后仍有一条可运转的 MP 引擎，设计意图见
   // GAME_VERSION 注释）。
   '星砂回响':{mp:12,mult:2.4,kind:'atk',sfx:'ice',txt:'✨',element:'light',drainMp:DRAIN_MP_PCT,drainMpCap:DRAIN_MP_CAP,hint:'汲回伤害' + Math.round(DRAIN_MP_PCT * 100) + '%为MP·上限' + Math.round(DRAIN_MP_CAP * 100) + '%MP',colors:['#bfe3ff','#eaf7ff','#62c6ff']},
+  // 灯焰长明（v23.55 新技能·Lv12 领悟·第八招·终章收口）：全游戏第二个「汲蓝」招、也是唯一的
+  // 「灼烧+汲蓝」双引擎招——伤害 ×3.4（介于星砂回响 2.4 与雷鸣 2.8、陨石术 4.2 之间，不撼动
+  // 陨石「最高伤」位）、命中挂 2 回合灼烧（每回合约 4% 最大HP，BURN_PCT/DOT_MIN 与火焰斩同式同源，
+  // 灼烧不依赖攻击力、对高防/石甲怪仍有稳定小刀）、伤害的 DRAIN_MP_PCT(50%) 汲回为 MP（单次上限
+  // DRAIN_MP_CAP(25%)×最大MP，与星砂回响同式同源）——净 MP 成本≈1/发（Lv12 mpMax 60 → 上限 15），
+  // 终局持久战里「每发回蓝 + 持续灼烧」双续航，与星砂回响（纯汲蓝 2.4×12MP）错位互补；光元素恒 ×1
+  // 中性（无魔物弱/抗 'light'）；drainMp 招不含治疗 → skillForbidden 刻意不并入 heal 封印（只并
+  // kind==='heal' 与 drain 招），祸乱形态「封印治愈」封不住它（承 v21.83 星砂回响先例——终焉之神战
+  // 被封印治愈后仍可运转的伤害+回蓝引擎）；数值全部由既有命名常量派生零裸字面量。
+  '灯焰长明':{mp:16,mult:3.4,kind:'atk',sfx:'ice',txt:'🏮',element:'light',burn:2,drainMp:DRAIN_MP_PCT,drainMpCap:DRAIN_MP_CAP,hint:'灼烧2回合·汲回伤害' + Math.round(DRAIN_MP_PCT * 100) + '%为MP·上限' + Math.round(DRAIN_MP_CAP * 100) + '%MP',colors:['#ffd24a','#ffe9a8','#ff8a2c']},
   '治愈术':{mp:5,heal:0.55,kind:'heal',sfx:'heal',txt:'💚',cleanse:true,hint:'恢复HP并解毒',colors:['#8ff0a0','#d8ffe0','#62ff8a']},
 };
 
@@ -4615,7 +4637,9 @@ const HELP_PAGES=[
     // 「Enter/E 同效」主线）：main.js 技能施放补 e/E 与 Enter 同路径后，H 页操作清单里技能入口同步为
     // 「↑↓/Enter/E 选招」（与技能菜单页脚 [Enter/E]施放 / README 战斗段 Enter/E 同源口径）；14px estW
     // ≈387.7 ≤470 面板预算（v21.81 巡检口径），行数不变仍 14、r[2] 逐字未动，纯文字零逻辑。
-    ['战斗','1攻击 2技能(↑↓/Enter/E 选招) 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力','蓄力：下击/技能×' + CHARGE_MULT + ' · Boss无法逃跑 · ↑↓ 回看战斗记录 · 技能菜单数字键1-7快捷直发'],
+    // v23.55 第八招「灯焰长明」Lv12 领悟后数字键快捷直发扩为 1-8（main.js 数字分派数组同扩；12px
+    // estW 增「1-8」与「1-7」同宽零预算变化，行数不变仍 14、r[1] 逐字未动）。
+    ['战斗','1攻击 2技能(↑↓/Enter/E 选招) 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力','蓄力：下击/技能×' + CHARGE_MULT + ' · Boss无法逃跑 · ↑↓ 回看战斗记录 · 技能菜单数字键1-8快捷直发'],
     // v21.16 存档槽行补「R 重开新档(连按两次确认)」（可发现性·承 v20.3/v21.14 主线）：R 在标题页是真实
     // 按键（main.js title.onKey → core.resetRun，README 一直有记录），但 H 页操作清单与标题页快捷一览
     // 都只写了「L 读档」——破坏性操作反而最不可见；本行补上并注明 v21.16 起的两按确认口径，行数不变

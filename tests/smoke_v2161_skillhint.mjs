@@ -107,8 +107,8 @@ ok('hero.js 领悟结算逐字零回归（skills.push 与 includes 拦截未动�
 // 与 hero.checkSkills / skillXpHint / 成就判定同一份表，单一数据源；v21.83 随 Lv11 星砂回响随新现实更新 6→7）
 const learnSkills = [];
 for (let lv = 1; lv <= MAX_LEARN_LV; lv++) { const s = learnsAt(lv); if (s) learnSkills.push(s); }
-ok('LEARN_AT 共 7 招（learnsAt 扫描 1..MAX_LEARN_LV 收集）且全部在 SKILL_DATA 有配（防御式分支理论死代码，契约守护）',
-  learnSkills.length === 7 && learnSkills.every((s) => !!SKILL_DATA[s]));
+ok('LEARN_AT 共 8 招（learnsAt 扫描 1..MAX_LEARN_LV 收集——v23.55 随 Lv12 灯焰长明）且全部在 SKILL_DATA 有配（防御式分支理论死代码，契约守护）',
+  learnSkills.length === 8 && learnSkills.every((s) => !!SKILL_DATA[s]));
 ok('LEARN_AT 每招 mp 为正整数且 hint 为非空串（战报读取面契约）',
   learnSkills.every((s) => Number.isInteger(SKILL_DATA[s].mp) && SKILL_DATA[s].mp > 0 &&
     typeof SKILL_DATA[s].hint === 'string' && SKILL_DATA[s].hint.length > 0));

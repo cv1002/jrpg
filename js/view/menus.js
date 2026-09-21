@@ -144,7 +144,11 @@ export function drawStatus(){
   // 首行 308→302 双收——≤6 招时逐字保持 v21.48 布局（条件式，零回归）；7 招时末行基线 380
   // （302+12×6）、字底 ≈381.4，不触「📖 下一技能」396（12px 字顶 ≈385.4，留 4px 净隙），
   // 行间 12px 整字高相接（12px 字身 = 整高，无叠无空）。
-  const SKILL_ROW_SP = hero.skills.length > 6 ? 12 : 14;
+  // v23.55 八招容量（承 v21.83 先例）：Lv12 领悟第 8 招「灯焰长明」后行距 12→11 单收——≤7 招时
+  // 逐字保持 v21.83 布局（条件式，零回归）；8 招时末行（i=7）基线 379（302+11×7）、字底 ≈382.4，
+  // 不触「📖 下一技能」396（12px 字顶 ≈386.5，留 4px 净隙；11px 行距下相邻行 12px 字身仅 1px 盒
+  // 相接，CJK 墨迹零叠）；首行仍 302 与「已学技能：」标签净隙不变。
+  const SKILL_ROW_SP = hero.skills.length > 7 ? 11 : (hero.skills.length > 6 ? 12 : 14);
   const SKILL_ROW_Y0 = hero.skills.length > 6 ? 302 : 308;
   hero.skills.forEach((s,i)=>{
     const sd=SKILL_DATA[s];

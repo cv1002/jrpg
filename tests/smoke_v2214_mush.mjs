@@ -34,7 +34,7 @@ console.log('— v22.14 菇香满仓魔法蘑菇持有线首枚里程碑冒烟 �
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.13', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 14)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.14（本版独占精确锚点）', GAME_VERSION === 'v23.54', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.14（本版独占精确锚点）', GAME_VERSION === 'v23.55', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -48,7 +48,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.14 版本注释', dataSrc.includes('v22.14 新成就「菇香满仓」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.14', dataSrc.includes("const GAME_VERSION = 'v23.54';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.14', dataSrc.includes("const GAME_VERSION = 'v23.55';"));
 ok('data.js 仍保留 v22.13 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.13 潮灯镇说书人'));
 ok('data.js 导出 MUSH_GOAL（export 块落位，与 MUSHROOM_GOAL 相邻）', dataSrc.includes('MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL'));
 
@@ -260,7 +260,7 @@ const vers34 = ['smoke_v2213_teller.mjs', 'smoke_v2212_volume.mjs', 'smoke_v2211
 for (const nm of vers34) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.14`,
-    src.includes("const GAME_VERSION = 'v23.54';"));
+    src.includes("const GAME_VERSION = 'v23.55';"));
 }
 const eq19 = ['smoke_v2210_unsaved.mjs', 'smoke_v2209_achstatus.mjs', 'smoke_v2208_elixir.mjs',
   'smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs',
@@ -272,7 +272,7 @@ const eq19 = ['smoke_v2210_unsaved.mjs', 'smoke_v2209_achstatus.mjs', 'smoke_v22
 for (const nm of eq19) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.14`,
-    src.includes("GAME_VERSION === 'v23.54'"));
+    src.includes("GAME_VERSION === 'v23.55'"));
 }
 const tail19 = ['smoke_v2213_teller.mjs', 'smoke_v2210_unsaved.mjs', 'smoke_v2209_achstatus.mjs',
   'smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs',

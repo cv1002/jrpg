@@ -139,8 +139,12 @@ export function drawSkillMenu() {
     // 16→14 双收——≤6 招时逐字保持 v21.48 布局（条件式，零回归）；7 招时末行提示基线 348
     // （160+14+29×6）、字底 ≈349.3 不触页脚「当前 MP」368（字顶 ≈356.6），第 7 行光标底条
     // 322..354 内、数字键 1-7 与光标/Enter 施放同效零改动。
-    const ROW_SP = hero.skills.length > 6 ? 29 : 34;
-    const HINT_DY = hero.skills.length > 6 ? 14 : 16;
+    // v23.55 八招容量（承 v21.83 先例）：Lv12 领悟第 8 招「灯焰长明」后行距 29→25、次行提示偏移
+    // 14→12 双收——≤7 招时逐字保持 v21.83 布局（条件式，零回归）；8 招时末行（i=7）主行基线 335
+    // （160+25×7）、提示基线 347（160+12+25×7）、字底 ≈350 不触页脚「当前 MP」368（13px 字顶 ≈358），
+    // 第 8 行光标底条 148+175+32=355 亦在页脚之上、数字键 1-8 与光标/Enter 施放同效零改动。
+    const ROW_SP = hero.skills.length > 7 ? 25 : (hero.skills.length > 6 ? 29 : 34);
+    const HINT_DY = hero.skills.length > 7 ? 12 : (hero.skills.length > 6 ? 14 : 16);
     const banned = !!(enemy && enemy.forbid && (((skill.kind === 'heal' || skill.drain) && enemy.forbid.includes('heal')) || enemy.forbid.includes(s))); // v21.48：drain 汲回招与治愈同封（battle.skillForbidden 同口径）
     const ok = hero.mp >= skill.mp && !banned;
     const col = !ok ? '#7d93a3' : (skill.kind === 'heal' ? '#8ff0a0' : '#e8eef1');

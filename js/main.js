@@ -142,7 +142,9 @@ const screens = {
       if (S.skillMenuOpen) {
         if (!S.battleBusy) {
           const list = S.G.skills;
-          const idx = ['1', '2', '3', '4', '5', '6', '7'].indexOf(e.key);
+          // v23.55 第八招「灯焰长明」Lv12 领悟后数字键快捷直发扩为 1-8（与 H 页/README「数字键 1-8」
+          // 口径同源；idx 仍防御式 < list.length——未领悟第 8 招则 8 键无反应，与 1-7 同语义）
+          const idx = ['1', '2', '3', '4', '5', '6', '7', '8'].indexOf(e.key);
           if (idx >= 0 && idx < list.length) {
             S.skillSel = idx;   // v19.48：数字快捷施放的同时记下光标，下次打开高亮同一招
             S.skillMenuOpen = false;

@@ -32,17 +32,18 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.06 版本注释', dataSrc.includes('// v23.06 文档整理·数值说明·同源口径：README「数值速查」补「技能数值」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.06（旧 v23.05 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.54';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "05';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.55';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "05';"));
 ok('data.js 仍保留 v23.05 历史注释（魔物数值数值速查行注释未动）', dataSrc.includes('// v23.05 文档整理·数值说明·同源口径：README「数值速查」补「魔物数值」行'));
 
-// —— SKILL_DATA 契约（七招 mp/mult/kind/效果逐字，单一数据源）——
-ok('SKILL_DATA 共 7 招', Object.keys(SKILL_DATA).length === 7, String(Object.keys(SKILL_DATA).length));
+// —— SKILL_DATA 契约（八招 mp/mult/kind/效果逐字，单一数据源——v23.55 补第八招灯焰长明）——
+ok('SKILL_DATA 共 8 招', Object.keys(SKILL_DATA).length === 8, String(Object.keys(SKILL_DATA).length));
 ok('火焰斩 4MP/×1.8/灼烧2回合/火', (() => { const s = SKILL_DATA['火焰斩']; return s.mp === 4 && s.mult === 1.8 && s.kind === 'atk' && s.burn === 2 && s.element === 'fire'; })());
 ok('冰霜击 5MP/×2.2/30%冻结/冰', (() => { const s = SKILL_DATA['冰霜击']; return s.mp === 5 && s.mult === 2.2 && s.kind === 'atk' && s.skip === SKIP_CHANCE && s.element === 'ice'; })());
 ok('雷鸣 8MP/×2.8/穿透50%防御/雷', (() => { const s = SKILL_DATA['雷鸣']; return s.mp === 8 && s.mult === 2.8 && s.kind === 'atk' && s.pierce === 0.5 && s.element === 'thunder'; })());
 ok('陨石术 14MP/×4.2/击碎石甲·真身×1.25', (() => { const s = SKILL_DATA['陨石术']; return s.mp === 14 && s.mult === 4.2 && s.kind === 'atk' && s.breakShield === 1 && s.trueBonus === 1.25; })());
 ok('汲光击 9MP/×2.0/汲回50%伤害为HP·上限25%HP', (() => { const s = SKILL_DATA['汲光击']; return s.mp === 9 && s.mult === 2.0 && s.kind === 'atk' && s.drain === DRAIN_PCT && s.drainCap === DRAIN_HP_CAP; })());
 ok('星砂回响 12MP/×2.4/汲回50%伤害为MP·上限25%MP', (() => { const s = SKILL_DATA['星砂回响']; return s.mp === 12 && s.mult === 2.4 && s.kind === 'atk' && s.drainMp === DRAIN_MP_PCT && s.drainMpCap === DRAIN_MP_CAP; })());
+ok('灯焰长明 16MP/×3.4/灼烧2回合+汲回50%伤害为MP·上限25%MP/光', (() => { const s = SKILL_DATA['灯焰长明']; return s.mp === 16 && s.mult === 3.4 && s.kind === 'atk' && s.burn === 2 && s.drainMp === DRAIN_MP_PCT && s.drainMpCap === DRAIN_MP_CAP && s.element === 'light'; })());
 ok('治愈术 5MP/恢复55%最大HP/解毒', (() => { const s = SKILL_DATA['治愈术']; return s.mp === 5 && s.kind === 'heal' && s.heal === 0.55 && s.cleanse === true; })());
 
 // —— 派生常量逐值（灼烧/冻结/汲回由 data.js 单一数据源，hint 与常量同源派生）——
@@ -53,6 +54,7 @@ ok('火焰斩 hint 灼烧口径逐字（4%最大HP 由 BURN_PCT 派生）', SKIL
 ok('冰霜击 hint 冻结口径逐字（30% 由 SKIP_CHANCE 派生）', SKILL_DATA['冰霜击'].hint === '30%冻结（跳过敌回合）');
 ok('汲光击 hint 汲回口径逐字（50%/25% 由 DRAIN_PCT/DRAIN_HP_CAP 派生）', SKILL_DATA['汲光击'].hint === '汲回伤害50%为HP·上限25%HP');
 ok('星砂回响 hint 汲回口径逐字（50%/25% 由 DRAIN_MP_PCT/DRAIN_MP_CAP 派生）', SKILL_DATA['星砂回响'].hint === '汲回伤害50%为MP·上限25%MP');
+ok('灯焰长明 hint 口径逐字（灼烧2回合 + 50%/25% 由 DRAIN_MP_PCT/DRAIN_MP_CAP 派生）', SKILL_DATA['灯焰长明'].hint === '灼烧2回合·汲回伤害50%为MP·上限25%MP');
 
 // —— rules.skillEstimate 运行期派生（治愈精确 + 倍率比/真身加成容差）——
 const hero = { atkMax: 20, hpMax: 100, charge: false };
@@ -65,7 +67,7 @@ ok('skillEstimate 陨石术 对真身 ×1.25（trueBonus 同源）',
 
 // —— README 数值速查「技能数值」行落位（全部由 data.js 派生、与技能菜单/战斗结算同源）——
 ok('README 技能数值行 命名常量源引用逐字同源', readme.includes('`SKILL_DATA`（`BURN_PCT` `SKIP_CHANCE` `DRAIN_PCT` `DRAIN_HP_CAP` `DRAIN_MP_PCT` `DRAIN_MP_CAP`）'));
-ok('README 技能数值行 含 v23.06 补录注释', readme.includes('（v23.06 补录）'));
+ok('README 技能数值行 含 v23.06 补录注释（v23.55 随第八招更新）', readme.includes('（v23.06 补录 · v23.55 补第八招）'));
 ok('README 技能数值行 七招派生式逐字（火焰斩示例）', readme.includes('火焰斩 4MP·×1.8·灼烧2回合（每回合4%最大HP）'));
 ok('README 技能数值行 七招派生式逐字（治愈术示例）', readme.includes('治愈术 5MP·恢复55%最大HP·解毒'));
 ok('README 技能数值行 汲回/真身加成派生式逐字', readme.includes('陨石术 14MP·×4.2·击碎石甲·对真身×1.25（`trueBonus`）') && readme.includes('星砂回响 12MP·×2.4·汲回50%伤害为MP·上限25%最大MP'));
@@ -94,15 +96,15 @@ ok('package.json 串尾为 ... smoke_v2305_monnum.mjs && node tests/smoke_v2306_
   pkg.includes('node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 202 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.06 条目', changelog.startsWith('## v23.54 '));
+ok('CHANGELOG 顶部已追加 v23.06 条目', changelog.startsWith('## v23.55 '));
 ok('CHANGELOG 仍保留 v23.05 条目（历史口径）', changelog.includes('## v23.05 README「数值速查」补「魔物数值」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.05 pin 零残留 ——
 const s2305 = read('smoke_v2305_monnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2305 的 GAME_VERSION 字面量 pin 已更新为 v23.06', s2305.includes("const GAME_VERSION = 'v23.54';"));
+ok('smoke_v2305 的 GAME_VERSION 字面量 pin 已更新为 v23.06', s2305.includes("const GAME_VERSION = 'v23.55';"));
 ok('smoke_v2305 的 CHANGELOG 顶 pin 已更新为 ## v23.06',
-  s2305.includes("startsWith('## v23.54 "));
+  s2305.includes("startsWith('## v23.55 "));
 ok('smoke_v2305 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2305.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2305 的 README 串尾 pin 已延伸至 smoke_v2306_skillnum',

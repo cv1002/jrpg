@@ -27,7 +27,7 @@ const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 
 const dataSrc = read('../js/data.js');
 
 ok('data.js 含 v21.81 版本注释', dataSrc.includes('v21.81 帮助页「战斗」行补技能菜单数字键快捷直发口径'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v23.54';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v23.55';"));
 
 // —— HELP_PAGES 数据契约：战斗行 r[1] 主行逐字零回归（含 FLEE_SUCCESS 派生），r[2] 追加新段 ——
 const page0 = HELP_PAGES[0] || [];
@@ -36,12 +36,12 @@ ok('操作说明页「战斗」行唯一存在', combat.length === 1);
 const row = combat[0] || [];
 const wantR1 = '1攻击 2技能(↑↓/Enter/E 选招) 3药水 4逃跑(约' + Math.round(FLEE_SUCCESS * 100) + '%) 5防御 6蓄力';
 ok('r[1] 主行含（v22.84 起）Enter/E 选招口径（6 指令与 FLEE_SUCCESS 派生口径未动）', row[1] === wantR1);
-ok('r[2] 含新增「技能菜单数字键1-7快捷直发」', typeof row[2] === 'string' && row[2].includes('技能菜单数字键1-7快捷直发'));
+ok('r[2] 含新增「技能菜单数字键1-8快捷直发」（v23.55 第八招后扩为 1-8）', typeof row[2] === 'string' && row[2].includes('技能菜单数字键1-8快捷直发'));
 ok('r[2] 既有段零回归（蓄力×CHARGE_MULT 同源派生）', typeof row[2] === 'string' && row[2].includes('蓄力：下击/技能×' + CHARGE_MULT));
 ok('r[2] 既有段零回归（Boss无法逃跑 / ↑↓ 回看战斗记录）',
   typeof row[2] === 'string' && row[2].includes('Boss无法逃跑') && row[2].includes('↑↓ 回看战斗记录'));
 ok('r[2] 新段追加在既有两段之后（顺序合理）',
-  typeof row[2] === 'string' && row[2].indexOf('蓄力') < row[2].indexOf('技能菜单数字键1-7快捷直发'));
+  typeof row[2] === 'string' && row[2].indexOf('蓄力') < row[2].indexOf('技能菜单数字键1-8快捷直发'));
 
 // —— 行宽预算（smoke_v2179 同款 estW）：r[2] 12px ≤470 面板预算、r[1] 14px ≤470 ——
 const estW = (s, size) => {
@@ -75,9 +75,10 @@ const mainSrc = read('../js/main.js');
 const readme = read('../README.md');
 const pkg = read('../package.json');
 ok('战斗内技能菜单页脚确有「[数字键]快捷」标注（功能真实）', dbSrc.includes('[数字键]快捷'));
-ok('main.js 技能数字键 1-7 快捷施放分派存在（功能真实）',
-  mainSrc.includes("['1', '2', '3', '4', '5', '6', '7']") && mainSrc.includes('idx >= 0 && idx < list.length'));
-ok('README 战斗段早已标注「数字键 1-7 快捷直发」（同口径）', readme.includes('数字键 1-7 快捷直发'));
+ok('main.js 技能数字键 1-8 快捷施放分派存在（功能真实，v23.55 第八招）',
+  mainSrc.includes("['1', '2', '3', '4', '5', '6', '7', '8']") && mainSrc.includes('idx >= 0 && idx < list.length'));
+ok('README 战斗段已标注「数字键 1-8 快捷直发」（同口径，v23.55 更新；1-7 历史口径仍留 tests 树）',
+  readme.includes('数字键 1-8 快捷直发') && readme.includes('数字键 1-7 快捷直发'));
 
 // —— README / package / 姊妹件套 pin 随新现实更新（v21.7 惯例：最新版守护 README 与旧 pin）——
 ok('README 已同步（tests 树收录 smoke_v2181_helpquickcast + 件套口径）',
@@ -96,7 +97,7 @@ ok('smoke_v2180 的 README 件套 pin 已随新现实更新为二百一十二件
 ok('smoke_v2179 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2179.includes('二百一十二件套（二百一十一件套清除）') && !s2179.includes('七十六件套（七十五件套清除）'));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2179.includes("const GAME_VERSION = 'v23.54';"));
+  s2179.includes("const GAME_VERSION = 'v23.55';"));
 ok('smoke_v2178 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2178.includes('二百一十二件套（二百一十一件套清除）') && !s2178.includes('七十六件套（七十五件套清除）'));
 ok('smoke_v2177 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',

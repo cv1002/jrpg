@@ -95,7 +95,7 @@ ok('LEARN_AT 既有等级零回归（1/3/4/5/7/9 逐字，8/10 为空）',
   learnsAt(1) === '火焰斩' && learnsAt(3) === '冰霜击' && learnsAt(4) === '治愈术' &&
   learnsAt(5) === '雷鸣' && learnsAt(7) === '陨石术' && learnsAt(9) === '汲光击' &&
   learnsAt(8) === null && learnsAt(10) === null);
-ok('MAX_LEARN_LV 自动派生为 11（单一数据源收口生效，Lv11 技能不再被提示/成就漏扫）', MAX_LEARN_LV === 11, String(MAX_LEARN_LV));
+ok('MAX_LEARN_LV 自动派生为 12（单一数据源收口生效，Lv12 灯焰长明不再被提示/成就漏扫）', MAX_LEARN_LV === 12, String(MAX_LEARN_LV));
 ok('DRAIN_MP_PCT/DRAIN_MP_CAP 已导出且为 0.5/0.25（与 HP 系同值镜像、独立旋钮）', DRAIN_MP_PCT === 0.5 && DRAIN_MP_CAP === 0.25);
 const sk = SKILL_DATA['星砂回响'];
 ok('SKILL_DATA[星砂回响] 字段落位（mp12/×2.4/atk/光/drainMp·drainMpCap 由常量派生）',
@@ -108,9 +108,9 @@ ok('光元素恒 ×1 中性契约（ELEM_NAME 含光且无任何 SPECIES 弱/抗
 // 全表契约（承 v21.61 数据契约）：LEARN_AT 全招全配 SKILL_DATA、mp 正整数、hint 非空
 const learnSkills = [];
 for (let lv = 1; lv <= MAX_LEARN_LV; lv++) { const s = learnsAt(lv); if (s) learnSkills.push(s); }
-ok('LEARN_AT 共 7 招且全部在 SKILL_DATA 有配（领悟表与技能数据一致，无悬空条目）',
-  learnSkills.length === 7 && learnSkills.every((s) => !!SKILL_DATA[s]), learnSkills.join(','));
-ok('七招每招 mp 为正整数且 hint 为非空串（菜单/战报/状态页读取面契约）',
+ok('LEARN_AT 共 8 招且全部在 SKILL_DATA 有配（领悟表与技能数据一致，无悬空条目）',
+  learnSkills.length === 8 && learnSkills.every((s) => !!SKILL_DATA[s]), learnSkills.join(','));
+ok('八招每招 mp 为正整数且 hint 为非空串（菜单/战报/状态页读取面契约）',
   learnSkills.every((s) => Number.isInteger(SKILL_DATA[s].mp) && SKILL_DATA[s].mp > 0 &&
     typeof SKILL_DATA[s].hint === 'string' && SKILL_DATA[s].hint.length > 0));
 ok('帮助页「技能克制」行 r[1] 补「星砂回蓝」且 r[2] 倍率规则逐字零回归',
@@ -127,13 +127,13 @@ ok('battle.js skillForbidden 封印条件逐字零回归（drainMp 招刻意未�
 const dbSrc = fs.readFileSync(path.join(ROOT, 'js/view/drawBattle.js'), 'utf8');
 ok('drawBattle.js 技能菜单封印标注与结算同口径（drainMp 招未封，条件逐字零回归）',
   dbSrc.includes("(skill.kind === 'heal' || skill.drain) && enemy.forbid.includes('heal')"));
-ok('drawBattle.js 七招排版条件式落位（≤6 招 34 / 7 招 29、HINT_DY 16/14，旧 i*36 零残留）',
-  dbSrc.includes('const ROW_SP = hero.skills.length > 6 ? 29 : 34;') &&
-  dbSrc.includes('const HINT_DY = hero.skills.length > 6 ? 14 : 16;') &&
+ok('drawBattle.js 八招排版条件式落位（≤6 招 34 / 7 招 29 / 8 招 25、HINT_DY 16/14/12，旧 i*36 零残留）',
+  dbSrc.includes('const ROW_SP = hero.skills.length > 7 ? 25 : (hero.skills.length > 6 ? 29 : 34);') &&
+  dbSrc.includes('const HINT_DY = hero.skills.length > 7 ? 12 : (hero.skills.length > 6 ? 14 : 16);') &&
   !dbSrc.includes('148 + i * 36') && !dbSrc.includes('176 + i * 36'));
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
-ok('menus.js 状态页七招排版条件式落位（SKILL_ROW_SP/SKILL_ROW_Y0，旧常量零残留）',
-  mSrc.includes('const SKILL_ROW_SP = hero.skills.length > 6 ? 12 : 14;') &&
+ok('menus.js 状态页八招排版条件式落位（SKILL_ROW_SP/SKILL_ROW_Y0，旧常量零残留）',
+  mSrc.includes('const SKILL_ROW_SP = hero.skills.length > 7 ? 11 : (hero.skills.length > 6 ? 12 : 14);') &&
   mSrc.includes('const SKILL_ROW_Y0 = hero.skills.length > 6 ? 302 : 308;') &&
   mSrc.includes('SKILL_ROW_Y0+i*SKILL_ROW_SP') && !mSrc.includes('308+i*14'));
 
@@ -229,12 +229,15 @@ ok('运行期：已会星砂回响再触发 checkSkills 不多报（includes 拦
 ok('运行期：Lv10 hero skillXpHint 扫到下一技能「星砂回响·Lv.11」（MAX_LEARN_LV 上界生效）',
   (() => { const hx = mkHero(10, 100, 40, ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击']);
     const nx = skillXpHint(hx); return !!nx && nx.name === '星砂回响' && nx.lv === 11; })());
-ok('运行期：Lv11 全招 hero skillXpHint 返回 null（已习得全部，v21.61 口径）',
+ok('运行期：Lv11 全招 hero skillXpHint 扫到下一技能「灯焰长明·Lv.12」（v23.55 第八招·MAX_LEARN_LV 自动上界）',
   (() => { const hx = mkHero(11, 100, 40, ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击', '星砂回响']);
+    const nx = skillXpHint(hx); return !!nx && nx.name === '灯焰长明' && nx.lv === 12; })());
+ok('运行期：Lv12 全招 hero skillXpHint 返回 null（已习得全部，v21.61/v23.55 口径）',
+  (() => { const hx = mkHero(12, 122, 60, ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击', '星砂回响', '灯焰长明']);
     return skillXpHint(hx) === null; })());
 
-// —— 运行期实证：七招菜单/状态页渲染不抛错（承 v21.48 六招渲染先例）——
-const h7 = mkHero(12, 122, 60, ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击', '星砂回响']);
+// —— 运行期实证：八招菜单/状态页渲染不抛错（承 v21.48 六招渲染先例）——
+const h7 = mkHero(12, 122, 60, ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术', '汲光击', '星砂回响', '灯焰长明']);
 const doll7 = mkDoll();
 let drew = true, drewS = true, drew6 = true;
 S.G = h7; S.enemy = doll7; S.scene = 'battle';
@@ -267,7 +270,7 @@ for (const nm of suite) {
 for (const nm of ['smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v23.54';"));
+    src.includes("const GAME_VERSION = 'v23.55';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过`);
