@@ -91,7 +91,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.85', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
 ok('data.js 含 v21.86 注释（新成就「灵药初成」说明）', dSrc.includes('v21.86 新成就「灵药初成」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.86', dSrc.includes("const GAME_VERSION = 'v23.52';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.86', dSrc.includes("const GAME_VERSION = 'v23.53';"));
 
 // —— ELIXIR_GOAL 常量（与 FIRSTBLOOD_GOAL/LVL5_GOAL 同族：判定/进度同读一份源）——
 ok('ELIXIR_GOAL===1 且已从 data.js 导出（酿造首瓶即达标，承 firstblood「第一场」同款）',
@@ -227,7 +227,7 @@ for (const nm of suite82) {
 for (const nm of ['smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.86`,
-    src.includes("const GAME_VERSION = 'v23.52';"));
+    src.includes("const GAME_VERSION = 'v23.53';"));
 }
 const achFiles = ['smoke_v2184_lvl12.mjs', 'smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs',
   'smoke_v2176_allchests.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs'];

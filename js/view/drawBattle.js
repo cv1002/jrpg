@@ -438,8 +438,17 @@ export function drawBattle() {
   // 仅在拟行动回合常驻，Boss/试炼战按招数表逐招列出（y≈395 无其他元素，纯显示不改结算）
   if (!S.skillMenuOpen) {
     const isBossFlee = isBossFoe(enemy);
-    if (enemy && isBossFlee) {
-      // Boss 战敌方攻击预判（信息透明·纯显示，承接 v6.3 敌招一览）：多招强敌逐一列出「普攻/重击」的期望伤害，
+    // v23.53 精英「重击」逐招预判补全（体验打磨·信息透明·纯显示——承 v21.47 威胁预警补「重击线」/ v23.44
+    // 决策现场信息透明同一主线的收口：持 heavy 招的精英（残焰魔像 w40 重击 ×1.9，Lv10 推荐装备下一发 99 点
+    // 占满血 92%，v20.9 设计声明口径）此前走下方普攻单招预判——屏幕上只报「-52血」，v21.47 早把威胁预警升级
+    // 为「明显强于你」，决策现场却看不到重击那一刀：预警说它强、预判却只报普攻线，与 Boss 战「逐招列出
+    // 普攻/重击」的信息透明口径脱节（赫赫写着 40% 的重击是最大威胁，预判却隐去）；现把逐招预判门从
+    // isBossFoe 放宽为 isBossFoe || 持有 heavy 招（enemy.acts 同源判定、零新依赖），残焰魔像等持重击精英
+    // 与 Boss 同式同源（cmdDmg 同公式、重击倍率同读 HEAVY_MULT）；无 heavy 的精英（石心魔像 attack/shield）
+    // 与普通怪逐字零回归（仍走下方单招预判）。
+    const hasHeavy = ((enemy && enemy.acts) || []).some((a) => a.type === 'heavy');
+    if (enemy && (isBossFlee || hasHeavy)) {
+      // 强敌（Boss / 持重击精英）敌方攻击预判（信息透明·纯显示，承接 v6.3 敌招一览）：多招强敌逐一列出「普攻/重击」的期望伤害，
       // 数据源与 battle.pickAct/enemyAct 同一份 enemy.acts——重击倍率逐字同源（真身 2.3 / 平时 1.9）、
       // 受击公式 cmdDmg(atk, defMax, mult) 与结算同式同序、防御中再 ×DEFEND_MULT 取整；只列会出伤害的招，
       // 回血/石甲不算受击。致命判定取「最重一击」为上限（任一招可能致命即警示 ⚠️）。
