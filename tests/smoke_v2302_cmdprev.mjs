@@ -6,7 +6,7 @@
 // 准 [4]逃跑成功率/[3]药水恢复量零回归 + 指令栏宽度预算）+ README/package.json/CHANGELOG 同步
 // （冒烟二百一十二件套（二百一十一件套清除）/串尾/入库 198 份/顶 pin）+ 姊妹件套 pin（smoke_v2301
 // 随新现实更新）+ 哨兵链领先一位（199 口径）+ 旧代 v23.01 pin 全库零残留。
-import { GAME_VERSION, DEFEND_MULT, CHARGE_MULT, FLEE_SUCCESS } from '../js/data.js';
+import { GAME_VERSION, DEFEND_MULT, CHARGE_MULT, FLEE_SUCCESS, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -32,13 +32,18 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.02 版本注释', dataSrc.includes('// v23.02 体验打磨·信息透明·纯显示：战斗指令栏'));
 ok('data.js GAME_VERSION 字面量已为 v23.02（旧 v23.01 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.43';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "01';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.44';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "01';"));
 ok('data.js 仍保留 v23.01 历史注释（出没生态行注释未动）', dataSrc.includes('// v23.01 文档整理·数值说明·同源口径'));
 
 // —— drawBattle.js 源级落位：新指令栏模板 + 旧裸式零残留 + 既有标注零回归 ——
 ok('drawBattle.js 含 v23.02 注释（指令栏 [5]防御/[6]蓄力 效果预览）',
   dbSrc.includes('// v23.02 指令栏 [5]防御/[6]蓄力 效果预览'));
-ok('drawBattle.js 指令栏已接 [5]防御·减伤N%（DEFEND_MULT 派生）', dbSrc.includes('[5]防御·减伤${Math.round((1 - DEFEND_MULT) * 100)}%'));
+ok('drawBattle.js 含 v23.44 注释（指令栏 [5]防御 预览补全回蓝/反击）',
+  dbSrc.includes('// v23.44 指令栏 [5]防御 预览补全「回蓝/反击」'));
+ok('drawBattle.js 指令栏已接 [5]防御 减伤/回蓝/反击 三件套全量预览（DEFEND_MULT·DEFEND_MP·COUNTER_CHANCE·COUNTER_MULT 派生）',
+  dbSrc.includes('[5]防御·减${Math.round((1 - DEFEND_MULT) * 100)}%·回${DEFEND_MP}MP·反击${Math.round(COUNTER_CHANCE * 100)}%×${COUNTER_MULT}'));
+ok('drawBattle.js [4]逃跑 token 已随 v23.44 压缩为「·N%」（FLEE_SUCCESS 派生）',
+  dbSrc.includes("'·' + Math.round(FLEE_SUCCESS * 100) + '%'"));
 ok('drawBattle.js 指令栏已接 [6]蓄力×N（CHARGE_MULT 读数）', dbSrc.includes('[6]蓄力×${CHARGE_MULT}`'));
 ok('drawBattle.js 旧裸式指令栏零残留（[5]防御  [6]蓄力）', !dbSrc.includes('[5]防御  [6]蓄力'));
 ok('drawBattle.js [1]攻击≈N伤 标注零回归', dbSrc.includes('[1]攻击${atkPrev}'));
@@ -52,6 +57,9 @@ ok('drawBattle.js [3]恢复量预览零回归（potionRestore/elixirRestore + �
 ok('DEFEND_MULT === 0.5（减伤 50%）', DEFEND_MULT === 0.5, String(DEFEND_MULT));
 ok('CHARGE_MULT === 1.5（蓄力 ×1.5）', CHARGE_MULT === 1.5, String(CHARGE_MULT));
 ok('FLEE_SUCCESS === 0.6（成功率约 60%）', FLEE_SUCCESS === 0.6, String(FLEE_SUCCESS));
+ok('DEFEND_MP === 2（防御回蓝 2MP）', DEFEND_MP === 2, String(DEFEND_MP));
+ok('COUNTER_CHANCE === 0.5（50% 几率反击）', COUNTER_CHANCE === 0.5, String(COUNTER_CHANCE));
+ok('COUNTER_MULT === 0.7（反击 ×0.7）', COUNTER_MULT === 0.7, String(COUNTER_MULT));
 ok('指令栏减伤% 派生式与 DEFEND_MULT 同源（100*(1-0.5)=50）', Math.round((1 - DEFEND_MULT) * 100) === 50);
 ok('指令栏蓄力标注与 CHARGE_MULT 同源（×1.5）', ('×' + CHARGE_MULT) === '×1.5');
 
@@ -135,12 +143,13 @@ S.shake = null; S.flash = null;
 try { drawBattle(); } catch (e) { threw = e; }
 ok('运行期：drawBattle（无药无灵药档）渲染零抛错', threw === null, threw && String(threw.stack || threw));
 const barLine = CAP2.find((c) => c.includes('[1]攻击') && c.includes('[6]蓄力'));
-ok('运行期：指令栏落画含 [5]防御·减伤50%（DEFEND_MULT 派生）',
-  !!barLine && barLine.includes('[5]防御·减伤' + (100 * (1 - DEFEND_MULT)) + '%'), JSON.stringify(barLine));
+ok('运行期：指令栏落画含 [5]防御 减伤/回蓝/反击 三件套（DEFEND_MULT·DEFEND_MP·COUNTER_CHANCE·COUNTER_MULT 派生）',
+  !!barLine && barLine.includes('[5]防御·减' + (100 * (1 - DEFEND_MULT)) + '%·回' + DEFEND_MP + 'MP·反击' +
+    Math.round(COUNTER_CHANCE * 100) + '%×' + COUNTER_MULT), JSON.stringify(barLine));
 ok('运行期：指令栏落画含 [6]蓄力×1.5（CHARGE_MULT 读数）',
   !!barLine && barLine.includes('[6]蓄力×' + CHARGE_MULT), JSON.stringify(barLine));
-ok('运行期：[4]逃跑成功率标注零回归（约60%）',
-  !!barLine && barLine.includes('[4]逃跑·成功率约' + Math.round(FLEE_SUCCESS * 100) + '%'), JSON.stringify(barLine));
+ok('运行期：[4]逃跑成功率标注 v23.44 压缩口径零回归（·N% 由 FLEE_SUCCESS 派生）',
+  !!barLine && barLine.includes('[4]逃跑·' + Math.round(FLEE_SUCCESS * 100) + '%'), JSON.stringify(barLine));
 const barW = CTX.measureText(barLine || '').width;
 ok('运行期：指令栏宽度预算（60 起左对齐、13px 计 wid ≤580）', barW <= 580, String(barW));
 ok('运行期：无药无灵药时 [3]恢复 预览零噪音', !CAP2.some((c) => c.includes('[3]恢复：')));
@@ -179,15 +188,15 @@ ok('package.json 串尾为 ... smoke_v2301_eco.mjs && node tests/smoke_v2302_cmd
   pkg.includes('node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 198 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.02 条目', changelog.startsWith('## v23.43 '));
+ok('CHANGELOG 顶部已追加 v23.02 条目', changelog.startsWith('## v23.44 '));
 ok('CHANGELOG 仍保留 v23.01 条目（历史口径）', changelog.includes('## v23.01 README「数值速查」补「出没生态」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.01 pin 零残留 ——
 const s2301 = read('smoke_v2301_eco.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2301 的 GAME_VERSION 字面量 pin 已更新为 v23.02', s2301.includes("const GAME_VERSION = 'v23.43';"));
+ok('smoke_v2301 的 GAME_VERSION 字面量 pin 已更新为 v23.02', s2301.includes("const GAME_VERSION = 'v23.44';"));
 ok('smoke_v2301 的 CHANGELOG 顶 pin 已更新为 ## v23.02',
-  s2301.includes("startsWith('## v23.43 '"));
+  s2301.includes("startsWith('## v23.44 '"));
 ok('smoke_v2301 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2301.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2301 的 README 串尾 pin 已延伸至 smoke_v2302_cmdprev',

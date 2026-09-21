@@ -1201,7 +1201,12 @@
 // audio.js SFX.crit sawtooth 320→700 上挑滑音（与 hit 低坠同族反向，一听即分），暴击仅普攻可触发
 // （技能 crit=false 走各自 sfx 不受影响）；零结算零数值零存档（crit 判定/×CRIT_MULT 结算/浮字/
 // 震屏逐字未动），README 快速上手表「战斗」行与「BGM / 音效」事件专属音效家族同源补录。
-const GAME_VERSION = 'v23.43';
+// v23.44 体验打磨·信息透明·纯显示：战斗指令栏 [5]防御 预览补全「回蓝/反击」（承 v23.02 指令栏
+// 效果透明家族收口的末两格，详见 js/view/drawBattle.js 行内注释）——防御「回 2MP/50% 几率反击 ×0.7」
+// 此前只在已生效角标与 README 战斗行可见，首次按 [5] 的决策现场只见「减伤50%」；现指令栏同读
+// DEFEND_MP/COUNTER_CHANCE/COUNTER_MULT 单一数据源补齐；[4] 逃跑 token 压缩「·成功率约N%」→「·N%」
+// 为 [5] 让位；零结算零数值零存档，全部常量逐字未动。
+const GAME_VERSION = 'v23.44';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

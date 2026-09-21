@@ -394,7 +394,17 @@ export function drawBattle() {
     // 现按 [1]/[3]/[4] 同式在指令栏就地标注：减伤%由 DEFEND_MULT 派生、CHARGE_MULT 直接读数——
     // 与角标/预判/结算同读 data.js 单一数据源，调数值只改 data.js 一处、指令栏四端自动跟随；
     // 纯显示零结算零存档零数值变化，477 行 ⛔ 前缀测量（[:4]逃跑 截止）逐字无影响。
-    const bar = `[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑${isBossFlee ? '' : '·成功率约' + Math.round(FLEE_SUCCESS * 100) + '%'}  [5]防御·减伤${Math.round((1 - DEFEND_MULT) * 100)}%  [6]蓄力×${CHARGE_MULT}`;
+    // v23.44 指令栏 [5]防御 预览补全「回蓝/反击」（体验打磨·信息透明·纯显示——承 v23.02 指令栏效果
+    // 透明家族收口的末两格：v23.02 给 [5] 补了减伤% 但防御的「回/击」（回 2MP、50% 几率反击 ×0.7）仍只
+    // 在已生效角标（「防御中 · 减伤50% · 回2MP · 50%几率反击」）或 README 战斗行可见——首次按 [5]
+    // 防御的决策现场，「防御=减伤+回蓝+反击」是一体的（v23.36 成就「以守为攻」同族：反击是防御换来
+    // 的主动收益，阈值 DEFLECT_GOAL 却查无一眼可见的入口）；现同读 DEFEND_MP/COUNTER_CHANCE/
+    // COUNTER_MULT（drawBattle 既有 import 零新增依赖）一份单一数据源补齐——调数值只改 data.js 一处、
+    // 角标/预判/指令栏/README 四端自动跟随；[4] 逃跑 token 同步压缩「·成功率约N%」→「·N%」
+    // （概率仍由 FLEE_SUCCESS 派生零裸字面量，H 页/README 的「约60%」口径逐字保留）为 [5] 让位；
+    // [1]/[3]/[4] 前缀与 ⛔ 前缀测量（[:4]逃跑 截止）逐字未动；纯显示零结算零数值零存档，
+    // 13px 实测最宽档 ≈569.6 ≤ 580 预算（60+569.6=629.6 ≤ 640 画布）。
+    const bar = `[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑${isBossFlee ? '' : '·' + Math.round(FLEE_SUCCESS * 100) + '%'}  [5]防御·减${Math.round((1 - DEFEND_MULT) * 100)}%·回${DEFEND_MP}MP·反击${Math.round(COUNTER_CHANCE * 100)}%×${COUNTER_MULT}  [6]蓄力×${CHARGE_MULT}`;
     text(bar, 60, 440, '13px', '#8fa8b8');
     if (isBossFlee) {
       const preW = CTX.measureText(`[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑`).width;

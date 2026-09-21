@@ -30,7 +30,7 @@ const dataSrc = read('../js/data.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.79 版本注释', dataSrc.includes('v21.79 标题页存档预览补收集进度'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v23.43';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82（v21.82 起精确版本由当版冒烟守护）', dataSrc.includes("const GAME_VERSION = 'v23.44';"));
 
 // —— 源级落位：core.js 新三件套派生 + 既有段逐字保留 ——
 ok('core.js 导入 ACH_LIST/BESTIARY_TARGET/chestCount/chestTotal（单一数据源）',

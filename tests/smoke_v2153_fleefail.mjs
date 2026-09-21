@@ -99,8 +99,8 @@ ok('FLEE_SUCCESS===0.6 零回归（成功率数值与指令栏「约60%」口径
 
 // —— 指令栏口径零回归：成功率只在指令栏标注，战报不重复 ——
 const dbSrc = fs.readFileSync(path.join(ROOT, 'js/view/drawBattle.js'), 'utf8');
-ok('drawBattle 指令栏「逃跑·成功率约N%」仍由 FLEE_SUCCESS 派生（单一数据源零回归）',
-  dbSrc.includes("'·成功率约' + Math.round(FLEE_SUCCESS * 100) + '%'"));
+ok('drawBattle 指令栏「逃跑·N%」仍由 FLEE_SUCCESS 派生（单一数据源零回归，v23.44 压缩口径）',
+  dbSrc.includes("'·' + Math.round(FLEE_SUCCESS * 100) + '%'"));
 
 // —— 运行期实证：startBattle + playerAction('flee') 真实路径（承 v21.50 castFire 桩法）——
 function mkHero() {
