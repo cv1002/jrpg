@@ -86,7 +86,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.12', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 13)), GAME_VERSION);
 ok('data.js 含 v22.13 注释（说书人说明）', dSrc.includes('v22.13 潮灯镇说书人'));
 ok('GAME_VERSION 字面量已更新为 v22.13（旧 v22.12 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.57';") && !dSrc.includes("const GAME_VERSION = 'v22.12';"));
+  dSrc.includes("const GAME_VERSION = 'v23.58';") && !dSrc.includes("const GAME_VERSION = 'v22.12';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[16,9]===teller', NPC_SPOTS['16,9'] === 'teller', NPC_SPOTS['16,9']);
@@ -171,7 +171,7 @@ ok('package.json 已收录 smoke_v2213_teller（npm test 串跑第 109 份）',
 const s2212 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2212_volume.mjs'), 'utf8');
 const s2211 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2211_lampkid.mjs'), 'utf8');
 ok('s2212 GAME_VERSION 字面量 pin 已随新现实更新为 v22.13',
-  s2212.includes("const GAME_VERSION = 'v23.57';") && !s2212.includes("=== 'v22.12'"));
+  s2212.includes("const GAME_VERSION = 'v23.58';") && !s2212.includes("=== 'v22.12'"));
 ok('s2212 件套 pin 已随新现实更新为一百一十二件套', s2212.includes('二百一十二件套（二百一十一件套清除）'));
 ok('s2211 件套 pin 已随新现实更新为一百一十二件套', s2211.includes('二百一十二件套（二百一十一件套清除）'));
 ok('s2211 NPC 总数 pin 已随新现实更新为 22（听矿人落位）', s2211.includes('总数 29'));

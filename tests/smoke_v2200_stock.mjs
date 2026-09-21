@@ -36,7 +36,7 @@ console.log('— v22.0 有备无患药水线首枚里程碑冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.99', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.0', GAME_VERSION === 'v23.57', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.0', GAME_VERSION === 'v23.58', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -48,7 +48,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.0 版本注释', dataSrc.includes('v22.0 新成就「有备无患」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.0', dataSrc.includes("const GAME_VERSION = 'v23.57';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.0', dataSrc.includes("const GAME_VERSION = 'v23.58';"));
 ok('data.js 仍保留 v21.99 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v21.99 新成就「金玉满堂」'));
 ok('data.js 导出 POTIONS_GOAL（export 块落位，与 PLAY_TIME2_GOAL/POTIONS2_GOAL 相邻——v22.63 起 PLAY_TIME3_GOAL 并入同族）', dataSrc.includes('PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD'));
 
@@ -240,14 +240,14 @@ const vers = ['smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_l
 for (const nm of vers) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.0`,
-    src.includes("const GAME_VERSION = 'v23.57';"));
+    src.includes("const GAME_VERSION = 'v23.58';"));
 }
 for (const nm of ['smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
   'smoke_v2196_deadrecap.mjs', 'smoke_v2195_ptime2.mjs', 'smoke_v2194_statuscodex.mjs',
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.0`,
-    src.includes("GAME_VERSION === 'v23.57'"));
+    src.includes("GAME_VERSION === 'v23.58'"));
 }
 const achFiles = ['smoke_v2199_rich2.mjs', 'smoke_v2197_lucky2.mjs', 'smoke_v2195_ptime2.mjs',
   'smoke_v2193_hunt100.mjs', 'smoke_v2191_ptime.mjs', 'smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs',
