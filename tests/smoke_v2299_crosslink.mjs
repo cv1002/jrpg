@@ -33,7 +33,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.99 版本注释', dataSrc.includes('// v22.99 体验打磨·可发现性·信息透明'));
 ok('data.js GAME_VERSION 字面量已为 v22.99（旧 v22.98 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.42';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "98';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.43';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "98';"));
 ok('data.js 仍保留 v22.98 历史注释（遇敌槽数值说明注释未动）', dataSrc.includes('// v22.98 文档整理·数值说明·同源口径'));
 
 // —— main.js 源级落位：codex.onKey / ach.onKey 补 I→goto('status') 分支 ——
@@ -91,15 +91,15 @@ ok('package.json 串尾为 ... smoke_v2298_encnum.mjs && node tests/smoke_v2299_
   pkg.includes('node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 195 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.99 条目', changelog.startsWith('## v23.42 '));
+ok('CHANGELOG 顶部已追加 v22.99 条目', changelog.startsWith('## v23.43 '));
 ok('CHANGELOG 仍保留 v22.98 条目（历史口径）', changelog.includes('## v22.98 遇敌槽机制数值说明补录'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.98 pin 零残留 ——
 const s2298 = read('smoke_v2298_encnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2298 的 GAME_VERSION 字面量 pin 已更新为 v22.99', s2298.includes("const GAME_VERSION = 'v23.42';"));
+ok('smoke_v2298 的 GAME_VERSION 字面量 pin 已更新为 v22.99', s2298.includes("const GAME_VERSION = 'v23.43';"));
 ok('smoke_v2298 的 CHANGELOG 顶 pin 已更新为 ## v22.99',
-  s2298.includes("startsWith('## v23.42 '"));
+  s2298.includes("startsWith('## v23.43 '"));
 ok('smoke_v2298 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2298.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2298 的 README 串尾 pin 已延伸至 smoke_v2299_crosslink',

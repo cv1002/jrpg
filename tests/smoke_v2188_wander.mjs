@@ -38,7 +38,7 @@ const dataSrc = read('../js/data.js');
 const worldSrc = read('../js/world.js');
 
 ok('data.js 含 v21.88 版本注释', dataSrc.includes('v21.88 新成就「走遍四方」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.89', dataSrc.includes("const GAME_VERSION = 'v23.42';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.89', dataSrc.includes("const GAME_VERSION = 'v23.43';"));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'wander');
@@ -224,7 +224,7 @@ for (const nm of suite84) {
 for (const nm of ['smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.89`,
-    src.includes("const GAME_VERSION = 'v23.42';"));
+    src.includes("const GAME_VERSION = 'v23.43';"));
 }
 const achFiles = ['smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2180_grain.mjs',
   'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs', 'smoke_v2173_aegis.mjs',

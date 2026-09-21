@@ -1194,7 +1194,14 @@
 // 零新逻辑（quests.js 状态机全通用：cond/condProg/talk 四档/reward 走既有 applyQuestReward 三通道，
 // migrateQuests 无固定清单零迁移），成就「灯火同心」（allquests）经 Object.values(QUESTS)
 // 自动扩为十条支线，README 数值速查「支线 / 奖励」行同源补录。
-const GAME_VERSION = 'v23.42';
+// v23.43 音效反馈·听觉信息透明：普攻暴击弃用 hit 低坠改播专属上扬音（承 v21.3 alert/boss「先闻其声」/
+// v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee 同一「事件音效各归其位」主线收口）——暴击
+// （CRIT_RATE 12% ×1.8）此前与普攻同播 SFX.hit()（sawtooth 140 下坠）：状态页有「普攻12%暴击 ×1.8」、
+// 命中会震屏、战报有「（暴击×1.8！）」，唯独听觉无区分——白赚 1.8 倍的一刀听感与普攻无异；现补
+// audio.js SFX.crit sawtooth 320→700 上挑滑音（与 hit 低坠同族反向，一听即分），暴击仅普攻可触发
+// （技能 crit=false 走各自 sfx 不受影响）；零结算零数值零存档（crit 判定/×CRIT_MULT 结算/浮字/
+// 震屏逐字未动），README 快速上手表「战斗」行与「BGM / 音效」事件专属音效家族同源补录。
+const GAME_VERSION = 'v23.43';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

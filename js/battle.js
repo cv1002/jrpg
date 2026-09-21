@@ -468,7 +468,13 @@ function playerAction(type, arg) {
 }
 
 function attackMove(fin, sfx, crit, mult) {
-  if (sfx) SFX[sfx]();
+  // v23.43 暴击专属上扬音（音效反馈·听觉信息透明——承 v21.3 alert/boss「先闻其声」/ v23.22 SFX.ach /
+  // v23.33 SFX.craft / v23.40 SFX.flee 同一「事件音效各归其位」主线，与 audio.js SFX.crit 同源）：
+  // 普攻暴击此前与普攻同播 SFX.hit（sawtooth 下坠）——暴击仅普攻可触发（技能 crit=false 走各自 sfx），
+  // 现 crit 真时改播 SFX.crit（sawtooth 上挑，与 hit 下坠一听即分，与状态页「普攻12%暴击×1.8」/
+  // 震屏浮字同维度）；crit 判定/×CRIT_MULT 结算/战报文案/震屏触发逐字未动，零结算零数值零存档。
+  if (crit) SFX.crit();
+  else if (sfx) SFX[sfx]();
   else SFX.hit();
   const enemy = S.enemy;
   const hero = S.G;
