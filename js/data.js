@@ -1264,7 +1264,10 @@
 // -40%，层数叠加=这怪开始变硬的威胁信号），听感却与自己按 [5] 摆出的防御架势无从分辨；现补 audio.js
 // SFX.armor()「岩壳凝结」低鸣三连（sine 98→147→196），石甲分支改播之，与 block 上行双音一听即分；
 // 零结算零数值零存档（玩家 doDefend 仍 SFX.block 逐字未动）。
-const GAME_VERSION = 'v23.51';
+// v23.52 文档整理·档案对齐：improve-plan.md「落地状态」由 v4.0（2026-08-19，tests/smoke.mjs 28/28）
+// 追记到 v23.52 现状（2026-09-21），并指向 CHANGELOG.md / README tests 树为权威记录；纯文档零逻辑
+// 零结算零数值零存档（v23.51 起各历史注释保留）。
+const GAME_VERSION = 'v23.52';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
