@@ -139,7 +139,16 @@ export function drawStatus(){
   const codexN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
   const fragN = (hero.fragments || []).length;
   text(`金币:${hero.gold}  🍖:${hero.item} 🧪:${hero.potion2||0} 🍄:${hero.mushrooms||0} 📕:${codexN}/${BESTIARY_TARGET.length} 📦:${chestCount(hero)}/${chestTotal()} 🏆:${(hero.ach||[]).length}/${ACH_LIST.length}  🕯️:${fragN}/${FRAGMENTS.length}  ⏱️${fmtTime(hero.time)}`,110,264,'14px');
-  text('已学技能：',110,288,'bold 14px','#ffd24a');
+  // v23.61 状态页「已学技能：」节头补 N/8 计数（体验打磨·信息透明·节头第一眼就报进度家族收口——
+  // 承 v23.16 灯下之声节头 N/37 / v23.19 记忆碎片节头 N/4 / v23.20 支线节头可交付 N / v23.21 主线节头
+  // N/5 / v23.34 战斗技能菜单标题「已学 N/7」同一「集合类列表节头第一眼就报进度」主线：J 日志四节与
+  // 战斗技能菜单标题都报计数，唯独 I 状态页「已学技能：」节头仍是无数字的裸标签——v23.55 第八招
+  // 「灯焰长明」后玩家按 I 看「八招学齐了没」在节头查无一眼之数（列表就在下方但得逐行数，与 v23.21
+  // 主线五徽记同页仍补节头计数同一先例）；现与 v23.34 技能菜单同读 hero.skills.length ·
+  // Object.keys(SKILL_DATA).length 一份单一数据源（零裸字面量、加/删技能自动跟随、SKILL_DATA 漏配
+  // 防御式 0 容忍保持 0/N 如实），节头直书「已学技能：N/8」；纯显示零结算零存档零数值变化，
+  // 技能列表/行距/「📖 下一技能」行逐字未动。
+  text('已学技能：' + hero.skills.length + '/' + Object.keys(SKILL_DATA).length, 110, 288, 'bold 14px', '#ffd24a');
   // v21.83 七招容量（承 v21.48 行距 16→14 先例）：Lv11 领悟第 7 招「星砂回响」后行距 14→12、
   // 首行 308→302 双收——≤6 招时逐字保持 v21.48 布局（条件式，零回归）；7 招时末行基线 380
   // （302+12×6）、字底 ≈381.4，不触「📖 下一技能」396（12px 字顶 ≈385.4，留 4px 净隙），

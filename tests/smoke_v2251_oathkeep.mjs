@@ -91,7 +91,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.50（本版守 v22.52）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 51)), GAME_VERSION);
 ok('data.js 含 v22.51 注释（记誓人说明）', dSrc.includes('v22.51 新内容·纯风味 NPC'));
 ok('GAME_VERSION 字面量已为 v22.51（旧 v22.50 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.60';") && !dSrc.includes("const GAME_VERSION = 'v22." + "50';"));
+  dSrc.includes("const GAME_VERSION = 'v23.61';") && !dSrc.includes("const GAME_VERSION = 'v22." + "50';"));
 ok('data.js 仍保留 v22.50/v22.49 世代注释链（酿药师/货栈掌柜累积注释未动）',
   dSrc.includes('v22.50 新内容·纯风味 NPC') && dSrc.includes('v22.49 新内容·纯风味 NPC') &&
   dSrc.includes("const GAME_VERSION = 'v22." + "50';") === false);
@@ -195,12 +195,12 @@ ok('package.json 已收录 smoke_v2251_oathkeep（npm test 串跑第 147 份）'
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2251_oathkeep.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 147 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.51 条目', changelog.startsWith('## v23.60'));
+ok('CHANGELOG 顶部已追加 v22.51 条目', changelog.startsWith('## v23.61'));
 
 // —— 姊妹 pin 复查（smoke_v2250 随新现实更新 + 哨兵链 148）——
 const s2250 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2250_brewer.mjs'), 'utf8');
 ok('smoke_v2250 的 GAME_VERSION 字面量 pin 已更新为 v22.51（旧 v22.50 零残留）',
-  s2250.includes("const GAME_VERSION = 'v23.60';") && !s2250.includes("const GAME_VERSION = 'v22." + "50';"));
+  s2250.includes("const GAME_VERSION = 'v23.61';") && !s2250.includes("const GAME_VERSION = 'v22." + "50';"));
 ok('smoke_v2250 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2250.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2250 的 package.json 件套计数 pin 已更新为 === 147', s2250.includes('testChain === 212'));
