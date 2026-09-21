@@ -213,8 +213,16 @@ function talkNext() {
     return;
   }
   if (act && act.kind === 'reward') {
-    if (act.item) SFX.victory();
-    else SFX.coin();
+    // v23.50 任务交付专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40
+    // SFX.flee / v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge / v23.48 SFX.darkheal /
+    // v23.49 SFX.chest 同一「事件音效各归其位」主线的收口，详见 audio.js SFX.quest 与 data.js v23.50
+    // 注释）：任务交付奖励（act.kind==='reward'）此前金币档播 SFX.coin()（与售蘑菇同音）、物品档播
+    // SFX.victory()（与战斗胜利号角同音）——交任务是「🎁 委托达成」的交付事件，听感却与买东西/打赢仗
+    // 无从分辨（刚打赢一场仗回村交任务，两声同响分不清是凯旋还是交付）；现改播音频专属 SFX.quest()
+    // （「交付铃」先抑后扬三连，audio.js v23.50），金币/物品两档统一——交付瞬间听声即知是交任务
+    // 非购物/凯旋；零结算零数值零存档（交付判定/库存结算/报文/成就判定逐字未动，SFX.coin() 仍服务
+    // 售蘑菇、SFX.victory() 仍服务战斗胜利/试炼通关）。
+    SFX.quest();
     bind.renderHUD();
     applyAchievements();
     const extra = (act.item ? ` +${act.item} 药水` : '') + (act.potion2 ? ` +${act.potion2} 灵药` : '');

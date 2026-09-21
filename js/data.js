@@ -1246,7 +1246,16 @@
 // 同响分不清是买是捡）；现补 audio.js SFX.chest() 低暖木质三连（triangle 196→262→392，末音 sine
 // 上扬余韵），开箱三分支改播之，与 coin 高音双音/item 双音/select 单音一听即分；零结算零数值零存档
 // （掉落判定/金币公式/库存计数/开箱报文逐字未动，coin/item 定义与商店购买/任务奖励调用点逐字未动）。
-const GAME_VERSION = 'v23.49';
+// v23.50 音效反馈·语义修正：任务交付专属音效（承 v21.3 alert/boss「先闻其声」/ v23.22 SFX.ach /
+// v23.33 SFX.craft / v23.40 SFX.flee / v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge /
+// v23.48 SFX.darkheal / v23.49 SFX.chest 同一「事件音效各归其位」主线的收口，详见 js/audio.js
+// SFX.quest 与 js/core.js talkNext 行内注释）——任务交付（core.talkNext act.kind==='reward'）此前金币
+// 档与售蘑菇同播 SFX.coin()（880→1320 高音明亮双音）、物品档与战斗胜利同播 SFX.victory()（胜利号角
+// 五连）：交任务是「🎁 委托达成」的交付事件，听感却与买东西/打赢仗无从分辨；现补 audio.js SFX.quest()
+// 「交付铃」先抑后扬三连（triangle 659→494 下行四度 + sine 988 上扬余韵），金币/物品两档统一改播之，
+// 与 coin 双音/victory 号角/ach 上行铃声/craft 气泡一听即分；零结算零数值零存档（交付判定/库存结算/
+// 报文逐字未动，SFX.coin 仍服务售蘑菇、SFX.victory 仍服务战斗胜利/试炼通关调用点逐字未动）。
+const GAME_VERSION = 'v23.50';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
