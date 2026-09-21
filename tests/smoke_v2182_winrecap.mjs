@@ -31,7 +31,7 @@ const menusSrc = read('../js/view/menus.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.82 版本注释', dataSrc.includes('v21.82 胜利画面补收集进度两件'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v23.59';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.82', dataSrc.includes("const GAME_VERSION = 'v23.60';"));
 
 // —— 源级落位：drawWin 新两件派生 + 既有战绩行/页脚逐字保留 ——
 const winBlock = (menusSrc.match(/export function drawWin\(\)\{[\s\S]*?\n\}/) || [''])[0];
@@ -184,9 +184,9 @@ for (const [nm, src] of [['smoke_v2181', s2181], ['smoke_v2180', s2180], ['smoke
     src.includes('二百一十二件套（二百一十一件套清除）') && !src.includes('七十七件套（七十六件套清除）'));
 }
 ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2181.includes("const GAME_VERSION = 'v23.59';"));
+  s2181.includes("const GAME_VERSION = 'v23.60';"));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84',
-  s2179.includes("const GAME_VERSION = 'v23.59';"));
+  s2179.includes("const GAME_VERSION = 'v23.60';"));
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
 process.exit(failed ? 1 : 0);

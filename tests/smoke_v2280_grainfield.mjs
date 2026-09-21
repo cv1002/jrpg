@@ -18,7 +18,7 @@ console.log('— v22.80 帮助页地图指南潮灯镇行「粮田」r[2] 指针
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.80', dataSrc.includes("const GAME_VERSION = 'v23.59'"));
+ok('data.js GAME_VERSION 字面量为 v22.80', dataSrc.includes("const GAME_VERSION = 'v23.60'"));
 ok('旧 v22.79 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "79';"));
 ok('data.js 含 v22.80 版本注释', dataSrc.includes('// v22.80 体验打磨'));
 ok('data.js 仍保留 v22.79 历史注释', dataSrc.includes('// v22.79 体验打磨'));
@@ -43,7 +43,7 @@ ok('潮灯镇行 r[2] 既有信息零回归（水塘灯影 + NPC 名派生 + 广
   villageRow.includes('水塘灯影') && villageRow.includes(NPCS.granny.name) && villageRow.includes(NPCS.lampboat.name) &&
   villageRow.includes('广场大灯·村井'));
 ok('潮灯镇行 r[1] 逐字零回归（设施/出口指针，未并入粮田）',
-  String(guide[0][1]).includes('商店·旅馆·酿造锅·灯长/守书记(支线)·喷泉回血') &&
+  String(guide[0][1]).includes('商店·旅馆（狼嚎）·酿造锅·灯长/守书记(支线)·喷泉回血') &&
   String(guide[0][1]).includes('东门→雾语林') && !String(guide[0][1]).includes('粮田'));
 // 其余三行零回归
 ok('雾语林行「蘑菇田」零回归（v22.78）', String(guide[1][1]).includes('蘑菇田') && guide[1].length === 2);
@@ -78,6 +78,18 @@ function estW(s, size = 12) {
 }
 const wR2 = estW(villageRow);
 ok('潮灯镇行 r[2] 12px estW ' + wR2.toFixed(1) + ' ≤ 470 面板预算', wR2 <= 470, String(wR2));
+
+// —— v23.60 帮助页地图指南潮灯镇行 r[1]「旅馆（狼嚎）」经办地点指针（第十条支线「夜路的狼嚎」）——
+ok('data.js 含 v23.60 版本注释', dataSrc.includes('// v23.60 体验打磨·信息透明·纯文字'));
+ok('data.js 含 v23.60 行内注释（潮灯镇行 r[1] 旅馆指针）', dataSrc.includes('v23.60 潮灯镇行 r[1]「旅馆」并注「（狼嚎）」'));
+ok('潮灯镇行 r[1] 含「旅馆（狼嚎）」派生短指针（QUESTS.side_wolf.name.slice(-2)=' + QUESTS.side_wolf.name.slice(-2) + '）',
+  String(guide[0][1]).includes('旅馆（' + QUESTS.side_wolf.name.slice(-2) + '）'), String(guide[0][1]));
+ok('潮灯镇行 r[1] 未并入 r[2] 专有指针（粮田/酿药师/水塘灯影仍在 r[2]）',
+  !String(guide[0][1]).includes('粮田') && !String(guide[0][1]).includes('酿药师') && !String(guide[0][1]).includes('水塘灯影'));
+ok('潮灯镇行 r[2] 逐字未动（v23.60 零回归）',
+  villageRow.includes('水塘灯影') && villageRow.includes('广场大灯·村井') && villageRow.includes('粮田') && villageRow.includes('酿药师'));
+const wR1full = estW(String(guide[0][0]) + '   ' + String(guide[0][1]), 14);
+ok('潮灯镇行 r[1] 整行 14px estW ' + wR1full.toFixed(1) + ' ≤ 470 面板预算（v23.60 短指针档位）', wR1full <= 470, String(wR1full));
 
 // 5. 运行期全链路：DOM/音频/存储桩 + main.js 真实导入 + drawHelp 渲染
 const noop = () => {};
@@ -165,13 +177,13 @@ ok('package.json test 串含 smoke_v2280_grainfield.mjs 且位于串尾',
   pkg.includes('node tests/smoke_v2279_lampwell.mjs && node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 176 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 含 v22.80 条目（顶 pin）', changelog.startsWith('## v23.59 '));
+ok('CHANGELOG 含 v22.80 条目（顶 pin）', changelog.startsWith('## v23.60 '));
 
 // 7. 姊妹件套 pin（smoke_v2279_lampwell 随新现实更新）
 const s2279 = readFileSync(join(ROOT, 'tests/smoke_v2279_lampwell.mjs'), 'utf8');
 const s2260 = readFileSync(join(ROOT, 'tests/smoke_v2260_fountripple.mjs'), 'utf8');
-ok('smoke_v2279 的 GAME_VERSION 字面量 pin 已更新为 v22.80', s2279.includes("const GAME_VERSION = 'v23.59';"));
-ok('smoke_v2279 的 CHANGELOG 顶 pin 已更新为 ## v22.80', s2279.includes("startsWith('## v23.59'"));
+ok('smoke_v2279 的 GAME_VERSION 字面量 pin 已更新为 v22.80', s2279.includes("const GAME_VERSION = 'v23.60';"));
+ok('smoke_v2279 的 CHANGELOG 顶 pin 已更新为 ## v22.80', s2279.includes("startsWith('## v23.60'"));
 ok('smoke_v2279 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2279.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2279 的 README 串尾 pin 已延伸至 smoke_v2280_grainfield', s2279.includes('smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2260 的 package.json 串尾 pin 已延伸至 smoke_v2280_grainfield', s2260.includes('node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs'));
