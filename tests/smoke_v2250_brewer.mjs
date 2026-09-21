@@ -1,4 +1,6 @@
-// v22.50 专项冒烟：潮灯镇酿造锅「酿药师」新风味 NPC——纯内容扩充（无任务、零结算、零新逻辑）：
+// v22.50 专项冒烟：潮灯镇酿造锅「酿药师」新风味 NPC——纯内容扩充（v23.57 起升格为讨伐支线
+// 「蛇影的药引」委托人——QUESTS.side_snake，承 v21.80 side_grain / v23.32 side_tree / v23.42 side_wolf
+// 先例，状态机全通用零新逻辑）：
 // 数据层三件套（village.extras (9,12) + NPC_SPOTS '9,12' + NPCS.brewer），酿造锅（'BREW' 瓦片，全游唯一
 // 蘑菇→高级灵药的酿造口）是全镇最后只剩泛用镇民 (10,13) 站岗的设施——v22.31 锻灯师/v22.34 客栈老板娘/
 // v22.49 货栈掌柜逐铺补脸后，锅旁终于有看锅人；台词讲「蘑菇加铜板能熬一剂高级灵药」「菌盖在夜里发光——
@@ -15,7 +17,7 @@
 // 同步（tests 树尾 + 件套口径 146 + v22.50 守护描述 + 入库 146 份）、姊妹件套 pin（smoke_v2249 随新
 // 现实更新 + NPC 总数 pin 33 + 哨兵链 148）复查 + 旧代 v22.49 字面量/恒等/件套/串尾 pin 零残留。
 import { S } from '../js/state.js';
-import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY, SOLID } from '../js/data.js';
+import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY, SOLID, SNAKE_GOAL } from '../js/data.js';
 import { npcQuestPages, npcQuestMark, resolveNpcTalk } from '../js/quests.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -92,7 +94,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.49（本版守 v22.52）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 50)), GAME_VERSION);
 ok('data.js 含 v22.50 注释（酿药师说明）', dSrc.includes('v22.50 新内容·纯风味 NPC'));
 ok('GAME_VERSION 字面量已为 v22.51（旧 v22.50 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.56';") && !dSrc.includes("const GAME_VERSION = 'v22." + "49';"));
+  dSrc.includes("const GAME_VERSION = 'v23.57';") && !dSrc.includes("const GAME_VERSION = 'v22." + "49';"));
 ok('data.js 仍保留 v22.49/v22.48 世代注释链（货栈掌柜/地图指南指针累积注释未动）',
   dSrc.includes('v22.49 新内容·纯风味 NPC') && dSrc.includes('v22.48 体验打磨·信息透明·纯文字') &&
   dSrc.includes("const GAME_VERSION = 'v22." + "49';") === false);
@@ -140,15 +142,15 @@ ok('after 首页含散尽彩蛋（灯亮了 + 不必整夜守着锅 + 熬给晚�
 ok('after 第 2 页含收尾（名字都回了灯下 + 不用当药喝）',
   br.after[1].some((ln) => ln.includes('名字都回了灯下')) && br.after[1].some((ln) => ln.includes('当药喝')));
 
-// —— 选段（npcQuestPages 运行期求值，无任务 → 直落 NPCS 数据）——
+// —— 选段（npcQuestPages 运行期求值；v23.57 起 brewer 为 side_snake 委托人，任务页优先于静态台词）——
 const p0 = npcQuestPages({}, 'brewer');
-ok('无旗标选段落到 lines（酿酒）', p0 && p0[0].some((ln) => ln.includes('蘑菇加铜板')), p0 && p0[0][0]);
-const pT = npcQuestPages({ trueBoss: true }, 'brewer');
-ok('trueBoss 走 after 彩蛋（不用当药喝）',
-  pT && pT.some((pg) => pg.some((ln) => ln.includes('当药喝'))));
-ok('无任务：npcQuestMark===null（无 ❕ 顶标）', npcQuestMark(S.G, 'brewer') === null);
-ok('无支线绑定 brewer：resolveNpcTalk 不推进任何任务（纯风味零任务）',
-  resolveNpcTalk(S.G, 'brewer') === null);
+ok('开局 offer：选段落到 side_snake offer 页（毒蛇的牙）', p0 && p0[0].some((ln) => ln.includes('毒蛇的牙')), p0 && p0[0][0]);
+const pT = npcQuestPages({ trueBoss: true, quests: { side_snake: 'done' } }, 'brewer');
+ok('trueBoss + 任务 done：走 done(trueBoss) 彩蛋页（灯都亮回来了）',
+  pT && pT.some((pg) => pg.some((ln) => ln.includes('灯都亮回来了'))));
+ok('v23.57 起 brewer 正有可接委托：npcQuestMark===「❕ 可接委托」', npcQuestMark(S.G, 'brewer') === '❕ 可接委托');
+ok('v23.57 起 brewer 绑定 side_snake：resolveNpcTalk 接取（accept 契约，SNAKE_GOAL 单一数据源）',
+  resolveNpcTalk(S.G, 'brewer')?.kind === 'accept' && S.G.quests.side_snake === 'active' && SNAKE_GOAL === 3);
 
 // —— 运行期：loadMap 落位 + 东邻酿造锅 BREW 零回归 + 四邻可行走 + 同图关键点零回归 + Enter/E 交互 ——
 loadMap('village');
@@ -170,9 +172,9 @@ S.G.x = 9; S.G.y = 13; S.dir = 'U'; S.scene = 'world';
 await screens.world.onKey({ key: 'Enter' });
 ok('面向酿药师按 Enter：进入对话（S.scene==talk）且 curNpc===brewer',
   S.scene === 'talk' && S.curNpc === 'brewer', S.scene + '/' + S.curNpc);
-ok('对话第 1 页为 lines 默认台词（酿酒）——S.G 无旗标',
-  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('蘑菇加铜板')));
-ok('对话共 2 页（第 1 页 [Enter] 继续 → 第 2 页 [Enter] 结束）', S.talkPages && S.talkPages.length === 2);
+ok('对话第 1 页为 side_snake active 进度页（已讨伐 0/3 只）——经 resolveNpcTalk 接取后',
+  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('已讨伐 0/3 只')));
+ok('对话共 1 页（active 单页四行，[Enter] 结束）', S.talkPages && S.talkPages.length === 1);
 S.scene = 'world';
 await screens.world.onKey({ key: 'E' });
 ok('E 键同效（v21.29 交互别名对 NPC 零回归）', S.scene === 'talk' && S.curNpc === 'brewer', S.scene + '/' + S.curNpc);
@@ -197,12 +199,12 @@ ok('package.json 已收录 smoke_v2250_brewer（npm test 串跑第 146 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2250_brewer.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 147 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.50 条目', changelog.startsWith('## v23.56'));
+ok('CHANGELOG 顶部已追加 v22.50 条目', changelog.startsWith('## v23.57'));
 
 // —— 姊妹 pin 复查（smoke_v2249 随新现实更新 + 哨兵链 148）——
 const s2249 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2249_shopkeep.mjs'), 'utf8');
 ok('smoke_v2249 的 GAME_VERSION 字面量 pin 已更新为 v22.50（旧 v22.49 零残留）',
-  s2249.includes("const GAME_VERSION = 'v23.56';") && !s2249.includes("const GAME_VERSION = 'v22." + "49';"));
+  s2249.includes("const GAME_VERSION = 'v23.57';") && !s2249.includes("const GAME_VERSION = 'v22." + "49';"));
 ok('smoke_v2249 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2249.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2249 的 package.json 件套计数 pin 已更新为 === 146', s2249.includes('testChain === 212'));

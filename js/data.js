@@ -1292,7 +1292,17 @@
 // 结算（RUSH_BOSSES[].xp 60/60/90），但 isRush 分支的战报（battle.js 试炼通关/换关两报文）只报
 // 赏金与恢复，每关赢得多少经验查无一行（升级瞬间才有 🎉 横幅、未升级则全程静默）；现与普通胜利
 // 「距升级还需 N 经验」同一「收入现场报收入」主线，读 enemy.xp 就地补报；零结算零数值零存档。
-const GAME_VERSION = 'v23.56';
+// v23.57 新内容·新支线：潮灯镇酿造锅旁酿药师升格为讨伐支线「蛇影的药引」委托人——承 v21.80
+// side_grain / v23.32 side_tree / v23.42 side_wolf 先例（四基础怪版图逐怪核对后，开荒池里唯一
+// 没有任务挂钩的只剩毒蛇——史莱姆是新手垫脚怪刻意留白）：毒蛇是全游戏唯一「施毒」机制怪
+// （SPECIES tag／图鉴 codexTag／战斗特性角标与 POISON_* 结算同源），帮助页与战斗画面早已把它
+// 讲透，讨伐版图却查无一条毒蛇支线；酿药师（v22.50 纯风味角色）此前无任务角色——「蘑菇加铜板
+// 能熬一剂高级灵药」的看锅人升格为委托人：灵药缺一味蛇毒引子，讨伐 SNAKE_GOAL(3) 只毒蛇换
+// 50 金 + 1 高级灵药（reward.potion2 与 side_stone/bone/ember/name 同通道）；毒蛇是潮灯镇遇敌池
+// 限定四基础怪之一（village.pool、Lv.1 即可撞见、镇外高草危险格出没——与护粮/夜路同池不同怪，
+// 开荒期即可完成全流程）；零新机制零新常量（全由既有 QUESTS cond/condProg/applyQuestReward
+// 通路驱动，调阈值只改本文件 SNAKE_GOAL 一处）。
+const GAME_VERSION = 'v23.57';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -1906,6 +1916,15 @@ const TREE_GOAL = 3;        // 拾菇人支线需驱赶的树精只数
 // 接取对话（offer）全同步；野狼是潮灯镇遇敌池限定四基础怪之一（village.pool，Lv.1 即可撞见、
 // 镇北/镇南高草危险格出没——与护粮的委托同池不同怪，开荒期即可完成）。
 const WOLF_GOAL = 3;        // 客栈老板娘支线需驱赶的野狼只数
+
+// 毒蛇讨伐目标（单一数据源）：酿药师支线「蛇影的药引」需带回的毒蛇只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL / BONE_GOAL / GRAIN_GOAL / TREE_GOAL /
+// WOLF_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/
+// 目标文案（obj）/接取对话（offer）全同步；毒蛇是潮灯镇遇敌池限定四基础怪之一（village.pool，
+// Lv.1 即可撞见、镇外高草危险格出没——与护粮/夜路同池不同怪），也是全游戏唯一「施毒」机制怪
+// （SPECIES.tag「会施毒 · 扣血N回合」与 POISON_* 结算同源，战斗特性角标/图鉴 codexTag/帮助页
+// 「试炼进阶」同口径）——四基础怪版图至此只余史莱姆（新手垫脚怪）无支线，刻意留白。
+const SNAKE_GOAL = 3;       // 酿药师支线需带回的毒蛇只数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4090,6 +4109,50 @@ const QUESTS={
       ]],
     },
   },
+  // v23.57 新支线「蛇影的药引」（酿药师委托人）：承 v23.42 side_wolf 先例——毒蛇是四基础怪里唯一的
+  // 「施毒」机制怪（SPECIES.tag 与 POISON_* 结算同源），帮助页/战斗特性角标/图鉴早已把它讲透，
+  // 讨伐版图却无一条毒蛇支线；酿药师（v22.50 纯风味角色、酿造锅旁）升格为委托人：灵药缺一味
+  // 蛇毒引子，讨伐 SNAKE_GOAL(3) 只毒蛇换 50 金 + 1 高级灵药（reward.potion2 通道）；无 unlockOn
+  // 开局即 offer、bestiary 毒蛇计数（与 side_tree/side_wolf 同构，零新逻辑零新常量）。
+  side_snake:{
+    id:'side_snake', kind:'side', store:true, npc:'brewer', giver:'brewer',
+    cond:(g)=>(((g.bestiary||{})['毒蛇'])||0) >= SNAKE_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['毒蛇'])||0}/${SNAKE_GOAL} 只`,
+    name:'蛇影的药引', where:'潮灯镇·村外高草',
+    obj:`讨伐 ${SNAKE_GOAL} 只村外高草里的【毒蛇】`,
+    offer:'去潮灯镇找酿药师，接下蛇影的委托',
+    turnin:'毒引到手了！回镇找酿药师领谢礼',
+    done:'锅里的药引齐了，灵药熬成了。',
+    reward:{ gold:50, potion2:1 },
+    talk:{
+      offer:[[
+        '酿药师：蘑菇加铜板，能熬一剂高级灵药。',
+        '可这锅药还差一味引子——毒蛇的牙。',
+        `蛇影就缠在村外的高草里。替我讨来 ${SNAKE_GOAL} 只，药就齐了。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '酿药师：毒蛇就蹲在村外的高草里——晚饭后雾一起，蛇影最盛。',
+        '小心它的牙，中了毒记得回来喝口热汤。',
+        `（已讨伐 ${((hero.bestiary||{})['毒蛇'])||0}/${SNAKE_GOAL} 只）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '酿药师：毒牙入锅，药香就活了。',
+        '这一瓶你先尝。往后雾语林里药水见底了，记得回来找这口锅。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [[
+        '酿药师：灯都亮回来了，蘑菇不用整夜守着锅，药也熬得从容。',
+        '这锅汤啊，总算不用当药喝了。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]] : [[
+        '酿药师：药引齐了，这锅灵药成了。',
+        '菌盖发光，是地底星砂留的一点光——喝下去，灯也亮一点。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -4928,7 +4991,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

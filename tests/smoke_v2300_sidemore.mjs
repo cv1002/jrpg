@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.00 版本注释', dataSrc.includes('// v23.00 体验打磨·信息透明·纯显示'));
 ok('data.js GAME_VERSION 字面量已为 v23.00（旧 v22.99 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.56';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "99';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.57';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "99';"));
 ok('data.js 仍保留 v22.99 历史注释（图鉴/成就页脚 I 状态页注释未动）', dataSrc.includes('// v22.99 体验打磨·可发现性·信息透明'));
 
 // —— menus.js 源级落位：statusSideSuffix 纯函数 + drawStatus 支线行接计数后缀 ——
@@ -77,15 +77,15 @@ ok('package.json 串尾为 ... smoke_v2299_crosslink.mjs && node tests/smoke_v23
   pkg.includes('node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 196 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.00 条目', changelog.startsWith('## v23.56 '));
+ok('CHANGELOG 顶部已追加 v23.00 条目', changelog.startsWith('## v23.57 '));
 ok('CHANGELOG 仍保留 v22.99 条目（历史口径）', changelog.includes('## v22.99 记忆图鉴/成就一览页脚'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.99 pin 零残留 ——
 const s2299 = read('smoke_v2299_crosslink.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2299 的 GAME_VERSION 字面量 pin 已更新为 v23.00', s2299.includes("const GAME_VERSION = 'v23.56';"));
+ok('smoke_v2299 的 GAME_VERSION 字面量 pin 已更新为 v23.00', s2299.includes("const GAME_VERSION = 'v23.57';"));
 ok('smoke_v2299 的 CHANGELOG 顶 pin 已更新为 ## v23.00',
-  s2299.includes("startsWith('## v23.56 '"));
+  s2299.includes("startsWith('## v23.57 '"));
 ok('smoke_v2299 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2299.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2299 的 README 串尾 pin 已延伸至 smoke_v2300_sidemore',
@@ -160,9 +160,9 @@ function multiSideHero() {
 }
 const mh = multiSideHero();
 const { sides } = questLines(mh);
-// 双侧旗标 + 三张卡 active 时其余支线均为 offer——全部支线在列（10 条）
-ok('运行期：sideObjectives 全部支线在列（10 条：蘑菇/星砂/名字 + 7 条 offer）', sides.length === 10, JSON.stringify(sides));
-ok('运行期：questLines 10 条支线 + statusSideSuffix → （还有 9 条）', statusSideSuffix(sides) === '（还有 9 条）', statusSideSuffix(sides));
+// 双侧旗标 + 三张卡 active 时其余支线均为 offer——全部支线在列（11 条）
+ok('运行期：sideObjectives 全部支线在列（11 条：蘑菇/星砂/名字 + 8 条 offer）', sides.length === 11, JSON.stringify(sides));
+ok('运行期：questLines 11 条支线 + statusSideSuffix → （还有 10 条）', statusSideSuffix(sides) === '（还有 10 条）', statusSideSuffix(sides));
 
 const { CTX } = await import('../js/view/canvas.js');
 const CAP = [];
@@ -178,8 +178,8 @@ let threw = null;
 let capMulti = null;
 try { capMulti = renderStatus(multiSideHero()); } catch (e) { threw = e; }
 ok('运行期：drawStatus（多条支线档）渲染零抛错', threw === null, threw && String(threw.stack || threw));
-ok('运行期：支线行落画含「支线：」且带「（还有 9 条）」计数',
-  (capMulti || []).some((c) => c.includes('支线：') && c.includes('（还有 9 条）') && c.includes('J 任务日志')),
+ok('运行期：支线行落画含「支线：」且带「（还有 10 条）」计数',
+  (capMulti || []).some((c) => c.includes('支线：') && c.includes('（还有 10 条）') && c.includes('J 任务日志')),
   JSON.stringify((capMulti || []).filter((c) => c.includes('支线：')).slice(0, 2)));
 ok('运行期：冒险进度/主线行与多条计数同屏零回归（adventureProgress 五徽记落画）',
   (capMulti || []).some((c) => c.includes('✓')) && (capMulti || []).some((c) => c.includes('主线：')));

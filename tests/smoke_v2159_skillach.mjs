@@ -132,8 +132,8 @@ ok('既有 23 个成就 id 全部保留（零回归）',
    'trueboss', 'rush', 'perfection', 'legend', 'cartman', 'names', 'mist', 'stone', 'ember', 'bone',
    'chests', 'allquests', 'memoir'].every((id) => ACH_LIST.some((a) => a.id === id)));
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母 v23.42 随新现实更新为 0/10（side_grain/side_tree/side_wolf 是支线，skills 不是）',
-  achAll && achAll.prog({ quests: {} }) === '0/10', achAll && achAll.prog({ quests: {} }));
+ok('灯火同心（allquests）支线分母 v23.57 随新现实更新为 0/11（side_grain/side_tree/side_wolf/side_snake 是支线，skills 不是）',
+  achAll && achAll.prog({ quests: {} }) === '0/11', achAll && achAll.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：八招俱全的 hero 新解锁含 skills；缺一招不含（v21.83/v23.55 随新现实更新）',

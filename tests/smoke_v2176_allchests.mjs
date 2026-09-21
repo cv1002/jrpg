@@ -162,8 +162,8 @@ ok('开箱寻宝（chests）半程档零回归（仍 6 只阈值：6 只 ok=true
   achChests.ok({ chests: new Set(['a', 'b', 'c', 'd', 'e']) }) === false &&
   achChests.prog({ chests: new Set(['a', 'b', 'c', 'd', 'e', 'f']) }) === '6/6');
 const achAllQuests = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母 v23.42 随新现实更新为 0/10（side_grain/side_tree/side_wolf 是支线，allchests 不是）',
-  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/10', achAllQuests && achAllQuests.prog({ quests: {} }));
+ok('灯火同心（allquests）支线分母 v23.57 随新现实更新为 0/11（side_grain/side_tree/side_wolf/side_snake 是支线，allchests 不是）',
+  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/11', achAllQuests && achAllQuests.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：12 只档新解锁含 allchests；11 只档不含',
