@@ -1201,12 +1201,18 @@
 // audio.js SFX.crit sawtooth 320→700 上挑滑音（与 hit 低坠同族反向，一听即分），暴击仅普攻可触发
 // （技能 crit=false 走各自 sfx 不受影响）；零结算零数值零存档（crit 判定/×CRIT_MULT 结算/浮字/
 // 震屏逐字未动），README 快速上手表「战斗」行与「BGM / 音效」事件专属音效家族同源补录。
+// v23.45 音效反馈·听觉信息透明：Boss/试炼战专属战斗 BGM（承 v21.3 alert/boss「先闻其声」主线的持续侧
+// 收口，详见 js/audio.js MUSIC.battleBoss 与 js/battle.js startBattle 行内注释）——v21.3 的警报音只区分了
+// 「进战那一刻」：Boss/试炼战整场循环的 BGM 仍与杂兵战同轨（MUSIC.battle square 330 快节奏），一场
+// 5 分钟的强敌战闻声与史莱姆战无异；现 battle.js startBattle 按 isBossFoe 分轨 startBgm('battleBoss')
+// （慢速三角波半音阶下行 A3→G#3→G3→F#3 + 低音持续长音），整场「闻声知是强敌」；零结算零数值零存档
+// （isBossFoe 判定/SFX.alert/SFX.boss 分支/战斗数值逐字未动，走出战斗 resumeBgm 照旧回地图轨）。
 // v23.44 体验打磨·信息透明·纯显示：战斗指令栏 [5]防御 预览补全「回蓝/反击」（承 v23.02 指令栏
 // 效果透明家族收口的末两格，详见 js/view/drawBattle.js 行内注释）——防御「回 2MP/50% 几率反击 ×0.7」
 // 此前只在已生效角标与 README 战斗行可见，首次按 [5] 的决策现场只见「减伤50%」；现指令栏同读
 // DEFEND_MP/COUNTER_CHANCE/COUNTER_MULT 单一数据源补齐；[4] 逃跑 token 压缩「·成功率约N%」→「·N%」
 // 为 [5] 让位；零结算零数值零存档，全部常量逐字未动。
-const GAME_VERSION = 'v23.44';
+const GAME_VERSION = 'v23.45';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

@@ -155,7 +155,13 @@ function startBattle(enemyDef) {
   // v21.3 战斗开场警报音（音效反馈）：进战瞬间的听觉钩子——Boss/试炼=低沉警报（SFX.boss），
   // 普通遭遇=两连下坠（SFX.alert）；与威胁预警文案/isBossFoe 同一强敌口径，静音时 tone 自然哑掉，零结算影响
   if (isBossFoe(S.enemy)) SFX.boss(); else SFX.alert();
-  startBgm('battle');
+  // v23.45 Boss/试炼战专属战斗 BGM（音效反馈·听觉信息透明，承 v21.3 alert/boss「先闻其声」同线收口）：
+  // v21.3 的警报音只区分了进战瞬间——Boss/试炼战整场循环的 BGM 仍与杂兵战同轨（audio.js MUSIC.battle），
+  // 一场强敌战闻声与史莱姆战无异；现按 isBossFoe 分轨 startBgm('battleBoss')（慢速三角波半音阶下行 +
+  // 低音持续长音，与 battle 快节奏方形波一听即分——「先闻其声」的持续侧）；零结算零数值零存档
+  // （isBossFoe 判定/SFX.alert/SFX.boss 分支/战斗数值逐字未动；胜利/战败/逃离走出战斗后 resumeBgm
+  // 照旧回地图轨，试炼连胜关间保持 battleBoss 不打断）。
+  startBgm(isBossFoe(S.enemy) ? 'battleBoss' : 'battle');
   bind.renderHUD();
   bind.drawBattle();
   if (isBossFoe(S.enemy)) {
