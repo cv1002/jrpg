@@ -36,7 +36,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.75 版本注释', dataSrc.includes('v22.75 体验打磨·图鉴空态条件收口'));
 ok('data.js GAME_VERSION 字面量已为 v22.75（旧 v22.74 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.70';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "74';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.71';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "74';"));
 ok('data.js 仍保留 v22.74 历史注释（似曾相识成就注释未动）', dataSrc.includes('v22.74 新成就·图鉴遭遇线中档里程碑「似曾相识」'));
 
 // —— 源级落位：menus.js seenAny 派生 + 空态条件改动，旧条件零残留 ——
@@ -165,13 +165,13 @@ ok('package.json 已收录 smoke_v2275_codexempty（npm test 串跑第 171 份�
   pkg.includes('smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 171 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 含 v22.75 条目（顶 pin）', changelog.startsWith('## v23.70 '));
+ok('CHANGELOG 含 v22.75 条目（顶 pin）', changelog.startsWith('## v23.71 '));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.74 pin 零残留 ——
 const s2274 = read('smoke_v2274_seen2.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2274 的 GAME_VERSION 字面量 pin 已更新为 v22.75', s2274.includes("const GAME_VERSION = 'v23.70';"));
-ok('smoke_v2274 的 CHANGELOG 顶 pin 已更新为 ## v22.78', s2274.includes("startsWith('## v23.70'") );
+ok('smoke_v2274 的 GAME_VERSION 字面量 pin 已更新为 v22.75', s2274.includes("const GAME_VERSION = 'v23.71';"));
+ok('smoke_v2274 的 CHANGELOG 顶 pin 已更新为 ## v22.78', s2274.includes("startsWith('## v23.71'") );
 ok('smoke_v2274 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2274.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2274 的 README 串尾 pin 已延伸至 smoke_v2275_codexempty', s2274.includes('smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2274 的 package.json 串尾 plain pin 已延伸至 smoke_v2275_codexempty', s2274.includes('smoke_v2274_seen2.mjs && node tests/smoke_v2275_codexempty.mjs && node tests/smoke_v2276_lampkid.mjs && node tests/smoke_v2277_pondhint.mjs'));

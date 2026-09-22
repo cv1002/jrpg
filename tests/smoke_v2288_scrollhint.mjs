@@ -18,15 +18,15 @@ console.log('— v22.88 帮助页「操作说明」J/B/C 三行「↑↓ 滚动�
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.88', dataSrc.includes("const GAME_VERSION = 'v23.70'"));
+ok('data.js GAME_VERSION 字面量为 v22.88', dataSrc.includes("const GAME_VERSION = 'v23.71'"));
 ok('旧 v22.87 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "87';"));
 ok('data.js 含 v22.88 版本注释', dataSrc.includes('// v22.88 体验打磨·可发现性·纯文字'));
 ok('data.js 仍保留 v22.87 历史注释', dataSrc.includes('// v22.87 体验打磨·信息透明·纯文字'));
 
 // 2. 源级落位：操作说明页三行补「（↑↓ 滚动）」+ 行内注释 + 旧单键行零残留
-ok('data.js 任务日志行现为 J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就）', dataSrc.includes("['任务日志','J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就）']"));
-ok('data.js 记忆图鉴行现为 B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就）', dataSrc.includes("['记忆图鉴','B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就）']"));
-ok('data.js 成就一览行现为 C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴）', dataSrc.includes("['成就一览','C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴）']"));
+ok('data.js 任务日志行现为 J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就 · H 帮助）', dataSrc.includes("['任务日志','J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就 · H 帮助）']"));
+ok('data.js 记忆图鉴行现为 B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就 · H 帮助）', dataSrc.includes("['记忆图鉴','B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就 · H 帮助）']"));
+ok('data.js 成就一览行现为 C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴 · H 帮助）', dataSrc.includes("['成就一览','C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴 · H 帮助）']"));
 ok("data.js 旧单键行零残留（['任务日志','J'] 等）",
   !dataSrc.includes("['任务日志','J']") && !dataSrc.includes("['记忆图鉴','B']") && !dataSrc.includes("['成就一览','C']"));
 ok('data.js 含 v22.88 行内注释（三行补 ↑↓ 滚动）', dataSrc.includes('v22.88 任务日志/记忆图鉴/成就一览三行补「↑↓ 滚动」口径'));
@@ -42,13 +42,13 @@ ok('main.js 三屏 ↑↓ 滚动分派存在（journal/codex/ach 各两向）',
 const data = await import(join(ROOT, 'js/data.js'));
 const { HELP_PAGES, GAME_VERSION } = data;
 ok(`操作说明页行数仍 14（实际 ${HELP_PAGES[0].length}）`, HELP_PAGES[0].length === 14);
-ok('GAME_VERSION 导出恒等于 v22.88', GAME_VERSION === 'v23.70', GAME_VERSION);
+ok('GAME_VERSION 导出恒等于 v22.88', GAME_VERSION === 'v23.71', GAME_VERSION);
 const p0 = HELP_PAGES[0];
 const row = (label) => { const r = p0.find((x) => x[0] === label); return r ? String(r[1]) : null; };
 const rowAll = (label) => { const r = p0.find((x) => x[0] === label); return r ? r.join(' ') : null; };
-ok('任务日志行精确为「J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就）」（v23.69 口径）', row('任务日志') === 'J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就）', row('任务日志'));
-ok('记忆图鉴行精确为「B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就）」（v23.69 口径）', row('记忆图鉴') === 'B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就）', row('记忆图鉴'));
-ok('成就一览行精确为「C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴）」（v23.69 口径）', row('成就一览') === 'C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴）', row('成就一览'));
+ok('任务日志行精确为「J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就 · H 帮助）」（v23.69 口径）', row('任务日志') === 'J（↑↓ 滚动 · I 状态页 · B 图鉴 · C 成就 · H 帮助）', row('任务日志'));
+ok('记忆图鉴行精确为「B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就 · H 帮助）」（v23.69 口径）', row('记忆图鉴') === 'B（↑↓ 滚动 · I 状态页 · J 日志 · C 成就 · H 帮助）', row('记忆图鉴'));
+ok('成就一览行精确为「C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴 · H 帮助）」（v23.69 口径）', row('成就一览') === 'C（↑↓ 滚动 · I 状态页 · J 日志 · B 图鉴 · H 帮助）', row('成就一览'));
 ok('移动行零回归（Shift 奔跑口径仍在）', String(row('移动 / 传送门')).includes('按住 Shift 奔跑'));
 ok('对话/确认行零回归（Enter / E 口径仍在）', row('对话 / 确认') === 'Enter / E（镇民需面对面）');
 ok('菜单/取消行零回归', row('菜单 / 取消') === 'Esc（大地图打开菜单，界面内返回）');
@@ -56,7 +56,7 @@ ok('状态行 v23.69 口径（页底 J 任务日志 · C 成就 · B 图鉴）',
 ok('快速旅行行零回归（仍为 T）', row('快速旅行') === 'T');
 // v23.70 操作说明行随帮助页（H）补四收集页直达收口（体验打磨·可发现性·与 H 页页脚/main.js help.onKey
 // 四分支/README H 行/index.html 常驻帮助条同口径——详见 CHANGELOG v23.70）——本件套 v22.88 旧口径
-// 「仍为 H」按新现实更新为「H（页内 I/J/B/C 直达 状态·日志·图鉴·成就）」；行数仍 14 零变化。
+// 「仍为 H」按新现实更新：GAME_VERSION/cl 顶 pin 等当前态断言随 v23.71 级联，特性标签（v23.70）保留。
 ok('操作说明行为 v23.70 口径（页内 I/J/B/C 直达）', row('操作说明') === 'H（页内 I/J/B/C 直达 状态·日志·图鉴·成就）', row('操作说明'));
 ok('喝药行零回归（POTION 派生仍在）', String(row('喝药（普通/灵药）')).includes('%HP+'));
 ok('静音/音量行零回归（[ / ] 口径仍在）', String(row('静音 / 音量')).includes('[ / ] 调节音量'));
@@ -189,31 +189,31 @@ ok('README 含 smoke_v2288_scrollhint 入库（184 份）', readme.includes('smo
 ok('README 仍保留 smoke_v2287_trueroute 入库（183 份）历史口径', readme.includes('smoke_v2287_trueroute 入库（183 份）'));
 ok('README 仍保留 v22.87 守护描述（历史口径）', readme.includes('v22.87 起含帮助页「地图指南」通关之路行真结局/记忆碎片指针守护'));
 ok('README 快速上手表 B 行补 ↑↓ 滚动口径（v22.88）', readme.includes('记忆图鉴（内容超出可视区时 ↑↓ 滚动浏览——v22.88'));
-ok('index.html 常驻帮助条 J/B/C 三处补 ↑↓ 滚动口径', 
-  idx.includes('J</kbd>任务（<kbd>↑↓</kbd>滚动 · <kbd>I</kbd>/<kbd>B</kbd>/<kbd>C</kbd>直达）') && idx.includes('B</kbd>图鉴（<kbd>↑↓</kbd>滚动 · <kbd>I</kbd>/<kbd>J</kbd>/<kbd>C</kbd>直达）') && idx.includes('C</kbd>成就（<kbd>↑↓</kbd>滚动 · <kbd>I</kbd>/<kbd>J</kbd>/<kbd>B</kbd>直达）'));
+ok('index.html 常驻帮助条 J/B/C 三处补 ↑↓ 滚动口径（v22.88 特性；v23.71 起 J/B/C 三处并注 <kbd>H</kbd>帮助）',
+  idx.includes('J</kbd>任务（<kbd>↑↓</kbd>滚动 · <kbd>I</kbd>/<kbd>B</kbd>/<kbd>C</kbd>直达 · <kbd>H</kbd>帮助）') && idx.includes('B</kbd>图鉴（<kbd>↑↓</kbd>滚动 · <kbd>I</kbd>/<kbd>J</kbd>/<kbd>C</kbd>直达 · <kbd>H</kbd>帮助）') && idx.includes('C</kbd>成就（<kbd>↑↓</kbd>滚动 · <kbd>I</kbd>/<kbd>J</kbd>/<kbd>B</kbd>直达 · <kbd>H</kbd>帮助）'));
 ok('package.json test 串含 smoke_v2288_scrollhint.mjs 且位于串尾',
   pkg.includes('node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 185 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 含 v22.88 条目（顶 pin）', changelog.startsWith('## v23.70 '));
+ok('CHANGELOG 含 v22.88 条目（顶 pin）', changelog.startsWith('## v23.71 '));
 
 // 7. 姊妹件套 pin（smoke_v2287/v2286/v2285 随新现实更新）
 const readTest = (name) => readFileSync(join(ROOT, 'tests', name), 'utf8');
 const s2287 = readTest('smoke_v2287_trueroute.mjs');
 const s2286 = readTest('smoke_v2286_titleekey.mjs');
 const s2285 = readTest('smoke_v2285_winekey.mjs');
-ok('smoke_v2287 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2287.includes("const GAME_VERSION = 'v23.70';"));
-ok('smoke_v2287 的 CHANGELOG 顶 pin 已更新为 ## v22.88', s2287.includes("startsWith('## v23.70 '"));
+ok('smoke_v2287 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2287.includes("const GAME_VERSION = 'v23.71';"));
+ok('smoke_v2287 的 CHANGELOG 顶 pin 已更新为 ## v22.88', s2287.includes("startsWith('## v23.71 '"));
 ok('smoke_v2287 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2287.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2287 的 README 串尾 pin 已延伸至 smoke_v2288_scrollhint',
   s2287.includes('smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2287 的 package 串尾 pin 已延伸至 smoke_v2288_scrollhint',
   s2287.includes('node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 ok('smoke_v2287 的 testChain pin 已更新为 184', s2287.includes('testChain === 212'));
-ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2286.includes("const GAME_VERSION = 'v23.70';"));
+ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2286.includes("const GAME_VERSION = 'v23.71';"));
 ok('smoke_v2286 的 testChain pin 已更新为 184', s2286.includes('testChain === 212'));
 ok('smoke_v2286 的哨兵 pin 已更新为二百一十二件套（二百一十一件套清除）', s2286.includes('二百一十二件套（二百一十一件套清除）'));
-ok('smoke_v2285 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2285.includes("const GAME_VERSION = 'v23.70';"));
+ok('smoke_v2285 的 GAME_VERSION 字面量 pin 已更新为 v22.88', s2285.includes("const GAME_VERSION = 'v23.71';"));
 
 // 8. 旧代 v22.87 pin 全库零残留
 const allTests = readdirSync(join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2288_scrollhint.mjs');

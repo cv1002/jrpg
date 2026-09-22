@@ -67,6 +67,12 @@ const screens = {
       // 真的可用」契约，与 drawStatus 页底「 · C 成就 · B 图鉴」提示同口径，I/J/Esc 零回归）
       else if (e.key === 'c' || e.key === 'C') goto('ach');
       else if (e.key === 'b' || e.key === 'B') goto('codex');
+      // v23.71 状态页补 H 帮助页直达（承 v23.70 help.onKey i/j/b/c→四页分支与 v23.68/69 四收集页
+      // 互切网格同一「同一功能所有入口口径一致」主线收口：H↔四页往返闭环；KEY 无 h 地图映射零冲突，
+      // I/J/B/C/Esc 分支与 SFX 零回归；状态页页底 11px 行宽预算已满（v23.68 实测右缘 ≈550.3 +
+      // 「 · H 帮助」≈42 → ≈588.7 > 570 面板右缘）故页脚不并注，H 键可达性由世界教程/index.html 常驻
+      // 帮助条/pause 菜单「操作说明 H」三处既有口径承载；纯入口零结算零存档零数值变化）
+      else if (e.key === 'h' || e.key === 'H') goto('help');
     },
   },
   journal: {
@@ -78,6 +84,9 @@ const screens = {
       // KEY 无 b/c 地图映射零冲突）
       else if (e.key === 'b' || e.key === 'B') goto('codex');
       else if (e.key === 'c' || e.key === 'C') goto('ach');
+      // v23.71 日志页补 H 帮助页直达（与 drawJournal 页脚「 · H 帮助」同口径，提示讲的键真的可用，
+      // 承 v23.70 help.onKey 四分支同一主线收口；KEY 无 h 地图映射零冲突，J/I/B/C/Esc/方向键零回归）
+      else if (e.key === 'h' || e.key === 'H') goto('help');
       // v21.45 任务日志滚动（与图鉴/成就同款 ↑↓ 滚动；内容未超可视区时滚动为 0、按了也不越界——drawJournal 绘制期钳制）
       else onArrow(e,
         () => { S.journalScroll++; SFX.select(); },
@@ -96,6 +105,9 @@ const screens = {
       // drawCodex 页脚「 · J 日志 · C 成就」同口径；B/Esc/I/方向键零回归，KEY 无 j/c 地图映射零冲突）
       else if (e.key === 'j' || e.key === 'J') goto('journal');
       else if (e.key === 'c' || e.key === 'C') goto('ach');
+      // v23.71 图鉴页补 H 帮助页直达（与 drawCodex 页脚「 · H 帮助」同口径，提示讲的键真的可用，
+      // 承 v23.70 help.onKey 四分支同一主线收口；KEY 无 h 地图映射零冲突，B/I/J/C/Esc/方向键零回归）
+      else if (e.key === 'h' || e.key === 'H') goto('help');
       else onArrow(e,
         () => { S.codexScroll++; SFX.select(); },
         () => { S.codexScroll--; SFX.select(); }
@@ -112,6 +124,9 @@ const screens = {
       // drawAch 页脚「 · J 日志 · B 图鉴」同口径；C/Esc/I/方向键零回归，KEY 无 j/b 地图映射零冲突）
       else if (e.key === 'j' || e.key === 'J') goto('journal');
       else if (e.key === 'b' || e.key === 'B') goto('codex');
+      // v23.71 成就页补 H 帮助页直达（与 drawAch 页脚「 · H 帮助」同口径，提示讲的键真的可用，
+      // 承 v23.70 help.onKey 四分支同一主线收口；KEY 无 h 地图映射零冲突，C/I/J/B/Esc/方向键零回归）
+      else if (e.key === 'h' || e.key === 'H') goto('help');
       else onArrow(e,
         () => { S.achScroll++; SFX.select(); },
         () => { S.achScroll--; SFX.select(); }

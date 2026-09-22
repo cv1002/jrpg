@@ -108,10 +108,10 @@ ok('data.js 含 v21.71 注释（任务日志页脚 I 状态页互切提示说明
 // —— menus.js 源级：两处页脚同式落位 + 旧裸文案零残留 + 既有口径保留 ——
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
 ok('menus.js 含 v21.71 注释（页脚 I 状态页互切提示）', mSrc.includes('v21.71 页脚补「I 状态页」互切提示'));
-ok('menus.js 空日志分支页脚新文案落位（按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就）',
-  mSrc.includes("text('按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就', 320, 432, '12px', '#7d93a3', 'center');"));
-ok('menus.js 有日志分支页脚新文案落位（模板尾部追加 I 状态页 · B 图鉴 · C 成就）',
-  mSrc.includes("` : ''}   ·   I 状态页 · B 图鉴 · C 成就`, 320, 432, '12px', '#7d93a3', 'center');"));
+ok('menus.js 空日志分支页脚新文案落位（按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助）',
+  mSrc.includes("text('按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助', 320, 432, '12px', '#7d93a3', 'center');"));
+ok('menus.js 有日志分支页脚新文案落位（模板尾部追加 I 状态页 · B 图鉴 · C 成就 · H 帮助）',
+  mSrc.includes("` : ''}   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助`, 320, 432, '12px', '#7d93a3', 'center');"));
 ok('menus.js 空日志分支旧裸文案「按 J / Esc 关闭」（无 I 提示）源级零残留',
   !mSrc.includes("text('按 J / Esc 关闭', 320, 432"));
 ok('menus.js 「按 J / Esc 关闭」与「↑↓ 滚动浏览（还有 N 条）」口径逐字保留（零回归）',
@@ -138,8 +138,8 @@ try {
   const footer1 = drawnCalls.find((c) => c.t.includes('按 J / Esc 关闭'));
   ok('有日志档页脚含「按 J / Esc 关闭」+「↑↓ 滚动浏览（还有 N 条）」+「I 状态页」三要素',
     !!footer1 && footer1.t.includes('↑↓ 滚动浏览（还有') && footer1.t.includes('I 状态页'), footer1 && footer1.t);
-  ok('有日志档页脚逐字为「按 J / Esc 关闭   ·   ↑↓ 滚动浏览（还有 N 条）   ·   I 状态页 · B 图鉴 · C 成就」且落位 (320,432)',
-    !!footer1 && /^按 J \/ Esc 关闭   ·   ↑↓ 滚动浏览（还有 \d+ 条）   ·   I 状态页 · B 图鉴 · C 成就$/.test(footer1.t) && footer1.x === 320 && footer1.y === 432, footer1 && footer1.t);
+  ok('有日志档页脚逐字为「按 J / Esc 关闭   ·   ↑↓ 滚动浏览（还有 N 条）   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助」且落位 (320,432)',
+    !!footer1 && /^按 J \/ Esc 关闭   ·   ↑↓ 滚动浏览（还有 \d+ 条）   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助$/.test(footer1.t) && footer1.x === 320 && footer1.y === 432, footer1 && footer1.t);
   ok('有日志档页脚行宽 estW ≤500 面板预算（12px，面板内宽 70..570）',
     !!footer1 && estW(footer1.t, 12) <= 500, footer1 && estW(footer1.t, 12));
   // 2) 空日志档（hero=null 防御分支，drawWorld 对 null hero 早退）：页脚同式逐字
@@ -148,8 +148,8 @@ try {
   drawJournal();
   const footer0 = drawnCalls.find((c) => c.t.includes('按 J / Esc 关闭'));
   ok('空日志档「没有进行中的任务。」零回归', drawnCalls.some((c) => c.t.includes('没有进行中的任务。')));
-  ok('空日志档页脚逐字「按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就」且落位 (320,432)',
-    !!footer0 && footer0.t === '按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就' && footer0.x === 320 && footer0.y === 432, footer0 && footer0.t);
+  ok('空日志档页脚逐字「按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助」且落位 (320,432)',
+    !!footer0 && footer0.t === '按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就 · H 帮助' && footer0.x === 320 && footer0.y === 432, footer0 && footer0.t);
   ok('空日志档页脚行宽 estW ≤500 面板预算', !!footer0 && estW(footer0.t, 12) <= 500, footer0 && estW(footer0.t, 12));
   S.G = origHero;
   // 3) 双向互切运行期分派：journal.onKey('i') → status；status.onKey('j') → journal
