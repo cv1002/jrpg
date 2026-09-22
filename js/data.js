@@ -1441,7 +1441,17 @@
 // [3]战斗用药统计之外、v23.72 的 mapPotions 同样只认大地图 F）；计数源 shop.stayInn 成功
 // 住店唯一产生点写入 hero.innRests（snapshotHero 全量快照自动持久化、(g.innRests||0)
 // 防御式旧档零迁移）；纯里程碑零奖励零结算零存档结构变化。
-const GAME_VERSION = 'v23.73';
+// v23.74 新内容·经济消费维度里程碑：新成就「一掷千金」（累计消费金币 SPEND_GOAL 金，
+// 见 ACH_LIST spend 注释）——承 v23.72/73 成对端口先例（成就版图逐线核对：经济线的
+// 小富翁/金玉满堂/富甲一方三档全数 hero.gold「持有」口径（500/1500/3000 金——看得见
+// 的存款），而对「花出去的钱」这一消费端口查无一行：玩家买装备/药水/灵药/住店/酿造成本
+// 是把赚来的金币真正投入循环的动作，攒 3000 金不花一文也能富甲一方、花掉 1000 金
+// 也可能分文不剩——持有 vs 消费是两个互不覆盖的端口；现补独立单档——计数源 5 处唯一
+// 产生点（shop.buyPotion/buyWeapon/buyArmor/stayInn 四处扣款 + core.brewNow 酿造成本）
+// 各在 hero.gold -= 之后写入 hero.spent，均紧邻既有 applyAchievements 当场判定（反馈不
+// 迟到），snapshotHero 全量快照自动持久化、(g.spent||0) 防御式旧档零迁移；纯里程碑零
+// 奖励零结算零数值变化（扣款/判定/报文逐字未动）。）
+const GAME_VERSION = 'v23.74';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3263,6 +3273,15 @@ const MAP_POTION_GOAL = 10;
 // 终局之旅往返补给十五次左右即「计」；与渴饮甘露同族不同端口——免费喝药 vs 付费住店，各自
 // 累计互不计入；纯里程碑零奖励零结算影响，与 MAP_POTION_GOAL 同「阈值数据化」家族）。
 const INN_REST_GOAL = 15;
+// v23.74 成就「一掷千金」阈值（经济消费维度首枚里程碑·单一数据源）：累计消费金币达 N 金解锁
+// ——与 ACH_LIST.spend 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 1000
+// （与富甲一方 RICH_GOLD(500) 三档的「持有」口径成对：消费 1000 金 ≈ 铁剑 80+秘银剑 220+
+// 皮甲 60+锁子甲 180+药水/住店/酿造杂支——一场终局之旅正常买齐中档装备+补给即「计」；攒 3000
+// 金不花一文也能富甲一方，花 1000 金也可能分文不剩——持有 vs 消费两个端口互不覆盖）；计数源
+// 5 处唯一产生点（shop.buyPotion/buyWeapon/buyArmor/stayInn 扣款处 + core.brewNow 酿造成本
+// BREW_GOLD）各在 hero.gold -= 之后写入 hero.spent（金币不足/背包满早退零计数），snapshotHero
+// 全量快照自动持久化、(g.spent||0) 防御式读取旧档零迁移；与 RICH_GOLD 同「阈值数据化」家族）。
+const SPEND_GOAL = 1000;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4883,6 +4902,20 @@ const ACH_LIST=[
   // 「反馈不迟到」惯例，计数源与判定点同处一行防漏记）；零战报后缀（承 v23.72 口径——住宿报文
   // 已带恢复量/HPMP 状态/金币余额，C 页进度 X/15 承载）。
   {id:'innrest', name:'夜宿灯下', d:`在旅馆住宿累计 ${INN_REST_GOAL} 次`, ok:g=>(g.innRests||0)>=INN_REST_GOAL, prog:g=>`${g.innRests||0}/${INN_REST_GOAL}`},
+  // 一掷千金（v23.74 新内容·经济消费维度单成就·全游唯一消费端口里程碑，承 v23.72/73 成对端口
+  // 先例——成就版图逐线核对：经济线三档（rich 小富翁/rich2 金玉满堂/rich3 富甲一方）全部读
+  // hero.gold「持有」口径（看得见的存款，500/1500/3000 金——可全凭掉落攒出而不花一文），对
+  // 「花出去的钱」查无一行：买装备/药水/灵药/住店/酿造成本才是把金币投入循环的动作；现补
+  // 消费端口独立单档——与 rich 三档成对（持有 vs 消费、各自累计互不计入）；计数源 5 处唯一
+  // 产生点（shop.buyPotion/buyWeapon/buyArmor/stayInn 四处扣款 + core.brewNow 酿造成本
+  // BREW_GOLD——全游 gold 扣减仅此 5 处）各在 hero.gold -= 之后写入 hero.spent（金币不足/
+  // 背包满/精神饱满早退零计数），snapshotHero 全量快照自动持久化、(g.spent||0) 防御式读取旧档
+  // 零迁移（承 v23.36 deflects / v23.72 mapPotions / v23.73 innRests 同款）；判定/进度/描述
+  // 同读 SPEND_GOAL 一份源（与 RICH_GOLD 同一「阈值数据化」家族）；无 r 字段纯里程碑（与
+  // rich/rich2/rich3 同款——一掷千金本身就是奖励）；解锁时机：扣款落账当场 applyAchievements
+  // （承「反馈不迟到」惯例——5 个计数点均紧邻既有 applyAchievements 调用）；零战报后缀（承
+  // v23.72/73 口径——各消费报文已带价格/余额，C 页进度 X/1000 承载）。
+  {id:'spend', name:'一掷千金', d:`累计消费金币 ${SPEND_GOAL} 金`, ok:g=>(g.spent||0)>=SPEND_GOAL, prog:g=>`${g.spent||0}/${SPEND_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5310,5 +5343,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL,
 };

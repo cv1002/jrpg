@@ -43,7 +43,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.91 版本注释', dataSrc.includes('v21.91 新成就「长明不熄」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.91', dataSrc.includes("const GAME_VERSION = 'v23.73';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.91', dataSrc.includes("const GAME_VERSION = 'v23.74';"));
 ok('data.js 导出 PLAY_TIME_GOAL（export 块落位；v22.6 起 PLAY_TIME2_GOAL/POTIONS_GOAL/POTIONS2_GOAL 随其后、v22.63 起 PLAY_TIME3_GOAL 并入同族）', dataSrc.includes(', PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD'));
 
 // —— PLAY_TIME_GOAL 数据契约 ——
@@ -204,7 +204,7 @@ ok('README 件套口径为二百一十二件套（二百一十一件套清除）
   readme.includes('冒烟二百一十二件套（二百一十一件套清除）') && !readme.includes('冒烟八十七件套（八十六件套清除）'));
 ok('README 含 v21.91 守护描述', readme.includes('v21.91 起含新成就「长明不熄」'));
 ok('README 成就口径「33 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 69 项进度') && readme.includes('**69 项成就**'));
+  readme.includes('成就一览（全部 70 项进度') && readme.includes('**70 项成就**'));
 ok('package.json 已收录 smoke_v2191_ptime（npm test 串跑第 87 份）',
   pkg.includes('smoke_v2191_ptime.mjs') && /smoke_v2190_launch\.mjs && node tests\/smoke_v2191_ptime\.mjs/.test(pkg));
 ok('CHANGELOG 含 v21.91 条目', changelog.includes('## v21.91 '));
@@ -226,7 +226,7 @@ for (const nm of ['smoke_v2190_launch.mjs', 'smoke_v2189_visitedlegacy.mjs', 'sm
   'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.91`,
-    src.includes("const GAME_VERSION = 'v23.73';"));
+    src.includes("const GAME_VERSION = 'v23.74';"));
 }
 const achFiles = ['smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2184_lvl12.mjs',
   'smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs',
@@ -234,7 +234,7 @@ const achFiles = ['smoke_v2188_wander.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2184
 for (const nm of achFiles) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 README 成就 pin 已随新现实更新（33 项 pin 零残留，34 项双处落位）`,
-    src.includes("readme.includes('成就一览（全部 69 项进度'") && !src.includes('**33 项成就**'));
+    src.includes("readme.includes('成就一览（全部 70 项进度'") && !src.includes('**33 项成就**'));
 }
 const s2188 = read('../tests/smoke_v2188_wander.mjs');
 ok('smoke_v2188 的 ACH_LIST 精确计数断言已去硬化（===32 零残留，>=32 存活性口径落位）',

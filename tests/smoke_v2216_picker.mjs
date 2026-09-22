@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.15', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 16)), GAME_VERSION);
 ok('data.js 含 v22.16 注释（拾菇人说明）', dSrc.includes('v22.16 雾语林新风味 NPC「拾菇人」'));
 ok('GAME_VERSION 字面量已为 v22.16（旧 v22.15 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.73';") && !dSrc.includes("const GAME_VERSION = 'v22." + "15';"));
+  dSrc.includes("const GAME_VERSION = 'v23.74';") && !dSrc.includes("const GAME_VERSION = 'v22." + "15';"));
 ok('data.js 仍保留 v22.15 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.15 新手教程行补 [ / ] 音量口径'));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
@@ -196,20 +196,20 @@ const s2179 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2179_titlerecap.mjs'
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
 ok('smoke_v2215 件套 pin 已随新现实更新为一百一十二件套', s2215.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2215 的 README 树尾 pin 已更新为 + smoke_v2216_picker', s2215.includes('smoke_v2215_tutorvol + smoke_v2216_picker'));
-ok('smoke_v2215 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2215.includes("const GAME_VERSION = 'v23.73';"));
-ok('smoke_v2215 的 GAME_VERSION 恒等 pin 已更新为 === v22.16', s2215.includes("GAME_VERSION === 'v23.73'"));
+ok('smoke_v2215 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2215.includes("const GAME_VERSION = 'v23.74';"));
+ok('smoke_v2215 的 GAME_VERSION 恒等 pin 已更新为 === v22.16', s2215.includes("GAME_VERSION === 'v23.74'"));
 ok('smoke_v2214 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2214.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2214 的 README 树尾 pin 已更新为 + smoke_v2216_picker', s2214.includes('smoke_v2214_mush + smoke_v2215_tutorvol + smoke_v2216_picker'));
-ok('smoke_v2214 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2214.includes("const GAME_VERSION = 'v23.73';"));
-ok('smoke_v2213 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2213.includes("const GAME_VERSION = 'v23.73';"));
+ok('smoke_v2214 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2214.includes("const GAME_VERSION = 'v23.74';"));
+ok('smoke_v2213 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2213.includes("const GAME_VERSION = 'v23.74';"));
 ok('smoke_v2213 的 NPC 总数 pin 已随新现实更新为 21（拾菇人落位）', s2213.includes('总数 29'));
-ok('smoke_v2212 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2212.includes("const GAME_VERSION = 'v23.73';"));
-ok('smoke_v2211 的 GAME_VERSION 字面量 pin 已更新为 v22.16（防 v22.15 残留）', s2211.includes("const GAME_VERSION = 'v23.73';") && !s2211.includes("const GAME_VERSION = 'v22." + "15';"));
+ok('smoke_v2212 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2212.includes("const GAME_VERSION = 'v23.74';"));
+ok('smoke_v2211 的 GAME_VERSION 字面量 pin 已更新为 v22.16（防 v22.15 残留）', s2211.includes("const GAME_VERSION = 'v23.74';") && !s2211.includes("const GAME_VERSION = 'v22." + "15';"));
 ok('smoke_v2211 的 NPC 总数 pin 已随新现实更新为 21（拾菇人落位）', s2211.includes('总数 29'));
-ok('smoke_v2192 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2192.includes("const GAME_VERSION = 'v23.73';"));
-ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2181.includes("const GAME_VERSION = 'v23.73';"));
-ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2179.includes("const GAME_VERSION = 'v23.73';"));
+ok('smoke_v2192 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2192.includes("const GAME_VERSION = 'v23.74';"));
+ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2181.includes("const GAME_VERSION = 'v23.74';"));
+ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已更新为 v22.16', s2179.includes("const GAME_VERSION = 'v23.74';"));
 ok('smoke_v2176 件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2176.includes('二百一十二件套（二百一十一件套清除）'));
 

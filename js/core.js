@@ -119,6 +119,10 @@ function brewNow() {
   }
   hero.mushrooms -= BREW_MUSHROOMS;
   hero.gold -= BREW_GOLD;
+  // v23.74 经济消费成就「一掷千金」计数（同 shop 四处注释，全游 5 处金币扣减之一）：
+  // 酿造成本扣款成功就地累计 hero.spent + BREW_GOLD，下方既有 hero.brews 计数与
+  // applyAchievements 当场判定不动（消费与酿造两端口各自累计）。
+  hero.spent = (hero.spent || 0) + BREW_GOLD;
   hero.potion2++;
   // v21.86 新成就「灵药初成」（酿造线里程碑·反馈不迟到）：酿造链此前全无成就纪念（30 项成就里
   // 没有任何一条关涉酿造/灵药），玩家第一次酿出高级灵药这一刻毫无回响；现按 v21.73 buyArmor

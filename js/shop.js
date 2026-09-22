@@ -30,6 +30,12 @@ export function buyPotion() {
   }
   if (hero.gold >= POTION_PRICE) {
     hero.gold -= POTION_PRICE;
+    // v23.74 经济消费成就「一掷千金」计数（新内容·单成就）：本处是全游 5 处金币扣减之一
+    // （buyPotion/buyWeapon/buyArmor/stayInn/brewNow），消费端口唯一产生点——扣款成功后
+    // 就地累计 hero.spent（金币不足/背包满早退不落此列），紧邻下方既有 applyAchievements
+    // 当场判定（反馈不迟到）；(g.spent||0) 防御式 + snapshotHero 全量快照自动持久化，旧档
+    // 零迁移；hero.gold 扣款/判定/报文逐字未动（零战报后缀承 v23.72/73 口径）。
+    hero.spent = (hero.spent || 0) + POTION_PRICE;
     hero.item++;
     SFX.shop();
     // v19.78 购买药水反馈追加剩余药水与金币（信息透明·纯显示）：v19.67 已带价格，但玩家消费后
@@ -81,6 +87,10 @@ export function buyWeapon(name) {
     // 与状态页「基础+装备=总面板」同源（applyStats 后 hero.atkMax 即新值），旧档防御力兜底。
     const atkBefore = typeof hero.atkMax === 'number' ? hero.atkMax : null;
     hero.gold -= price;
+    // v23.74 经济消费成就「一掷千金」计数（同 buyPotion 注释，全游 5 处金币扣减之一）：
+    // 扣款成功就地累计 hero.spent + price，紧邻下方既有 applyAchievements 当场判定；
+    // 零战报后缀，扣款/判定/报文逐字未动。
+    hero.spent = (hero.spent || 0) + price;
     hero.weapon = name;
     SFX.shop();
     applyStats(hero);
@@ -103,6 +113,9 @@ export function buyArmor(name) {
     // v20.5 购买反馈追加面板防御前后对比（信息透明·纯显示）：同 buyWeapon，零结算变化。
     const defBefore = typeof hero.defMax === 'number' ? hero.defMax : null;
     hero.gold -= price;
+    // v23.74 经济消费成就「一掷千金」计数（同 buyPotion 注释，全游 5 处金币扣减之一）：
+    // 扣款成功就地累计 hero.spent + price，紧邻下方既有 applyAchievements 当场判定。
+    hero.spent = (hero.spent || 0) + price;
     hero.armor = name;
     SFX.shop();
     applyStats(hero);
@@ -127,6 +140,10 @@ export function stayInn() {
   if (hero.hp < hero.hpMax || hero.mp < hero.mpMax) {
     if (hero.gold >= INN_PRICE) {
       hero.gold -= INN_PRICE;
+      // v23.74 经济消费成就「一掷千金」计数（同 buyPotion 注释，全游 5 处金币扣减之一）：
+      // 住店扣款成功就地累计 hero.spent + INN_PRICE，下方既有 hero.innRests 计数与
+      // applyAchievements 当场判定不动（消费与住宿两端口各自累计互不计入）。
+      hero.spent = (hero.spent || 0) + INN_PRICE;
       const hpBefore = hero.hp;
       const mpBefore = hero.mp;
       hero.hp = hero.hpMax;
