@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS, MAPS } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe, potionRestore, elixirRestore } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -203,6 +203,17 @@ export function drawBattle() {
   const hero = S.G;
   const enemy = S.enemy;
   text(`⚔️ 回合 ${S.battleTurn || 1}`, 60, 26, 'bold 14px', '#ffd24a');
+  // v23.78 体验打磨·信息透明·纯显示：战斗画面顶部右缘补「📍 所在地」——承 v23.77 暂停菜单头部
+  // 「📍 地图名」/ v19.89 状态页「📍 地图名」/ v23.27 快速旅行「当前所在地标注」同一「我在哪」单一
+  // 数据源口径收口：战斗是玩家最容易忘记自己在哪个图的场景——祭坛/试炼碑/传送门直接切战，打赢想回
+  // 补给却不知身在雾语林还是星井矿脉；DOM HUD（s-map）位于画布下方（英雄名·地图·昼夜混合）非画面内，
+  // v23.77 后「画面内」口径已铺到 状态/快旅/暂停 三端，唯独战斗画面查无一行（连 arenaTheme 都按图
+  // 区分背景，显示侧却零地图信息）；现与 drawStatus/drawPause 同读 (MAPS[curMap()]||{}).name||curMap()
+  // 一份单一数据源（防御式、加/删/改名地图自动跟随零裸字面量；本模块补 MAPS import 零新增模块依赖），
+  // 12px 灰字 620 右对齐（与角标列同 x 位、y=26 与左侧「⚔️ 回合 N」同基线的空位）、gallery 最长档
+  // 「📍 无字回廊」实测宽 ≈72px 至左缘 548 与敌方名字（居中 320 起 ≈116px 至 436）零重叠；
+  // 纯显示零结算零存档零数值变化（回合/敌方/预览/指令栏逐字未动，试炼关行/治愈封印/变身角标各 y 位零回归）。
+  text(`📍 ${(MAPS[curMap()] || {}).name || curMap()}`, 620, 26, '12px', '#7d93a3', 'right');
   if (enemy && enemy.isRush) {
     const st = Math.min(RUSH_BOSSES.length, Math.max(1, hero.rushStage || 1));
     // v12.9 试炼每关自动回血透明化（纯显示·与结算同源）：每胜一关悄然回血 35%HP/50%MP，此数值 v3.15 只标
