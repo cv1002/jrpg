@@ -63,6 +63,10 @@ const screens = {
     onKey(e) {
       if (e.key === 'i' || e.key === 'I' || isEsc(e)) backWorld();
       else if (e.key === 'j' || e.key === 'J') goto('journal');
+      // v23.68 状态页补 C/B 直达成就一览/记忆图鉴（承 v22.99 codex/ach 的 I 分支同款「提示讲的键
+      // 真的可用」契约，与 drawStatus 页底「 · C 成就 · B 图鉴」提示同口径，I/J/Esc 零回归）
+      else if (e.key === 'c' || e.key === 'C') goto('ach');
+      else if (e.key === 'b' || e.key === 'B') goto('codex');
     },
   },
   journal: {
