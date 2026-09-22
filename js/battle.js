@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -271,6 +271,18 @@ function doSkill(skillName) {
     return abortAction(`⛔ 祸乱气场封印了【${skillName}】！`);
   }
   hero.mp -= skill.mp;
+  // v23.64 成就「熟能生巧」计数（战斗维度第四枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发 /
+  // v23.63 暴击如雨先例）：[2]技能是玩家最主动的战术指令（SKILL_DATA 八招全表）——防御的反击、
+  // 蓄力、普攻暴击都有纪念，唯独技能无；计数写在施法成功唯一产生点（本函数，未领悟/MP 不足/
+  // 祸乱封印拦截均早退不计数——「释放」即成功出手，治愈与伤害两分支都计入），读 hero.casts
+  // （doSkill 局部 const hero = S.G、随 snapshotHero 全量快照自动持久化），防御式 (hero.casts||0)
+  // 旧档零迁移；阈值 CAST_GOAL 单一数据源见 data.js；落账当场 applyAchievements（承 v23.36
+  // 反击落账当场判定「反馈不迟到」惯例；applyAchievements 为本模块既有 import，零新增依赖）。
+  // 零结算零数值变化（MP 扣除/倍率/治疗/汲回/战报主体逐字未动，仅计数与当场判定追加；技能
+  // crit 恒 false 与暴击计数零干扰——暴击计数源 doAttack 逐字未动）。
+  const castN = (hero.casts || 0) + 1;
+  hero.casts = castN;
+  applyAchievements();
   bind.renderHUD();
   const charged = !!hero.charge;
   // v14.0 蓄力语义收敛：蓄力只加成「威力」（攻击/伤害技能 ×CHARGE_MULT），
