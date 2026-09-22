@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -462,7 +462,27 @@ function doFlee() {
     return true;
   }
   if (Math.random() < FLEE_SUCCESS) {
-    S.blog.push('🏃 成功逃脱了！');
+    // v23.65 成就「走为上计」计数（战斗维度第五枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发 /
+    // v23.63 暴击如雨 / v23.64 熟能生巧先例）：v23.64 收口「战斗操作」维度时补的是 [2]技能，与它
+    // 并列成对的是 [4]逃跑——玩家打不过就走的务实选择（普通怪 FLEE_SUCCESS=60% 概率成功、Boss
+    // 气场压制不可逃、指令栏 ⛔「别按 4」），此后仍无任何纪念：防御的反击、蓄力、普攻暴击、技能
+    // 都有纪念，唯独最「保命」的一键无；判定/进度/描述同读 FLEE_GOAL 单一数据源（与 DEFLECT_GOAL/
+    // CHARGE_GOAL/CRIT_GOAL/CAST_GOAL 同一「阈值数据化」家族——调门槛只改 data.js 一处自动跟随，
+    // 绝无第二套口径）；计数写在本函数逃跑成功唯一产生点（Boss 气场压制与逃脱失败都早退不计数
+    // ——「成功逃脱」即唯一事件；承 v23.63 crit「暴击唯一产生点」同款），读 hero.flees（doFlee
+    // 局部 const hero = S.G、随 snapshotHero 全量快照自动持久化），防御式 (hero.flees||0)
+    // 旧档零迁移（承 v19.41 seen / v23.36 deflects / v23.54 charges / v23.63 crits /
+    // v23.64 casts 同款）；无 r 字段纯里程碑（与 deflect/charge/crit/cast/memoir/skills 同款——
+    // 走为上计本身就是奖励）；解锁时机：逃脱落账当场 applyAchievements（承 v23.36 反击落账当场
+    // 判定「反馈不迟到」惯例；applyAchievements 为本模块既有 import，零新增依赖）。战报就地报
+    // 「 · 走为上计 N/10」（承 v23.54 蓄力战报报进度 / v23.63 暴击战报报进度同一「计数现场报进度」
+    // 惯例——逃跑是低频事件，不像技能每发都报会刷屏，与 v23.64 熟能生巧零战报后缀的取舍口径互补）。
+    // 零结算零数值变化（FLEE_SUCCESS 判定/离场/BGM 恢复/「成功逃脱了！」主体逐字未动，仅计数、
+    // 战报进度后缀与当场判定追加；逃脱失败/Boss 气场分支逐字未动）。
+    const fleeN = (hero.flees || 0) + 1;
+    hero.flees = fleeN;
+    applyAchievements();
+    S.blog.push(`🏃 成功逃脱了！ · 走为上计 ${fleeN}/${FLEE_GOAL}`);
     // v23.40 逃跑成功专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft 同一
     // 「事件音效各归其位」主线收口）：逃脱成功此前播 SFX.select()（菜单移动轻点）——逃跑是
     // 「离场脱战」不是「选择/翻行」，脱战瞬间与菜单操作同音无可分辨；现改播 audio.js SFX.flee()

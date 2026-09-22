@@ -9,7 +9,7 @@
 // 边界 rand===FLEE_SUCCESS 判负、成功档「🏃 成功逃脱了！」逐字且 battleTurn 不变回 world、
 // Boss 气场档逐字且 battleTurn 不变）、README/package.json 同步 + smoke_v2152 件套断言去硬化（v21.7 惯例）。
 import { S } from '../js/state.js';
-import { GAME_VERSION, FLEE_SUCCESS } from '../js/data.js';
+import { GAME_VERSION, FLEE_SUCCESS, FLEE_GOAL } from '../js/data.js';
 import { startBattle, playerAction } from '../js/battle.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -89,8 +89,8 @@ ok('battle.js 失败战报追加「（X 即将行动）」（enemy.name 单一�
   bSrc.includes('S.blog.push(`❌ 逃脱失败！（${enemy.name} 即将行动）`);'));
 ok('battle.js 旧裸文案「❌ 逃脱失败！」源级零残留',
   !bSrc.includes("S.blog.push('❌ 逃脱失败！');"));
-ok('battle.js 成功分支「🏃 成功逃脱了！」逐字零回归',
-  bSrc.includes("S.blog.push('🏃 成功逃脱了！');"));
+ok('battle.js 成功分支「🏃 成功逃脱了！」主体逐字保留 + v23.65 走为上计进度后缀落位',
+  bSrc.includes('S.blog.push(`🏃 成功逃脱了！ · 走为上计 ${fleeN}/${FLEE_GOAL}`);'));
 ok('battle.js Boss 气场分支「无法逃脱！（本回合行动保留）」逐字零回归（对照口径另一端未动）',
   bSrc.includes('的气场压制着你，无法逃脱！（本回合行动保留）'));
 ok('battle.js 逃跑判定仍读 FLEE_SUCCESS 单一数据源（Math.random() < FLEE_SUCCESS 未动）',
@@ -146,8 +146,8 @@ ok('运行期：边界 rand===FLEE_SUCCESS 判负（< 严格小于语义守护�
   r3.line.startsWith('❌ 逃脱失败！') && r3.turnAfter === 2, r3.line);
 // 成功档：rand=0 < FLEE_SUCCESS → 成功
 const r4 = tryFlee(mkHero(), mkDoll(), 0);
-ok('运行期：成功档「🏃 成功逃脱了！」逐字零回归',
-  r4.line === '🏃 成功逃脱了！', r4.line);
+ok('运行期：成功档「🏃 成功逃脱了！」主体逐字 + v23.65 走为上计进度后缀落位',
+  r4.line === `🏃 成功逃脱了！ · 走为上计 1/${FLEE_GOAL}`, r4.line);
 ok('运行期：成功档回到世界且敌人清空（goto world + S.enemy=null 结算零回归）',
   r4.scene === 'world' && r4.enemyGone, r4.scene);
 ok('运行期：成功档 battleTurn 不变（逃跑成功不耗回合——v14.1 口径零回归）',

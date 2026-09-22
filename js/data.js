@@ -1361,7 +1361,17 @@
 // 一处、C 页进度/判定/描述自动跟随，与 CRIT_GOAL 同一「阈值数据化」家族）；零结算零数值变化
 // （技能 MP 判定/伤害倍率/治疗与汲回结算/战报主体逐字未动，仅计数与当场成就判定追加；技能
 // crit 恒 false 与暴击计数零干扰）。
-const GAME_VERSION = 'v23.64';
+// v23.65 新内容·战斗维度第五枚里程碑：新成就「走为上计」（[4]逃跑成功累计 FLEE_GOAL 次，见
+// ACH_LIST flee 条目注释）——承 v23.36 以守为攻 / v23.54 蓄势待发 / v23.63 暴击如雨 / v23.64
+// 熟能生巧「战斗操作」维度的成对收口后的第五枚：[5]防御的奖励动作（趁隙反击）、[6]蓄力（×
+// CHARGE_MULT 爆发）、[1]攻击的普攻暴击（CRIT_RATE/CRIT_MULT）与 [2]技能（SKILL_DATA 八招全表）
+// 都有纪念，唯独 [4]逃跑——玩家打不过就走的务实选择（普通怪 FLEE_SUCCESS=60% 概率成功、Boss
+// 气场压制不可逃、指令栏 ⛔「别按 4」）——此后仍无任何纪念；计数由 js/battle.js doFlee 逃跑成功
+// 唯一产生点写入 hero.flees（随 snapshotHero 全量快照自动持久化、防御式读取旧档零迁移），阈值
+// FLEE_GOAL 单一数据源（调门槛只改 data.js 一处、C 页进度/判定/描述自动跟随，与 CRIT_GOAL/
+// CAST_GOAL 同一「阈值数据化」家族）；零结算零数值变化（FLEE_SUCCESS 判定/离场/回合推进/战报
+// 主体逐字未动，仅计数、战报进度后缀与当场成就判定追加）。
+const GAME_VERSION = 'v23.65';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3149,6 +3159,12 @@ const CRIT_GOAL = 20;
 // 各招轮转约 30 发即「熟」；纯里程碑零奖励零结算影响，与 DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL
 // 同「阈值数据化」家族）。
 const CAST_GOAL = 30;
+// v23.65 成就「走为上计」阈值（战斗维度第五枚里程碑·单一数据源）：[4]逃跑成功累计 N 次解锁 ——
+// 与 ACH_LIST.flee 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中低档 10
+// （逃跑每次消耗一回合、不像普攻那样每回合可挥——玩家在危险区/低血线战略性撤退，一局约十次
+// 即「计」；纯里程碑零奖励零结算影响，与 DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL
+// 同「阈值数据化」家族）。
+const FLEE_GOAL = 10;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4701,6 +4717,20 @@ const ACH_LIST=[
   // 熟能生巧本身就是奖励）；解锁时机：施法落账当场 applyAchievements（承 v23.36 反击落账当场
   // 判定「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。
   {id:'cast', name:'熟能生巧', d:`[2]技能累计释放 ${CAST_GOAL} 次`, ok:g=>(g.casts||0)>=CAST_GOAL, prog:g=>`${g.casts||0}/${CAST_GOAL}`},
+  // 走为上计（v23.65 新成就·战斗维度第五枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发 /
+  // v23.63 暴击如雨 / v23.64 熟能生巧先例）：v23.64 收口「战斗操作」维度时补的是 [2]技能，与它
+  // 并列成对的是 [4]逃跑——普通怪 FLEE_SUCCESS=60% 概率成功、Boss 战被气场压制不可逃（指令栏
+  // ⛔「别按 4」）——玩家打不过就走的务实选择，此后仍无任何纪念：防御的反击、蓄力、普攻暴击、
+  // 技能都有纪念，唯独最「保命」的一键查无回响；判定/进度/描述同读 FLEE_GOAL 单一数据源（与
+  // DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL 同一「阈值数据化」家族——调门槛只改 data.js
+  // 一处自动跟随，绝无第二套口径）；计数读 js/battle.js doFlee 逃跑成功唯一产生点新写入的
+  // hero.flees（随 snapshotHero 全量快照自动持久化），(g.flees||0) 防御式读取——旧档无此字段=0
+  // 不误解锁、零迁移（承 v19.41 seen / v23.36 deflects / v23.54 charges / v23.63 crits /
+  // v23.64 casts 同款）；无 r 字段纯里程碑（与 deflect/charge/crit/cast/memoir/skills 同款——
+  // 走为上计本身就是奖励）；解锁时机：逃脱落账当场 applyAchievements（承 v23.36 反击落账当场
+  // 判定「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。数值取中低档 10（逃跑要消耗一回合、
+  // 玩家不会像普攻那样每回合按——一局里战略性撤退十次左右即「计」，纯里程碑零奖励零结算影响）。
+  {id:'flee', name:'走为上计', d:`[4]逃跑成功累计 ${FLEE_GOAL} 次`, ok:g=>(g.flees||0)>=FLEE_GOAL, prog:g=>`${g.flees||0}/${FLEE_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5106,7 +5136,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
