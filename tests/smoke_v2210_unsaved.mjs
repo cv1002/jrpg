@@ -26,7 +26,7 @@ console.log('— v22.10 关闭/刷新未存档提醒（beforeunload 防误丢档
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.9', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 10)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.10（本版独占精确锚点）', GAME_VERSION === 'v23.65', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.10（本版独占精确锚点）', GAME_VERSION === 'v23.66', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -42,7 +42,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.10 版本注释', dataSrc.includes('v22.10 关闭/刷新未存档提醒'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.10', dataSrc.includes("const GAME_VERSION = 'v23.65';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.10', dataSrc.includes("const GAME_VERSION = 'v23.66';"));
 ok('data.js 仍保留 v22.9 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.9 状态页资源行「·成就X/6」'));
 
 // —— 源级落位：state.js 字段 + 13 置脏 / 2 清脏精确计数 + main.js beforeunload 守卫 ——
@@ -218,7 +218,7 @@ const vers210 = ['smoke_v2209_achstatus.mjs', 'smoke_v2208_elixir.mjs', 'smoke_v
 for (const nm of vers210) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.10`,
-    src.includes("const GAME_VERSION = 'v23.65';"));
+    src.includes("const GAME_VERSION = 'v23.66';"));
 }
 for (const nm of ['smoke_v2209_achstatus.mjs', 'smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs',
   'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs', 'smoke_v2204_brew2.mjs',
@@ -228,7 +228,7 @@ for (const nm of ['smoke_v2209_achstatus.mjs', 'smoke_v2208_elixir.mjs', 'smoke_
   'smoke_v2194_statuscodex.mjs', 'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.10`,
-    src.includes("GAME_VERSION === 'v23.65'"));
+    src.includes("GAME_VERSION === 'v23.66'"));
 }
 for (const nm of ['smoke_v2209_achstatus.mjs', 'smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs',
   'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs', 'smoke_v2204_brew2.mjs',

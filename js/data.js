@@ -1371,7 +1371,19 @@
 // FLEE_GOAL 单一数据源（调门槛只改 data.js 一处、C 页进度/判定/描述自动跟随，与 CRIT_GOAL/
 // CAST_GOAL 同一「阈值数据化」家族）；零结算零数值变化（FLEE_SUCCESS 判定/离场/回合推进/战报
 // 主体逐字未动，仅计数、战报进度后缀与当场成就判定追加）。
-const GAME_VERSION = 'v23.65';
+// v23.66 新内容·战斗维度第六枚里程碑：新成就「药到病除」（[3]战斗用药累计 POTION_USE_GOAL 次，
+// 见 ACH_LIST potionuses 条目注释）——承 v23.36 以守为攻 / v23.54 蓄势待发 / v23.63 暴击如雨 /
+// v23.64 熟能生巧 / v23.65 走为上计「战斗操作」维度的成对收口后的第六枚（战斗六指令全覆盖）：
+// [5]防御的奖励动作（趁隙反击）、[6]蓄力（×CHARGE_MULT 爆发）、[1]攻击的普攻暴击（CRIT_RATE/
+// CRIT_MULT）、[2]技能（SKILL_DATA 八招全表）与 [4]逃跑（FLEE_SUCCESS）都有纪念，唯独 [3]药水——
+// 战斗内唯一回血续命指令（takePotion 优先耗高级灵药、普通药水只补 HP、满状态不浪费）——此后仍无
+// 任何纪念；计数由 js/battle.js doItem 战斗用药成功唯一产生点写入 hero.potionUses（大地图 F 键
+// core.usePotion 走 core.js 另一端 takePotion，不在此列零计数；随 snapshotHero 全量快照自动持久化、
+// 防御式读取旧档零迁移），阈值 POTION_USE_GOAL 单一数据源（调门槛只改 data.js 一处、C 页进度/
+// 判定/描述自动跟随，与 CRIT_GOAL/CAST_GOAL/FLEE_GOAL 同一「阈值数据化」家族）；零结算零数值变化
+// （takePotion 判定/恢复结算/药水·灵药两档战报/afterPlayer 逐字未动，仅计数与当场成就判定追加；
+// 零战报后缀承 v23.64 熟能生巧口径——用药战报已带恢复量/剩余库存/HPMP 状态，C 页进度 X/15 承载）。
+const GAME_VERSION = 'v23.66';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3165,6 +3177,12 @@ const CAST_GOAL = 30;
 // 即「计」；纯里程碑零奖励零结算影响，与 DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL
 // 同「阈值数据化」家族）。
 const FLEE_GOAL = 10;
+// v23.66 成就「药到病除」阈值（战斗维度第六枚里程碑·单一数据源）：[3]战斗用药累计 N 次解锁 ——
+// 与 ACH_LIST.potionuses 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中低档 15
+// （用药受库存限制、每瓶都从背包真金白银地烧——玩家在 Boss/试炼/高危怪低血线时战略用药，一局约
+// 十五次即「计」，与 DEFLECT_GOAL/CHARGE_GOAL 同台阶；纯里程碑零奖励零结算影响，与
+// DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL 同「阈值数据化」家族）。
+const POTION_USE_GOAL = 15;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4731,6 +4749,25 @@ const ACH_LIST=[
   // 判定「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。数值取中低档 10（逃跑要消耗一回合、
   // 玩家不会像普攻那样每回合按——一局里战略性撤退十次左右即「计」，纯里程碑零奖励零结算影响）。
   {id:'flee', name:'走为上计', d:`[4]逃跑成功累计 ${FLEE_GOAL} 次`, ok:g=>(g.flees||0)>=FLEE_GOAL, prog:g=>`${g.flees||0}/${FLEE_GOAL}`},
+  // 药到病除（v23.66 新成就·战斗维度第六枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发 /
+  // v23.63 暴击如雨 / v23.64 熟能生巧 / v23.65 走为上计先例）：v23.65 收口「战斗操作」维度时补
+  // 的是 [4]逃跑，与它并列成对的最后一枚是 [3]药水——战斗六指令（[1]攻击/[2]技能/[3]药水/
+  // [4]逃跑/[5]防御/[6]蓄力）此刻全部齐备：防御的反击、蓄力、普攻暴击、技能、逃跑都有纪念，
+  // 唯独最「续命」的一键——[3]药水（指令栏 [3]恢复预览、战斗内唯一回血续命指令，takePotion
+  // 优先耗高级灵药、普通药水只补 HP、满状态不浪费）——查无回响；判定/进度/描述同读
+  // POTION_USE_GOAL 单一数据源（与 DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL
+  // 同一「阈值数据化」家族——调门槛只改 data.js 一处自动跟随，绝无第二套口径）；计数读
+  // js/battle.js doItem 战斗用药成功唯一产生点新写入的 hero.potionUses（大地图 F 键
+  // core.usePotion 走 core.js 另一端 takePotion，不在此列零计数；随 snapshotHero 全量快照
+  // 自动持久化），(g.potionUses||0) 防御式读取——旧档无此字段=0 不误解锁、零迁移（承 v19.41
+  // seen / v23.36 deflects / v23.54 charges / v23.63 crits / v23.64 casts / v23.65 flees
+  // 同款）；无 r 字段纯里程碑（与 deflect/charge/crit/cast/flee/memoir/skills 同款——药到病除
+  // 本身就是奖励）；解锁时机：用药落账当场 applyAchievements（承 v23.36 反击落账当场判定
+  // 「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。数值取中低档 15（用药受库存限制、
+  // 每瓶都从背包真金白银地烧——一局里战略用药十五次左右即「计」，纯里程碑零奖励零结算影响）；
+  // 零战报后缀（承 v23.64 熟能生巧零战报后缀口径——用药战报已带恢复量/剩余库存/HPMP 状态，
+  // 再叠进度后缀信息过载，C 页进度 X/15 承载）。
+  {id:'potionuses', name:'药到病除', d:`[3]战斗用药累计 ${POTION_USE_GOAL} 次`, ok:g=>(g.potionUses||0)>=POTION_USE_GOAL, prog:g=>`${g.potionUses||0}/${POTION_USE_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5136,7 +5173,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

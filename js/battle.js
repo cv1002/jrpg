@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -386,6 +386,23 @@ function doItem() {
     return abortAction(hpFull && mpFull ? '✅ 你气满神足，无需用药！' : '❌ 没有可用的药水了！');
   }
   const result = takePotion();
+  // v23.66 成就「药到病除」计数（战斗维度第六枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发 /
+  // v23.63 暴击如雨 / v23.64 熟能生巧 / v23.65 走为上计先例）：v23.65 收口「战斗操作」维度时补
+  // 的是 [4]逃跑，与它并列成对的最后一枚是 [3]药水——战斗六指令此刻全部齐备：防御的反击、蓄力、
+  // 普攻暴击、技能与逃跑都有纪念，唯独最「续命」的一键（战斗内唯一回血续命指令，takePotion 优先
+  // 耗高级灵药、普通药水只补 HP、满状态不浪费）查无回响；此处是 [3]战斗用药唯一产生点（大地图
+  // F 键 core.usePotion 走 core.js 另一端 takePotion，不在此列零计数），成功吃药才计数（气满神足/
+  // 无药早退零计数）——读 hero.potionUses（doItem 局部 const hero = S.G、随 snapshotHero 全量快照
+  // 自动持久化），防御式 (hero.potionUses||0) 旧档零迁移（承 v19.41 seen / v23.36 deflects /
+  // v23.54 charges / v23.63 crits / v23.64 casts / v23.65 flees 同款）；无 r 字段纯里程碑（与
+  // deflect/charge/crit/cast/flee/memoir/skills 同款——药到病除本身就是奖励）；落账当场
+  // applyAchievements（承 v23.36 反击落账当场判定「反馈不迟到」惯例，计数源与判定点同处一行
+  // 防漏记）；零战报后缀（承 v23.64 熟能生巧零战报后缀口径——用药战报已带恢复量/剩余库存/
+  // HPMP 状态，再叠进度后缀信息过载，C 页进度 X/15 承载）。takePotion 判定/恢复结算/药水·灵药
+  // 两档战报/afterPlayer 逐字未动。
+  const useN = (hero.potionUses || 0) + 1;
+  hero.potionUses = useN;
+  applyAchievements();
   SFX.heal();
   bind.renderHUD();
   // v19.74 战斗用药反馈追加剩余数量（信息透明·纯显示）：与大地图 F 键喝药同源，

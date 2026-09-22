@@ -31,7 +31,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.09 版本注释', dataSrc.includes('// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.35（旧 v23.33 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.65';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "33';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.66';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "33';"));
 ok('data.js 仍保留 v23.08 历史注释（难度/倍率数值速查行注释未动）', dataSrc.includes('// v23.08 文档整理·数值说明·同源口径：README「数值速查」补「难度 / 倍率」行'));
 
 ok('data.js 含 v23.32 版本注释（新支线「树精的菌库」/TREE_GOAL 单一数据源）',
@@ -92,7 +92,7 @@ ok('蛇影的药引：50 金 + 1 高级灵药（酿药师委托人、无 unlockO
 ok('data.js 蘑菇支线奖励字面量逐字（reward:{ gold:(lv)=>40+lv*10, item:2 }）', dataSrc.includes('reward:{ gold:(lv)=>40+lv*10, item:2 },'));
 ok('data.js 旧灯卫的名字奖励字面量逐字（reward:{ gold:120, potion2:1 }）', dataSrc.includes('reward:{ gold:120, potion2:1 },'));
 ok('data.js 树精的菌库字面量逐字（reward:{ gold:70, item:1 } / const TREE_GOAL = 3; / export 落位（WOLF_GOAL 与 GRAIN_GOAL·TREE_GOAL 相邻，v23.57 起 SNAKE_GOAL 并列 WOLF_GOAL 之后；v23.54 起 DEFLECT_GOAL 后并列 CHARGE_GOAL；v23.63 起 CHARGE_GOAL 后并列 CRIT_GOAL；v23.64 起 CRIT_GOAL 后并列 CAST_GOAL；v23.65 起 CAST_GOAL 后并列 FLEE_GOAL））',
-  dataSrc.includes('reward:{ gold:70, item:1 }') && dataSrc.includes('const TREE_GOAL = 3;') && dataSrc.includes('GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, MUSHROOM_PRICE'));
+  dataSrc.includes('reward:{ gold:70, item:1 }') && dataSrc.includes('const TREE_GOAL = 3;') && dataSrc.includes('GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, MUSHROOM_PRICE'));
 ok('data.js 夜路的狼嚎字面量逐字（reward:{ gold:40, item:2 } / const WOLF_GOAL = 3;）',
   dataSrc.includes('reward:{ gold:40, item:2 }') && dataSrc.includes('const WOLF_GOAL = 3;'));
 ok('data.js 蛇影的药引字面量逐字（id:side_snake kind:side npc:brewer / reward:{ gold:50, potion2:1 } / const SNAKE_GOAL = 3;）',
@@ -166,15 +166,15 @@ ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v231
   pkg.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 205 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.35 条目', changelog.startsWith('## v23.65 '));
+ok('CHANGELOG 顶部已追加 v23.35 条目', changelog.startsWith('## v23.66 '));
 ok('CHANGELOG 仍保留 v23.08 条目（历史口径）', changelog.includes('## v23.08 README「数值速查」补「难度 / 倍率」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.08 pin 零残留 ——
 const s2308 = read('smoke_v2308_diffnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.35', s2308.includes("const GAME_VERSION = 'v23.65';"));
+ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.35', s2308.includes("const GAME_VERSION = 'v23.66';"));
 ok('smoke_v2308 的 CHANGELOG 顶 pin 已更新为 ## v23.36',
-  s2308.includes("startsWith('## v23.65 "));
+  s2308.includes("startsWith('## v23.66 "));
 ok('smoke_v2308 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2308.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2308 的 README 串尾 pin 已延伸至 smoke_v2309_questnum',
