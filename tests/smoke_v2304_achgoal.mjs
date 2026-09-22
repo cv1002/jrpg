@@ -36,7 +36,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.04 版本注释', dataSrc.includes('// v23.04 文档整理·数值说明·同源口径：README「数值速查」补「成就档位」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.04（旧 v23.03 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.72';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "03';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.73';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "03';"));
 ok('data.js 仍保留 v23.03 历史注释（试炼/彩头数值速查行注释未动）', dataSrc.includes('// v23.03 文档整理·数值说明·同源口径：README「数值速查」补「试炼 / 彩头」行'));
 
 // —— 十三线档位常量契约（单一数据源：判定/描述/进度同读）——
@@ -54,7 +54,7 @@ ok('图鉴收录三档 5/10/13 种（SCHOLAR/SCHOLAR2/全图鉴）', SCHOLAR_GOA
 ok('图鉴遭遇三档 5/10/13 种（SEEN/SEEN2/全图鉴）', SEEN_GOAL === 5 && SEEN2_GOAL === 10 && BESTIARY_TARGET.length === 13, `${SEEN_GOAL}/${SEEN2_GOAL}/${BESTIARY_TARGET.length}`);
 ok('宝箱三档 6/9/12 只（TREASURE/TREASURE2/全图 12 只）', TREASURE_GOAL === 6 && TREASURE2_GOAL === 9 && chestTotal() === 12, `${TREASURE_GOAL}/${TREASURE2_GOAL}/${chestTotal()}`);
 ok('首胜单档 FIRSTBLOOD_GOAL === 1', FIRSTBLOOD_GOAL === 1, String(FIRSTBLOOD_GOAL));
-ok('ACH_LIST 共 68 项', ACH_LIST.length === 68, String(ACH_LIST.length));
+ok('ACH_LIST 共 69 项', ACH_LIST.length === 69, String(ACH_LIST.length));
 
 // —— README 数值速查「成就档位」行落位（全部由 data.js 派生、与判定/描述/进度同源）——
 ok('README 成就档位行 等级档位与 LVL*_GOAL 同源', readme.includes(`等级 ${LVL5_GOAL}/${LVL10_GOAL}/${LVL12_GOAL} 级`));
@@ -71,7 +71,7 @@ ok('README 成就档位行 图鉴收录档位与 SCHOLAR*/全图鉴 同源', rea
 ok('README 成就档位行 图鉴遭遇档位与 SEEN*/全图鉴 同源', readme.includes(`图鉴遭遇 ${SEEN_GOAL}/${SEEN2_GOAL}/${BESTIARY_TARGET.length} 种`));
 ok('README 成就档位行 宝箱档位与 TREASURE*/chestTotal 同源', readme.includes(`宝箱 ${TREASURE_GOAL}/${TREASURE2_GOAL}/${chestTotal()} 只`));
 ok('README 成就档位行 共 N 项与 ACH_LIST.length 同源', readme.includes(`共 ${ACH_LIST.length} 项`));
-ok('README 成就档位行 含 v23.04 补录注释与 ACH_LIST 引用（v23.13 补社交档/v23.72 补给药端口口径随新现实更新）', readme.includes('（v23.04 补录、v23.13 补社交档、v23.72 补给药端口）') && readme.includes('`ACH_LIST`'));
+ok('README 成就档位行 含 v23.04 补录注释与 ACH_LIST 引用（v23.13 补社交档/v23.72 补给药端口/v23.73 补休整档口径随新现实更新）', readme.includes('（v23.04 补录、v23.13 补社交档、v23.72 补给药端口、v23.73 补休整档）') && readme.includes('`ACH_LIST`'));
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2304_achgoal（v2303 后接 v2304）',
@@ -93,15 +93,15 @@ ok('package.json 串尾为 ... smoke_v2302_cmdprev.mjs && node tests/smoke_v2303
   pkg.includes('node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 200 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.04 条目', changelog.startsWith('## v23.72 '));
+ok('CHANGELOG 顶部已追加 v23.04 条目', changelog.startsWith('## v23.73 '));
 ok('CHANGELOG 仍保留 v23.03 条目（历史口径）', changelog.includes('## v23.03 README「数值速查」补「试炼 / 彩头」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.03 pin 零残留 ——
 const s2303 = read('smoke_v2303_rushnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2303 的 GAME_VERSION 字面量 pin 已更新为 v23.04', s2303.includes("const GAME_VERSION = 'v23.72';"));
+ok('smoke_v2303 的 GAME_VERSION 字面量 pin 已更新为 v23.04', s2303.includes("const GAME_VERSION = 'v23.73';"));
 ok('smoke_v2303 的 CHANGELOG 顶 pin 已更新为 ## v23.04',
-  s2303.includes("startsWith('## v23.72 "));
+  s2303.includes("startsWith('## v23.73 "));
 ok('smoke_v2303 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2303.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2303 的 README 串尾 pin 已延伸至 smoke_v2304_achgoal',

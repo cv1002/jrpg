@@ -1432,7 +1432,16 @@
 // 无补给点图）靠 F 续命多次，成就一览却查无一行；现补独立单档——与药到病除同族不同端口、各自
 // 累计互不计入（计数源 core.usePotion 成功喝药唯一产生点写入 hero.mapPotions，snapshotHero 全量
 // 快照自动持久化、(g.mapPotions||0) 防御式旧档零迁移）；纯里程碑零奖励零结算零存档结构变化。
-const GAME_VERSION = 'v23.72';
+// v23.73 新内容·旅中休整维度里程碑：新成就「夜宿灯下」（在旅馆住宿累计 INN_REST_GOAL 次，
+// 见 ACH_LIST innrest 注释）——承 v23.72 渴饮甘露先例（成就版图逐线核对后唯一仍无回响的
+// 日常行动是「花钱住店回满」：清泉（免费）/试炼关间恢复（免费）属免费端口，唯独旅馆是
+// 全游唯一花钱恢复点（INN_PRICE=10 住店回满，潮灯镇旅馆·客栈老板娘 v22.34）——花 10 金
+// 睡一觉这一「付费休整」行为查无一行）；现补独立单档——与渴饮甘露同族不同端口（免费补给
+// vs 付费休整、各自累计互不计入——v23.66 药到病除收口战斗六指令时已把 shop.stayInn 排除在
+// [3]战斗用药统计之外、v23.72 的 mapPotions 同样只认大地图 F）；计数源 shop.stayInn 成功
+// 住店唯一产生点写入 hero.innRests（snapshotHero 全量快照自动持久化、(g.innRests||0)
+// 防御式旧档零迁移）；纯里程碑零奖励零结算零存档结构变化。
+const GAME_VERSION = 'v23.73';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3246,6 +3255,14 @@ const RUSH_CLEAR_GOAL = 3;
 // DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL/POTION_USE_GOAL/RUSH_CLEAR_GOAL
 // 同「阈值数据化」家族）。
 const MAP_POTION_GOAL = 10;
+// v23.73 成就「夜宿灯下」阈值（旅中休整维度首枚里程碑·单一数据源）：在旅馆住宿累计 N 次解锁
+// ——与 ACH_LIST.innrest 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中档 15
+// （住店 10 金/晚（INN_PRICE 单一数据源）——15 晚共 150 金，是玩家主动为「回满」掏的真金白银，
+// 与药到病除 POTION_USE_GOAL(15)/以守为攻 DEFLECT_GOAL(15)/蓄势待发 CHARGE_GOAL(15) 同档；
+// 潮灯镇旅馆是全游唯一花钱恢复点，星井矿脉/无字回廊无补给点（v22.32）住店只发生在镇里，一场
+// 终局之旅往返补给十五次左右即「计」；与渴饮甘露同族不同端口——免费喝药 vs 付费住店，各自
+// 累计互不计入；纯里程碑零奖励零结算影响，与 MAP_POTION_GOAL 同「阈值数据化」家族）。
+const INN_REST_GOAL = 15;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4853,6 +4870,19 @@ const ACH_LIST=[
   // applyAchievements（承「反馈不迟到」惯例，计数源与判定点同处一行防漏记）；零战报后缀（承
   // v23.66 口径——喝药报文已带恢复量/剩余库存/HPMP 状态，C 页进度 X/10 承载）。
   {id:'mapdrink', name:'渴饮甘露', d:`大地图按 F 喝药累计 ${MAP_POTION_GOAL} 次`, ok:g=>(g.mapPotions||0)>=MAP_POTION_GOAL, prog:g=>`${g.mapPotions||0}/${MAP_POTION_GOAL}`},
+  // 夜宿灯下（v23.73 新成就·旅中休整维度首枚里程碑，追加在末尾、承 v23.72 渴饮甘露追加之先例）：
+  // 成就版图逐线核对——战斗六指令（v23.63-66）/试炼场（v23.67）/旅中补给（v23.72）收口后，
+  // 「恢复」这条日常行动线只剩「花钱住店」端口无纪念（清泉/试炼关间恢复是免费端口，旅馆是
+  // 全游唯一花钱恢复点 INN_PRICE=10——此处补与渴饮甘露成对的另一端口：免费喝药 vs 付费住店，
+  // 各自累计互不计入）；计数源 hero.innRests 由 shop.stayInn 成功住店唯一产生点写入（金币不足/
+  // 精神饱满早退零计数；战斗内/大地图喝药走 takePotion/usePotion 不在此列零计数），snapshotHero
+  // 全量快照自动持久化、(g.innRests||0) 防御式读取旧档零迁移（承 v23.36 deflects / v23.72
+  // mapPotions 同款）；判定/进度/描述同读 INN_REST_GOAL 一份源（与 MAP_POTION_GOAL 同一
+  // 「阈值数据化」家族）；无 r 字段纯里程碑（与 deflect/charge/crit/cast/flee/potionuses/rushs/
+  // mapdrink 同款——夜宿灯下本身就是奖励）；解锁时机：住店落账当场 applyAchievements（承
+  // 「反馈不迟到」惯例，计数源与判定点同处一行防漏记）；零战报后缀（承 v23.72 口径——住宿报文
+  // 已带恢复量/HPMP 状态/金币余额，C 页进度 X/15 承载）。
+  {id:'innrest', name:'夜宿灯下', d:`在旅馆住宿累计 ${INN_REST_GOAL} 次`, ok:g=>(g.innRests||0)>=INN_REST_GOAL, prog:g=>`${g.innRests||0}/${INN_REST_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5280,5 +5310,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL,
 };

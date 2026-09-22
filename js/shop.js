@@ -131,6 +131,18 @@ export function stayInn() {
       const mpBefore = hero.mp;
       hero.hp = hero.hpMax;
       hero.mp = hero.mpMax;
+      // v23.73 成就「夜宿灯下」计数（旅中休整维度首枚里程碑·承 v23.36 以守为攻 / v23.72 渴饮甘露先例）：
+      // v23.72 收口「旅中补给」后成就版图唯一仍无回响的日常行动是「花钱住店回满」（潮灯镇旅馆
+      // INN_PRICE=10 全游唯一花钱恢复点；清泉/试炼关间恢复是免费端口，唯独旅馆是玩家主动花金币
+      // 睡一觉的休整行为）；现补独立单档（与渴饮甘露同族不同端口——免费喝药 vs 付费住店、各自
+      // 累计互不计入，阈值 INN_REST_GOAL 单一数据源），成功住店才计数（金币不足/精神饱满早退
+      // 零计数）——读 hero.innRests（本函数局部 const hero = S.G、随 snapshotHero 全量快照自动
+      // 持久化），防御式 (hero.innRests||0) 旧档零迁移（承 v23.36 deflects / v23.72 mapPotions
+      // 同款）；无 r 字段纯里程碑（住宿本身即恢复）；落账当场 applyAchievements（反馈不迟到、
+      // 幂等不重报，shop.js 既有 import 零新增依赖）；零战报后缀（承 v23.72 口径——住宿报文已带
+      // 恢复量/HPMP 状态/金币余额，C 页进度 X/15 承载）。住店恢复结算/两档报文/renderHUD 逐字未动。
+      hero.innRests = (hero.innRests || 0) + 1;
+      applyAchievements();
       SFX.heal();
       // v19.76 旅馆住宿反馈追加剩余金币（信息透明·纯显示）：v19.67 已带价格，但大额恢复消费后
       // 玩家想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.75 装备购买同源。
