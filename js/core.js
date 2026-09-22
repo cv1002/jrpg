@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DIFFS, NPCS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, DIFFS, NPCS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -74,6 +74,19 @@ function usePotion() {
     return;
   }
   const result = takePotion();
+  // v23.72 成就「渴饮甘露」计数（旅中补给维度首枚里程碑·承 v23.36 以守为攻 / v23.66 药到病除先例）：
+  // v23.66 收口战斗六指令时明确把大地图 F 键排除在 [3]药到病除统计之外（战斗用药另一端口、
+  // 本函数是大地图喝药唯一产生点——世界画面 F 键唯一入口、战斗内 doItem 走 takePotion 不在此列
+  // 零计数），玩家在星井矿脉/无字回廊（全图唯二无补给点图）靠 F 续命多次，成就一览却无回响；
+  // 现补独立单档（与药到病除同族不同端口、各自累计互不计入，阈值 MAP_POTION_GOAL 单一数据源），
+  // 成功喝药才计数（状态满满/无药早退零计数）——读 hero.mapPotions（本函数局部 const hero = S.G、
+  // 随 snapshotHero 全量快照自动持久化），防御式 (hero.mapPotions||0) 旧档零迁移（承 v23.36
+  // deflects / v23.66 potionUses 同款）；无 r 字段纯里程碑（药剂本身即回复）；落账当场
+  // applyAchievements（承 v23.36 反击落账当场判定「反馈不迟到」惯例，计数源与判定点同处一行
+  // 防漏记）；零战报后缀（承 v23.66 口径——喝药报文已带恢复量/剩余库存/HPMP 状态，C 页进度
+  // X/10 承载）。takePotion 判定/恢复结算/两档报文/renderHUD 逐字未动。
+  hero.mapPotions = (hero.mapPotions || 0) + 1;
+  applyAchievements();
   SFX.heal();
   bind.renderHUD();
   // v19.74 喝药反馈追加剩余数量（信息透明·纯显示）：之前只报恢复量，玩家确认背包还剩几瓶

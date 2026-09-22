@@ -1424,7 +1424,15 @@
 // 页脚「 · H 帮助」+ 三页与状态页 h/H→help 分支（I 状态页页底 11px 行宽预算已满——v23.68 实测右缘
 // ≈550.3 + 「 · H 帮助」≈42 → ≈588.7 > 570 面板右缘，故页脚不并注，H 键可达性由世界教程/index.html
 // 常驻帮助条/pause 菜单「操作说明 H」三处既有口径承载）；纯显示零结算零存档零数值变化。
-const GAME_VERSION = 'v23.71';
+// v23.72 新内容·旅行/补给维度里程碑：新成就「渴饮甘露」（大地图按 F 喝药累计 MAP_POTION_GOAL 次，
+// 见 ACH_LIST mapdrink 注释）——承 v23.13 有口皆碑 / v23.36 以守为攻 / v23.54 蓄势待发 /
+// v23.63-67 战斗六指令与试炼场纪念先例；成就版图逐线核对（v23.67 收口时已无战斗/试炼空白）后唯一
+// 仍无回响的日常行动是「旅中补给」：v23.66 药到病除收口战斗六指令时明确把大地图 F 键排除在
+// [3]战斗用药统计之外（core.usePotion 走另一端口 takePotion），玩家在星井矿脉/无字回廊（全图唯二
+// 无补给点图）靠 F 续命多次，成就一览却查无一行；现补独立单档——与药到病除同族不同端口、各自
+// 累计互不计入（计数源 core.usePotion 成功喝药唯一产生点写入 hero.mapPotions，snapshotHero 全量
+// 快照自动持久化、(g.mapPotions||0) 防御式旧档零迁移）；纯里程碑零奖励零结算零存档结构变化。
+const GAME_VERSION = 'v23.72';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3230,6 +3238,14 @@ const POTION_USE_GOAL = 15;
 // 终局区「再战」试炼反复刷级/刷金，三场通关即「千锤百炼」；纯里程碑零奖励零结算影响，与
 // DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL/POTION_USE_GOAL 同「阈值数据化」家族）。
 const RUSH_CLEAR_GOAL = 3;
+// v23.72 成就「渴饮甘露」阈值（旅中补给维度首枚里程碑·单一数据源）：大地图按 F 喝药累计 N 次解锁
+// ——与 ACH_LIST.mapdrink 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中低档 10
+// （大地图喝药受库存/金币约束——药水 20 金、灵药 80 金（data.js 商店价签），星井矿脉/无字回廊无
+// 补给点、喷泉旅店够不着，F 是这两图的续命主通道，一场终局之旅实用十次左右即「计」；与药到病除
+// 同族不同端口——[3]战斗用药 vs 大地图 F，各自累计互不计入；纯里程碑零奖励零结算影响，与
+// DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL/POTION_USE_GOAL/RUSH_CLEAR_GOAL
+// 同「阈值数据化」家族）。
+const MAP_POTION_GOAL = 10;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4825,6 +4841,18 @@ const ACH_LIST=[
   // deflect/charge/crit/cast/flee/potionuses 同款——千锤百炼本身就是奖励）；解锁时机：winBattle
   // 试炼通关落账后当场 applyAchievements（既有调用，承「反馈不迟到」惯例）。
   {id:'rushs', name:'千锤百炼', d:`试炼场累计通关 ${RUSH_CLEAR_GOAL} 次`, ok:g=>(g.rushClears||0)>=RUSH_CLEAR_GOAL, prog:g=>`${g.rushClears||0}/${RUSH_CLEAR_GOAL}`},
+  // 渴饮甘露（v23.72 新成就·旅中补给维度首枚里程碑，追加在末尾、承 v23.63-67 成就追加之先例）：
+  // 成就版图逐线核对——战斗六指令（v23.63-66）/试炼场（v23.67）收口后，「喝药」这条日常行动线
+  // 只剩大地图 F 端口无纪念（[3]战斗用药属于药到病除、v23.66 注释明确把大地图排除在外——此处补
+  // 与它成对的另一端口，各自累计互不计入）；计数源 hero.mapPotions 由 core.usePotion 成功喝药
+  // 唯一产生点写入（世界画面 F 键唯一入口；状态满满/无药早退零计数；战斗内 doItem 走 takePotion
+  // 不在此列零计数），snapshotHero 全量快照自动持久化、(g.mapPotions||0) 防御式读取旧档零迁移
+  //（承 v23.36 deflects / v23.66 potionUses 同款）；判定/进度/描述同读 MAP_POTION_GOAL 一份源
+  //（与 POTION_USE_GOAL 同一「阈值数据化」家族）；无 r 字段纯里程碑（与 deflect/charge/crit/
+  // cast/flee/potionuses/rushs 同款——渴饮甘露本身就是奖励）；解锁时机：喝药落账当场
+  // applyAchievements（承「反馈不迟到」惯例，计数源与判定点同处一行防漏记）；零战报后缀（承
+  // v23.66 口径——喝药报文已带恢复量/剩余库存/HPMP 状态，C 页进度 X/10 承载）。
+  {id:'mapdrink', name:'渴饮甘露', d:`大地图按 F 喝药累计 ${MAP_POTION_GOAL} 次`, ok:g=>(g.mapPotions||0)>=MAP_POTION_GOAL, prog:g=>`${g.mapPotions||0}/${MAP_POTION_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5252,5 +5280,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL,
 };
