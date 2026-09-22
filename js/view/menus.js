@@ -728,7 +728,15 @@ export function drawPause() {
   const hero = S.G;
   drawWorld();
   panel(140, 48, 360, 392, '— 菜单 —');
-  text((hero ? hero.name : '守灯人') + '  ·  槽 ' + S.curSaveSlot, 320, 92, '13px', '#62c6ff', 'center');
+  // v23.77 体验打磨·信息透明·纯显示：Esc 暂停菜单头部补「当前所在地」——承 v19.89 状态页
+  // 「📍 地图名」与 v23.27 快速旅行「当前所在地标注」同一「我在哪」口径：暂停菜单是玩家决定
+  // 「存档/继续/快速旅行/回标题」的第一现场，头部此前只报「名字 · 槽号」——按 Esc 想确认
+  // 「现在在哪个图」还得退回世界看横幅或按 I 开状态页；现与 drawStatus 同读
+  // (MAPS[curMap()]||{}).name 一份单一数据源（加/删地图自动跟随零裸字面量），13px 居中全行
+  // 实测 ≤360 面板宽（最长档「余烬 · 槽 3 · 📍无字回廊」≈216px）；纯显示零结算零存档零数值变化，
+  // 头部既有「名字 · 槽 N」子串逐字保留（smoke_v2230 槽号行 includes 断言零回归）。
+  const _mapName = (MAPS[curMap()] || {}).name || curMap();
+  text((hero ? hero.name : '守灯人') + '  ·  槽 ' + S.curSaveSlot + '  ·  📍' + _mapName, 320, 92, '13px', '#62c6ff', 'center');
   PAUSE_ITEMS.forEach((it, i) => {
     const sel = i === S.pauseSel;
     if (sel) {

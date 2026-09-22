@@ -18,7 +18,7 @@ console.log('— v22.81 帮助页地图指南星井矿脉行「星井」r[2] 指
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.81', dataSrc.includes("const GAME_VERSION = 'v23.76'"));
+ok('data.js GAME_VERSION 字面量为 v22.81', dataSrc.includes("const GAME_VERSION = 'v23.77'"));
 ok('旧 v22.80 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "80';"));
 ok('data.js 含 v22.81 版本注释', dataSrc.includes('// v22.81 体验打磨'));
 ok('data.js 仍保留 v22.80 历史注释', dataSrc.includes('// v22.80 体验打磨'));
@@ -155,26 +155,26 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2281_starwell（v2280 后接 v2281）',
-  readme.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
-ok('README 件套口径为二百一十二件套（二百一十一件套清除）且旧 176 口径零残留',
-  readme.includes('冒烟二百一十二件套（二百一十一件套清除）') && !readme.includes('冒烟一百七十六件套（一百七十五件套清' + '除）'));
+  readme.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap（npm test 串跑）'));
+ok('README 件套口径为二百一十三件套（二百一十二件套清除）且旧 176 口径零残留',
+  readme.includes('冒烟二百一十三件套（二百一十二件套清除）') && !readme.includes('冒烟一百七十六件套（一百七十五件套清' + '除）'));
 ok('README 含 v22.81 守护描述（星井矿脉行星井指针守护）', readme.includes('v22.81 起含帮助页地图指南星井矿脉行「星井」指针守护'));
 ok('README 含 smoke_v2281_starwell 入库（177 份）', readme.includes('smoke_v2281_starwell 入库（177 份）'));
 ok('README 仍保留 smoke_v2280_grainfield 入库（176 份）历史口径', readme.includes('smoke_v2280_grainfield 入库（176 份）'));
 ok('package.json test 串含 smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
+  pkg.includes('node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 177 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 含 v22.81 条目（顶 pin）', changelog.startsWith('## v23.76 '));
+ok('package.json test 串共 177 件套', testChain === 213, String(testChain));
+ok('CHANGELOG 含 v22.81 条目（顶 pin）', changelog.startsWith('## v23.77 '));
 
 // 7. 姊妹件套 pin（smoke_v2280_grainfield 随新现实更新）
 const s2280 = readFileSync(join(ROOT, 'tests/smoke_v2280_grainfield.mjs'), 'utf8');
 const s2260 = readFileSync(join(ROOT, 'tests/smoke_v2260_fountripple.mjs'), 'utf8');
 const s2279 = readFileSync(join(ROOT, 'tests/smoke_v2279_lampwell.mjs'), 'utf8');
-ok('smoke_v2280 的 GAME_VERSION 字面量 pin 已更新为 v22.81', s2280.includes("const GAME_VERSION = 'v23.76';"));
-ok('smoke_v2280 的 CHANGELOG 顶 pin 已更新为 ## v22.81', s2280.includes("startsWith('## v23.76'"));
-ok('smoke_v2280 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2280.includes('二百一十二件套（二百一十一件套清除）'));
-ok('smoke_v2280 的 README 串尾 pin 已延伸至 smoke_v2281_starwell', s2280.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
+ok('smoke_v2280 的 GAME_VERSION 字面量 pin 已更新为 v22.81', s2280.includes("const GAME_VERSION = 'v23.77';"));
+ok('smoke_v2280 的 CHANGELOG 顶 pin 已更新为 ## v22.81', s2280.includes("startsWith('## v23.77'"));
+ok('smoke_v2280 的件套 pin 已更新为二百一十三件套（二百一十二件套清除）', s2280.includes('二百一十三件套（二百一十二件套清除）'));
+ok('smoke_v2280 的 README 串尾 pin 已延伸至 smoke_v2281_starwell', s2280.includes('smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap（npm test 串跑）'));
 ok('smoke_v2260 的 package.json 串尾 pin 已延伸至 smoke_v2281_starwell', s2260.includes('node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs'));
 ok('smoke_v2279 的星井矿脉行 r[2] 断言已随新现实改 includes（v22.81 指针落位）', s2279.includes("String(guide[2][2]).includes('无泉水/旅店 · 出发前请补给')"));
 
@@ -191,7 +191,7 @@ ok('旧代 v22.80 字面量/恒等/件套/testChain/串尾/版本锚 pin 全库�
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 178 口径
 const s2143 = readFileSync(join(ROOT, 'tests/smoke_v2143_talkekey.mjs'), 'utf8');
-ok('哨兵链 v2143 已含下一版件套口径（二百一十二件套（二百一十一件套清除））', s2143.includes('二百一十三件套（二百一十二件套清除）'));
+ok('哨兵链 v2143 已含下一版件套口径（二百一十三件套（二百一十二件套清除））', s2143.includes('二百一十四件套（二百一十三件套清除）'));
 
 console.log(`\n— v22.81 帮助页地图指南星井矿脉行「星井」r[2] 指针冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);
