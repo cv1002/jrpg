@@ -1,4 +1,4 @@
-// v23.78 专项冒烟：Esc 暂停菜单头部「当前所在地」——体验打磨·信息透明·纯显示，
+// v23.79 专项冒烟：Esc 暂停菜单头部「当前所在地」——体验打磨·信息透明·纯显示，
 // 承 v19.89 状态页「📍 地图名」/ v23.27 快速旅行「当前所在地标注」同一「我在哪」口径：
 // 暂停菜单（drawPause）是玩家按 Esc 决定「存档/继续/快速旅行/回标题」的第一决策现场，
 // 头部此前只报「名字 · 槽号」——现头部补「 · 📍地图名」，与 drawStatus 同读
@@ -6,7 +6,7 @@
 // 纯显示零结算零存档零数值变化，头部既有「名字 · 槽 N」子串逐字保留（smoke_v2230 槽号行零回归）。
 // 本冒烟守护：版本锚点、menus.js 源级落位（注释/头部派生/import 复用）、运行期 drawPause
 // 真实渲染捕获（village→「📍潮灯镇」/gallery→「📍无字回廊」两档头部 + 页脚/槽号行/未存档行零回归）、
-// README/package.json/CHANGELOG 同步（tests 树串尾 + 件套口径 + v23.78 守护描述 + Esc 行口径 + 入库 213 份）、
+// README/package.json/CHANGELOG 同步（tests 树串尾 + 件套口径 + v23.79 守护描述 + Esc 行口径 + 入库 213 份）、
 // 旧代 v23.76 pin 全库零残留扫描、断链防回归。
 import { S } from '../js/state.js';
 import { GAME_VERSION } from '../js/data.js';
@@ -72,7 +72,7 @@ function ok(name, cond, extra) {
   else { failed++; console.log('  ✗', name, extra || ''); }
 }
 
-console.log('— v23.78 暂停菜单「当前所在地」 冒烟 —');
+console.log('— v23.79 暂停菜单「当前所在地」 冒烟 —');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -83,12 +83,12 @@ const menusSrc = read('js/view/menus.js');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.76', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 76)), GAME_VERSION);
-ok('data.js 含 v23.78 注释（暂停菜单当前所在地说明）', dSrc.includes('v23.78 体验打磨·信息透明·纯显示'));
-ok('GAME_VERSION 字面量已为 v23.78（旧 v23.76 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.78';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "6';"));
+ok('data.js 含 v23.79 注释（暂停菜单当前所在地说明）', dSrc.includes('v23.79 体验打磨·信息透明·纯显示'));
+ok('GAME_VERSION 字面量已为 v23.79（旧 v23.76 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v23.79';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "6';"));
 ok('data.js 仍保留 v23.76 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v23.76 新内容·步行累计维度里程碑'));
 
-// —— menus.js 源级落位：v23.78 注释 + drawPause 头部同数据源派生 + 既有子串保留 ——
+// —— menus.js 源级落位：v23.79 注释 + drawPause 头部同数据源派生 + 既有子串保留 ——
 ok('menus.js 仍保留 v23.77 注释（drawPause 头部当前所在地说明，历史注释累积）', menusSrc.includes('v23.77 体验打磨·信息透明·纯显示'));
 ok('drawPause 头部由 (MAPS[curMap()]||{}).name 派生并附「 · 📍」后缀',
   menusSrc.includes("const _mapName = (MAPS[curMap()] || {}).name || curMap();") &&
@@ -140,20 +140,20 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 213 件套', testChain === 214, String(testChain));
-ok('package.json 已收录 smoke_v2317_pausemap（npm test 串跑第 214 份）',
+ok('package.json test 串共 213 件套', testChain === 215, String(testChain));
+ok('package.json 已收录 smoke_v2317_pausemap（npm test 串跑第 215 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2317_pausemap.mjs'));
-ok('package.json 串尾为 ... smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs"',
-  pkg.includes('node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs"'));
-ok('README tests 树串尾已延伸至 smoke_v2317_pausemap',
-  readme.includes('+ smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap（npm test 串跑）'));
-ok('README 件套口径为二百一十四件套（二百一十三件套清除）',
-  readme.includes('冒烟二百一十四件套（二百一十三件套清除）') && !readme.includes('冒烟二百一十二件套（二百一十一件套清' + '除）'));
+ok('package.json 串尾为 ... smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs"',
+  pkg.includes('node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs"'));
+ok('README tests 树串尾已延伸至 smoke_v2319_deadloc',
+  readme.includes('+ smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc（npm test 串跑）'));
+ok('README 件套口径为二百一十五件套（二百一十四件套清除）',
+  readme.includes('冒烟二百一十五件套（二百一十四件套清除）') && !readme.includes('冒烟二百一十二件套（二百一十一件套清' + '除）'));
 ok('README 仍保留 v23.77 守护描述（暂停菜单「当前所在地」守护，历史口径）', readme.includes('v23.77 起含 暂停菜单「当前所在地」守护'));
 ok('README 含 smoke_v2317_pausemap 入库（213 份）', readme.includes('smoke_v2317_pausemap 入库（213 份）'));
 ok('README 仍保留 v23.77 Esc 行当前所在地口径（历史口径）', readme.includes('v23.77 起菜单头部常显「📍 当前地图名」'));
 ok('README 仍保留 v23.76 历史守护描述（累积描述，姊妹 pin 不失效）', readme.includes('千里之行 X/1000 步（步行累计，v23.76）'));
-ok('CHANGELOG 顶部已追加 v23.78 条目（暂停菜单当前所在地）', changelog.startsWith('## v23.78 '));
+ok('CHANGELOG 顶部已追加 v23.79 条目（暂停菜单当前所在地）', changelog.startsWith('## v23.79 '));
 ok('CHANGELOG 仍保留 v23.77 条目标题（暂停菜单当前所在地，历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
 
 // —— 旧代 v23.76 pin 全库零残留（不含本件；拆串防误伤，承 v2313 惯例）——
@@ -180,5 +180,5 @@ const { ACH_LIST, NPCS } = await import('../js/data.js');
 ok('ACH_LIST 精确总数 72（v23.76 千里之行为末项，未动）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('NPCS 仍 37 处（灯下之声口径未动）', Object.keys(NPCS).length === 37, String(Object.keys(NPCS).length));
 
-console.log(`— v23.78 冒烟结束：${n} 项，失败 ${failed} —`);
+console.log(`— v23.79 冒烟结束：${n} 项，失败 ${failed} —`);
 if (failed > 0) process.exit(1);

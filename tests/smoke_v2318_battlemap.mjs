@@ -1,4 +1,4 @@
-// v23.78 专项冒烟：战斗画面顶部右缘「📍 所在地」——体验打磨·信息透明·纯显示，
+// v23.79 专项冒烟：战斗画面顶部右缘「📍 所在地」——体验打磨·信息透明·纯显示，
 // 承 v23.77 暂停菜单「📍 地图名」/ v19.89 状态页「📍 地图名」/ v23.27 快速旅行「当前所在地标注」
 // 同一「我在哪」单一数据源口径收口：战斗是玩家最容易忘记自己在哪个图的场景（祭坛/试炼碑/传送门
 // 直接切战，打赢想回补给却不知身在雾语林还是星井矿脉），DOM HUD（s-map）在画布下方非画面内、
@@ -7,9 +7,9 @@
 // （防御式、加/删/改名地图自动跟随零裸字面量；drawBattle 补 MAPS import 零新增模块依赖），
 // 12px 灰字 620 右对齐（角标列同 x 位、y=26 与左侧「⚔️ 回合 N」同基线的空位），
 // 纯显示零结算零存档零数值变化（回合/敌方/预览/指令栏逐字未动）。
-// 本冒烟守护：版本锚点、drawBattle.js 源级落位（MAPS import / v23.78 注释 / 📍 行 / 回合行零回归）、
+// 本冒烟守护：版本锚点、drawBattle.js 源级落位（MAPS import / v23.79 注释 / 📍 行 / 回合行零回归）、
 // 运行期 drawBattle 真实渲染捕获（village→「📍潮灯镇」/gallery→「📍无字回廊」两档 + 回合计数零回归）、
-// README/package.json/CHANGELOG 同步（tests 树串尾 + 件套口径 214 + v23.78 守护描述 + 战斗行口径 + 入库 214 份）、
+// README/package.json/CHANGELOG 同步（tests 树串尾 + 件套口径 + v23.79 守护描述 + 战斗行口径 + 入库 214 份）、
 // 旧代 v23.77 pin 全库零残留扫描、哨兵链 v2143 前望 215、断链防回归。
 import { S } from '../js/state.js';
 import { GAME_VERSION } from '../js/data.js';
@@ -75,7 +75,7 @@ function ok(name, cond, extra) {
   else { failed++; console.log('  ✗', name, extra || ''); }
 }
 
-console.log('— v23.78 战斗画面「📍 所在地」 冒烟 —');
+console.log('— v23.79 战斗画面「📍 所在地」 冒烟 —');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -86,14 +86,14 @@ const dbSrc = read('js/view/drawBattle.js');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.77', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 77)), GAME_VERSION);
-ok('data.js 含 v23.78 注释（战斗画面所在地说明）', dSrc.includes('v23.78 体验打磨·信息透明·纯显示'));
-ok('GAME_VERSION 字面量已为 v23.78（旧 v23.77 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.78';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "7';"));
+ok('data.js 含 v23.79 注释（战斗画面所在地说明）', dSrc.includes('v23.79 体验打磨·信息透明·纯显示'));
+ok('GAME_VERSION 字面量已为 v23.79（旧 v23.77 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v23.79';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "7';"));
 ok('data.js 仍保留 v23.77 历史注释（暂停菜单当前所在地，累积注释块）', dSrc.includes('v23.77 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v23.76 历史注释（步行累计里程碑，姊妹 pin 不失效）', dSrc.includes('v23.76 新内容·步行累计维度里程碑'));
 
-// —— drawBattle.js 源级落位：v23.78 注释 + MAPS import + 📍 行 + 既有回合行零回归 ——
-ok('drawBattle.js 含 v23.78 注释（战斗画面所在地说明）', dbSrc.includes('v23.78 体验打磨·信息透明·纯显示'));
+// —— drawBattle.js 源级落位：v23.79 注释 + MAPS import + 📍 行 + 既有回合行零回归 ——
+ok('drawBattle.js 仍保留 v23.78 注释（战斗画面所在地说明，历史注释累积）', dbSrc.includes('v23.78 体验打磨·信息透明·纯显示'));
 ok('drawBattle.js data.js import 补 MAPS（零新增模块依赖）',
   dbSrc.includes("FRAGMENTS, MAPS } from '../data.js';"));
 ok('📍 行由 (MAPS[curMap()]||{}).name||curMap() 派生（与 drawStatus/drawPause 单一数据源同式）',
@@ -146,29 +146,29 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 214 件套', testChain === 214, String(testChain));
-ok('package.json 已收录 smoke_v2318_battlemap（npm test 串跑第 214 份）',
+ok('package.json test 串共 214 件套', testChain === 215, String(testChain));
+ok('package.json 已收录 smoke_v2318_battlemap（npm test 串跑第 215 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2318_battlemap.mjs'));
-ok('package.json 串尾为 ... smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs"',
-  pkg.includes('node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs"'));
-ok('README tests 树串尾已延伸至 smoke_v2318_battlemap',
-  readme.includes('+ smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap（npm test 串跑）'));
-ok('README 件套口径为二百一十四件套（二百一十三件套清除）且旧 213 口径零残留',
-  readme.includes('冒烟二百一十四件套（二百一十三件套清除）') && !readme.includes('冒烟二百一十三件套（二百一十二件套清' + '除）'));
-ok('README 含 v23.78 守护描述（战斗画面「所在地」守护）', readme.includes('v23.78 起含 战斗画面「所在地」守护'));
+ok('package.json 串尾为 ... smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs"',
+  pkg.includes('node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs"'));
+ok('README tests 树串尾已延伸至 smoke_v2319_deadloc',
+  readme.includes('+ smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc（npm test 串跑）'));
+ok('README 件套口径为二百一十五件套（二百一十四件套清除）且旧 213 口径零残留',
+  readme.includes('冒烟二百一十五件套（二百一十四件套清除）') && !readme.includes('冒烟二百一十三件套（二百一十二件套清' + '除）'));
+ok('README 仍保留 v23.78 守护描述（战斗画面「所在地」守护，历史口径）', readme.includes('v23.78 起含 战斗画面「所在地」守护'));
 ok('README 含 smoke_v2318_battlemap 入库（214 份）', readme.includes('smoke_v2318_battlemap 入库（214 份）'));
-ok('README 战斗行含 v23.78 当前所在地口径', readme.includes('v23.78 起战斗画面顶部常显「📍 当前地图名」'));
+ok('README 仍保留 v23.78 战斗行当前所在地口径（历史口径）', readme.includes('v23.78 起战斗画面顶部常显「📍 当前地图名」'));
 ok('README 仍保留 v23.77 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.77 起含 暂停菜单「当前所在地」守护') && readme.includes('smoke_v2317_pausemap 入库（213 份）'));
-ok('CHANGELOG 顶部已追加 v23.78 条目（战斗画面所在地）', changelog.startsWith('## v23.78 '));
-ok('CHANGELOG 顶部条目含 v23.78 战斗画面所在地说明', changelog.includes('## v23.78 战斗画面顶部右缘补「📍 所在地」'));
+ok('CHANGELOG 顶部已追加 v23.79 条目（战斗画面所在地）', changelog.startsWith('## v23.79 '));
+ok('CHANGELOG 仍保留 v23.78 条目标题（战斗画面顶部右缘补「📍 所在地」，历史口径）', changelog.includes('## v23.78 战斗画面顶部右缘补「📍 所在地」'));
 ok('CHANGELOG 仍保留 v23.77 条目标题（历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
 
 // —— 哨兵链：v2143 前哨前望 215 且 README 尚无 215 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百一十五件套（二百一十四件套清除）',
-  s2143.includes('二百一十五件套（二百一十四件套清除）') && s2143.includes("!readme.includes('二百一十五件套（二百一十四件套清除）')"));
-ok('README 尚无二百一十五件套（二百一十四件套清除）前望口径', !readme.includes('二百一十五件套（二百一十四件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百一十六件套（二百一十五件套清除）',
+  s2143.includes('二百一十六件套（二百一十五件套清除）') && s2143.includes("!readme.includes('二百一十六件套（二百一十五件套清除）')"));
+ok('README 尚无二百一十六件套（二百一十五件套清除）前望口径', !readme.includes('二百一十六件套（二百一十五件套清除）'));
 
 // —— 旧代 v23.77 pin 全库零残留（不含本件；拆串防误伤，承 v2317 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2318_battlemap.mjs');
@@ -193,5 +193,5 @@ const { ACH_LIST, NPCS } = await import('../js/data.js');
 ok('ACH_LIST 精确总数 72（v23.76 千里之行为末项，未动）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('NPCS 仍 37 处（灯下之声口径未动）', Object.keys(NPCS).length === 37, String(Object.keys(NPCS).length));
 
-console.log(`— v23.78 冒烟结束：${n} 项，失败 ${failed} —`);
+console.log(`— v23.79 冒烟结束：${n} 项，失败 ${failed} —`);
 if (failed > 0) process.exit(1);
