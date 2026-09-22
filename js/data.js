@@ -1342,7 +1342,16 @@
 // 主线收口：图鉴是「该去打哪只」的刷怪中枢，此前与讨伐采集型支线零联动——J 日志每卡有进度、
 // 图鉴行查无一行；现图鉴行按 QUESTS 单一数据源派生「 · 📜 支线 N/M」，零新字段零裸字面量、
 // 加/删支线改阈值自动跟随，纯显示零结算零存档零数值变化）。
-const GAME_VERSION = 'v23.62';
+// v23.63 新内容·战斗维度第三枚里程碑：新成就「暴击如雨」（[1]普攻暴击累计 CRIT_GOAL 次，见
+// ACH_LIST crit 条目注释）——承 v23.36 以守为攻 / v23.54 蓄势待发「战斗操作」维度的成对收口
+// 后的第三枚：[5]防御的奖励动作（趁隙反击）与 [6]蓄力（×CHARGE_MULT 爆发）都有纪念，唯独 [1]
+// 攻击的普攻暴击（CRIT_RATE/CRIT_MULT，仅普攻可触发、技能 crit=false）无任何纪念——玩家整局
+// 靠「普攻暴击+蓄力」打出爆发，成就一览却查无一声回响；计数由 js/battle.js doAttack 暴击唯一
+// 产生点写入 hero.crits（随 snapshotHero 全量快照自动持久化、防御式读取旧档零迁移），阈值
+// CRIT_GOAL 单一数据源（调门槛只改 data.js 一处、C 页进度/判定/描述自动跟随，与 CHARGE_GOAL
+// 同一「阈值数据化」家族）；零结算零数值变化（暴击判定/×CRIT_MULT 结算/「（暴击×N！）」战报
+// 主体逐字未动，仅计数与战报进度后缀追加）。
+const GAME_VERSION = 'v23.63';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3119,6 +3128,11 @@ const DEFLECT_GOAL = 15;
 // 数值取与「以守为攻」同档的中期档（蓄力每次主动消耗一回合、与暴击可叠，主动用
 // 蓄力的玩家一个流程内可达；纯里程碑零奖励零结算影响）。
 const CHARGE_GOAL = 15;
+// v23.63 成就「暴击如雨」阈值（战斗维度第三枚里程碑·单一数据源）：[1]普攻暴击累计 N 次解锁 ——
+// 与 ACH_LIST.crit 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中低档
+// 20（暴击是 12% 概率的被动事件、不像防御/蓄力那样按一下记一下——按期望每约 8 次普攻一暴，
+// 整局普攻百余次可达；纯里程碑零奖励零结算影响，与 DEFLECT_GOAL/CHARGE_GOAL 同「阈值数据化」家族）。
+const CRIT_GOAL = 20;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4646,6 +4660,18 @@ const ACH_LIST=[
   // ——蓄势待发本身就是奖励）；解锁时机：蓄力落账当场 applyAchievements（承 v23.36 反击落账当场判定
   // 「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。
   {id:'charge', name:'蓄势待发', d:`[6]蓄力累计 ${CHARGE_GOAL} 次`, ok:g=>(g.charges||0)>=CHARGE_GOAL, prog:g=>`${g.charges||0}/${CHARGE_GOAL}`},
+  // 暴击如雨（v23.63 新成就·战斗维度第三枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发先例）：
+  // v23.54 收口「战斗操作」维度时补的是 [6]蓄力，与它并列成对的是 [1]攻击的普攻暴击——12% 概率
+  // （CRIT_RATE）触发、×CRIT_MULT 1.8 结算、暴击瞬间有专属上扬音（v23.43）、战报如实报
+  // 「（暴击×1.8！）」——玩家整局靠「暴击+蓄力」打出爆发，成就一览却查无一声回响（[5]防御的
+  // 反击与 [6]蓄力都有纪念，唯独最常用的 [1]攻击没有）；判定/进度/描述同读 CRIT_GOAL 单一数据源
+  // （与 DEFLECT_GOAL/CHARGE_GOAL 同一「阈值数据化」家族——调门槛只改 data.js 一处自动跟随，
+  // 绝无第二套口径）；计数读 js/battle.js doAttack 暴击唯一产生点新写入的 hero.crits
+  // （随 snapshotHero 全量快照自动持久化），(g.crits||0) 防御式读取——旧档无此字段=0 不误解锁、
+  // 零迁移（承 v19.41 seen / v23.36 deflects / v23.54 charges 同款）；无 r 字段纯里程碑（与
+  // deflect/charge/memoir/skills 同款——暴击如雨本身就是奖励）；解锁时机：暴击落账当场
+  // applyAchievements（承 v23.36 反击落账当场判定「反馈不迟到」惯例，计数源与判定点同处一行防漏记）。
+  {id:'crit', name:'暴击如雨', d:`[1]普攻暴击累计 ${CRIT_GOAL} 次`, ok:g=>(g.crits||0)>=CRIT_GOAL, prog:g=>`${g.crits||0}/${CRIT_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5051,7 +5077,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -214,6 +214,20 @@ function doAttack() {
   const crit = Math.random() < CRIT_RATE;
   const charged = !!hero.charge;
   if (charged) hero.charge = false;
+  // v23.63 成就「暴击如雨」计数（战斗维度第三枚里程碑·承 v23.36 以守为攻 / v23.54 蓄势待发先例）：
+  // [1]普攻是玩家最常用的指令，12% 概率（CRIT_RATE）暴击、×CRIT_MULT 1.8 结算、v23.43 起有专属
+  // 上扬音、v21.57 起战报如实报「（暴击×1.8！）」——与它并列的 [5]防御（以守为攻）/[6]蓄力
+  // （蓄势待发）都有纪念，唯独普攻暴击无；计数写在暴击唯一产生点（本函数，与 crit 判定同处一处
+  // 防漏记，技能 crit 恒 false 不计数），读 hero.crits（doAttack 局部 const hero = S.G、随
+  // snapshotHero 全量快照自动持久化），防御式 (hero.crits||0) 旧档零迁移；阈值 CRIT_GOAL 单一
+  // 数据源见 data.js；落账当场 applyAchievements（承 v23.36 反击落账当场判定「反馈不迟到」惯例；
+  // applyAchievements 为本模块既有 import，零新增依赖）。零结算零数值变化（crit 判定/×CRIT_MULT
+  // 结算/「（暴击×N！）」战报主体/震屏/音效逐字未动，仅战报进度后缀追加）。
+  const cc = crit ? (hero.crits || 0) + 1 : (hero.crits || 0);
+  if (crit) {
+    hero.crits = cc;
+    applyAchievements();
+  }
   bind.burstEnemy(['#fff', '#e8d8c0', '#ffd24a'], crit ? 22 : 10);
   // v21.57 暴击命中战报补确切倍率（信息透明·纯显示）：暴击链条的结算端（attackMove
   // `isCrit ? CRIT_MULT : 1` 读 CRIT_MULT 单一数据源）与状态页端（menus.js「普攻N%暴击 ×N」
@@ -225,7 +239,7 @@ function doAttack() {
   // 不受影响）。
   attackMove(
     (dmg) => finishPlayer(
-      `${crit ? '💥' : '🗡️'} 你发动攻击，对 ${enemy.name} 造成 <dmg> 伤害${crit ? `（暴击×${CRIT_MULT}！）` : ''}${charged ? '（蓄力爆发！）' : ''}！`,
+      `${crit ? '💥' : '🗡️'} 你发动攻击，对 ${enemy.name} 造成 <dmg> 伤害${crit ? `（暴击×${CRIT_MULT}！ · 暴击如雨 ${cc}/${CRIT_GOAL}）` : ''}${charged ? '（蓄力爆发！）' : ''}！`,
       dmg
     ),
     null,

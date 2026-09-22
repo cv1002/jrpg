@@ -91,7 +91,7 @@ ok('data.js 含 v21.57 注释（暴击命中战报补确切倍率说明）',
 // —— battle.js 源级落位 ——
 const bSrc = fs.readFileSync(path.join(ROOT, 'js/battle.js'), 'utf8');
 ok('battle.js 含 v21.57 注释（暴击命中战报补确切倍率）', bSrc.includes('v21.57 暴击命中战报补确切倍率'));
-ok('battle.js 新文案落位（（暴击×${CRIT_MULT}！））', bSrc.includes('（暴击×${CRIT_MULT}！）'));
+ok('battle.js 新文案落位（（暴击×${CRIT_MULT}！ · 暴击如雨 ${cc}/${CRIT_GOAL}）——v23.63 进度后缀随新现实）', bSrc.includes('（暴击×${CRIT_MULT}！ · 暴击如雨 ${cc}/${CRIT_GOAL}）'));
 ok("battle.js 旧裸文案 `${crit ? '（暴击！）' : ''}' 源级零残留", !bSrc.includes("${crit ? '（暴击！）' : ''}"));
 ok('battle.js crit 判定逐字零回归（Math.random() < CRIT_RATE 未动）',
   bSrc.includes('const crit = Math.random() < CRIT_RATE;'));
@@ -154,7 +154,7 @@ const plainV = Math.round(Math.max(1, 100 * 2 - 10) * (0.9 + 0.99 * 0.2));
   const r = heroAttack(mkHero(), mkFoe(), 0.05);
   const line = r.lines.find((l) => l.includes('你发动攻击')) || '';
   const dmg = dmgOf(line);
-  ok('运行期：暴击档战报含「（暴击×1.8！）」（新文案落位）', line.includes('（暴击×1.8！）'), line);
+  ok('运行期：暴击档战报含「（暴击×1.8！ · 暴击如雨 N/20）」（新文案落位，v23.63 进度后缀随新现实）', line.includes('（暴击×1.8！ · 暴击如雨 '), line);
   ok('运行期：暴击档伤害为 raw×1.8（311，倍率如实结算）', dmg === critV && dmg === 311, `${dmg} ≠ ${critV}`);
   ok('运行期：暴击档敌 HP 读数与结算一致（5000-311=4689，v20.0 口径未动）',
     r.hpAfter === 5000 - critV && line.includes(`（敌方 HP 剩余 ${5000 - critV}/5000）`), `${r.hpAfter} | ${line}`);
@@ -176,8 +176,8 @@ const plainV = Math.round(Math.max(1, 100 * 2 - 10) * (0.9 + 0.99 * 0.2));
   const r = heroAttack(mkHero(), mkFoe(), 0.05, { charge: true });
   const line = r.lines.find((l) => l.includes('你发动攻击')) || '';
   const dmg = dmgOf(line);
-  ok('运行期：蓄力+暴击战报含「（暴击×1.8！）」与「（蓄力爆发！）」双 note 共存',
-    line.includes('（暴击×1.8！）') && line.includes('（蓄力爆发！）'), line);
+  ok('运行期：蓄力+暴击战报含「（暴击×1.8！ · 暴击如雨 N/20）」与「（蓄力爆发！）」双 note 共存',
+    line.includes('（暴击×1.8！ · 暴击如雨 ') && line.includes('（蓄力爆发！）'), line);
   ok('运行期：蓄力+暴击伤害为 raw×1.8×1.5（467，两倍率同乘）',
     dmg === chargeCritV && dmg === 467, `${dmg} ≠ ${chargeCritV}`);
   ok('运行期：蓄力+暴击敌 HP 结算一致（5000-467=4533）', r.hpAfter === 5000 - chargeCritV, r.hpAfter);
