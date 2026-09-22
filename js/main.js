@@ -73,6 +73,11 @@ const screens = {
     onKey(e) {
       if (e.key === 'j' || e.key === 'J' || isEsc(e)) backWorld();
       else if (e.key === 'i' || e.key === 'I') goto('status');
+      // v23.69 日志页补 B/C 直达（承 v23.68 状态页 C/B / v22.99 codex/ach I 分支同一「提示讲的键
+      // 真的可用」契约，与 drawJournal 页脚「 · B 图鉴 · C 成就」同口径；J/Esc/I/方向键零回归，
+      // KEY 无 b/c 地图映射零冲突）
+      else if (e.key === 'b' || e.key === 'B') goto('codex');
+      else if (e.key === 'c' || e.key === 'C') goto('ach');
       // v21.45 任务日志滚动（与图鉴/成就同款 ↑↓ 滚动；内容未超可视区时滚动为 0、按了也不越界——drawJournal 绘制期钳制）
       else onArrow(e,
         () => { S.journalScroll++; SFX.select(); },
@@ -87,6 +92,10 @@ const screens = {
       // 图鉴页此前只有 B/Esc/方向键——玩家在图鉴里对属性只能 Esc 回世界再按 I；现 I 与
       // drawCodex 页脚「I 状态页」提示同口径（提示讲的键真的可用），B/Esc/方向键零回归。
       else if (e.key === 'i' || e.key === 'I') goto('status');
+      // v23.69 图鉴页补 J/C 直达（承 v23.68 状态页 C/B 同一「提示讲的键真的可用」契约，与
+      // drawCodex 页脚「 · J 日志 · C 成就」同口径；B/Esc/I/方向键零回归，KEY 无 j/c 地图映射零冲突）
+      else if (e.key === 'j' || e.key === 'J') goto('journal');
+      else if (e.key === 'c' || e.key === 'C') goto('ach');
       else onArrow(e,
         () => { S.codexScroll++; SFX.select(); },
         () => { S.codexScroll--; SFX.select(); }
@@ -99,6 +108,10 @@ const screens = {
       // v22.99 成就页补 I 直达状态页（与图鉴页同批，详见 codex.onKey v22.99 注释）；
       // C/Esc/方向键零回归。
       else if (e.key === 'i' || e.key === 'I') goto('status');
+      // v23.69 成就页补 J/B 直达（承 v23.68 状态页 C/B 同一「提示讲的键真的可用」契约，与
+      // drawAch 页脚「 · J 日志 · B 图鉴」同口径；C/Esc/I/方向键零回归，KEY 无 j/b 地图映射零冲突）
+      else if (e.key === 'j' || e.key === 'J') goto('journal');
+      else if (e.key === 'b' || e.key === 'B') goto('codex');
       else onArrow(e,
         () => { S.achScroll++; SFX.select(); },
         () => { S.achScroll--; SFX.select(); }

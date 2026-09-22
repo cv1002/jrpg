@@ -33,7 +33,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.99 版本注释', dataSrc.includes('// v22.99 体验打磨·可发现性·信息透明'));
 ok('data.js GAME_VERSION 字面量已为 v22.99（旧 v22.98 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.68';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "98';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.69';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "98';"));
 ok('data.js 仍保留 v22.98 历史注释（遇敌槽数值说明注释未动）', dataSrc.includes('// v22.98 文档整理·数值说明·同源口径'));
 
 // —— main.js 源级落位：codex.onKey / ach.onKey 补 I→goto('status') 分支 ——
@@ -51,16 +51,16 @@ ok('main.js codex/ach 方向键分派零回归（onArrow codexScroll/achScroll�
   mainSrc.includes('S.codexScroll++') && mainSrc.includes('S.achScroll++') && mainSrc.includes('S.codexScroll--') && mainSrc.includes('S.achScroll--'));
 
 // —— menus.js 源级落位：drawCodex 448 / drawAch 430 页脚补「I 状态页」 ——
-ok('menus.js drawCodex 页脚含「· I 状态页」（448 行）',
-  menusSrc.includes('按 B / Esc 关闭') && menusSrc.includes("·   I 状态页`,320,448,'12px','#7d93a3','center')"));
-ok('menus.js drawAch 页脚含「· I 状态页」（430 行）',
-  menusSrc.includes("按 C / Esc 关闭") && menusSrc.includes("·   I 状态页`,320,430,'12px','#7d93a3','center')"));
+ok('menus.js drawCodex 页脚含「· I 状态页 · J 日志 · C 成就」（448 行，v23.69 互切）',
+  menusSrc.includes('按 B / Esc 关闭') && menusSrc.includes("·   I 状态页 · J 日志 · C 成就`,320,448,'12px','#7d93a3','center')"));
+ok('menus.js drawAch 页脚含「· I 状态页 · J 日志 · B 图鉴」（430 行，v23.69 互切）',
+  menusSrc.includes("按 C / Esc 关闭") && menusSrc.includes("·   I 状态页 · J 日志 · B 图鉴`,320,430,'12px','#7d93a3','center')"));
 ok('menus.js 页脚注释含 v22.99（两处：drawCodex/drawAch）',
   menusSrc.split('v22.99 图鉴页脚补「I 状态页」').length - 1 === 1 &&
   menusSrc.split('v22.99 成就页脚补「I 状态页」').length - 1 === 1);
 ok('menus.js 能力端零回归：drawStatus 页底「J 任务日志」仍在', menusSrc.includes('·  J 任务日志'));
 ok('menus.js 能力端零回归：drawJournal 页脚「I 状态页」仍在（432 行）',
-  menusSrc.includes("I 状态页`, 320, 432, '12px', '#7d93a3', 'center')"));
+  menusSrc.includes("I 状态页 · B 图鉴 · C 成就`, 320, 432, '12px', '#7d93a3', 'center')"));
 ok('menus.js 能力端零回归：drawAch 面板标题「— 成就 —」仍在',
   menusSrc.includes("panel(80,30,480,430,'— 成就 —')"));
 ok('menus.js 能力端零回归：drawDead/drawWin 冒险进度行仍在（adventureProgress 同源行）',
@@ -91,15 +91,15 @@ ok('package.json 串尾为 ... smoke_v2298_encnum.mjs && node tests/smoke_v2299_
   pkg.includes('node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 195 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v22.99 条目', changelog.startsWith('## v23.68 '));
+ok('CHANGELOG 顶部已追加 v22.99 条目', changelog.startsWith('## v23.69 '));
 ok('CHANGELOG 仍保留 v22.98 条目（历史口径）', changelog.includes('## v22.98 遇敌槽机制数值说明补录'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v22.98 pin 零残留 ——
 const s2298 = read('smoke_v2298_encnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2298 的 GAME_VERSION 字面量 pin 已更新为 v22.99', s2298.includes("const GAME_VERSION = 'v23.68';"));
+ok('smoke_v2298 的 GAME_VERSION 字面量 pin 已更新为 v22.99', s2298.includes("const GAME_VERSION = 'v23.69';"));
 ok('smoke_v2298 的 CHANGELOG 顶 pin 已更新为 ## v22.99',
-  s2298.includes("startsWith('## v23.68 '"));
+  s2298.includes("startsWith('## v23.69 '"));
 ok('smoke_v2298 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   s2298.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2298 的 README 串尾 pin 已延伸至 smoke_v2299_crosslink',

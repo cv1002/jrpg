@@ -320,7 +320,10 @@ export function drawCodex(){
   // 页脚只写「按 B / Esc 关闭」——在图鉴里对属性/想回状态页只能 Esc 回世界再按 I；现页脚补
   // 「· I 状态页」与 main.js codex.onKey 新增的 I→goto('status') 分支同口径（提示讲的键真的可用），
   // 行间预算：448 行上移一行仍不触页脚（448+12 <= 480 画布底、上方 426 行间 22 >= 16），纯显示零结算零存档。
-  text(`按 B / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览（还有 ${remain} 种）`:''}   ·   I 状态页`,320,448,'12px','#7d93a3','center');
+  // v23.69 图鉴页脚补「 · J 日志 · C 成就」直达（承 v23.68 状态页页底三直达 / v22.99 I 状态页同一
+  // 「四收集页互切网格」主线，详见 data.js GAME_VERSION 上方 v23.69 注释；与 main.js codex.onKey
+  // j/J→journal、c/C→ach 新分支同口径（提示讲的键真的可用），B/Esc/↑↓/I 口径逐字零回归，纯文字零逻辑）。
+  text(`按 B / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览（还有 ${remain} 种）`:''}   ·   I 状态页 · J 日志 · C 成就`,320,448,'12px','#7d93a3','center');
 }
 
 export function drawAch(){
@@ -353,7 +356,10 @@ export function drawAch(){
   text(remain>0?`还有 ${remain} 项未在本页显示`:'全部成就已在当前页',320,412,'12px','#7d93a3','center');
   // v22.99 成就页脚补「I 状态页」直达口径（与记忆图鉴页脚同批，详见 drawCodex v22.99 注释）——
   // 行间预算：430 行上方 412 行间 18 >= 16 不触、下方画布底 480 距 50，纯显示零结算零存档。
-  text(`按 C / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览`:''}   ·   I 状态页`,320,430,'12px','#7d93a3','center');
+  // v23.69 成就页脚补「 · J 日志 · B 图鉴」直达（承 v23.68 状态页页底三直达 / v22.99 I 状态页同一
+  // 「四收集页互切网格」主线，详见 data.js GAME_VERSION 上方 v23.69 注释；与 main.js ach.onKey
+  // j/J→journal、b/B→codex 新分支同口径（提示讲的键真的可用），C/Esc/↑↓/I 口径逐字零回归，纯文字零逻辑）。
+  text(`按 C / Esc 关闭${remain>0?`   ·   ↑↓ 滚动浏览`:''}   ·   I 状态页 · J 日志 · B 图鉴`,320,430,'12px','#7d93a3','center');
 }
 
 const QST_COL = {
@@ -464,7 +470,9 @@ export function drawJournal(){
   if (!log.length) {
     text('没有进行中的任务。', 320, 200, '16px', '#ffd24a', 'center');
     // v21.71 空日志分支页脚同式补「I 状态页」互切提示（详注见下方有日志分支页脚）
-    text('按 J / Esc 关闭   ·   I 状态页', 320, 432, '12px', '#7d93a3', 'center');
+    // v23.69 空日志分支页脚同式补「B 图鉴 · C 成就」互切（与有日志分支页脚 v23.69 同批，详见
+    // drawJournal 主页脚 v23.69 注释；与 main.js journal.onKey b/B→codex、c/C→ach 同口径）
+    text('按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就', 320, 432, '12px', '#7d93a3', 'center');
     return;
   }
   const cx = 86;
@@ -578,7 +586,14 @@ export function drawJournal(){
   // （drawStatus 末行），唯独日志页两处页脚只写「按 J / Esc 关闭」——翻日志想对号属性时
   // 无从知晓 I 可直切状态页。本分支与上方空日志分支同式补齐，双向互切口径自此成对。
   // 纯文字零逻辑零结算；「按 J / Esc 关闭」与「↑↓ 滚动浏览（还有 N 条）」口径逐字保留。
-  text(`按 J / Esc 关闭${remain > 0 ? `   ·   ↑↓ 滚动浏览（还有 ${remain} 条）` : ''}   ·   I 状态页`, 320, 432, '12px', '#7d93a3', 'center');
+  // v23.69 日志页脚补「 · B 图鉴 · C 成就」互切（体验打磨·可发现性·纯显示，承 v23.68 状态页页底
+  // 三直达 / v22.99 图鉴·成就页脚 I 直达 / v22.90 I↔J 双向互切同一「四收集页互切网格」主线，详见
+  // data.js GAME_VERSION 上方 v23.69 注释）：v23.68 后 I↔J / I↔B / I↔C 齐备，唯独日志页本身
+  // 「J→B / J→C」查无一行——玩家按 J 看支线进度想去图鉴查魔物强度/去成就页查进度只能 Esc 回世界
+  // 再按；现页脚并注「 · B 图鉴 · C 成就」与 main.js journal.onKey b/B→codex、c/C→ach 新分支
+  // 同口径（提示讲的键真的可用）；「按 J / Esc 关闭」「↑↓ 滚动浏览（还有 N 条）」与 432 基线逐字
+  // 零回归，纯显示零结算零存档零数值变化。
+  text(`按 J / Esc 关闭${remain > 0 ? `   ·   ↑↓ 滚动浏览（还有 ${remain} 条）` : ''}   ·   I 状态页 · B 图鉴 · C 成就`, 320, 432, '12px', '#7d93a3', 'center');
 }
 
 export function drawHelp(){

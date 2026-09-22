@@ -108,10 +108,10 @@ ok('data.js 含 v21.71 注释（任务日志页脚 I 状态页互切提示说明
 // —— menus.js 源级：两处页脚同式落位 + 旧裸文案零残留 + 既有口径保留 ——
 const mSrc = fs.readFileSync(path.join(ROOT, 'js/view/menus.js'), 'utf8');
 ok('menus.js 含 v21.71 注释（页脚 I 状态页互切提示）', mSrc.includes('v21.71 页脚补「I 状态页」互切提示'));
-ok('menus.js 空日志分支页脚新文案落位（按 J / Esc 关闭   ·   I 状态页）',
-  mSrc.includes("text('按 J / Esc 关闭   ·   I 状态页', 320, 432, '12px', '#7d93a3', 'center');"));
-ok('menus.js 有日志分支页脚新文案落位（模板尾部追加 I 状态页）',
-  mSrc.includes("` : ''}   ·   I 状态页`, 320, 432, '12px', '#7d93a3', 'center');"));
+ok('menus.js 空日志分支页脚新文案落位（按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就）',
+  mSrc.includes("text('按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就', 320, 432, '12px', '#7d93a3', 'center');"));
+ok('menus.js 有日志分支页脚新文案落位（模板尾部追加 I 状态页 · B 图鉴 · C 成就）',
+  mSrc.includes("` : ''}   ·   I 状态页 · B 图鉴 · C 成就`, 320, 432, '12px', '#7d93a3', 'center');"));
 ok('menus.js 空日志分支旧裸文案「按 J / Esc 关闭」（无 I 提示）源级零残留',
   !mSrc.includes("text('按 J / Esc 关闭', 320, 432"));
 ok('menus.js 「按 J / Esc 关闭」与「↑↓ 滚动浏览（还有 N 条）」口径逐字保留（零回归）',
@@ -138,8 +138,8 @@ try {
   const footer1 = drawnCalls.find((c) => c.t.includes('按 J / Esc 关闭'));
   ok('有日志档页脚含「按 J / Esc 关闭」+「↑↓ 滚动浏览（还有 N 条）」+「I 状态页」三要素',
     !!footer1 && footer1.t.includes('↑↓ 滚动浏览（还有') && footer1.t.includes('I 状态页'), footer1 && footer1.t);
-  ok('有日志档页脚逐字为「按 J / Esc 关闭   ·   ↑↓ 滚动浏览（还有 N 条）   ·   I 状态页」且落位 (320,432)',
-    !!footer1 && /^按 J \/ Esc 关闭   ·   ↑↓ 滚动浏览（还有 \d+ 条）   ·   I 状态页$/.test(footer1.t) && footer1.x === 320 && footer1.y === 432, footer1 && footer1.t);
+  ok('有日志档页脚逐字为「按 J / Esc 关闭   ·   ↑↓ 滚动浏览（还有 N 条）   ·   I 状态页 · B 图鉴 · C 成就」且落位 (320,432)',
+    !!footer1 && /^按 J \/ Esc 关闭   ·   ↑↓ 滚动浏览（还有 \d+ 条）   ·   I 状态页 · B 图鉴 · C 成就$/.test(footer1.t) && footer1.x === 320 && footer1.y === 432, footer1 && footer1.t);
   ok('有日志档页脚行宽 estW ≤500 面板预算（12px，面板内宽 70..570）',
     !!footer1 && estW(footer1.t, 12) <= 500, footer1 && estW(footer1.t, 12));
   // 2) 空日志档（hero=null 防御分支，drawWorld 对 null hero 早退）：页脚同式逐字
@@ -148,8 +148,8 @@ try {
   drawJournal();
   const footer0 = drawnCalls.find((c) => c.t.includes('按 J / Esc 关闭'));
   ok('空日志档「没有进行中的任务。」零回归', drawnCalls.some((c) => c.t.includes('没有进行中的任务。')));
-  ok('空日志档页脚逐字「按 J / Esc 关闭   ·   I 状态页」且落位 (320,432)',
-    !!footer0 && footer0.t === '按 J / Esc 关闭   ·   I 状态页' && footer0.x === 320 && footer0.y === 432, footer0 && footer0.t);
+  ok('空日志档页脚逐字「按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就」且落位 (320,432)',
+    !!footer0 && footer0.t === '按 J / Esc 关闭   ·   I 状态页 · B 图鉴 · C 成就' && footer0.x === 320 && footer0.y === 432, footer0 && footer0.t);
   ok('空日志档页脚行宽 estW ≤500 面板预算', !!footer0 && estW(footer0.t, 12) <= 500, footer0 && estW(footer0.t, 12));
   S.G = origHero;
   // 3) 双向互切运行期分派：journal.onKey('i') → status；status.onKey('j') → journal
@@ -189,7 +189,7 @@ ok('README 件套口径为存活性断言（v21.72 起件数由新版冒烟守�
 ok('README 含 v21.71 守护描述（任务日志页脚 I 状态页互切提示守护）',
   readme.includes('v21.71 起含任务日志页脚「I 状态页」互切提示守护'));
 ok('README 快速上手表 J 行含「I 状态页」互切口吻', readme.includes('`J`') && readme.includes('「I 状态页」'));
-ok('README 快速上手表 I 行含「J 任务日志 · C 成就 · B 图鉴」直达口径（v23.68）', readme.includes('状态界面（页底常驻「J 任务日志 · C 成就 · B 图鉴」直达提示'));
+ok('README 快速上手表 I 行含「J 任务日志 · C 成就 · B 图鉴」直达口径（v23.69）', readme.includes('状态界面（页底常驻「J 任务日志 · C 成就 · B 图鉴」直达提示'));
 ok('package.json 已收录 smoke_v2171_journalikey（npm test 串跑第 67 份）',
   pkg.includes('smoke_v2171_journalikey.mjs'));
 const s2170 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2170_winreset.mjs'), 'utf8');
