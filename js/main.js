@@ -126,7 +126,19 @@ const screens = {
       } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
         S.helpPage = (S.helpPage - 1 + HELP_PAGES.length) % HELP_PAGES.length;
         SFX.select();
-      } else if (e.key === 'h' || e.key === 'H' || isEsc(e)) {
+      }
+      // v23.70 帮助页补四收集页直达（体验打磨·可发现性·信息透明·纯入口，承 v23.68/69 四收集页互切网格
+      // 同一「同一功能所有入口口径一致」主线收口：H 页「状态/任务日志/记忆图鉴/成就一览」四行行内早已
+      // 描述对应页按键与互切口径（v22.90/v23.69），玩家在 H 页按 I/J/B/C 却毫无反应（违背「提示讲的键
+      // 真的可用」契约），且 H 是唯一没有出口的菜单页（pause 菜单四页齐、收集页网格已成网）；现补
+      // i/I→status、j/J→journal、b/B→codex、c/C→ach 四分支——与 drawHelp 页脚「I/J/B/C 直达」、H 页
+      // 「操作说明」行、README H 行、index.html 常驻帮助条同口径；←/→ 翻页与 h/Esc 关闭逐字未动，
+      // KEY 无 i/j/b/c 地图映射零冲突（承 v23.69 同款）；纯入口零结算零存档零数值变化。
+      else if (e.key === 'i' || e.key === 'I') goto('status');
+      else if (e.key === 'j' || e.key === 'J') goto('journal');
+      else if (e.key === 'b' || e.key === 'B') goto('codex');
+      else if (e.key === 'c' || e.key === 'C') goto('ach');
+      else if (e.key === 'h' || e.key === 'H' || isEsc(e)) {
         backWorld();
       }
     },

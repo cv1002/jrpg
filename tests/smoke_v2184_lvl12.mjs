@@ -81,7 +81,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.83', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
 ok('data.js 含 v21.84 注释（新成就「灯燃长夜」说明）', dSrc.includes('v21.84 新成就「灯燃长夜」'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.84', dSrc.includes("const GAME_VERSION = 'v23.69';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.84', dSrc.includes("const GAME_VERSION = 'v23.70';"));
 
 // —— LVL12_GOAL 常量（与 LVL5_GOAL/LVL10_GOAL 同族：判定/描述/进度三处同读）——
 ok('LVL12_GOAL===12 且已从 data.js 导出（与 LVL5_GOAL/LVL10_GOAL 同档）',
@@ -175,7 +175,7 @@ for (const nm of suite78) {
 for (const nm of ['smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v23.69';"));
+    src.includes("const GAME_VERSION = 'v23.70';"));
 }
 for (const nm of ['smoke_v2180_grain.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2159_skillach.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
