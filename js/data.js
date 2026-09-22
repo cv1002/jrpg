@@ -1451,7 +1451,16 @@
 // 各在 hero.gold -= 之后写入 hero.spent，均紧邻既有 applyAchievements 当场判定（反馈不
 // 迟到），snapshotHero 全量快照自动持久化、(g.spent||0) 防御式旧档零迁移；纯里程碑零
 // 奖励零结算零数值变化（扣款/判定/报文逐字未动）。）
-const GAME_VERSION = 'v23.74';
+// v23.75 新内容·旅行动作维度里程碑：新成就「行者无疆」（快速旅行累计 TRAVEL_GOAL 次，
+// 见 ACH_LIST travels 注释）——承 v23.72/73/74 成对端口先例（成就版图逐线核对：探索线
+// 的 outstep/outstep2/wander 三档全数读 hero.visited「到访地图」口径（2/3/4 图——看得见
+// 的足迹），而对「使用快速旅行」这一旅行动作端口查无一行：T 键/Esc 菜单把玩家从一图
+// 送往另一图是把探索积累变现的动作，逛遍四图从不用 T（纯步行穿越）也能走遍四方、
+// 靠 T 往返刷图却可能只到访两三图——到访 vs 旅行动作是两个互不覆盖的端口；现补独立
+// 单档——计数源 core.doTravel 成功旅行唯一产生点写入 hero.travels（未探索/已在原地
+// 早退零计数），snapshotHero 全量快照自动持久化、(g.travels||0) 防御式旧档零迁移；
+// 纯里程碑零奖励零结算零数值变化（transition/goto/SFX.door 与两档早退报文逐字未动）。）
+const GAME_VERSION = 'v23.75';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3282,6 +3291,14 @@ const INN_REST_GOAL = 15;
 // BREW_GOLD）各在 hero.gold -= 之后写入 hero.spent（金币不足/背包满早退零计数），snapshotHero
 // 全量快照自动持久化、(g.spent||0) 防御式读取旧档零迁移；与 RICH_GOLD 同「阈值数据化」家族）。
 const SPEND_GOAL = 1000;
+// v23.75 成就「行者无疆」阈值（旅行动作维度首枚里程碑·单一数据源）：快速旅行累计 N 次解锁
+// ——与 ACH_LIST.travels 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中档 15
+// （T 键/Esc 菜单全程免费零消耗，与药到病除 POTION_USE_GOAL(15)/以守为攻 DEFLECT_GOAL(15)/
+// 蓄势待发 CHARGE_GOAL(15)/夜宿灯下 INN_REST_GOAL(15) 同档；快速旅行需先到访目的地（visited
+// 守卫），一场终局之旅在四图间往返补给/刷图/交任务十五次左右即「计」；与探索线成对端口——
+// outstep/outstep2/wander 记「到访地图」、travels 记「旅行动作」，各自累计互不计入；纯里程碑
+// 零奖励零结算影响，与 MAP_POTION_GOAL 同「阈值数据化」家族）。
+const TRAVEL_GOAL = 15;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4916,6 +4933,20 @@ const ACH_LIST=[
   // （承「反馈不迟到」惯例——5 个计数点均紧邻既有 applyAchievements 调用）；零战报后缀（承
   // v23.72/73 口径——各消费报文已带价格/余额，C 页进度 X/1000 承载）。
   {id:'spend', name:'一掷千金', d:`累计消费金币 ${SPEND_GOAL} 金`, ok:g=>(g.spent||0)>=SPEND_GOAL, prog:g=>`${g.spent||0}/${SPEND_GOAL}`},
+  // 行者无疆（v23.75 新内容·旅行动作维度单成就·全游唯一旅行动作端口里程碑，承 v23.72/73/74
+  // 成对端口先例——成就版图逐线核对：探索线三档（outstep 踏出灯影/outstep2 灯影渐远/wander
+  // 走遍四方）全部读 hero.visited「到访地图」口径（2/3/4 图——靠步行穿越也能攒出），对
+  // 「使用快速旅行」查无一行：T 键/Esc 菜单把玩家从一图送往另一图是把探索积累变现的
+  // 旅行动作，逛遍四图从不用 T 也能走遍四方、靠 T 往返刷图却可能只到访两三图——到访 vs
+  // 旅行动作是两个互不覆盖的端口；现补旅行动作端口独立单档——计数源 core.doTravel 成功
+  // 旅行唯一产生点写入 hero.travels（S.G 局部引用、未探索/已在原地早退零计数），
+  // snapshotHero 全量快照自动持久化、(g.travels||0) 防御式读取旧档零迁移（承 v23.36
+  // deflects / v23.72 mapPotions / v23.73 innRests / v23.74 spent 同款）；判定/进度/描述
+  // 同读 TRAVEL_GOAL 一份源（与 INN_REST_GOAL 同一「阈值数据化」家族）；无 r 字段纯里程碑
+  // （与 rich/rich2/rich3 同款——行者无疆本身就是奖励）；解锁时机：旅行落账当场
+  // applyAchievements（承「反馈不迟到」惯例——计数点紧邻既有 doTravel 成功路径）；
+  // 零战报后缀（承 v23.72/73/74 口径——旅行成功本就零报文，C 页进度 X/15 承载）。
+  {id:'travels', name:'行者无疆', d:`快速旅行累计 ${TRAVEL_GOAL} 次`, ok:g=>(g.travels||0)>=TRAVEL_GOAL, prog:g=>`${g.travels||0}/${TRAVEL_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5343,5 +5374,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL,
 };

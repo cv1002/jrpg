@@ -28,7 +28,7 @@ console.log('— v22.9 状态页资源行「🏆 成就 N/41」总进度冒烟 �
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.8', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 9)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.9（本版独占精确锚点）', GAME_VERSION === 'v23.74', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.9（本版独占精确锚点）', GAME_VERSION === 'v23.75', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -39,7 +39,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.9 版本注释', dataSrc.includes('v22.9 状态页资源行「·成就X/6」→「🏆 成就 N/41」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.9', dataSrc.includes("const GAME_VERSION = 'v23.74';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.9', dataSrc.includes("const GAME_VERSION = 'v23.75';"));
 ok('data.js 仍保留 v22.8 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.8 新成就「灵药盈囊」'));
 
 // —— 源级落位：menus.js drawStatus 资源行新口径 + 旧「·成就X/6」正口径零残留 + 行位零回归 ——
@@ -207,7 +207,7 @@ ok('README 含 v22.9 守护描述', readme.includes('v22.9 起含状态页资源
 ok('README 系统清单状态行口径已随新现实（📦 已开 X/全图 N · 🏆 成就 N/M）',
   readme.includes('📦 已开 X/全图 N · 🏆 成就 N/M') && !readme.includes('📦 已开 X/全图 N · 成就 X/M'));
 ok('README 成就口径「41 项」双处同步（快速上手表 C 键行 + 图鉴&成就行，零成就变动）',
-  readme.includes('成就一览（全部 70 项进度') && readme.includes('**70 项成就**'));
+  readme.includes('成就一览（全部 71 项进度') && readme.includes('**71 项成就**'));
 ok('package.json 已收录 smoke_v2209_achstatus（npm test 串跑第 105 份）',
   pkg.includes('smoke_v2209_achstatus.mjs') && /smoke_v2208_elixir\.mjs && node tests\/smoke_v2209_achstatus\.mjs/.test(pkg));
 ok('CHANGELOG 含 v22.9 条目', changelog.includes('## v22.9 '));
@@ -242,7 +242,7 @@ const vers105 = ['smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs', 'smoke_v2
 for (const nm of vers105) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.9`,
-    src.includes("const GAME_VERSION = 'v23.74';"));
+    src.includes("const GAME_VERSION = 'v23.75';"));
 }
 for (const nm of ['smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs',
   'smoke_v2205_fragtitle.mjs', 'smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs',
@@ -252,7 +252,7 @@ for (const nm of ['smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs', 'smoke_v
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.9`,
-    src.includes("GAME_VERSION === 'v23.74'"));
+    src.includes("GAME_VERSION === 'v23.75'"));
 }
 for (const nm of ['smoke_v2208_elixir.mjs', 'smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs',
   'smoke_v2205_fragtitle.mjs', 'smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs',

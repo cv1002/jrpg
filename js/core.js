@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, DIFFS, NPCS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, TRAVEL_GOAL, DIFFS, NPCS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -173,6 +173,15 @@ function doTravel() {
     bind.boxMsg('已经在这里了！', EVENT_MSG_MS);
     return;
   }
+  // v23.75 旅行动作成就「行者无疆」计数（承 v23.72/73/74 成对端口先例：到访地图是「探索
+  // 端口」、快速旅行是「旅行动作端口」——本函数是全游唯一快速旅行入口，成功旅行在此
+  // 落账 hero.travels（未探索/已在原地早退零计数），snapshotHero 全量快照自动持久化、
+  // (g.travels||0) 防御式旧档零迁移；落账当场 applyAchievements（反馈不迟到）；成功路径
+  // 的 SFX.door()/transition/goto 与两档早退报文逐字未动，零战报后缀（旅行成功本就零报文，
+  // C 页进度 X/15 承载）。
+  const g = S.G;
+  g.travels = (g.travels || 0) + 1;
+  applyAchievements();
   SFX.door();
   transition(key);
   goto('world');
