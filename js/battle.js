@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -740,6 +740,18 @@ function winBattle() {
     if (stage >= RUSH_BOSSES.length) {
       hero.rushStage = 0;
       hero.rushDone = true;
+      // v23.67 成就「千锤百炼」计数（试炼场维度首枚里程碑·承 v23.63-66 战斗指令六枚同款）：v23.66
+      // 收口「战斗操作」维度后，成就版图逐线核对只剩试炼场这条只有单档（rush 百炼成钢=首通）的维度
+      // ——试炼三连战可无限再战（v21.85 碑上「已通关（可再战）」口径），玩家通关一次后反复刷级刷金，
+      // 成就一览却无累计回响；此处（hero.rushDone = true 同处）是试炼通关唯一产生点，成功通关才计数
+      // ——读 hero.rushClears（随 snapshotHero 全量快照自动持久化），防御式 (hero.rushClears||0)
+      // 旧档零迁移（承 v23.36 deflects / v23.63 crits / v23.66 potionUses 同款）；无 r 字段纯里程碑
+      // （与 deflect/charge/crit/cast/flee/potionuses 同款）；落账当场 applyAchievements（下方既有
+      // 调用，计数源与判定点同处一行防漏记）；战报就地报「 · 千锤百炼 N/M」（承 v23.65 走为上计
+      // 低频报进度口径——试炼通关本属低频事件不刷屏）。rushStage 归零/rushDone 置位/通关奖/35%HP
+      // 50%MP 恢复/既有战报主体逐字未动。
+      const rc = (hero.rushClears || 0) + 1;
+      hero.rushClears = rc;
       const reward = rushReward(hero.level);
       hero.gold += reward;
       applyAchievements();
@@ -748,7 +760,7 @@ function winBattle() {
       // 但三连战真正通关后的横幅只报奖励数额——玩家刚拿到一笔大额金币收入，想确认「兜里还剩多少」
       // 仍需再按 I 看状态页；直接读结算后的 hero.gold（line 444 已加 reward），与 v19.80 普通胜利/
       // v19.81 升级余额提示同源，零数值变化。
-      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！（获得 ${enemy.xp} 经验 · 剩余 ${hero.gold} 金）`, ACH_MSG_MS);
+      bind.boxMsg(`🌈 试炼通关！奖励 ${reward} 金币！灯火记得你的名字！（获得 ${enemy.xp} 经验 · 剩余 ${hero.gold} 金 · 千锤百炼 ${rc}/${RUSH_CLEAR_GOAL}）`, ACH_MSG_MS);
       setTimeout(() => { goto('world'); S.enemy = null; S.battleBusy = false; resumeBgm(); }, WRAP_GAP_MS);
     } else {
       // 连胜换关自动回血（data.js RUSH_RECOVER 单一数据源）：与战斗横幅/帮助页标注同读此源，数值结算逐字不变

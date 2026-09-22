@@ -1383,7 +1383,18 @@
 // 判定/描述自动跟随，与 CRIT_GOAL/CAST_GOAL/FLEE_GOAL 同一「阈值数据化」家族）；零结算零数值变化
 // （takePotion 判定/恢复结算/药水·灵药两档战报/afterPlayer 逐字未动，仅计数与当场成就判定追加；
 // 零战报后缀承 v23.64 熟能生巧口径——用药战报已带恢复量/剩余库存/HPMP 状态，C 页进度 X/15 承载）。
-const GAME_VERSION = 'v23.66';
+// v23.67 新内容·试炼场维度首枚里程碑：新成就「千锤百炼」（试炼场累计通关 RUSH_CLEAR_GOAL 次，见
+// ACH_LIST rushs 条目注释）——承 v23.36 / v23.54 / v23.63-66「战斗操作」维度成对收口后的下一块空白：
+// 战斗六指令（[1]攻击/[2]技能/[3]药水/[4]逃跑/[5]防御/[6]蓄力）纪念本就齐备，此刻 v23.66 收口后
+// 成就版图逐线核对只剩「试炼场」这条只有单档（rush 百炼成钢=首通）的维度——试炼三连战可无限再战
+// （battle.winBattle 试炼分支无 rushDone 守卫、再战仍发全额通关奖属既有设计行为；v21.85 碑上
+// 「已通关（可再战）」口径），玩家通关一次之后反复刷级/刷金，成就一览却无任何累计回响；计数由
+// js/battle.js winBattle 试炼通关唯一产生点（hero.rushDone = true 同处）写入 hero.rushClears（随
+// snapshotHero 全量快照自动持久化、防御式读取旧档零迁移），阈值 RUSH_CLEAR_GOAL 单一数据源（调门槛
+// 只改 data.js 一处、C 页进度/判定/描述自动跟随，与 POTION_USE_GOAL 同一「阈值数据化」家族）；零结算
+// 零数值变化（rushStage 归零/rushDone 置位/通关奖/35%HP 50%MP 恢复/既有战报主体逐字未动，仅计数与
+// 到场成就判定追加；战报就地报「 · 千锤百炼 N/M」承 v23.65 走为上计低频报进度口径——试炼通关低频不刷屏）。
+const GAME_VERSION = 'v23.67';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3183,6 +3194,12 @@ const FLEE_GOAL = 10;
 // 十五次即「计」，与 DEFLECT_GOAL/CHARGE_GOAL 同台阶；纯里程碑零奖励零结算影响，与
 // DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL 同「阈值数据化」家族）。
 const POTION_USE_GOAL = 15;
+// v23.67 成就「千锤百炼」阈值（试炼场维度首枚里程碑·单一数据源）：试炼场累计通关 N 次解锁 ——
+// 与 ACH_LIST.rushs 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中低档 3
+// （每次通关 = 三连战全胜 + 通关奖随等级（RUSH_BASE_GOLD + RUSH_GOLD_PER_LV×等级）——玩家在
+// 终局区「再战」试炼反复刷级/刷金，三场通关即「千锤百炼」；纯里程碑零奖励零结算影响，与
+// DEFLECT_GOAL/CHARGE_GOAL/CRIT_GOAL/CAST_GOAL/FLEE_GOAL/POTION_USE_GOAL 同「阈值数据化」家族）。
+const RUSH_CLEAR_GOAL = 3;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4768,6 +4785,16 @@ const ACH_LIST=[
   // 零战报后缀（承 v23.64 熟能生巧零战报后缀口径——用药战报已带恢复量/剩余库存/HPMP 状态，
   // 再叠进度后缀信息过载，C 页进度 X/15 承载）。
   {id:'potionuses', name:'药到病除', d:`[3]战斗用药累计 ${POTION_USE_GOAL} 次`, ok:g=>(g.potionUses||0)>=POTION_USE_GOAL, prog:g=>`${g.potionUses||0}/${POTION_USE_GOAL}`},
+  // 千锤百炼（v23.67 新成就·试炼场维度首枚里程碑，追加在末尾、承 v23.63-66 战斗指令六枚先例）：
+  // 成就版图逐线核对——战斗六指令纪念 v23.66 收口后，唯一只剩单档（rush 百炼成钢=首通）的维度是
+  // 试炼场：试炼三连战可无限再战（v21.85 碑上「已通关（可再战）」/winBattle 试炼分支无 rushDone 守卫、
+  // 再战仍发全额通关奖属既有设计行为），玩家通关一次后反复刷级刷金，成就一览却无累计回响；
+  // 判定/进度/描述同读 RUSH_CLEAR_GOAL 一份源（与 POTION_USE_GOAL 同一「阈值数据化」家族），计数
+  // 读 battle.winBattle 试炼通关唯一产生点写入的 hero.rushClears（snapshotHero 全量快照自动持久化、
+  // (g.rushClears||0) 防御式读取旧档零迁移，承 v23.36 deflects 同款）；无 r 字段纯里程碑（与
+  // deflect/charge/crit/cast/flee/potionuses 同款——千锤百炼本身就是奖励）；解锁时机：winBattle
+  // 试炼通关落账后当场 applyAchievements（既有调用，承「反馈不迟到」惯例）。
+  {id:'rushs', name:'千锤百炼', d:`试炼场累计通关 ${RUSH_CLEAR_GOAL} 次`, ok:g=>(g.rushClears||0)>=RUSH_CLEAR_GOAL, prog:g=>`${g.rushClears||0}/${RUSH_CLEAR_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5173,7 +5200,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

@@ -34,7 +34,7 @@ const menusSrc = read('../js/view/menus.js');
 const coreSrc = read('../js/core.js');
 
 ok('data.js 含 v21.87 版本注释', dataSrc.includes('v21.87 尾声战绩页补收集进度两件'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.87', dataSrc.includes("const GAME_VERSION = 'v23.66';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.87', dataSrc.includes("const GAME_VERSION = 'v23.67';"));
 
 // —— 源级落位：drawEnding 新两件派生 + 既有战绩行/页脚逐字保留 ——
 const endBlock = (menusSrc.match(/export function drawEnding\(\)\{[\s\S]*?\n\}/) || [''])[0];
@@ -209,7 +209,7 @@ for (const nm of suite83) {
 for (const nm of ['smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.87`,
-    src.includes("const GAME_VERSION = 'v23.66';"));
+    src.includes("const GAME_VERSION = 'v23.67';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
