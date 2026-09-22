@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -176,6 +176,16 @@ function move(dx, dy) {
   const oy = hero.y;
   hero.x = nx;
   hero.y = ny;
+  // v23.76 成就「千里之行」计数（步行累计端口·承 v23.72-75 成对端口先例：探索线 outstep/outstep2/wander
+  // 读 hero.visited「到访地图」、旅行动作读 hero.travels「使用快速旅行」，而「步行移动」这一最朴素端口
+  // 查无一行——本函数是全游唯一步行移步产生点（KEY 方向/按住连走全走此处，撞墙/出界在 SOLID 判定
+  // 之上早退零计数；快速旅行/传送门/出口走 core.doTravel·usePortal→transition 不在此列零计数），
+  // 成功落地一格即 hero.steps+1，随 snapshotHero 全量快照自动持久化、(hero.steps||0) 防御式旧档零迁移；
+  // 落账当场 applyAchievements（反馈不迟到——承 v21.88 transition 落账当场判定惯例，本函数既有
+  // applyAchievements import 零新增依赖；幂等高频调用零噪音）；零战报后缀（步行本就零报文，
+  // C 页进度 X/STEP_GOAL 承载）；move 的碰撞/遇敌/踩踏判定逐字未动。
+  hero.steps = (hero.steps || 0) + 1;
+  applyAchievements();
   S.walk = { ox, oy, nx, ny, t0: Date.now(), dur: runHeld ? RUN_MS : WALK_MS };
   SFX.step();
   S.anim = null;

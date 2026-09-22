@@ -1460,7 +1460,15 @@
 // 单档——计数源 core.doTravel 成功旅行唯一产生点写入 hero.travels（未探索/已在原地
 // 早退零计数），snapshotHero 全量快照自动持久化、(g.travels||0) 防御式旧档零迁移；
 // 纯里程碑零奖励零结算零数值变化（transition/goto/SFX.door 与两档早退报文逐字未动）。）
-const GAME_VERSION = 'v23.75';
+// v23.76 新内容·步行累计维度里程碑：新成就「千里之行」（步行累计 STEP_GOAL 步，见
+// ACH_LIST steps 注释）——承 v23.72/73/74/75 成对端口先例（成就版图逐线核对：探索线
+// outstep/outstep2/wander 读 hero.visited「到访地图」、旅行动作读 hero.travels「快速旅行
+// 次数」，而「步行」这一最朴素的移动端口查无一行：玩家在四图间靠 WASD 一步一格丈量世界，
+// 撞墙/出界那一格不落地——现补独立单档（与到访/旅行成三端口）；计数源 world.move 成功
+// 移步唯一产生点写入 hero.steps（快速旅行/传送门/出口走 transition 不在此列零计数），
+// snapshotHero 全量快照自动持久化、(g.steps||0) 防御式旧档零迁移；
+// 纯里程碑零奖励零结算零数值变化（move 的碰撞/遇敌/踩踏判定逐字未动）。）
+const GAME_VERSION = 'v23.76';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3299,6 +3307,14 @@ const SPEND_GOAL = 1000;
 // outstep/outstep2/wander 记「到访地图」、travels 记「旅行动作」，各自累计互不计入；纯里程碑
 // 零奖励零结算影响，与 MAP_POTION_GOAL 同「阈值数据化」家族）。
 const TRAVEL_GOAL = 15;
+// v23.76 成就「千里之行」阈值（步行累计端口·单一数据源）：步行累计 N 步解锁
+// ——与 ACH_LIST.steps 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 1000
+// （「千里之行，始于足下」——一场终局之旅的步行量级：四图步行往返/刷怪/收集约千百步，
+// 用 T 快速旅行省下的步数不计入（旅行动作端 travels 另计），纯步行探索每一格都算；
+// 与探索线三档（outstep/outstep2/wander 记到访）和旅行动作单档（travels 记旅行）成对——
+// 到访 vs 旅行动作 vs 步行是三个互不覆盖的端口；纯里程碑零奖励零结算影响，
+// 与 TRAVEL_GOAL 同「阈值数据化」家族）。
+const STEP_GOAL = 1000;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4947,6 +4963,15 @@ const ACH_LIST=[
   // applyAchievements（承「反馈不迟到」惯例——计数点紧邻既有 doTravel 成功路径）；
   // 零战报后缀（承 v23.72/73/74 口径——旅行成功本就零报文，C 页进度 X/15 承载）。
   {id:'travels', name:'行者无疆', d:`快速旅行累计 ${TRAVEL_GOAL} 次`, ok:g=>(g.travels||0)>=TRAVEL_GOAL, prog:g=>`${g.travels||0}/${TRAVEL_GOAL}`},
+  // v23.76 成就「千里之行」条目注释（承 v23.75 行者无疆先例——与 outstep/outstep2/wander
+  // 三档与 travels 单档并列成「到访 vs 旅行动作 vs 步行」三端口；计数源 world.move 成功
+  // 移步唯一产生点（撞墙/出界早退零计数）写入 hero.steps，snapshotHero 全量快照自动持久化、
+  // (g.steps||0) 防御式读取旧档零迁移（承 v23.36 deflects / v23.72 mapPotions / v23.75
+  // travels 同款）；判定/进度/描述同读 STEP_GOAL 一份源（与 TRAVEL_GOAL 同一「阈值数据化」
+  // 家族）；无 r 字段纯里程碑；解锁时机：移步落账当场 applyAchievements（承「反馈不迟到」
+  // 惯例——world.move 既有 applyAchievements import（v21.88 transition）零新增依赖）；
+  // 零战报后缀（承 v23.72/73/74/75 口径——步行本就零报文，C 页进度 X/1000 承载）。
+  {id:'steps', name:'千里之行', d:`步行累计 ${STEP_GOAL} 步`, ok:g=>(g.steps||0)>=STEP_GOAL, prog:g=>`${g.steps||0}/${STEP_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5374,5 +5399,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL,
 };

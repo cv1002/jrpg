@@ -96,11 +96,11 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.25', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 26)), GAME_VERSION);
 ok('data.js 含 v22.26 注释（宝箱开启反馈追加进度）', dSrc.includes('v22.26 宝箱开启反馈追加进度'));
 ok('GAME_VERSION 字面量已为 v22.26（旧 v22.25 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.75';") && !dSrc.includes("const GAME_VERSION = 'v22." + "25';"));
+  dSrc.includes("const GAME_VERSION = 'v23.76';") && !dSrc.includes("const GAME_VERSION = 'v22." + "25';"));
 ok('data.js 仍保留 v22.25 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.25 无字回廊新风味 NPC「刻碑人」'));
 
 // —— world.js 源级落位 ——
-ok('world.js 自 data.js 追加导入 chestCount/chestTotal（+ v23.31 dayPhase 同行）', wSrc.includes('trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase } from'));
+ok('world.js 自 data.js 追加导入 chestCount/chestTotal（+ v23.31 dayPhase / v23.76 STEP_GOAL 同行）', wSrc.includes('trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL } from'));
 ok('world.js 在 applyAchievements 后计算一次 opened/total（单一数据源）',
   wSrc.includes('const opened = chestCount(hero), total = chestTotal();'));
 const suffixCount = (wSrc.match(/已开 \$\{opened\}\/\$\{total\}/g) || []).length;
@@ -187,9 +187,9 @@ for (const f of ['v2225_stonecarver', 'v2224_sifter', 'v2223_lampman', 'v2222_pe
 }
 const sibNames = Object.keys(sib);
 ok('姊妹件套（v2225..v2215）GAME_VERSION 字面量 pin 已更新为 v22.26',
-  sibNames.every((k) => sib[k].includes("const GAME_VERSION = 'v23.75';")));
+  sibNames.every((k) => sib[k].includes("const GAME_VERSION = 'v23.76';")));
 ok('姊妹件套（v2225..v2215）GAME_VERSION 恒等 pin 已更新为 === v22.26',
-  sibNames.every((k) => sib[k].includes("GAME_VERSION === 'v23.75'")));
+  sibNames.every((k) => sib[k].includes("GAME_VERSION === 'v23.76'")));
 ok('姊妹件套（v2225..v2215）README 件套 pin 已更新为二百一十二件套（二百一十一件套清除）',
   sibNames.every((k) => sib[k].includes('二百一十二件套（二百一十一件套清除）')));
 ok('姊妹件套（v2225..v2215）README 树尾 pin 已更新为 + smoke_v2226_chestprogress',

@@ -36,7 +36,7 @@ console.log('— v22.8 灵药盈囊高级灵药持有线首枚里程碑冒烟 �
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.7', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 8)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.8（本版独占精确锚点）', GAME_VERSION === 'v23.75', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.8（本版独占精确锚点）', GAME_VERSION === 'v23.76', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -47,7 +47,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.8 版本注释', dataSrc.includes('v22.8 新成就「灵药盈囊」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.8', dataSrc.includes("const GAME_VERSION = 'v23.75';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.8', dataSrc.includes("const GAME_VERSION = 'v23.76';"));
 ok('data.js 仍保留 v22.7 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.7 标题页 X 删除存档槽'));
 ok('data.js 导出 ELIXIR_STOCK_GOAL（export 块落位，与 POTIONS2_GOAL/POTIONS3_GOAL 相邻）', dataSrc.includes('POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD'));
 
@@ -212,7 +212,7 @@ ok('README 件套口径为二百一十二件套（二百一十一件套清除）
   readme.includes('冒烟二百一十二件套（二百一十一件套清除）') && !readme.includes('冒烟一百零三件套（一百零二件套清' + '除）'));
 ok('README 含 v22.8 守护描述', readme.includes('v22.8 起含新成就「灵药盈囊」'));
 ok('README 成就口径「41 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 71 项进度') && readme.includes('**71 项成就**') &&
+  readme.includes('成就一览（全部 72 项进度') && readme.includes('**72 项成就**') &&
   !readme.includes('成就一览（全部 40 项进' + '度') && !readme.includes('**40 项成' + '就**'));
 ok('package.json 已收录 smoke_v2208_elixir（npm test 串跑第 104 份）',
   pkg.includes('smoke_v2208_elixir.mjs') && /smoke_v2207_titledel\.mjs && node tests\/smoke_v2208_elixir\.mjs/.test(pkg));
@@ -246,7 +246,7 @@ const vers104 = ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2
 for (const nm of vers104) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.8`,
-    src.includes("const GAME_VERSION = 'v23.75';"));
+    src.includes("const GAME_VERSION = 'v23.76';"));
 }
 for (const nm of ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs',
   'smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
@@ -255,7 +255,7 @@ for (const nm of ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.8`,
-    src.includes("GAME_VERSION === 'v23.75'"));
+    src.includes("GAME_VERSION === 'v23.76'"));
 }
 for (const nm of ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs',
   'smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
@@ -274,7 +274,7 @@ const achFiles = ['smoke_v2206_stock2.mjs', 'smoke_v2204_brew2.mjs', 'smoke_v220
 for (const nm of achFiles) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 README 成就 pin 已随新现实更新为 41 项双处落位`,
-    src.includes('成就一览（全部 71 项进度') && src.includes('**71 项成就**'));
+    src.includes('成就一览（全部 72 项进度') && src.includes('**72 项成就**'));
 }
 const s2206 = read('../tests/smoke_v2206_stock2.mjs');
 ok('smoke_v2206 的 ACH_LIST 精确计数断言已去硬化（===40 零残留，>=40 存活性口径落位）',

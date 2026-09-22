@@ -9,7 +9,7 @@
 // 真实解锁、未满不误解锁、旧档缺字段不抛错不解锁、drawAch 60 项滚动渲染不抛错）+
 // README/package.json/CHANGELOG 同步（成就 60 项双处/成就有口皆碑数值速查行/串尾/件套 209/顶 pin）+
 // 姊妹件套 pin（v2312 随新现实更新）+ 旧代 v23.12 pin 全库零残留 + 哨兵链领先一位（210 口径）。
-import { GAME_VERSION, ACH_LIST, NPCS, NPC_SPOTS, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, TRAVEL_LIST, TY, HELP_PAGES } from '../js/data.js';
+import { GAME_VERSION, ACH_LIST, NPCS, NPC_SPOTS, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, TRAVEL_LIST, TY, HELP_PAGES } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -39,7 +39,7 @@ const plan = read('../improve-plan.md');
 
 ok('data.js 含 v23.13 版本注释', dataSrc.includes('// v23.13 新内容·社交向单成就：新成就「有口皆碑」'));
 ok('data.js GAME_VERSION 字面量已为 v23.13（旧 v23.12 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.12';"));
 ok('data.js 仍保留 v23.12 历史注释（标题画面音量口径注释未动）',
   dataSrc.includes('// v23.12 体验打磨·可发现性·口径收尾'));
 ok('data.js ACH_LIST talkall 注释块落位（v23.13 新成就·社交向）',
@@ -65,7 +65,7 @@ ok('NPC_SPOTS 全部值 ∈ NPCS（交谈入口全表可记录，无孤儿 id）
 const ach = ACH_LIST.find((a) => a.id === 'talkall');
 ok('ACH_LIST 含 talkall「有口皆碑」且 id 唯一',
   !!ach && ach.name === '有口皆碑' && ACH_LIST.filter((a) => a.id === 'talkall').length === 1);
-ok('ACH_LIST 精确总数 62 项（v23.54 战斗维度第二枚「蓄势待发」入列 61→62）', ACH_LIST.length === 71, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 62 项（v23.54 战斗维度第二枚「蓄势待发」入列 61→62）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('talkall 描述全部由 Object.keys(NPCS).length 派生（零裸字面量 37）',
   ach.d === `与全部 ${N} 处灯下之声交谈过`, ach.d);
 ok('talkall 判定/进度同读 Object.keys(NPCS)（ok/prog 同式，与 wander 读 MAPS 同族）',
@@ -108,17 +108,17 @@ ok('data.js 含 v23.36 版本注释与 deflect 条目注释', dataSrc.includes('
 // —— v23.38 反击战报补「以守为攻 N/M」进度（体验打磨·信息透明·反馈不迟到·纯显示）——
 ok('data.js 含 v23.38 版本注释（反击战报补以守为攻进度）', dataSrc.includes('v23.38 体验打磨·信息透明·反馈不迟到'));
 ok('data.js GAME_VERSION 已级联 v23.40（旧 v23.38 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.38';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.38';"));
 ok('enemyAI.js 数据源 import 补 DEFLECT_GOAL（进度与计数同读一份源）', enemyAISrc.includes('FX_HERO, DEFLECT_GOAL } from'));
 ok('enemyAI.js 反击战报补「· 以守为攻 N/M」派生段（dfc 与 DEFLECT_GOAL 同源、既有文案逐字保留）',
   enemyAISrc.includes('const dfc = (hero.deflects || 0) + 1;') &&
   enemyAISrc.includes('· 以守为攻 ${dfc}/${DEFLECT_GOAL}'));
 ok('data.js 导出具 DEFLECT_GOAL（export 单一出口）', dataSrc.includes('TREE_GOAL, DEFLECT_GOAL,'));
-ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.40', dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.35';"));
-ok('README 同步（C 行 62 项 / 成就 bullet 62 项·以守为攻 X/15 次 / 成就档位行 DEFLECT_GOAL(15)·共 71 项 / 战斗防御句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('以守为攻 X/15 次（防御反击累计，v23.36）') &&
-  readme.includes('DEFLECT_GOAL`(15) 次，v23.36') && readme.includes('共 71 项') && readme.includes('15 次解锁成就「以守为攻」'));
-ok('CHANGELOG 顶部已追加 v23.40 条目', changelog.startsWith('## v23.75 '));
+ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.40', dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.35';"));
+ok('README 同步（C 行 62 项 / 成就 bullet 62 项·以守为攻 X/15 次 / 成就档位行 DEFLECT_GOAL(15)·共 72 项 / 战斗防御句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('以守为攻 X/15 次（防御反击累计，v23.36）') &&
+  readme.includes('DEFLECT_GOAL`(15) 次，v23.36') && readme.includes('共 72 项') && readme.includes('15 次解锁成就「以守为攻」'));
+ok('CHANGELOG 顶部已追加 v23.40 条目', changelog.startsWith('## v23.76 '));
 
 // —— v23.39 HUD 昼夜标签补「×倍率 · 剩Xs」（体验打磨·信息透明·纯显示）——
 const hudSrc = read('../js/view/hud.js');
@@ -328,7 +328,7 @@ S.enemy = null; S.scene = 'world';
 // —— v23.41 README 音效行补「事件专属音效」家族（文档整理·同源口径·纯文档）——
 ok('data.js 含 v23.41 版本注释（README 音效事件家族文档补全）', dataSrc.includes('v23.41 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.41（旧 v23.40 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.40';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.40';"));
 ok('data.js 仍保留 v23.40 历史注释（音效反馈·语义修正，与 audio.js SFX.flee 注释同族）',
   dataSrc.includes('v23.40 音效反馈·语义修正'));
 ok('README 音效行补「事件专属音效」括号（成就铃声 v23.22 / 酿造气泡上行 v23.33 / 逃跑下行三步 v23.40）',
@@ -345,7 +345,7 @@ ok('README 音效行仍在快速上手表·音效哨兵可见域（BGM / 音效 
 ok('data.js 含 v23.42 版本注释（客栈老板娘升格为讨伐支线「夜路的狼嚎」委托人）',
   dataSrc.includes('// v23.42 新内容·新支线：潮灯镇旅馆东侧门外客栈老板娘升格为讨伐支线「夜路的狼嚎」委托人'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.42（旧 v23.41 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.41';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.41';"));
 ok('data.js 仍保留 v23.41 历史注释（README 音效事件家族文档补全）', dataSrc.includes('v23.41 文档整理·数值说明·同源口径'));
 ok('data.js WOLF_GOAL=3 单一数据源 + QUESTS.side_wolf 字面量逐字（40 金 + 2 药水 · 客栈老板娘委托人）',
   dataSrc.includes('const WOLF_GOAL = 3;') && dataSrc.includes('reward:{ gold:40, item:2 }') &&
@@ -354,12 +354,12 @@ ok('README 支线行 夜路的狼嚎 v23.42 逐字（40 金 + 2 药水 · WOLF_G
   readme.includes('夜路的狼嚎（客栈老板娘 · 3 只野狼 `WOLF_GOAL`）40 金 + 2 药水') &&
   readme.includes('`GRAIN_GOAL` `WOLF_GOAL` `SNAKE_GOAL` `TREE_GOAL`'));
 ok('README 支线行开头已随新现实更新为 十一条支线', readme.includes('十一条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生'));
-ok('CHANGELOG 顶部已追加 v23.42 条目（新支线夜路的狼嚎）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.42 条目（新支线夜路的狼嚎）', changelog.startsWith('## v23.76 '));
 
 // —— v23.43 暴击专属上扬音（音效反馈·听觉信息透明·承 v23.22/33/40 事件音效各归其位主线收口）——
 ok('data.js 含 v23.43 版本注释（暴击专属上扬音·承 v21.3/v23.22-40 主线）', dataSrc.includes('v23.43 音效反馈·听觉信息透明'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.43（旧 v23.42 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.42';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.42';"));
 ok('data.js 仍保留 v23.42 历史注释（夜路的狼嚎·新内容数据层零新逻辑）', dataSrc.includes('v23.42 新内容·新支线'));
 ok('audio.js 含 SFX.crit 上挑滑音（sawtooth 320→700，与 SFX.hit 低坠同族反向一听即分）',
   audioSrc.includes("crit() { tone(320, 0.11, 'sawtooth', 0.13, 0, 380); }"));
@@ -377,7 +377,7 @@ ok('README 音效行事件专属音效家族补暴击上扬滑音 v23.43（既�
   readme.includes('逃跑成功下行三步（v23.40）') && readme.includes('暴击上扬滑音（v23.43）'));
 ok('README 快速上手表·战斗行补暴击专属上扬音（与普攻一听即分）',
   readme.includes('暴击瞬间有专属上扬音（v23.43'));
-ok('CHANGELOG 顶部已追加 v23.43 条目（暴击专属上扬音）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.43 条目（暴击专属上扬音）', changelog.startsWith('## v23.76 '));
 // 运行期：真实路径（startBattle + playerAction('attack')，Math.random 强制暴击/非暴击两档）
 const _origCrit = audioMod.SFX.crit, _origHit2 = audioMod.SFX.hit;
 let critN = 0, hitN2 = 0;
@@ -405,7 +405,7 @@ const _dbSrc = read('../js/view/drawBattle.js');
 ok('data.js 含 v23.44 版本注释（指令栏 [5]防御 预览补全回蓝/反击）',
   dataSrc.includes('v23.44 体验打磨·信息透明·纯显示：战斗指令栏'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.44（旧 v23.43 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.43';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.43';"));
 ok('data.js 仍保留 v23.43 历史注释（暴击专属上扬音）', dataSrc.includes('v23.43 音效反馈·听觉信息透明'));
 ok('drawBattle.js 含 v23.44 注释块（[5]防御 回蓝/反击 预览补全）',
   _dbSrc.includes('// v23.44 指令栏 [5]防御 预览补全「回蓝/反击」'));
@@ -416,7 +416,7 @@ ok('drawBattle.js [4]逃跑 token v23.44 压缩口径（·N% 由 FLEE_SUCCESS �
 ok('drawBattle.js [4]逃跑旧「·成功率约」口径零残留（v23.44 已压缩）', !_dbSrc.includes("'·成功率约'"));
 ok('drawBattle.js ⛔ 前缀测量行零回归（[:4]逃跑 截止逐字未动）',
   _dbSrc.includes("`[1]攻击${atkPrev}  [2]技能  [3]药水🍖×${pN}${p2 ? ` 🧪×${p2}` : ''}  [4]逃跑`).width"));
-ok('CHANGELOG 顶部已追加 v23.44 条目（指令栏 [5]防御 回蓝/反击 预览补全）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.44 条目（指令栏 [5]防御 回蓝/反击 预览补全）', changelog.startsWith('## v23.76 '));
 
 // —— v23.45 Boss/试炼战专属战斗 BGM（音效反馈·听觉信息透明，承 v21.3 alert/boss「先闻其声」持续侧收口）——
 const _auSrc = read('../js/audio.js');
@@ -424,7 +424,7 @@ const _btnSrc = read('../js/battle.js');
 ok('data.js 含 v23.45 版本注释（Boss/试炼战专属战斗 BGM）',
   dataSrc.includes('v23.45 音效反馈·听觉信息透明：Boss/试炼战专属战斗 BGM'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.45（旧 v23.44 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.44';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.44';"));
 ok('audio.js 含 MUSIC.battleBoss 轨（step 0.22 慢于 battle 0.13 · 三角波半音阶下行 A3→G#3→G3→F#3 · 低音持续）',
   _auSrc.includes('battleBoss: {') && _auSrc.includes("step: 0.22, wave: 'triangle'") &&
   _auSrc.includes('seq: [220, 0, 0, 0, 208, 0, 0, 0, 196, 0, 0, 0, 185, 0, 0, 0]'));
@@ -434,14 +434,14 @@ ok('battle.js startBattle 战斗 BGM 按 isBossFoe 分轨（battleBoss/battle ·
   _btnSrc.includes("startBgm(isBossFoe(S.enemy) ? 'battleBoss' : 'battle')") && !_btnSrc.includes("startBgm('battle');"));
 ok('battle.js SFX.alert/SFX.boss 警报分支逐字未动（v23.45 零回归）',
   _btnSrc.includes('if (isBossFoe(S.enemy)) SFX.boss(); else SFX.alert();'));
-ok('CHANGELOG 顶部已追加 v23.45 条目（Boss/试炼战专属战斗 BGM）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.45 条目（Boss/试炼战专属战斗 BGM）', changelog.startsWith('## v23.76 '));
 
 // —— v23.46 真身变身专属音效（音效反馈·语义修正，承 v23.22/33/40/43 事件音效各归其位主线收口）——
 const _enemySrc = read('../js/enemyAI.js');
 ok('data.js 含 v23.46 版本注释（真身变身专属音效·语义修正）',
   dataSrc.includes('v23.46 音效反馈·语义修正：Boss 现出真身（变身）专属音效'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.46（旧 v23.45 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.45';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.45';"));
 ok('data.js 仍保留 v23.45 历史注释（Boss/试炼战专属战斗 BGM）',
   dataSrc.includes('v23.45 音效反馈·听觉信息透明：Boss/试炼战专属战斗 BGM'));
 ok('audio.js 含 SFX.transform 上涌三连（低音 saw 60→210 + 中音 triangle 300→520 + 高音 sine 1180→760）',
@@ -460,7 +460,7 @@ ok('README 音效行事件专属音效家族补真身变身专属音效 v23.46�
   readme.includes('成就铃声（sine 三连上行，v23.22）') && readme.includes('酿造气泡上行（v23.33）') &&
   readme.includes('逃跑成功下行三步（v23.40）') && readme.includes('暴击上扬滑音（v23.43）') &&
   readme.includes('真身变身专属音效（v23.46'));
-ok('CHANGELOG 顶部已追加 v23.46 条目（真身变身专属音效）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.46 条目（真身变身专属音效）', changelog.startsWith('## v23.76 '));
 // 运行期：真实 enemyAct 变身路径（Boss 血过半触发，Stub 计 transform/thunder 调用数）
 const _origTr = audioMod.SFX.transform, _origTh = audioMod.SFX.thunder;
 let trN = 0, thN = 0;
@@ -485,7 +485,7 @@ S.enemy = null; S.scene = 'world';
 ok('data.js 含 v23.47 版本注释（蓄力专属音效·语义修正）',
   dataSrc.includes('v23.47 音效反馈·语义修正：蓄力专属音效'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.47（旧 v23.46 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.46';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.46';"));
 ok('data.js 仍保留 v23.46 历史注释（真身变身专属音效）',
   dataSrc.includes('v23.46 音效反馈·语义修正：Boss 现出真身（变身）专属音效'));
 ok('audio.js 含 SFX.charge 上挑三连（square 392→523→659）',
@@ -506,7 +506,7 @@ ok('README 音效行事件专属音效家族补蓄力专属音效 v23.47（既�
   readme.includes('成就铃声（sine 三连上行，v23.22）') && readme.includes('酿造气泡上行（v23.33）') &&
   readme.includes('逃跑成功下行三步（v23.40）') && readme.includes('暴击上扬滑音（v23.43）') &&
   readme.includes('真身变身专属音效（v23.46') && readme.includes('蓄力专属音效（v23.47'));
-ok('CHANGELOG 顶部已追加 v23.47 条目（蓄力专属音效）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.47 条目（蓄力专属音效）', changelog.startsWith('## v23.76 '));
 // 运行期：真实 playerAction('charge')/('defend') 路径（Stub 计 charge/block 调用数）
 const _origChg = audioMod.SFX.charge, _origBlk2 = audioMod.SFX.block;
 let chgN = 0, blkN2 = 0;
@@ -531,7 +531,7 @@ S.enemy = null; S.scene = 'world';
 ok('data.js 含 v23.48 版本注释（敌方暗影回血专属音效·语义修正）',
   dataSrc.includes('v23.48 音效反馈·语义修正：敌方暗影回血专属音效'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.48（旧 v23.47 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.47';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.47';"));
 ok('data.js 仍保留 v23.47 历史注释（蓄力专属音效）',
   dataSrc.includes('v23.47 音效反馈·语义修正：蓄力专属音效'));
 ok('audio.js 含 SFX.darkheal 暗影低吟三连（triangle 220→185→147 下行 + 末音 sine 低沉拖尾）',
@@ -551,7 +551,7 @@ ok('README 音效行事件专属音效家族补敌方暗影回血专属音效 v2
   readme.includes('逃跑成功下行三步（v23.40）') && readme.includes('暴击上扬滑音（v23.43）') &&
   readme.includes('真身变身专属音效（v23.46') && readme.includes('蓄力专属音效（v23.47') &&
   readme.includes('敌方暗影回血专属音效（v23.48'));
-ok('CHANGELOG 顶部已追加 v23.48 条目（敌方暗影回血专属音效）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.48 条目（敌方暗影回血专属音效）', changelog.startsWith('## v23.76 '));
 // 运行期：真实 enemyAct 暗影回血路径（hp<40% 触发，Stub 计 darkheal/heal 调用数）
 const _origDh = audioMod.SFX.darkheal, _origHeal2 = audioMod.SFX.heal;
 let dhN = 0, hlN2 = 0;
@@ -572,7 +572,7 @@ S.enemy = null; S.scene = 'world';
 ok('data.js 含 v23.49 版本注释（宝箱开启专属音效·语义修正）',
   dataSrc.includes('v23.49 音效反馈·语义修正：宝箱开启专属音效'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.49（旧 v23.48 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.48';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.48';"));
 ok('data.js 仍保留 v23.48 历史注释（敌方暗影回血专属音效）',
   dataSrc.includes('v23.48 音效反馈·语义修正：敌方暗影回血专属音效'));
 ok('audio.js 含 SFX.chest 低暖木质三连（triangle 196→262→392 上挑 + 末音 sine 上扬余韵）',
@@ -595,7 +595,7 @@ ok('README 音效行事件专属音效家族补宝箱开启专属音效 v23.49�
   readme.includes('逃跑成功下行三步（v23.40）') && readme.includes('暴击上扬滑音（v23.43）') &&
   readme.includes('真身变身专属音效（v23.46') && readme.includes('蓄力专属音效（v23.47') &&
   readme.includes('敌方暗影回血专属音效（v23.48') && readme.includes('宝箱开启专属音效（v23.49'));
-ok('CHANGELOG 顶部已追加 v23.49 条目（宝箱开启专属音效）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.49 条目（宝箱开启专属音效）', changelog.startsWith('## v23.76 '));
 // 运行期：真实 STEP_HANDLERS[TY.CHEST] 开箱路径（金币档，Stub 计 chest/item/coin 调用数）
 const _wMod = await import('../js/world.js');
 const _origChest = audioMod.SFX.chest, _origItem3 = audioMod.SFX.item, _origCoin3 = audioMod.SFX.coin;
@@ -620,7 +620,7 @@ S.G = null; S.scene = 'world';
 ok('data.js 含 v23.50 版本注释（任务交付专属音效·语义修正）',
   dataSrc.includes('v23.50 音效反馈·语义修正：任务交付专属音效'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.50（旧 v23.49 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.49';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.49';"));
 ok('data.js 仍保留 v23.49 历史注释（宝箱开启专属音效）',
   dataSrc.includes('v23.49 音效反馈·语义修正：宝箱开启专属音效'));
 ok('audio.js 含 SFX.quest「交付铃」先抑后扬三连（triangle 659→494 下行四度 + sine 988 上扬余韵）',
@@ -660,7 +660,7 @@ S.G = null; S.scene = 'world';
 ok('data.js 含 v23.51 版本注释（敌方石甲专属音效·语义修正）',
   dataSrc.includes('v23.51 音效反馈·语义修正：敌方石甲专属音效'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.52（旧 v23.50 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.50';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.50';"));
 ok('data.js 仍保留 v23.50 历史注释（任务交付专属音效）',
   dataSrc.includes('v23.50 音效反馈·语义修正：任务交付专属音效'));
 ok('audio.js 含 SFX.armor「岩壳凝结」低鸣三连（sine 98→147→196）',
@@ -676,7 +676,7 @@ ok('enemyAI.js 石甲结算链逐字零回归（盾层自增/🪨 战报/累计�
 ok('README 音效行事件专属音效家族补敌方石甲专属音效 v23.51（既有九项逐字保留）',
   readme.includes('真身变身专属音效（v23.46') && readme.includes('任务交付专属音效（v23.50') &&
   readme.includes('敌方石甲专属音效（v23.51'));
-ok('CHANGELOG 顶部已追加 v23.51 条目（敌方石甲专属音效）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.51 条目（敌方石甲专属音效）', changelog.startsWith('## v23.76 '));
 // 运行期：真实 enemyAct 石甲路径（Stub 计 armor/block 调用数）
 const _origArmor = audioMod.SFX.armor, _origBlk51 = audioMod.SFX.block;
 let armorN = 0, blkN51 = 0;
@@ -708,17 +708,17 @@ ok('README 含 smoke_v2313_talkall 入库（209 份）', readme.includes('smoke_
 ok('README 仍保留 v23.12 守护描述（历史口径）', readme.includes('v23.12 起含 标题画面提示行「[ / ] 音量」口径守护'));
 ok('README 仍保留 smoke_v2312_voltitle 入库（208 份）历史口径', readme.includes('smoke_v2312_voltitle 入库（208 份）'));
 ok('README 成就口径「60 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 71 项进度') && readme.includes('**71 项成就**') &&
+  readme.includes('成就一览（全部 72 项进度') && readme.includes('**72 项成就**') &&
   !readme.includes('成就一览（全部 59 项进' + '度') && !readme.includes('**59 项成' + '就**'));
-ok('README 数值速查成就档位行含社交档「有口皆碑」与共 71 项',
-  readme.includes('社交向单档「有口皆碑」') && readme.includes('共 71 项'));
+ok('README 数值速查成就档位行含社交档「有口皆碑」与共 72 项',
+  readme.includes('社交向单档「有口皆碑」') && readme.includes('共 72 项'));
 ok('package.json 已收录 smoke_v2313_talkall（npm test 串跑第 209 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2313_talkall.mjs'));
 ok('package.json 串尾为 ... smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"',
   pkg.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 209 件套', testChain === 212, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.41 条目', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.41 条目', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.12 条目（历史口径）', changelog.includes('## v23.12 标题画面提示行补「[ / ] 音量」口径'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.12 pin 零残留 ——
@@ -726,17 +726,17 @@ const s2312 = read('smoke_v2312_voltitle.mjs');
 const s2297 = read('smoke_v2297_chestmid.mjs');
 const s2229 = read('smoke_v2229_metall.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.75';"));
+ok('smoke_v2312 的 GAME_VERSION 字面量 pin 已更新为 v23.13', s2312.includes("const GAME_VERSION = 'v23.76';"));
 ok('smoke_v2312 的 CHANGELOG 顶 pin 已更新为 ## v23.13',
-  s2312.includes("startsWith('## v23.75 "));
+  s2312.includes("startsWith('## v23.76 "));
 ok('smoke_v2312 的件套 pin 已更新为二百一十二件套（二百一十一件套清除）', s2312.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2312 的 README 串尾 pin 已延伸至 smoke_v2313_talkall',
   s2312.includes('smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
 ok('smoke_v2312 的 package 串尾 pin 已延伸至 smoke_v2313_talkall',
   s2312.includes('node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs"'));
 ok('smoke_v2312 的 testChain pin 已更新为 209', s2312.includes('testChain === 212'));
-ok('smoke_v2297 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2297.includes('ACH_LIST.length === 71'));
-ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2229.includes('ACH_LIST.length === 71'));
+ok('smoke_v2297 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2297.includes('ACH_LIST.length === 72'));
+ok('smoke_v2229 的 ACH_LIST 精确计数 pin 已更新为 === 60', s2229.includes('ACH_LIST.length === 72'));
 ok('smoke_v2143 哨兵链已推进至二百一十三件套（二百一十二件套清除）', s2143.includes('二百一十三件套（二百一十二件套清除）') && s2143.includes("!readme.includes('二百一十三件套（二百一十二件套清除）')"));
 
 // 旧代 v23.12 pin 全库零残留（不含本件）
@@ -885,7 +885,7 @@ ok('improve-plan.md 抬头已追记为 v23.52 现状（2026-09-21 + 指向 CHANG
 ok('improve-plan.md 历史档案正文零改写（v3.39 留档日期与原稿 v4.0 落地状态原样保留）',
   plan.includes('留档日期：2026-08-19（对应代码约 v3.39') && plan.includes('v4.0 已执行（2026-08-19'));
 ok('data.js 含 v23.52 版本注释（文档整理·档案对齐）', dataSrc.includes('// v23.52 文档整理·档案对齐'));
-ok('CHANGELOG 顶部已追加 v23.52 条目（improve-plan 落地状态对齐）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.52 条目（improve-plan 落地状态对齐）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.51 条目（历史口径）', changelog.includes('## v23.51 敌方石甲专属音效'));
 
 // —— v23.53 精英「重击」逐招预判补全（体验打磨·信息透明·纯显示——承 v21.47 威胁预警补「重击线」/ v23.44
@@ -893,7 +893,7 @@ ok('CHANGELOG 仍保留 v23.51 条目（历史口径）', changelog.includes('##
 // 看不到重击那一刀；现把逐招预判门放宽为 isBossFoe || 持有 heavy 招）——
 ok('data.js 含 v23.53 版本注释（精英重击逐招预判补全）', dataSrc.includes('// v23.53 体验打磨·信息透明·纯显示：精英「重击」逐招预判补全'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.53（旧 v23.52 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.52';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.52';"));
 ok('data.js 仍保留 v23.52 历史注释（文档整理·档案对齐）', dataSrc.includes('// v23.52 文档整理·档案对齐'));
 ok('drawBattle.js 含 v23.53 注释块（精英「重击」逐招预判补全）', _dbSrc.includes('// v23.53 精英「重击」逐招预判补全'));
 ok('drawBattle.js 逐招预判门放宽落位（hasHeavy 由 enemy.acts 同源派生 + isBossFoe || hasHeavy，零新依赖）',
@@ -914,7 +914,7 @@ ok('数据面复核：石心魔像无 heavy 招（attack/shield 机制怪——�
   (_d2.SPECIES['石心魔像'].acts || []).some((a) => a.type === 'shield'));
 ok('README 战斗段补持重击招的精英同款逐招预判口径（v23.53）',
   readme.includes('持重击招的精英同款逐招预判**（v23.53'));
-ok('CHANGELOG 顶部已追加 v23.53 条目（精英「重击」逐招预判补全）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.53 条目（精英「重击」逐招预判补全）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.52 条目（历史口径）', changelog.includes('## v23.52 改进计划留档'));
 
 // —— v23.53 级联守护：旧代 v23.52 GAME_VERSION/恒等/顶 pin 全库零残留（仅 v23.52 特性标签保留）——
@@ -930,7 +930,7 @@ ok('旧代 v23.52 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.54 版本注释（新成就蓄势待发·战斗维度第二枚）',
   dataSrc.includes('// v23.54 新内容·战斗维度第二枚里程碑：新成就「蓄势待发」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.54（旧 v23.53 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.53';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.53';"));
 ok('data.js 仍保留 v23.53 历史注释（精英重击逐招预判补全）',
   dataSrc.includes('// v23.53 体验打磨·信息透明·纯显示：精英「重击」逐招预判补全'));
 const chgAch = ACH_LIST.find((a) => a.id === 'charge');
@@ -955,10 +955,10 @@ ok('battle.js 蓄力结算链逐字零回归（气场压制判定/置位/SFX.cha
   battleSrc.includes('凝神蓄力：下一次【攻击或技能】威力 ×${CHARGE_MULT}') && battleSrc.includes('afterPlayer();'));
 ok('data.js 含 CHARGE_GOAL 阈值常量与 charge 条目注释（单一数据源三端同读）',
   dataSrc.includes('const CHARGE_GOAL = 15;') && dataSrc.includes('// 蓄势待发（v23.54'));
-ok('README 同步（C 行 62 项 / 成就 bullet 62 项·蓄势待发 X/15 次 / 成就档位行 CHARGE_GOAL(15)·共 71 项 / 战斗蓄力句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('蓄势待发 X/15 次（蓄力累计，v23.54）') &&
-  readme.includes('CHARGE_GOAL`(15) 次，v23.54') && readme.includes('共 71 项') && readme.includes('15 次解锁成就「蓄势待发」'));
-ok('CHANGELOG 顶部已追加 v23.54 条目（新成就蓄势待发）', changelog.startsWith('## v23.75 '));
+ok('README 同步（C 行 62 项 / 成就 bullet 62 项·蓄势待发 X/15 次 / 成就档位行 CHARGE_GOAL(15)·共 72 项 / 战斗蓄力句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('蓄势待发 X/15 次（蓄力累计，v23.54）') &&
+  readme.includes('CHARGE_GOAL`(15) 次，v23.54') && readme.includes('共 72 项') && readme.includes('15 次解锁成就「蓄势待发」'));
+ok('CHANGELOG 顶部已追加 v23.54 条目（新成就蓄势待发）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.53 条目（历史口径）', changelog.includes('## v23.53 精英「重击」逐招预判补全'));
 // 运行期：真实 playerAction('charge') 路径（计数落账 + 战报进度 + 达标当场解锁）
 S.G = newGame('蓄'); S.G.map = 'village';
@@ -988,7 +988,7 @@ ok('旧代 v23.53 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.55 版本注释（Lv12 终章新技能·第八招）',
   dataSrc.includes('// v23.55 新内容·战斗机制：Lv12 终章新技能「灯焰长明」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.55（旧 v23.54 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.54';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.54';"));
 ok('data.js 仍保留 v23.54 历史注释（新成就蓄势待发）',
   dataSrc.includes('// v23.54 新内容·战斗维度第二枚里程碑：新成就「蓄势待发」'));
 ok('data.js LEARN_AT 含 Lv12 灯焰长明（末端追加·既有七级零位移）',
@@ -1024,7 +1024,7 @@ ok('README 同步（快速上手表 1-8 / 技能领悟行 Lv12 灯焰长明 / �
   readme.includes('数字键 1-8 快捷直发') && readme.includes('Lv1 火焰斩 · Lv3 冰霜击 · Lv4 治愈术 · Lv5 雷鸣 · Lv7 陨石术 · Lv9 汲光击 · Lv11 星砂回响 · Lv12 灯焰长明') &&
   readme.includes('八招 mp/倍率/效果') && readme.includes('灯焰长明 16MP·×3.4·灼烧2回合（每回合4%最大HP）+汲回50%伤害为MP·上限25%最大MP') &&
   readme.includes('星砂回响汲蓝→灯焰长明灼烧汲蓝') && readme.includes('灯焰长明（Lv12 领悟——伤害 ×3.4 并给敌方挂 2 回合灼烧'));
-ok('CHANGELOG 顶部已追加 v23.55 条目（Lv12 终章新技能灯焰长明）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.55 条目（Lv12 终章新技能灯焰长明）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.54 条目（历史口径）', changelog.includes('## v23.54 新成就「蓄势待发」'));
 // 运行期：真实 playerAction('skill','灯焰长明') 路径（DOM/音频桩 + main.js 导入后全链路：扣蓝 → 命中结算 → 灼烧挂载 → 汲蓝落账 → 战报）
 S.G = newGame('灯'); S.G.map = 'village';
@@ -1064,7 +1064,7 @@ ok('旧代 v23.54 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 // —— v23.56 试炼三连战战报补「获得 N 经验」（体验打磨·信息透明·反馈不迟到，承 v19.80 普通胜利「收入现场报收入」主线）——
 ok('data.js 含 v23.56 版本注释（试炼战报补经验）', dataSrc.includes('// v23.56 体验打磨·信息透明·反馈不迟到：试炼三连战战报补'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.56（旧 v23.55 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.55';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.55';"));
 ok('data.js 仍保留 v23.55 历史注释（Lv12 终章新技能灯焰长明）',
   dataSrc.includes('// v23.55 新内容·战斗机制：Lv12 终章新技能「灯焰长明」'));
 ok('battle.js 含 v23.56 注释块（试炼战报补「获得 N 经验」说明）', battleSrc.includes('// v23.56 试炼战报补「获得 N 经验」'));
@@ -1074,7 +1074,7 @@ ok('battle.js 试炼通关报文已补经验（🌈 ……！（获得 ${enemy.x
   battleSrc.includes('灯火记得你的名字！（获得 ${enemy.xp} 经验 · 剩余 ${hero.gold} 金 · 千锤百炼 ${rc}/${RUSH_CLEAR_GOAL}）'));
 ok('battle.js 旧报文零残留（换关/通关不再有无经验版本）',
   !battleSrc.includes('现身！（已自动恢复') && !battleSrc.includes('灯火记得你的名字！（剩余 ${hero.gold} 金）'));
-ok('CHANGELOG 顶部已追加 v23.56 条目（试炼战报补经验）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.56 条目（试炼战报补经验）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.55 条目（历史口径）', changelog.includes('## v23.55 Lv12 终章新技能「灯焰长明」——第八招收口'));
 ok('README 同步（战斗行试炼每关战报补「获得 N 经验」）', readme.includes('试炼每关获胜战报同报「获得 N 经验」'));
 // 运行期：真实 winBattle isRush 路径（换关/通关两报文补「获得 N 经验」，boxMsg 捕获桩承 v21.40 捕桩法）
@@ -1113,7 +1113,7 @@ try {
 ok('data.js 含 v23.57 版本注释（酿药师升格为讨伐支线「蛇影的药引」委托人）',
   dataSrc.includes('// v23.57 新内容·新支线：潮灯镇酿造锅旁酿药师升格为讨伐支线「蛇影的药引」委托人'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.57（旧 v23.56 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.56';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.56';"));
 ok('data.js 仍保留 v23.56 历史注释（试炼战报补经验）', dataSrc.includes('// v23.56 体验打磨·信息透明·反馈不迟到：试炼三连战战报补'));
 ok('data.js SNAKE_GOAL=3 单一数据源 + QUESTS.side_snake 字面量逐字（50 金 + 1 高级灵药 · 酿药师委托人）',
   dataSrc.includes('const SNAKE_GOAL = 3;') && dataSrc.includes('reward:{ gold:50, potion2:1 },') &&
@@ -1122,7 +1122,7 @@ ok('data.js SNAKE_GOAL=3 单一数据源 + QUESTS.side_snake 字面量逐字（5
 ok('README 支线行 蛇影的药引 v23.57 逐字（50 金 + 1 高级灵药 · SNAKE_GOAL 常量源列）',
   readme.includes('蛇影的药引（酿药师 · 3 只毒蛇 `SNAKE_GOAL`）50 金 + 1 高级灵药') &&
   readme.includes('`WOLF_GOAL` `SNAKE_GOAL` `TREE_GOAL`'));
-ok('CHANGELOG 顶部已追加 v23.57 条目（新支线蛇影的药引）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.57 条目（新支线蛇影的药引）', changelog.startsWith('## v23.76 '));
 // 运行期：真实 npcQuestPages/npcQuestMark 契约（offer → active（进度页）→ turnin → done 分档）
 const _qMod = await import('../js/quests.js');
 {
@@ -1149,7 +1149,7 @@ const { HELP_PAGES: _HP, QUESTS: _Q } = await import('../js/data.js');
 ok('data.js 含 v23.58 版本注释（潮灯镇行 r[2] 补「酿药师（蛇影的药引）」指针）',
   dataSrc.includes('// v23.58 体验打磨·信息透明·纯文字：帮助页「地图指南」潮灯镇行 r[2] 补第十一条支线经办指针'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.58（旧 v23.57 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.57';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.57';"));
 ok('data.js 仍保留 v23.57 历史注释（蛇影的药引·新支线）',
   dataSrc.includes('// v23.57 新内容·新支线：潮灯镇酿造锅旁酿药师升格为讨伐支线「蛇影的药引」委托人'));
 const hRow58 = dataSrc.match(/\[['"]潮灯镇 Lv\.' \+ MAPS\.village\.recLv,[^\]]+\]/);
@@ -1179,14 +1179,14 @@ for (const f of allTests) {
       src.includes("startsWith('## v23.57") || src.includes("'## v23.57 ")) stale58.push(f);
 }
 ok('旧代 v23.57 pin 全库零残留（' + allTests.length + ' 件扫描，仅 v23.57 特性标签保留）', stale58.length === 0, stale58.join(','));
-ok('CHANGELOG 顶部已追加 v23.58 条目（潮灯镇行酿药师指针）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.58 条目（潮灯镇行酿药师指针）', changelog.startsWith('## v23.76 '));
 // —— v23.59 记忆碎片拾取音效归位（音效反馈·听觉信息透明——承 v21.3 alert/boss「先闻其声」/
 // v23.22 SFX.ach / v23.43 SFX.crit / v23.49 SFX.chest 同一「事件音效各归其位」主线收口后复查补全：
 // SFX.item 自 v23.49 宝箱移出后成孤儿音效，唯一仍是「拾取」语义的现场=winBattle 碎片拾取却静默）——
 ok('data.js 含 v23.59 版本注释（记忆碎片拾取音效归位）',
   dataSrc.includes('// v23.59 音效反馈·听觉信息透明：记忆碎片拾取音效归位'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.59（旧 v23.58 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.59';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.59';"));
 ok('data.js 仍保留 v23.58 历史注释（潮灯镇行酿药师指针）',
   dataSrc.includes('// v23.58 体验打磨·信息透明·纯文字：帮助页「地图指南」潮灯镇行 r[2] 补第十一条支线经办指针'));
 ok('audio.js SFX.item 含 v23.59 注释（700→900 双音音效定义逐字未动）',
@@ -1200,7 +1200,7 @@ ok('battle.js 碎片块其余逐字零回归（v19.90 收集进度注释/🕯️
   battleSrc.includes('bind.boxMsg(`🕯️ 拾起一段记忆：【${frag.name}】'));
 ok('README 记忆碎片行含 v23.59 音效口径（SFX.item 归位到碎片拾取）',
   readme.includes('拾取瞬间有专属「拾取」音效（v23.59——SFX.item 归位到碎片拾取，与胜利号角一听即分）'));
-ok('CHANGELOG 顶部已追加 v23.59 条目（记忆碎片拾取音效归位）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.59 条目（记忆碎片拾取音效归位）', changelog.startsWith('## v23.76 '));
 // —— v23.59 级联守护：旧代 v23.58 GAME_VERSION/恒等/顶 pin 全库零残留（仅 v23.58 特性标签保留）——
 const stale59 = [];
 for (const f of allTests) {
@@ -1250,13 +1250,13 @@ const _skMod61 = await import('../js/data.js');
 const _menusMod61 = await import('../js/view/menus.js');
 ok('data.js 含 v23.61 版本注释（状态页技能节头计数）', dataSrc.includes('// v23.61 体验打磨·信息透明·节头第一眼就报进度'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.61（旧 v23.60 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.60';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.60';"));
 ok('data.js 仍保留 v23.60 历史注释（潮灯镇行旅馆狼嚎指针）',
   dataSrc.includes('// v23.60 体验打磨·信息透明·纯文字'));
 ok('menus.js drawStatus 节头与技能菜单同源派生计数（hero.skills.length + Object.keys(SKILL_DATA).length）',
   menusSrc.includes("text('已学技能：' + hero.skills.length + '/' + Object.keys(SKILL_DATA).length"));
 ok('menus.js drawStatus 节头 v23.61 注释落位', menusSrc.includes('// v23.61 状态页「已学技能：」节头补 N/8 计数'));
-ok('CHANGELOG 顶部已追加 v23.61 条目（状态页技能节头计数）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.61 条目（状态页技能节头计数）', changelog.startsWith('## v23.76 '));
 // —— v23.61 级联守护：旧代 v23.60 pin 全库零残留（仅 v23.60 特性标签保留）——
 const stale61 = [];
 for (const f of allTests) {
@@ -1286,7 +1286,7 @@ ok('旧代 v23.60 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
   ok('data.js 含 v23.62 版本注释（记忆图鉴行讨伐支线进度角标）',
     dataSrc.includes('// v23.62 体验打磨·信息透明·纯显示：记忆图鉴行补「讨伐支线进度」角标'));
   ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.62（旧 v23.61 字面量零残留）',
-    dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.61';"));
+    dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.61';"));
   ok('data.js 仍保留 v23.61 历史注释（状态页技能节头计数）',
     dataSrc.includes('// v23.61 体验打磨·信息透明·节头第一眼就报进度'));
   ok('quests.js 含 v23.62 注释块（图鉴行讨伐支线进度·单一数据源）', questsSrc.includes('v23.62 图鉴行讨伐支线进度'));
@@ -1300,7 +1300,7 @@ ok('旧代 v23.60 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
     _menusSrc62.includes('v23.62 图鉴行讨伐支线进度角标'));
   ok('menus.js 图鉴行双分支落位（已遭遇未讨伐行 + 已讨伐行均追加 📜 支线）',
     _menusSrc62.includes('· 📜 支线 ${qKill.prog}`') && _menusSrc62.includes('const qKill = questKillProg(hero, r.n);'));
-  ok('CHANGELOG 顶部已追加 v23.62 条目（记忆图鉴行讨伐支线进度角标）', changelog.startsWith('## v23.75 '));
+  ok('CHANGELOG 顶部已追加 v23.62 条目（记忆图鉴行讨伐支线进度角标）', changelog.startsWith('## v23.76 '));
   // 纯函数三档谓词逐值：active（2/3）· turnin（满额）· 未接取/done/非讨伐支线/未知怪 null
   const h62 = newGame('灯见');
   h62.bestiary = { '毒蛇': 2 };
@@ -1345,7 +1345,7 @@ ok('旧代 v23.60 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.63 版本注释（新成就暴击如雨·战斗维度第三枚）',
   dataSrc.includes('// v23.63 新内容·战斗维度第三枚里程碑：新成就「暴击如雨」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.63（旧 v23.62 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.62';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.62';"));
 ok('data.js 仍保留 v23.62 历史注释（记忆图鉴行讨伐支线进度角标）',
   dataSrc.includes('// v23.62 体验打磨·信息透明·纯显示：记忆图鉴行补「讨伐支线进度」角标'));
 const critAch = ACH_LIST.find((a) => a.id === 'crit');
@@ -1370,10 +1370,10 @@ ok('battle.js 暴击结算链逐字零回归（CRIT_RATE 判定/×CRIT_MULT/atta
 ok('data.js 含 CRIT_GOAL 阈值常量与 crit 条目注释（单一数据源三端同读）',
   dataSrc.includes('const CRIT_GOAL = 20;') && dataSrc.includes('// 暴击如雨（v23.63'));
 ok('data.js 导出具 CRIT_GOAL（export 单一出口）', dataSrc.includes('CHARGE_GOAL, CRIT_GOAL,'));
-ok('README 同步（C 行 63 项 / 成就 bullet 63 项·暴击如雨 X/20 次 / 成就档位行 CRIT_GOAL(20)·共 71 项 / 战斗暴击句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('暴击如雨 X/20 次（普攻暴击累计，v23.63）') &&
-  readme.includes('CRIT_GOAL`(20) 次，v23.63') && readme.includes('共 71 项') && readme.includes('20 次解锁成就「暴击如雨」'));
-ok('CHANGELOG 顶部已追加 v23.63 条目（新成就暴击如雨）', changelog.startsWith('## v23.75 '));
+ok('README 同步（C 行 63 项 / 成就 bullet 63 项·暴击如雨 X/20 次 / 成就档位行 CRIT_GOAL(20)·共 72 项 / 战斗暴击句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('暴击如雨 X/20 次（普攻暴击累计，v23.63）') &&
+  readme.includes('CRIT_GOAL`(20) 次，v23.63') && readme.includes('共 72 项') && readme.includes('20 次解锁成就「暴击如雨」'));
+ok('CHANGELOG 顶部已追加 v23.63 条目（新成就暴击如雨）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.62 条目（历史口径）', changelog.includes('## v23.62 记忆图鉴行补「讨伐支线进度」角标'));
 // 运行期：真实 playerAction('attack') 暴击路径（Math.random 强制暴击档：计数落账 + 战报进度 + 达标当场解锁）
 {
@@ -1415,7 +1415,7 @@ ok('旧代 v23.62 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.64 版本注释（新成就熟能生巧·战斗维度第四枚）',
   dataSrc.includes('// v23.64 新内容·战斗维度第四枚里程碑：新成就「熟能生巧」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.64（旧 v23.63 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.63';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.63';"));
 ok('data.js 仍保留 v23.63 历史注释（新成就暴击如雨·战斗维度第三枚）',
   dataSrc.includes('// v23.63 新内容·战斗维度第三枚里程碑：新成就「暴击如雨」'));
 const castAch = ACH_LIST.find((a) => a.id === 'cast');
@@ -1442,10 +1442,10 @@ ok('battle.js 技能结算链逐字零回归（MP 不足拦截/封印拦截/指�
 ok('data.js 含 CAST_GOAL 阈值常量与 cast 条目注释（单一数据源三端同读）',
   dataSrc.includes('const CAST_GOAL = 30;') && dataSrc.includes('// 熟能生巧（v23.64'));
 ok('data.js 导出具 CAST_GOAL/FLEE_GOAL/POTION_USE_GOAL（export 单一出口，紧随 CRIT_GOAL）', dataSrc.includes('CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE,'));
-ok('README 同步（C 行 64 项 / 成就 bullet 64 项·熟能生巧 X/30 次 / 成就档位行 CAST_GOAL(30)·共 71 项 / 战斗技能句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('熟能生巧 X/30 次（技能累计释放，v23.64）') &&
-  readme.includes('CAST_GOAL`(30) 次，v23.64') && readme.includes('共 71 项') && readme.includes('30 次解锁成就「熟能生巧」'));
-ok('CHANGELOG 顶部已追加 v23.64 条目（新成就熟能生巧）', changelog.startsWith('## v23.75 '));
+ok('README 同步（C 行 64 项 / 成就 bullet 64 项·熟能生巧 X/30 次 / 成就档位行 CAST_GOAL(30)·共 72 项 / 战斗技能句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('熟能生巧 X/30 次（技能累计释放，v23.64）') &&
+  readme.includes('CAST_GOAL`(30) 次，v23.64') && readme.includes('共 72 项') && readme.includes('30 次解锁成就「熟能生巧」'));
+ok('CHANGELOG 顶部已追加 v23.64 条目（新成就熟能生巧）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.63 条目（历史口径）', changelog.includes('## v23.63 新成就「暴击如雨」'));
 // 运行期：真实 playerAction('skill','火焰斩') 施法路径（计数落账 + 达标当场解锁 + 旧档缺字段零迁移）
 {
@@ -1484,7 +1484,7 @@ ok('旧代 v23.63 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.65 版本注释（新成就走为上计·战斗维度第五枚）',
   dataSrc.includes('// v23.65 新内容·战斗维度第五枚里程碑：新成就「走为上计」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.65（旧 v23.64 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.64';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.64';"));
 ok('data.js 仍保留 v23.64 历史注释（新成就熟能生巧·战斗维度第四枚）',
   dataSrc.includes('// v23.64 新内容·战斗维度第四枚里程碑：新成就「熟能生巧」'));
 const fleeAch = ACH_LIST.find((a) => a.id === 'flee');
@@ -1511,10 +1511,10 @@ ok('battle.js 逃跑链逐字零回归（FLEE_SUCCESS 判定/Boss 气场分支/�
 ok('data.js 含 FLEE_GOAL 阈值常量与 flee 条目注释（单一数据源三端同读）',
   dataSrc.includes('const FLEE_GOAL = 10;') && dataSrc.includes('// 走为上计（v23.65'));
 ok('data.js 导出具 FLEE_GOAL/POTION_USE_GOAL（export 单一出口，紧随 CAST_GOAL）', dataSrc.includes('CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE,'));
-ok('README 同步（C 行 65 项 / 成就 bullet 65 项·走为上计 X/10 次 / 成就档位行 FLEE_GOAL(10)·共 71 项 / 战斗逃跑句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('走为上计 X/10 次（逃跑成功累计，v23.65）') &&
-  readme.includes('FLEE_GOAL`(10) 次，v23.65') && readme.includes('共 71 项') && readme.includes('10 次解锁成就「走为上计」'));
-ok('CHANGELOG 顶部已追加 v23.65 条目（新成就走为上计）', changelog.startsWith('## v23.75 '));
+ok('README 同步（C 行 65 项 / 成就 bullet 65 项·走为上计 X/10 次 / 成就档位行 FLEE_GOAL(10)·共 72 项 / 战斗逃跑句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('走为上计 X/10 次（逃跑成功累计，v23.65）') &&
+  readme.includes('FLEE_GOAL`(10) 次，v23.65') && readme.includes('共 72 项') && readme.includes('10 次解锁成就「走为上计」'));
+ok('CHANGELOG 顶部已追加 v23.65 条目（新成就走为上计）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.64 条目（历史口径）', changelog.includes('## v23.64 新成就「熟能生巧」'));
 // 运行期：真实 playerAction('flee') 逃跑成功路径（计数落账 + 达标当场解锁 + 旧档缺字段零迁移）
 {
@@ -1545,7 +1545,7 @@ ok('CHANGELOG 仍保留 v23.64 条目（历史口径）', changelog.includes('##
 ok('data.js 含 v23.66 版本注释（新成就药到病除·战斗维度第六枚）',
   dataSrc.includes('// v23.66 新内容·战斗维度第六枚里程碑：新成就「药到病除」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.66（旧 v23.65 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.65';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.65';"));
 ok('data.js 仍保留 v23.65 历史注释（新成就走为上计·战斗维度第五枚）',
   dataSrc.includes('// v23.65 新内容·战斗维度第五枚里程碑：新成就「走为上计」'));
 const potionAch = ACH_LIST.find((a) => a.id === 'potionuses');
@@ -1573,10 +1573,10 @@ ok('battle.js 用药链逐字零回归（takePotion 判定/药水档/灵药档�
 ok('data.js 含 POTION_USE_GOAL 阈值常量与 potionuses 条目注释（单一数据源三端同读）',
   dataSrc.includes('const POTION_USE_GOAL = 15;') && dataSrc.includes('// 药到病除（v23.66'));
 ok('data.js 导出具 POTION_USE_GOAL（export 单一出口，紧随 FLEE_GOAL）', dataSrc.includes('FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE,'));
-ok('README 同步（C 行 66 项 / 成就 bullet 66 项·药到病除 X/15 次 / 成就档位行 POTION_USE_GOAL(15)·共 71 项 / 战斗用药句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('药到病除 X/15 次（战斗用药累计，v23.66）') &&
-  readme.includes('POTION_USE_GOAL`(15) 次，v23.66') && readme.includes('共 71 项') && readme.includes('15 次解锁成就「药到病除」'));
-ok('CHANGELOG 顶部已追加 v23.66 条目（新成就药到病除）', changelog.startsWith('## v23.75 '));
+ok('README 同步（C 行 66 项 / 成就 bullet 66 项·药到病除 X/15 次 / 成就档位行 POTION_USE_GOAL(15)·共 72 项 / 战斗用药句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('药到病除 X/15 次（战斗用药累计，v23.66）') &&
+  readme.includes('POTION_USE_GOAL`(15) 次，v23.66') && readme.includes('共 72 项') && readme.includes('15 次解锁成就「药到病除」'));
+ok('CHANGELOG 顶部已追加 v23.66 条目（新成就药到病除）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.65 条目（历史口径）', changelog.includes('## v23.65 新成就「走为上计」'));
 // 运行期：真实 playerAction('item') 战斗用药路径（计数落账 + 达标当场解锁 + 战报主体零回归）
 {
@@ -1608,7 +1608,7 @@ ok('CHANGELOG 仍保留 v23.65 条目（历史口径）', changelog.includes('##
 ok('data.js 含 v23.67 版本注释（新成就千锤百炼·试炼场维度首枚）',
   dataSrc.includes('// v23.67 新内容·试炼场维度首枚里程碑：新成就「千锤百炼」'));
 ok('data.js GAME_VERSION 字面量已随新现实级联为 v23.67（旧 v23.66 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.66';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.66';"));
 ok('data.js 仍保留 v23.66 历史注释（新成就药到病除·战斗维度第六枚）',
   dataSrc.includes('// v23.66 新内容·战斗维度第六枚里程碑：新成就「药到病除」'));
 const rushAch = ACH_LIST.find((a) => a.id === 'rushs');
@@ -1637,10 +1637,10 @@ ok('battle.js 试炼通关链逐字零回归（rushStage 归零/rushDone 置位/
 ok('data.js 含 RUSH_CLEAR_GOAL 阈值常量与 rushs 条目注释（单一数据源三端同读）',
   dataSrc.includes('const RUSH_CLEAR_GOAL = 3;') && dataSrc.includes('// 千锤百炼（v23.67'));
 ok('data.js 导出具 RUSH_CLEAR_GOAL（export 单一出口，紧随 POTION_USE_GOAL）', dataSrc.includes('POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE,'));
-ok('README 同步（C 行 68 项 / 成就 bullet 68 项·千锤百炼 X/3 次 / 成就档位行 RUSH_CLEAR_GOAL(3)·共 71 项 / 试炼碑句）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') && readme.includes('千锤百炼 X/3 次（试炼场累计通关，v23.67）') &&
-  readme.includes('RUSH_CLEAR_GOAL`(3) 次，v23.67') && readme.includes('共 71 项') && readme.includes('3 次解锁成就「千锤百炼」'));
-ok('CHANGELOG 顶部已追加 v23.67 条目（新成就千锤百炼）', changelog.startsWith('## v23.75 '));
+ok('README 同步（C 行 68 项 / 成就 bullet 68 项·千锤百炼 X/3 次 / 成就档位行 RUSH_CLEAR_GOAL(3)·共 72 项 / 试炼碑句）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') && readme.includes('千锤百炼 X/3 次（试炼场累计通关，v23.67）') &&
+  readme.includes('RUSH_CLEAR_GOAL`(3) 次，v23.67') && readme.includes('共 72 项') && readme.includes('3 次解锁成就「千锤百炼」'));
+ok('CHANGELOG 顶部已追加 v23.67 条目（新成就千锤百炼）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.66 条目（历史口径）', changelog.includes('## v23.66 新成就「药到病除」'));
 // 运行期：真实 winBattle 试炼通关路径（计数落账 + 战报就地报进度 + 达标当场解锁，boxMsg 捕获桩承 v23.56 捕桩法）
 {
@@ -1703,7 +1703,7 @@ ok('旧代 v23.64 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.68 版本注释（状态页 C/B 直达·I→J/B→I/C→I 主面板级双向收口）',
   dataSrc.includes('// v23.68 体验打磨·可发现性·信息透明·纯显示：状态页页底补「C 成就 · B 图鉴」直达'));
 ok('data.js GAME_VERSION 字面量已为 v23.68（旧 v23.67 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.67';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.67';"));
 ok('data.js 仍保留 v23.67 历史注释（千锤百炼试炼场注释未动）',
   dataSrc.includes('// v23.67 新成就「千锤百炼」') || dataSrc.includes('类别 千锤百炼') || dataSrc.includes('RUSH_CLEAR_GOAL'));
 ok('data.js 帮助页「操作说明」状态行已收口三直达（v23.69）',
@@ -1721,7 +1721,7 @@ ok('main.js status.onKey I/J/Esc 分支零回归（backWorld/journal 在 C/B 分
   mainSrc.includes("else if (e.key === 'j' || e.key === 'J') goto('journal');"));
 ok('README 快速上手表 I 行三直达口径落位（v23.69）',
   readme.includes('状态界面（页底常驻「J 任务日志 · C 成就 · B 图鉴」直达提示'));
-ok('CHANGELOG 顶部已追加 v23.69 条目（状态页 C/B 直达）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.69 条目（状态页 C/B 直达）', changelog.startsWith('## v23.76 '));
 // 运行期：status.onKey C/B/I/J 真实分派（DOM/音频/存储桩 + main.js 已于本件 193 行导入）
 {
   try {
@@ -1778,7 +1778,7 @@ ok('旧代 v23.67 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.69 版本注释（四收集页互切网格·J→B/C·B→J/C·C→J/B 六链路）',
   dataSrc.includes('// v23.69 体验打磨·可发现性·信息透明·纯显示：四收集页（I 状态 / J 日志 / B 图鉴 / C 成就）互切网格补口'));
 ok('data.js GAME_VERSION 字面量已为 v23.69（旧 v23.68 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.68';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.68';"));
 ok('data.js 仍保留 v23.68 历史注释（状态页 C/B 直达注释未动）',
   dataSrc.includes('// v23.68 体验打磨·可发现性·信息透明·纯显示：状态页页底补「C 成就 · B 图鉴」直达'));
 ok('data.js 帮助页「操作说明」J/B/C 三行已收口四页互切（v23.69）',
@@ -1820,7 +1820,7 @@ ok('README 快速上手表 J/B/C 行 v23.69 口径落位',
     idxSrc.includes('<kbd>I</kbd>/<kbd>J</kbd>/<kbd>C</kbd>直达') &&
     idxSrc.includes('<kbd>I</kbd>/<kbd>J</kbd>/<kbd>B</kbd>直达'));
 }
-ok('CHANGELOG 顶部已追加 v23.69 条目（四收集页互切网格）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.69 条目（四收集页互切网格）', changelog.startsWith('## v23.76 '));
 // 运行期：journal/codex/ach.onKey 互切真实分派（DOM/音频/存储桩 + main.js 已导入）
 {
   try {
@@ -1895,7 +1895,7 @@ ok('旧代 v23.68 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.70 版本注释（帮助页补四收集页直达·承 v23.68/69 互切网格）',
   dataSrc.includes('// v23.70 体验打磨·可发现性·信息透明·纯入口/纯文字：帮助页补四收集页直达'));
 ok('data.js GAME_VERSION 字面量已为 v23.71（旧 v23.69 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.69';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.69';"));
 ok('data.js 仍保留 v23.69 历史注释（四收集页互切网格注释未动）',
   dataSrc.includes('// v23.69 体验打磨·可发现性·信息透明·纯显示：四收集页（I 状态 / J 日志 / B 图鉴 / C 成就）互切网格补口'));
 ok('data.js 帮助页「操作说明」行已补页内四收集页直达口径（v23.70 特性·当前态 v23.71 pin）',
@@ -1920,7 +1920,7 @@ ok('README 快速上手表 H 行 v23.70 口径落位（当前态 pin 随 v23.71 
   ok('index.html 常驻帮助条 H 处 v23.70 直达口径（与 H 页/README 同口径）',
     idxSrc.includes('<kbd>H</kbd>操作说明（页内 <kbd>I</kbd>/<kbd>J</kbd>/<kbd>B</kbd>/<kbd>C</kbd> 直达）'));
 }
-ok('CHANGELOG 顶部已追加 v23.70 条目（帮助页补四收集页直达，当前顶 pin v23.71）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.70 条目（帮助页补四收集页直达，当前顶 pin v23.71）', changelog.startsWith('## v23.76 '));
 // 运行期：help.onKey 四收集页直达真实分派（DOM/音频/存储桩 + main.js 已导入）
 {
   try {
@@ -1976,7 +1976,7 @@ ok('CHANGELOG 顶部已追加 v23.70 条目（帮助页补四收集页直达，�
 ok('data.js 含 v23.71 版本注释（J/B/C 三收集页补 H 帮助直达 + 四页 h/H 分支）',
   dataSrc.includes('v23.71 体验打磨·可发现性·信息透明·纯入口：J/B/C 三收集页补「H 帮助」直达'));
 ok('data.js GAME_VERSION 字面量已为 v23.71（旧 v23.70 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.70';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.70';"));
 ok('data.js 仍保留 v23.68 历史注释（状态页 C/B 直达·v23.71 修复保留）',
   dataSrc.includes('// v23.68 体验打磨·可发现性·信息透明·纯显示：状态页页底补「C 成就 · B 图鉴」直达'));
 ok('data.js 「操作说明」三行 v23.71 补「H 帮助」互切（J/B/C 三行同批同源）',
@@ -2012,7 +2012,7 @@ ok('README 快速上手表 J/B/C 三行 v23.71 口径落位（页内 H 直达操
   ok('index.html 常驻帮助条 J/B/C 三处 v23.71 口径（<kbd>H</kbd>帮助 三处）',
     (idxSrc.match(/<kbd>H<\/kbd>帮助/g) || []).length === 3);
 }
-ok('CHANGELOG 顶部已追加 v23.71 条目（收集页补 H 帮助直达）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.71 条目（收集页补 H 帮助直达）', changelog.startsWith('## v23.76 '));
 // 运行期：四页 onKey h/H→help 真实分派（DOM/音频/存储桩 + main.js 已导入）
 {
   try {
@@ -2084,14 +2084,14 @@ ok('旧代 v23.70 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 ok('data.js 含 v23.72 版本注释（大地图按 F 喝药累计里程碑）',
   dataSrc.includes('v23.72 新内容·旅行/补给维度里程碑'));
 ok('data.js GAME_VERSION 字面量已为 v23.72（旧 v23.71 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.71';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.71';"));
 ok('data.js 仍保留 v23.71 历史注释（收集页补 H 帮助直达·本版保留）',
   dataSrc.includes('v23.71 体验打磨·可发现性·信息透明·纯入口'));
 const mapAch = ACH_LIST.find((a) => a.id === 'mapdrink');
 ok('ACH_LIST 含 mapdrink「渴饮甘露」且 id 唯一（末尾追加，既有 67 项序位零位移）',
   !!mapAch && mapAch.name === '渴饮甘露' && ACH_LIST.filter((a) => a.id === 'mapdrink').length === 1 &&
   ACH_LIST.findIndex((a) => a.id === 'rushs') === 66 && ACH_LIST.findIndex((a) => a.id === 'mapdrink') === 67);
-ok('ACH_LIST 精确总数 68 项（v23.72 旅中补给首枚入列 67→68）', ACH_LIST.length === 71, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 68 项（v23.72 旅中补给首枚入列 67→68）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('MAP_POTION_GOAL 数据契约（阈值单一数据源，判定/进度/描述三端同读）', MAP_POTION_GOAL === 10, String(MAP_POTION_GOAL));
 ok('mapdrink 描述由 MAP_POTION_GOAL 派生（零裸字面量）',
   mapAch.d === `大地图按 F 喝药累计 ${MAP_POTION_GOAL} 次`, mapAch.d);
@@ -2118,12 +2118,12 @@ ok('mapdrink 与 potionuses 同族不同端口（[3]战斗用药 vs 大地图 F�
   !!ACH_LIST.find((a) => a.id === 'potionuses') && ACH_LIST.find((a) => a.id === 'potionuses').d.includes('战斗用药'));
 ok('battle.js 战斗用药端口零串扰（doItem 仍只计数 potionUses，不涉 mapPotions）',
   battleSrc.includes('hero.potionUses = useN;') && !battleSrc.includes('mapPotions'));
-ok('README 同步（C 行 68 项 / 成就 bullet 68 项·渴饮甘露 X/10 次 / 成就档位行 MAP_POTION_GOAL(10)·共 71 项 / F 行）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') &&
+ok('README 同步（C 行 68 项 / 成就 bullet 68 项·渴饮甘露 X/10 次 / 成就档位行 MAP_POTION_GOAL(10)·共 72 项 / F 行）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') &&
   readme.includes('渴饮甘露 X/10 次（大地图按 F 喝药累计，v23.72）') &&
-  readme.includes('`MAP_POTION_GOAL`(10) 次，v23.72') && readme.includes('共 71 项') &&
+  readme.includes('`MAP_POTION_GOAL`(10) 次，v23.72') && readme.includes('共 72 项') &&
   readme.includes('`MAP_POTION_GOAL`(10) 次解锁成就「渴饮甘露」'));
-ok('CHANGELOG 顶部已追加 v23.72 条目（新成就渴饮甘露）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.72 条目（新成就渴饮甘露）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.71 条目（历史口径）', changelog.includes('## v23.71 收集页补「H 帮助」直达'));
 // 运行期：真实 usePotion 大地图喝药路径（计数落账 + 达标当场解锁 + 零战报后缀，boxMsg/renderHUD 捕获桩承 v23.67 捕桩法）
 {
@@ -2170,14 +2170,14 @@ const shopSrc = read('../js/shop.js');
 ok('data.js 含 v23.73 版本注释（旅馆住宿累计里程碑）',
   dataSrc.includes('v23.73 新内容·旅中休整维度里程碑'));
 ok('data.js GAME_VERSION 字面量已为 v23.73（旧 v23.72 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.72';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.72';"));
 ok('data.js 仍保留 v23.72 历史注释（大地图 F 喝药里程碑·本版保留）',
   dataSrc.includes('v23.72 新内容·旅行/补给维度里程碑'));
 const innAch = ACH_LIST.find((a) => a.id === 'innrest');
 ok('ACH_LIST 含 innrest「夜宿灯下」且 id 唯一（末尾追加，既有 68 项序位零位移）',
   !!innAch && innAch.name === '夜宿灯下' && ACH_LIST.filter((a) => a.id === 'innrest').length === 1 &&
   ACH_LIST.findIndex((a) => a.id === 'mapdrink') === 67 && ACH_LIST.findIndex((a) => a.id === 'innrest') === 68);
-ok('ACH_LIST 精确总数 69 项（v23.73 旅中休整首枚入列 68→69）', ACH_LIST.length === 71, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 69 项（v23.73 旅中休整首枚入列 68→69）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('INN_REST_GOAL 数据契约（阈值单一数据源，判定/进度/描述三端同读）', INN_REST_GOAL === 15, String(INN_REST_GOAL));
 ok('innrest 描述由 INN_REST_GOAL 派生（零裸字面量）',
   innAch.d === `在旅馆住宿累计 ${INN_REST_GOAL} 次`, innAch.d);
@@ -2205,12 +2205,12 @@ ok('innrest 与 mapdrink 同族不同端口（免费喝药 vs 付费住店，各
   innAch.d.includes('旅馆住宿'));
 ok('零串扰：core/battle 不涉 innRests（大地图喝药/战斗用药端口不回写），shop 不涉 mapPotions',
   !coreSrc.includes('innRests') && !battleSrc.includes('innRests') && !shopSrc.includes('hero.mapPotions'));
-ok('README 同步（C 行 69 项 / 成就 bullet 69 项·夜宿灯下 X/15 次 / 成就档位行 INN_REST_GOAL(15)·共 71 项 / 经济循环行）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') &&
+ok('README 同步（C 行 69 项 / 成就 bullet 69 项·夜宿灯下 X/15 次 / 成就档位行 INN_REST_GOAL(15)·共 72 项 / 经济循环行）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') &&
   readme.includes('夜宿灯下 X/15 次（旅馆住宿累计，v23.73）') &&
-  readme.includes('`INN_REST_GOAL`(15) 次，v23.73') && readme.includes('共 71 项') &&
+  readme.includes('`INN_REST_GOAL`(15) 次，v23.73') && readme.includes('共 72 项') &&
   readme.includes('次解锁成就「夜宿灯下」') && readme.includes('`INN_REST_GOAL`'));
-ok('CHANGELOG 顶部已追加 v23.73 条目（新成就夜宿灯下）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.73 条目（新成就夜宿灯下）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.72 条目（历史口径）', changelog.includes('## v23.72 新成就「渴饮甘露」'));
 // 运行期：真实 stayInn 旅馆住宿路径（计数落账 + 达标当场解锁 + 零战报后缀，boxMsg/renderHUD 捕获桩承 v23.67 捕桩法）
 {
@@ -2258,15 +2258,15 @@ ok('旧代 v23.72 pin 全库零残留（' + allTests.length + ' 件扫描，仅 
 // —— v23.74 守护：新成就「一掷千金」（经济消费维度首枚·累计消费金币；源级落位 + 纯函数四档谓词 + 运行期真实 buyPotion 路径；承 v23.72/73 成对端口）——
 ok('data.js 含 v23.74 版本注释（累计消费金币里程碑）',
   dataSrc.includes('v23.74 新内容·经济消费维度里程碑'));
-ok('data.js GAME_VERSION 字面量已为 v23.75（旧 v23.73 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.73';"));
+ok('data.js GAME_VERSION 字面量已为 v23.76（旧 v23.73 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.73';"));
 ok('data.js 仍保留 v23.73 历史注释（旅馆住宿累计里程碑·本版保留）',
   dataSrc.includes('v23.73 新内容·旅中休整维度里程碑'));
 const spendAch = ACH_LIST.find((a) => a.id === 'spend');
 ok('ACH_LIST 含 spend「一掷千金」且 id 唯一（末尾追加，既有 69 项序位零位移）',
   !!spendAch && spendAch.name === '一掷千金' && ACH_LIST.filter((a) => a.id === 'spend').length === 1 &&
   ACH_LIST.findIndex((a) => a.id === 'innrest') === 68 && ACH_LIST.findIndex((a) => a.id === 'spend') === 69);
-ok('ACH_LIST 精确总数 70 项（v23.74 经济消费首枚入列 69→70）', ACH_LIST.length === 71, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 70 项（v23.74 经济消费首枚入列 69→70）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('SPEND_GOAL 数据契约（阈值单一数据源，判定/进度/描述三端同读）', SPEND_GOAL === 1000, String(SPEND_GOAL));
 ok('spend 描述由 SPEND_GOAL 派生（零裸字面量）',
   spendAch.d === `累计消费金币 ${SPEND_GOAL} 金`, spendAch.d);
@@ -2297,12 +2297,12 @@ ok('spend 与 rich 三档同族不同端口（持有 vs 消费，各自累计互
   !String(ACH_LIST.find((a) => a.id === 'rich3').ok).includes('spent'));
 ok('零串扰：battle.js 不涉 hero.spent（战斗端口零污染）',
   !battleSrc.includes('hero.spent'));
-ok('README 同步（C 行 70 项 / 成就 bullet 70 项·一掷千金 X/1000 金 / 成就档位行 SPEND_GOAL(1000)·共 71 项 / 经济循环行）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') &&
+ok('README 同步（C 行 70 项 / 成就 bullet 70 项·一掷千金 X/1000 金 / 成就档位行 SPEND_GOAL(1000)·共 72 项 / 经济循环行）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') &&
   readme.includes('一掷千金 X/1000 金（累计消费，v23.74）') &&
-  readme.includes('`SPEND_GOAL`(1000) 金，v23.74') && readme.includes('共 71 项') &&
+  readme.includes('`SPEND_GOAL`(1000) 金，v23.74') && readme.includes('共 72 项') &&
   readme.includes('累计消费 1000 金解锁成就「一掷千金」') && readme.includes('`SPEND_GOAL`'));
-ok('CHANGELOG 顶部已追加 v23.75 条目（新成就一掷千金）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.75 条目（新成就一掷千金）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.73 条目（历史口径）', changelog.includes('## v23.73 新成就「夜宿灯下」'));
 // 运行期：真实 buyPotion 消费路径（计数落账 + 达标当场解锁 + 零战报后缀，boxMsg/renderHUD 捕获桩承 v23.67 捕桩法）
 {
@@ -2341,15 +2341,15 @@ ok('CHANGELOG 仍保留 v23.73 条目（历史口径）', changelog.includes('##
 // —— v23.75 守护：新成就「行者无疆」（旅行动作维度首枚·快速旅行累计；源级落位 + 纯函数四档谓词 + 运行期真实 doTravel 路径；承 v23.72/73/74 成对端口）——
 ok('data.js 含 v23.75 版本注释（快速旅行累计里程碑）',
   dataSrc.includes('v23.75 新内容·旅行动作维度里程碑'));
-ok('data.js GAME_VERSION 字面量已为 v23.75（旧 v23.74 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v23.74';"));
+ok('data.js GAME_VERSION 字面量已为 v23.76（旧 v23.74 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.74';"));
 ok('data.js 仍保留 v23.74 历史注释（经济消费累计里程碑·本版保留）',
   dataSrc.includes('v23.74 新内容·经济消费维度里程碑'));
 const travelAch = ACH_LIST.find((a) => a.id === 'travels');
 ok('ACH_LIST 含 travels「行者无疆」且 id 唯一（末尾追加，既有 70 项序位零位移）',
   !!travelAch && travelAch.name === '行者无疆' && ACH_LIST.filter((a) => a.id === 'travels').length === 1 &&
   ACH_LIST.findIndex((a) => a.id === 'spend') === 69 && ACH_LIST.findIndex((a) => a.id === 'travels') === 70);
-ok('ACH_LIST 精确总数 71 项（v23.75 旅行动作首枚入列 70→71）', ACH_LIST.length === 71, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 72 项（v23.75 旅行动作首枚入列 70→71）', ACH_LIST.length === 72, String(ACH_LIST.length));
 ok('TRAVEL_GOAL 数据契约（阈值单一数据源，判定/进度/描述三端同读）', TRAVEL_GOAL === 15, String(TRAVEL_GOAL));
 ok('travels 描述由 TRAVEL_GOAL 派生（零裸字面量）',
   travelAch.d === `快速旅行累计 ${TRAVEL_GOAL} 次`, travelAch.d);
@@ -2375,12 +2375,12 @@ ok('travels 与探索线三档同族不同端口（到访 vs 旅行动作，各�
   !String(travelAch.ok).includes('visited') && !String(travelAch.ok).includes('gold'));
 ok('零串扰：battle.js 不涉 hero.travels（战斗端口零污染）',
   !battleSrc.includes('hero.travels'));
-ok('README 同步（C 行 71 项 / 成就 bullet 71 项·行者无疆 X/15 次 / T 行 / 成就档位行 TRAVEL_GOAL(15)·共 71 项）',
-  readme.includes('全部 71 项进度') && readme.includes('**71 项成就**') &&
+ok('README 同步（C 行 72 项 / 成就 bullet 72 项·行者无疆 X/15 次 / T 行 / 成就档位行 TRAVEL_GOAL(15)·共 72 项）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') &&
   readme.includes('行者无疆 X/15 次（快速旅行累计，v23.75）') &&
-  readme.includes('`TRAVEL_GOAL`(15) 次，v23.75') && readme.includes('共 71 项') &&
+  readme.includes('`TRAVEL_GOAL`(15) 次，v23.75') && readme.includes('共 72 项') &&
   readme.includes('`TRAVEL_GOAL`(15) 次解锁成就「行者无疆」') && readme.includes('`TRAVEL_GOAL`'));
-ok('CHANGELOG 顶部已追加 v23.75 条目（新成就行者无疆）', changelog.startsWith('## v23.75 '));
+ok('CHANGELOG 顶部已追加 v23.75 条目（新成就行者无疆）', changelog.startsWith('## v23.76 '));
 ok('CHANGELOG 仍保留 v23.74 条目（历史口径）', changelog.includes('## v23.74 新成就「一掷千金」'));
 // 运行期：真实 doTravel 成功路径（计数落账 + 达标当场解锁 + 未探索/已在此地两档零计数；boxMsg 捕获桩承 v23.67 捕桩法）
 {
@@ -2444,6 +2444,101 @@ for (const f of allTests) {
       src.includes("startsWith('## v23.73")) stale73.push(f);
 }
 ok('旧代 v23.73 pin 全库零残留（' + allTests.length + ' 件扫描，仅 v23.73 特性标签保留）', stale73.length === 0, stale73.join(','));
+// —— v23.76 守护：新成就「千里之行」（步行移动维度首枚·步行累计；源级落位 + 纯函数四档谓词 + 运行期真实 world.move 路径；承 v23.72-75 成对端口）——
+const worldSrc = read('../js/world.js');
+ok('data.js 含 v23.76 版本注释（步行累计维度里程碑）',
+  dataSrc.includes('v23.76 新内容·步行累计维度里程碑'));
+ok('data.js GAME_VERSION 字面量已为 v23.76（旧 v23.75 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v23.75';"));
+ok('data.js 仍保留 v23.75 历史注释（旅行动作累计里程碑·本版保留）',
+  dataSrc.includes('v23.75 新内容·旅行动作维度里程碑'));
+const stepsAch = ACH_LIST.find((a) => a.id === 'steps');
+ok('ACH_LIST 含 steps「千里之行」且 id 唯一（末尾追加，既有 71 项序位零位移）',
+  !!stepsAch && stepsAch.name === '千里之行' && ACH_LIST.filter((a) => a.id === 'steps').length === 1 &&
+  ACH_LIST.findIndex((a) => a.id === 'travels') === 70 && ACH_LIST.findIndex((a) => a.id === 'steps') === 71);
+ok('ACH_LIST 精确总数 72 项（v23.76 步行维度首枚入列 71→72）', ACH_LIST.length === 72, String(ACH_LIST.length));
+ok('STEP_GOAL 数据契约（阈值单一数据源，判定/进度/描述三端同读）', STEP_GOAL === 1000, String(STEP_GOAL));
+ok('steps 描述由 STEP_GOAL 派生（零裸字面量）',
+  stepsAch.d === `步行累计 ${STEP_GOAL} 步`, stepsAch.d);
+ok('steps 判定/进度读 (g.steps||0) 防御式（旧档无字段=0 不误解锁零迁移）',
+  String(stepsAch.ok).includes('(g.steps||0)') && String(stepsAch.prog).includes('g.steps||0'));
+ok('steps 无 r 字段纯里程碑（与 outstep/outstep2/wander/travels 同款）', !('r' in stepsAch));
+ok('steps 0 步（缺字段旧档）→ false 且 prog 0/1000', stepsAch.ok({}) === false && stepsAch.prog({}) === `0/${STEP_GOAL}`);
+ok('steps 999 步（恰差 1）→ false 且 prog 999/1000', stepsAch.ok({ steps: 999 }) === false && stepsAch.prog({ steps: 999 }) === `999/${STEP_GOAL}`);
+ok('steps 1000 步（恰好达标）→ true 且 prog 1000/1000', stepsAch.ok({ steps: 1000 }) === true && stepsAch.prog({ steps: 1000 }) === `${STEP_GOAL}/${STEP_GOAL}`);
+ok('steps 2000 步（超阈值）→ true 且 prog 不钳制 2000/1000', stepsAch.ok({ steps: 2000 }) === true && stepsAch.prog({ steps: 2000 }) === `2000/${STEP_GOAL}`);
+ok('world.js 含 v23.76 计数注释（move 步行计数说明）', worldSrc.includes('v23.76 成就「千里之行」计数'));
+ok('world.js move 唯一产生点源级落位（hero.steps 自增 + 当场 applyAchievements，碰撞/出界守卫前置）',
+  worldSrc.includes('hero.steps = (hero.steps || 0) + 1;') && worldSrc.includes('applyAchievements();') &&
+  worldSrc.includes('SOLID.has(at(nx, ny))) return;'));
+ok('world.js 导入 STEP_GOAL（data.js import 行邻位保留，零新增模块依赖）',
+  worldSrc.includes('dayPhase, STEP_GOAL } from'));
+ok('data.js 导出具 STEP_GOAL（export 单一出口，紧随 TRAVEL_GOAL）',
+  dataSrc.includes('volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL,'));
+ok('data.js 含 v23.76 阈值注释与 steps 条目注释',
+  dataSrc.includes('v23.76 成就「千里之行」阈值') && dataSrc.includes('// v23.76 成就「千里之行」条目注释'));
+ok('steps 与探索线三档/旅行动作单档三端口互不串扰（到访 vs 旅行动作 vs 步行各自累计）',
+  !!ACH_LIST.find((a) => a.id === 'wander') && String(ACH_LIST.find((a) => a.id === 'wander').ok).includes('visited') &&
+  !String(ACH_LIST.find((a) => a.id === 'wander').ok).includes('travels') && !String(ACH_LIST.find((a) => a.id === 'wander').ok).includes('steps') &&
+  !String(ACH_LIST.find((a) => a.id === 'travels').ok).includes('visited') && !String(ACH_LIST.find((a) => a.id === 'travels').ok).includes('steps') &&
+  !String(stepsAch.ok).includes('visited') && !String(stepsAch.ok).includes('travels') && !String(stepsAch.ok).includes('gold'));
+ok('零串扰：battle.js/core.js 不涉 hero.steps（战斗/结算端口零污染）',
+  !battleSrc.includes('hero.steps') && !coreSrc.includes('hero.steps'));
+ok('README 同步（C 行 72 项 / 成就 bullet 72 项·千里之行 X/1000 步 / 成就档位行 STEP_GOAL(1000)·共 72 项）',
+  readme.includes('全部 72 项进度') && readme.includes('**72 项成就**') &&
+  readme.includes('千里之行 X/1000 步（步行累计，v23.76）') &&
+  readme.includes('`STEP_GOAL`(1000) 步，v23.76') && readme.includes('共 72 项') &&
+  readme.includes('`STEP_GOAL`'));
+ok('CHANGELOG 顶部已追加 v23.76 条目（新成就千里之行）', changelog.startsWith('## v23.76 '));
+ok('CHANGELOG 仍保留 v23.75 条目（历史口径）', changelog.includes('## v23.75 新成就「行者无疆」'));
+// 运行期：真实 world.move 成功路径（计数落账 + 达标当场解锁 + 撞墙/出界/SOLID 零计数；boxMsg 捕获桩承 v23.67 捕桩法）
+{
+  let oBox76 = null, prevG76 = null, prevMaze76 = null, prevWalk76 = null, prevSc76 = null, prevGauge76 = null, prevUn76 = null;
+  try {
+    const { move: moveMod } = await import('../js/world.js');
+    const msgs76 = [];
+    oBox76 = bindMod.boxMsg;
+    bindMod.boxMsg = (t) => { msgs76.push(String(t)); };
+    const h76 = newGame('余烬');
+    prevG76 = S.G; prevMaze76 = S.maze; prevWalk76 = S.walk; prevSc76 = S.scene; prevGauge76 = S.encGauge; prevUn76 = S.unsaved;
+    S.G = h76; S.scene = 'world';
+    h76.map = 'village'; // curMap() 读 S.G.map（state.js 唯一真相）；village dangerTiles=null → 安全格零遇敌
+    // 手工 2×2 全草地迷你迷宫（绕过 loadMap：gCells 空集、仅 data.js `at` 迷宫生效）
+    S.maze = [[TY.GRASS, TY.GRASS], [TY.GRASS, TY.GRASS]];
+    h76.x = 0; h76.y = 0; S.walk = null; S.encGauge = 0; S.unsaved = false;
+    moveMod(1, 0);
+    ok('运行期：成功移步计数落账（hero.steps 1）且未达标不误解锁',
+      h76.steps === 1 && h76.x === 1 && !(h76.ach || []).includes('steps'), 'steps=' + h76.steps);
+    h76.steps = 999; S.walk = null;
+    moveMod(0, 1);
+    ok('运行期：累计第 1000 步移步当场解锁「千里之行」（applyAchievements 落 hero.ach）',
+      h76.steps === 1000 && h76.y === 1 && (h76.ach || []).includes('steps'),
+      'steps=' + h76.steps + ' ach=' + JSON.stringify(h76.ach || []));
+    h76.steps = 0; S.walk = null; h76.x = 0; h76.y = 0;
+    moveMod(-1, 0);
+    ok('运行期：出界早退零计数（steps 保持 0、位置不动）', h76.steps === 0 && h76.x === 0);
+    h76.steps = 0; S.walk = null; h76.x = 0; h76.y = 0;
+    S.maze = [[TY.GRASS, TY.TREE], [TY.GRASS, TY.GRASS]];
+    moveMod(1, 0);
+    ok('运行期：SOLID 阻挡零计数（steps 保持 0、位置不动）', h76.steps === 0 && h76.x === 0);
+    ok('运行期：旧档缺 steps 字段谓词零抛错且 0/1000 不误解锁',
+      stepsAch.ok({}) === false && stepsAch.prog({}) === `0/${STEP_GOAL}`);
+    ok('运行期：落账当场解锁横幅唯一（applyAchievements 横幅承载）、零进度后缀噪音（承 v23.72-75 口径）',
+      msgs76.length === 1 && String(msgs76[0]).includes('千里之行') && !String(msgs76[0]).includes('/1000'),
+      JSON.stringify(msgs76));
+  } finally {
+    bindMod.boxMsg = oBox76;
+    S.G = prevG76; S.maze = prevMaze76; S.walk = prevWalk76; S.scene = prevSc76; S.encGauge = prevGauge76; S.unsaved = prevUn76;
+  }
+}
+// —— v23.76 级联守护：旧代 v23.75 GAME_VERSION/恒等/顶 pin 全库零残留（仅 v23.75 特性标签保留）——
+const stale76 = [];
+for (const f of allTests) {
+  const src = read(f);
+  if (src.includes("GAME_VERSION = 'v23.75'") || src.includes("GAME_VERSION === 'v23.75'") ||
+      src.includes("startsWith('## v23.75")) stale76.push(f);
+}
+ok('旧代 v23.75 pin 全库零残留（' + allTests.length + ' 件扫描，仅 v23.75 特性标签保留）', stale76.length === 0, stale76.join(','));
 
 console.log(`\n— v23.13 有口皆碑冒烟：${n - failed}/${n} 通过 —`);
 if (failed) process.exit(1);

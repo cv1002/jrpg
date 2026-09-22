@@ -34,7 +34,7 @@ console.log('— v22.17 灵药满柜高级灵药持有线第二档里程碑冒�
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.16', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 17)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.17（本版独占精确锚点）', GAME_VERSION === 'v23.75', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.17（本版独占精确锚点）', GAME_VERSION === 'v23.76', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -49,7 +49,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.17 版本注释（灵药满柜说明）', dataSrc.includes('v22.17 新成就「灵药满柜」'));
 ok('data.js GAME_VERSION 字面量已更新为 v22.17（旧 v22.16 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.75';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "16';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.76';") && !dataSrc.includes("const GAME_VERSION = 'v22." + "16';"));
 ok('data.js 仍保留 v22.16 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.16 雾语林新风味 NPC「拾菇人」'));
 ok('data.js 导出 ELIXIR_STOCK2_GOAL（export 块落位，与 ELIXIR_STOCK_GOAL 相邻）',
   dataSrc.includes('ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL'));
@@ -227,7 +227,7 @@ ok('README 件套口径为二百一十二件套（二百一十一件套清除）
 ok('README 含 v22.17 守护描述（灵药满柜）', readme.includes('v22.17 起含新成就「灵药满柜」'));
 ok('README 含 smoke_v2217_elixir2 入库（113 份）', readme.includes('smoke_v2217_elixir2 入库（113 份）'));
 ok('README 成就口径「43 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
-  readme.includes('成就一览（全部 71 项进度') && readme.includes('**71 项成就**') &&
+  readme.includes('成就一览（全部 72 项进度') && readme.includes('**72 项成就**') &&
   !readme.includes('成就一览（全部 42 项进' + '度') && !readme.includes('**42 项成' + '就**'));
 ok('package.json 已收录 smoke_v2217_elixir2（npm test 串跑第 113 份）',
   pkg.includes('smoke_v2217_elixir2.mjs') && /smoke_v2216_picker\.mjs && node tests\/smoke_v2217_elixir2\.mjs/.test(pkg));
@@ -243,13 +243,13 @@ const s2213 = read('../tests/smoke_v2213_teller.mjs');
 ok('smoke_v2216 的 README 件套 pin 已随新现实更新为二百一十二件套（二百一十一件套清除）',
   s2216.includes('二百一十二件套（二百一十一件套清除）'));
 ok('smoke_v2216 的 README 树尾 pin 已更新为 + smoke_v2217_elixir2', s2216.includes('smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
-ok('smoke_v2216 的 GAME_VERSION 字面量 pin 已更新为 v22.17', s2216.includes("const GAME_VERSION = 'v23.75';"));
-ok('smoke_v2216 的 GAME_VERSION 恒等 pin 已更新为 === v22.17', s2216.includes("GAME_VERSION === 'v23.75'"));
+ok('smoke_v2216 的 GAME_VERSION 字面量 pin 已更新为 v22.17', s2216.includes("const GAME_VERSION = 'v23.76';"));
+ok('smoke_v2216 的 GAME_VERSION 恒等 pin 已更新为 === v22.17', s2216.includes("GAME_VERSION === 'v23.76'"));
 ok('smoke_v2216 的 package.json 件套计数 pin 已更新为 === 113', s2216.includes('testChain === 212'));
-ok('smoke_v2215 的 GAME_VERSION 字面量 pin 已更新为 v22.17', s2215.includes("const GAME_VERSION = 'v23.75';"));
+ok('smoke_v2215 的 GAME_VERSION 字面量 pin 已更新为 v22.17', s2215.includes("const GAME_VERSION = 'v23.76';"));
 ok('smoke_v2215 的 package.json 件套计数 pin 已更新为 === 113', s2215.includes('testChain === 212'));
 ok('smoke_v2214 的 README 成就 pin 已随新现实更新为 43 项双处落位',
-  s2214.includes('成就一览（全部 71 项进度') && s2214.includes('**71 项成就**'));
+  s2214.includes('成就一览（全部 72 项进度') && s2214.includes('**72 项成就**'));
 ok('smoke_v2214 的 ACH_LIST 精确计数断言已去硬化（===42 零残留，>=42 存活性口径落位）',
   s2214.includes('ACH_LIST.length >= 42') && !s2214.includes('ACH_LIST.length === ' + '42'));
 ok('smoke_v2213 的 README 树尾 pin 已更新为 + smoke_v2217_elixir2', s2213.includes('smoke_v2217_elixir2 + smoke_v2218_mush2 + smoke_v2219_footkeys + smoke_v2220_hearer + smoke_v2221_wanderer + smoke_v2222_peddler + smoke_v2223_lampman + smoke_v2224_sifter + smoke_v2225_stonecarver + smoke_v2226_chestprogress + smoke_v2227_minstrel + smoke_v2228_titlesave + smoke_v2229_metall + smoke_v2230_pausewarn + smoke_v2231_smith + smoke_v2232_travelsup + smoke_v2233_nameflavor + smoke_v2234_innkeeper + smoke_v2235_minimapquest + smoke_v2236_villagelamp + smoke_v2237_minimaplegend + smoke_v2238_starwell + smoke_v2240_tallgrass + smoke_v2241_gatearch + smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead（npm test 串跑）'));
