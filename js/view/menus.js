@@ -5,7 +5,7 @@ import { S, curMap } from '../state.js';
 import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
-import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG } from '../quests.js';
+import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
 import { CV, CTX, rr, panel, text, hpbar, fmtTime } from './canvas.js';
 import { drawWorld } from './drawWorld.js';
 import { drawMonster, drawNpcSprite } from './sprites.js';
@@ -259,6 +259,12 @@ export function drawCodex(){
     const shown=rows.slice(S.codexScroll,S.codexScroll+PAGE);
     shown.forEach((r,i)=>{
       const y=92+i*30;
+      // v23.62 图鉴行讨伐支线进度角标（体验打磨·信息透明·纯显示）：图鉴是「该去打哪只」的刷怪中枢，
+      // 此前与讨伐采集型支线零联动——J 日志每卡有进度，图鉴行查无一行；现按 quests.questKillProg
+      // 单一数据源派生（与 J 日志/支线卡/NPC 任务页同读 QUESTS.condProg 一份源，零裸字面量），
+      // 仅该怪挂接进行中/可交付讨伐支线时追加「 · 📜 支线 N/M」，未接取/已完成/掌握怪零噪音，
+      // 未遭遇（❓？？？）行名字隐藏故不提示（防剧透），纯显示零结算零存档零数值变化。
+      const qKill = questKillProg(hero, r.n);
       if(!r.got){
         // 已遭遇·未讨伐：揭示名字/出没地/「已遭遇 ✕0」，兵力/弱点仍加密（讨伐后同 got 行才显示）——
         // 此前连自己撞见过的强敌（石心魔像/残焰魔像/Boss）都显示 ❓？？？「从没遇到」，与「信息透明」
@@ -270,7 +276,7 @@ export function drawCodex(){
           const nmw=CTX.measureText(nm).width;
           text('（'+whereFind(n)+'）',128+nmw,y,'12px','#5f8aa8');
           text(`已遭遇 ✕${r.seenCt}`,420,y,'14px','#8fa8b8','right');
-          text('⚠️ 尚未讨伐 · 兵力待收复',124,y+16,'11px','#7d93a3');
+          text(`⚠️ 尚未讨伐 · 兵力待收复${qKill ? ` · 📜 支线 ${qKill.prog}` : ''}`,124,y+16,'11px','#7d93a3');
         } else {
           text('❓ ？？？',120,y,'15px','#5a6a78'); text('未讨伐',420,y,'14px','#4b5a66','right');
         }
@@ -286,7 +292,7 @@ export function drawCodex(){
       // 魔物强度参考（信息透明·纯显示）：与 battle.js 遇敌属性逐字同源，随玩家等级实时计算，
       // 一眼看出这怪在当前等级有 多少HP/攻/防（已讨伐才显示，未讨伐灰色占位不剧透）
       const st=codexStats(n,hero.level);
-      if(rw) text(`→ 击败可得：经验 ${rw.xp} · 金币 ${rw.gold}${st?` · HP${st.hp} 攻${st.atk} 防${st.def}`:''}${tagStr}`,124,y+16,'11px','#7d93a3');
+      if(rw) text(`→ 击败可得：经验 ${rw.xp} · 金币 ${rw.gold}${st?` · HP${st.hp} 攻${st.atk} 防${st.def}`:''}${tagStr}${qKill ? ` · 📜 支线 ${qKill.prog}` : ''}`,124,y+16,'11px','#7d93a3');
     });
   }
   const total=names.reduce((a,n)=>a+hero.bestiary[n],0);

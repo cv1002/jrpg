@@ -275,3 +275,23 @@ export function npcQuestPages(hero, npcId) {
   if (typeof ent.lines === 'function') return ent.lines(hero);
   return ent.lines;
 }
+
+// v23.62 图鉴行讨伐支线进度（体验打磨·信息透明·纯显示——承 v23.53 决策现场信息透明 / v23.20
+// 支线节头「可交付 N」同一「同一信息在多处决策现场可见」主线收口：记忆图鉴是「该去打哪只」的刷怪
+// 中枢，此前却与讨伐采集型支线零联动——J 日志每卡有进度，图鉴行查无一行，玩家在图鉴里挑目标还得
+// 翻 J 对进度；现按 QUESTS 条目单一数据源派生：kind==='side' 且带 condProg（讨伐采集型支线的
+// 判据）且 obj 含【魔物名】（与图鉴行同源命名，零新字段零裸字面量）且状态 active/turnin 时返回
+// {id, status, prog}（prog 与 J 日志/支线卡/NPC 任务页同读 def.condProg 一份源），否则 null——
+// offer（未接取零噪音）/done（已完成不再提示）/主线段/非讨伐支线（蘑菇采集等无 condProg）全部
+// 自然排除；加/删支线、改阈值自动跟随，零新状态零结算零存档零数值变化。
+export function questKillProg(hero, monName) {
+  if (!hero || !monName) return null;
+  const key = '【' + monName + '】';
+  for (const def of Object.values(QUESTS)) {
+    if (def.kind !== 'side' || !def.condProg) continue;
+    if (!String(def.obj || '').includes(key)) continue;
+    const st = questStatus(hero, def.id);
+    if (st === 'active' || st === 'turnin') return { id: def.id, status: st, prog: def.condProg(hero) };
+  }
+  return null;
+}
