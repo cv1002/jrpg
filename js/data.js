@@ -1585,7 +1585,19 @@
 // ELIXIR_HP_PCT/ELIXIR_HP_FLAT/ELIXIR_MP_PCT 单一数据源派生）齐备，唯独玩家日常画面按 F 前不知道
 // 先喝哪瓶；现按 H 页行同句式补括号口径（与 v23.26 H 页行 r[1] 逐字同口径、纯文字零逻辑零结算零存档
 // 零数值变化；index.html 本就是页面壳，见 #help F 块）。
-const GAME_VERSION = 'v23.90';
+// v23.91 新内容·昼夜维度单档里程碑：新成就「提灯夜行」（夜间战胜 N 场，见 ACH_LIST nightwins 注释）——
+// 成就版图自 v21.x 逐线核对以来唯一从未开垦的「何时打」相位维度：v23.31 让夜晚危险格步进 ×1.25、
+// HUD 常驻 🌙 夜晚标签（v23.39 相位倍率/剩余秒数）、小地图遇敌槽相位倍率标（v23.35），「夜」是潮灯记
+// 的题眼（夜路、提灯、旧灯卫的黑夜），玩家在夜里刷怪更险（高草步进更快、Boss 战夜战叠险），成就一览
+// 却对「夜晚」零回响——现补独立单档；NIGHT_WIN_GOAL(10) 单一数据源·计数源 battle.winBattle
+// 全游唯一胜利结算点（普通/精英/强敌/试炼全走此处）读 data.js dayPhase(hero.time) 判定相位
+// （与 world.tickEncounter 夜间步进/HUD 🌙 标签同一份源）、无字回廊「被忘掉的地方没有晨昏」不计数
+// （与 HUD 🌑 恒暗同口径）写入 hero.nightWins——随 snapshotHero 全量快照自动持久化、防御式
+// (g.nightWins||0) 旧档零迁移；落账当场 applyAchievements（反馈不迟到——battle.js 既有
+// applyAchievements import 零新增依赖，承 v23.87 loseBattle 当场判定先例）；无 r 字段纯里程碑
+// （与 deaths/battles/steps 同款——夜战本身即是这份纪念）；零战报后缀（承 v23.72-87 口径——胜利
+// 报文本就无计数，C 页进度 X/10 承载）。
+const GAME_VERSION = 'v23.91';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3457,6 +3469,15 @@ const SELL_GOAL = 30;
 // retryBoss 只恢复战斗子集字段不清零，强敌反复重整旗鼓也如实累计）；纯里程碑零奖励零结算
 // 影响，与 BATTLE_GOAL/SELL_GOAL 同「阈值数据化」家族）。
 const DEATH_GOAL = 10;
+// v23.91 成就「提灯夜行」阈值（昼夜相位端口·单一数据源）：夜间战胜 N 场解锁
+// ——与 ACH_LIST.nightwins 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 10
+// （「提灯夜行」——夜战是「灯与夜」世界的题眼相位：夜晚危险格步进 ×1.25（v23.31）、刷出来的是
+// 同一批怪但遇敌更快，10 场 = 夜里刷级/补图鉴/硬闯 Boss 的自然积累量级——比 BATTLE_GOAL 100
+// 场「身经百战」更贴近相位维度、又不至于白给（夜里磨一磨就解锁）；判定读 data.js dayPhase
+// 单一数据源（与 world.tickEncounter 夜间倍率/HUD 🌙 标签同读 S.G.time），无字回廊（恒暗）不计数
+// ——「被忘掉的地方没有晨昏」，回廊夜战一笔勾销（与 HUD 🌑 恒暗同口径）；纯里程碑零奖励零结算
+// 影响，与 DEATH_GOAL/BATTLE_GOAL 同「阈值数据化」家族）。
+const NIGHT_WIN_GOAL = 10;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -5149,6 +5170,20 @@ const ACH_LIST=[
   // applyAchievements import 零新增依赖，承 v23.80 startBattle 当场判定先例）；零战报后缀
   // （承 v23.72-80 口径——阵亡画面本就零计数报文，C 页进度 X/10 承载）。
   {id:'deaths', name:'败而不馁', d:`累计阵亡 ${DEATH_GOAL} 次`, ok:g=>(g.deaths||0)>=DEATH_GOAL, prog:g=>`${g.deaths||0}/${DEATH_GOAL}`},
+  // v23.91 成就「提灯夜行」条目注释（昼夜相位端口单档·承 v23.87 败而不馁单档先例）：成就版图
+  // 逐线核对——hunt 系记「打赢了」、battles 记「踏入战场」、deaths 记「败北」、六指令各自计数、
+  // 试炼/社交/探索/经济各端口齐备，唯独「何时打」这一相位维度查无一行：v23.31 起夜晚危险格步进
+  // ×1.25（同样的怪夜里更难缠）、HUD 常驻 🌙 夜晚标签与小地图相位倍率标（v23.35/39）都在说
+  // 「夜」，玩家夜里刷了十几场却零回响——现补独立单档与昼夜信息透明主线成对（相位看得见→
+  // 相位打得响）；NIGHT_WIN_GOAL(10) 单一数据源·计数源 battle.winBattle 全游唯一胜利结算点
+  // （普通遇敌/精英/强敌/试炼三连战全走此处、finishPlayer→winBattle 唯一路径零重复）读 data.js
+  // dayPhase(hero.time) 判定（与 world.tickEncounter 夜间步进/HUD 🌙 标签同读 S.G.time 一份源）
+  // 且 curMap()!=='gallery'（无字回廊「被忘掉的地方没有晨昏」不计数，与 HUD 🌑 恒暗同口径）写入
+  // hero.nightWins——随 snapshotHero 全量快照自动持久化、防御式 (g.nightWins||0) 旧档零迁移
+  // （承 v23.87 deaths 同款）；落账当场 applyAchievements（反馈不迟到——battle.js 既有
+  // applyAchievements import 零新增依赖，承 v23.87 loseBattle 当场判定先例）；零战报后缀
+  // （承 v23.72-87 口径——胜利报文本就零计数报文，C 页进度 X/10 承载）。
+  {id:'nightwins', name:'提灯夜行', d:`夜间战胜 ${NIGHT_WIN_GOAL} 场`, ok:g=>(g.nightWins||0)>=NIGHT_WIN_GOAL, prog:g=>`${g.nightWins||0}/${NIGHT_WIN_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5623,5 +5658,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL,
 };

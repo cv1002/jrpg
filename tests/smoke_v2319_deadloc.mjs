@@ -89,7 +89,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.79', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 79)), GAME_VERSION);
 ok('data.js 含 v23.80 注释（身经百战说明）', dSrc.includes('v23.80 新内容·战斗遭遇维度单档里程碑'));
 ok('data.js GAME_VERSION 字面量已为 v23.80（旧 v23.79 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.90';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "9';"));
+  dSrc.includes("const GAME_VERSION = 'v23.91';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "9';"));
 ok('data.js 仍保留 v23.79 历史注释（阵亡地点说明，累积注释块）', dSrc.includes('v23.79 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v23.78 历史注释（战斗画面所在地，累积注释块）', dSrc.includes('v23.78 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v23.77 历史注释（暂停菜单当前所在地，累积注释块）', dSrc.includes('v23.77 体验打磨·信息透明·纯显示'));
@@ -143,7 +143,7 @@ ok('curMap 由既有 state.js import 复用（menus.js 既有 import 行零新�
       cap.some((t) => t.includes('当前 Lv.5 · 金币 100 · 累计讨伐 0 只')));
     ok('败于行零回归（S.enemy 名）', cap.includes('败于 野狼'), JSON.stringify(cap.filter((t) => t.includes('败于'))));
     ok('余粮行零回归', cap.some((t) => t.includes('身上余粮：🍖 生命药水 2 瓶')));
-    ok('收集行零回归（🏆 成就 0/75）', cap.includes('🏆 成就 0/75 · 📕 图鉴 0/13 · 📦 宝箱 0/12 · 🕯️ 记忆碎片 0/4'),
+    ok('收集行零回归（🏆 成就 0/76）', cap.includes('🏆 成就 0/76 · 📕 图鉴 0/13 · 📦 宝箱 0/12 · 🕯️ 记忆碎片 0/4'),
       JSON.stringify(cap.filter((t) => t.includes('🏆'))));
     ok('五徽记进度行零回归（全 ✗）', cap.some((t) => t.includes('冒险进度：✗ 灯芯 · ✗ 星井 · ✗ 回廊 · ✗ 初灯 · ✗ 试炼场')));
     ok('按键行零回归（R/T 在列、B 无——普通怪战败）',
@@ -187,7 +187,7 @@ ok('README 仍保留 v23.78 历史守护描述与入库口径（历史累积）'
   readme.includes('v23.78 起含 战斗画面「所在地」守护') && readme.includes('smoke_v2318_battlemap 入库（214 份）'));
 ok('README 仍保留 v23.77 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.77 起含 暂停菜单「当前所在地」守护') && readme.includes('smoke_v2317_pausemap 入库（213 份）'));
-ok('CHANGELOG 顶部已追加 v23.79 条目（阵亡地点）', changelog.startsWith('## v23.90 '));
+ok('CHANGELOG 顶部已追加 v23.79 条目（阵亡地点）', changelog.startsWith('## v23.91 '));
 ok('CHANGELOG 顶部条目含 v23.79 阵亡地点说明', changelog.includes('## v23.79 阵亡画面战绩行补「📍 阵亡地点」'));
 ok('CHANGELOG 仍保留 v23.78 条目标题（历史口径）', changelog.includes('## v23.78 战斗画面顶部右缘补「📍 所在地」'));
 ok('CHANGELOG 仍保留 v23.77 条目标题（历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
@@ -212,7 +212,7 @@ ok('旧代 v23.79 字面量/恒等/顶 pin 全库零残留（' + allTests.length
 
 // —— 零回归：ACH_LIST 75 项 / NPCS 37 处不变（本版成就版图并入「身经百战」——v23.80 非显示改动）——
 const { ACH_LIST, NPCS } = await import('../js/data.js');
-ok('ACH_LIST 精确总数 73（v23.80 身经百战为末项，未动既有 72 项零位移）', ACH_LIST.length === 75, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 73（v23.80 身经百战为末项，未动既有 72 项零位移）', ACH_LIST.length === 76, String(ACH_LIST.length));
 ok('NPCS 仍 37 处（灯下之声口径未动）', Object.keys(NPCS).length === 37, String(Object.keys(NPCS).length));
 
 console.log(`— v23.79 冒烟结束：${n} 项，失败 ${failed} —`);

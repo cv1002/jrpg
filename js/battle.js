@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -653,6 +653,16 @@ function winBattle() {
   }
   hero.bestiary[bookName] = (hero.bestiary[bookName] || 0) + 1;
   hero.totalWins++;
+  // v23.91 成就「提灯夜行」计数（昼夜相位维度单档·承 v23.87 lives/deaths「落账当场判定」惯例）：
+  // ——winBattle 是全游唯一胜利结算点（普通/精英/强敌/试炼三连战全走此处、finishPlayer 唯一
+  // 路径零重复）；夜晚判定读 data.js dayPhase(hero.time) 单一数据源（与 world.tickEncounter
+  // 夜间步进 ×1.25 / HUD 🌙 标签 / 小地图相位倍率标同读 S.G.time），无字回廊「被忘掉的地方
+  // 没有晨昏」不计数（curMap()!=='gallery'，与 HUD 🌑 恒暗同口径）；防御式 (hero.nightWins||0)
+  // 旧档零迁移；随 snapshotHero 全量快照自动持久化；落账当场 applyAchievements（下方既有调用，
+  // 反馈不迟到）；零战报后缀（C 页进度 X/10 承载）。
+  if (curMap() !== 'gallery' && dayPhase(hero.time) === 'night') {
+    hero.nightWins = (hero.nightWins || 0) + 1;
+  }
   if (enemy.isElite) {
     hero.mushrooms++;
     // v19.79 精英怪掉落蘑菇反馈追加剩余库存（信息透明·纯显示）：此前击败石心魔像只报「捡到 1 株」，
