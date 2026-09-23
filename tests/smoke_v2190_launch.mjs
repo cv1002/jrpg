@@ -33,7 +33,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v21.90 版本注释', dataSrc.includes('v21.90 启动脚本口径统一与默认仅本机绑定'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.90', dataSrc.includes("const GAME_VERSION = 'v23.87';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.90', dataSrc.includes("const GAME_VERSION = 'v23.88';"));
 
 // —— start.sh 源级落位 ——
 ok('start.sh 注释统一为「潮灯记 · 一键启动」', shSrc.includes('潮灯记 · 一键启动'));
@@ -76,7 +76,7 @@ for (const nm of suite86) {
 for (const nm of ['smoke_v2189_visitedlegacy.mjs', 'smoke_v2188_wander.mjs', 'smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.90`,
-    src.includes("const GAME_VERSION = 'v23.87';"));
+    src.includes("const GAME_VERSION = 'v23.88';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
