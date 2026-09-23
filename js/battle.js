@@ -125,6 +125,17 @@ function startBattle(enemyDef) {
     if (S.G.seen) S.G.seen[_seenKey] = (S.G.seen[_seenKey] || 0) + 1;
     else S.G.seen = { [_seenKey]: 1 };
   }
+  // v23.80 成就「身经百战」计数（新内容·战斗遭遇维度单档里程碑，承 v23.76 steps 同款「唯一产生点 +
+  // 落账当场判定」惯例）：本函数是全游唯一战斗入口（普通遇敌 randomEncounter/精英/三祭坛/
+  // 试炼三连战含第二三关/重整旗鼓 retryBoss 全走此处，前缀判定零重复），「踏入战场」即遭遇——
+  // 胜/败/逃都算（totalWins 只记赢下来的，与 battles 成对端口：战败重开/逃跑失败/死磕精英的
+  // 玩家进度不致零回声）；写入 hero.battles（snapshotHero 全量快照自动持久化、(g.battles||0)
+  // 防御式旧档零迁移——承 v23.75 travels / v23.76 steps 同款），落账当场 applyAchievements
+  // （本模块既有 import 零新增依赖；幂等高频调用零噪音）；零战报后缀（承 v23.72-76 口径——
+  // 进战本就零计数报文，C 页进度 X/BATTLE_GOAL 承载）；零结算零数值零存档结构变化
+  // （seen 计数/困难倍率/遭遇报文/首见战报逐字未动）。
+  S.G.battles = (S.G.battles || 0) + 1;
+  applyAchievements();
   S.enemy.hpMax = enemyDef.hpMax || enemyDef.hp;
   S.G.defending = false;
   S.G.charge = false;

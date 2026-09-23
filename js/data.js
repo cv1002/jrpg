@@ -1489,7 +1489,16 @@
 // drawPause/drawBattle 同读 (MAPS[curMap()]||{}).name||curMap() 一份源（防御式加/删/改名地图自动跟随
 // 零裸字面量；menus.js 既有 MAPS import 与 state.js curMap 零新增依赖），战绩行（y=236）v23.10 困难档
 // 后缀之后追加「 · 📍地图名」（与 v23.10 同款同式行内后缀、基线零位移），纯显示零结算零存档零数值变化。
-const GAME_VERSION = 'v23.79';
+// v23.80 新内容·战斗遭遇维度单档里程碑：新成就「身经百战」（累计遭遇 BATTLE_GOAL 场战斗，见
+// ACH_LIST battles 注释）——承 v23.74/75/76 成对端口先例（成就版图逐线核对：讨伐线 hunt 系读
+// hero.totalWins「赢下来的」、操作线读各指令计数，而「踏入战场」这一最朴素战斗端口查无一行——
+// 胜/败/逃都算遭遇（逃跑失败/战败重开/试炼第二三关全部经 battle.startBattle 进入），与 totalWins
+// 「胜利记录」成对：死磕/逃跑多而胜少的玩家进度不致零回声）；计数源 battle.startBattle 全游唯一
+// 战斗入口写入 hero.battles（紧邻既有 seen 进战记录），snapshotHero 全量快照自动持久化、
+// (g.battles||0) 防御式旧档零迁移；落账当场 applyAchievements（battle.js 既有 import 零新增依赖）；
+// 零战报后缀（承 v23.72-76 口径——进战本就零计数报文，C 页进度 X/BATTLE_GOAL 承载）；
+// 零结算零数值零存档结构变化（seen 计数/困难倍率/遭遇报文/首见战报逐字未动）。）
+const GAME_VERSION = 'v23.80';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3336,6 +3345,14 @@ const TRAVEL_GOAL = 15;
 // 到访 vs 旅行动作 vs 步行是三个互不覆盖的端口；纯里程碑零奖励零结算影响，
 // 与 TRAVEL_GOAL 同「阈值数据化」家族）。
 const STEP_GOAL = 1000;
+// v23.80 成就「身经百战」阈值（战斗遭遇端口·单一数据源）：累计遭遇 N 场战斗解锁
+// ——与 ACH_LIST.battles 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 100
+// （「身经百战」——一场终局之旅的遭遇量级：与讨伐线 hunt10/hunt100 的「胜利记录」成对端口——
+// 遭遇=踏入战场的每一次（胜/败/逃都算，battle.startBattle 全游唯一战斗入口计数），
+// 死磕某怪多次战败/逃跑失败的玩家靠「屡败屡战」也能攒出这份纪念（totalWins 不记败逃、battles 记）；
+// 全游战斗入口唯一：普通遇敌/精英/三祭坛/试炼三连战（含第二三关）/重整旗鼓 retryBoss 全走
+// startBattle，前缀判定零重复计数；纯里程碑零奖励零结算影响，与 STEP_GOAL 同「阈值数据化」家族）。
+const BATTLE_GOAL = 100;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -4993,6 +5010,17 @@ const ACH_LIST=[
   // 惯例——world.move 既有 applyAchievements import（v21.88 transition）零新增依赖）；
   // 零战报后缀（承 v23.72/73/74/75 口径——步行本就零报文，C 页进度 X/1000 承载）。
   {id:'steps', name:'千里之行', d:`步行累计 ${STEP_GOAL} 步`, ok:g=>(g.steps||0)>=STEP_GOAL, prog:g=>`${g.steps||0}/${STEP_GOAL}`},
+  // v23.80 成就「身经百战」条目注释（承 v23.76 千里之行先例——与讨伐线 hunt10/hunt100/
+  // hunt3 的「胜利记录」并列成「赢下来的 vs 踏入战场的」成对端口：hunt 系读 hero.totalWins
+  // （只记赢），battles 记每一次进战（胜/败/逃都算——战败重开、逃跑失败、死磕精英）
+  // 全走 battle.startBattle 唯一战斗入口，前缀判定零重复；计数源本函数写入 hero.battles
+  // （紧邻既有 seen 进战记录，与 v23.76 steps 同款落位），snapshotHero 全量快照自动持久化、
+  // (g.battles||0) 防御式读取旧档零迁移（承 v23.36 deflects / v23.72 mapPotions / v23.75
+  // travels / v23.76 steps 同款）；判定/进度/描述同读 BATTLE_GOAL 一份源（与 STEP_GOAL
+  // 同一「阈值数据化」家族）；无 r 字段纯里程碑；解锁时机：进战落账当场 applyAchievements
+  // （承「反馈不迟到」惯例——battle.js 既有 applyAchievements import 零新增依赖）；
+  // 零战报后缀（承 v23.72/73/74/75/76 口径——进战本就零计数报文，C 页进度 X/100 承载）。
+  {id:'battles', name:'身经百战', d:`累计遭遇 ${BATTLE_GOAL} 场战斗`, ok:g=>(g.battles||0)>=BATTLE_GOAL, prog:g=>`${g.battles||0}/${BATTLE_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5420,5 +5448,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL,
 };
