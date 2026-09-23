@@ -270,7 +270,7 @@ for (const nm of suite) {
 for (const nm of ['smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.84`,
-    src.includes("const GAME_VERSION = 'v23.80';"));
+    src.includes("const GAME_VERSION = 'v23.81';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过`);

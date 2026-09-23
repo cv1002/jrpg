@@ -1077,7 +1077,17 @@ export function drawWin(){
   const kills=Object.values(S.G.bestiary||{}).reduce((a,b)=>a+b,0);
   CTX.fillStyle='#a8ff8a'; CTX.font='bold 14px sans-serif';
   // v23.10 胜利画面战绩行补困难档标注（与 drawDead/drawEnding 同读 hero.diff·DIFFS 一份源，y=362 零位移）
-  CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}` + (S.G.diff ? ' · ' + DIFFS[S.G.diff] : ''),CV.width/2,362);
+  // v23.81 体验打磨·信息透明·纯显示：胜利画面战绩行补「📍 所在地」（「我在哪」单一数据源口径的最后
+  // 两屏——承 v19.89 状态页 / v23.27 快速旅行 / v23.77 暂停菜单 / v23.78 战斗画面 / v23.79 阵亡画面
+  // 同一主线：五屏决策现场齐备后，run 总结屏全家桶里的胜利/尾声两屏仍查无一行——「灯芯回来了」是本局
+  // 唯一的存档/重开/尾声决策现场，玩家刚打赢想回补给（v23.78 同款动机），战绩行却不说自己现在在幽暗森林
+  // 祭坛；尾声页（真结局在终焉水晶 / 非真结局经胜利画面进）同为总结屏；现与 drawStatus/drawPause/
+  // drawBattle/drawDead 同读 (MAPS[curMap()]||{}).name||curMap() 一份单一数据源（防御式：加/删/改名
+  // 地图自动跟随零裸字面量；menus.js 既有 MAPS import 与 curMap 复用零新增依赖），在 v23.10 困难档
+  // 后缀之后追加「 · 📍地图名」——与 v23.79 同款同式行内后缀（战绩行其余字段/收集行/进度行/页脚
+  // 逐字未动），纯显示零结算零存档零数值变化；最长档「累计讨伐 300 只 · 成就 73/73 · ⏱️120:00 ·
+  // 困难 · 📍幽暗森林」bold 14px 实测 ≈340.5px 居中右缘 ≈490.3 ≤ 640 画布（基线零位移）。
+  CTX.fillText(`累计讨伐 ${kills} 只 · 成就 ${(S.G.ach||[]).length}/${ACH_LIST.length} · ⏱️${fmtTime(S.G.time)}` + (S.G.diff ? ' · ' + DIFFS[S.G.diff] : '') + ` · 📍${(MAPS[curMap()] || {}).name || curMap()}`,CV.width/2,362);
   // v21.82 胜利画面补收集进度两件（信息透明·纯显示）：v19.49 战绩行已有 成就 N/M（三件套之一），
   // 但 v21.79 标题预览确立的「收集进度三件套」（成就·图鉴·宝箱）在「灯芯回来了」这一刻仍缺 图鉴 N/13
   // 与宝箱 N/12——玩家站在这趟 run 的总结屏上想「继续收集还是 R 重开/Enter 尾声」，一眼看不到
@@ -1133,7 +1143,12 @@ export function drawEnding(){
   const y0 = lines.length > 5 ? 146 : 166;
   lines.forEach((l,i)=>text(l,320,y0+i*step,'bold 16px','#e8eef1','center'));
   // v23.10 尾声战绩行补困难档标注（与 drawDead/drawWin 同读 hero.diff·DIFFS 一份源，y=346 零位移）
-  text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 记忆 ${(hero.fragments||[]).length}/${FRAGMENTS.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}` + (hero.diff ? ' · ' + DIFFS[hero.diff] : ''),320,346,'13px','#7d93a3','center');
+  // v23.81 体验打磨·信息透明·纯显示：尾声战绩行补「📍 所在地」（与 drawWin 同批，见 drawWin v23.81
+  // 注释同款口径——与五屏决策现场同读 (MAPS[curMap()]||{}).name||curMap() 一份单一数据源、v23.10 困难
+  // 档后缀之后追加「 · 📍地图名」同款同式行内后缀（战绩行其余字段/收集行/进度行/页脚逐字未动），
+  // 纯显示零结算零存档零数值变化；最长档「战绩 · 累计讨伐 300 只 · 成就 73/73 · 记忆 4/4 · 金币
+  // 9999 · ⏱️120:00 · 困难 · 📍无字回廊」13px 实测 ≈469.6px 居中右缘 ≈554.8 ≤ 560 面板右缘）。
+  text(`战绩 · 累计讨伐 ${Object.values(hero.bestiary||{}).reduce((a,b)=>a+b,0)} 只 · 成就 ${(hero.ach||[]).length}/${ACH_LIST.length} · 记忆 ${(hero.fragments||[]).length}/${FRAGMENTS.length} · 金币 ${hero.gold} · ⏱️${fmtTime(hero.time)}` + (hero.diff ? ' · ' + DIFFS[hero.diff] : '') + ` · 📍${(MAPS[curMap()] || {}).name || curMap()}`,320,346,'13px','#7d93a3','center');
   // v21.87 尾声战绩页补收集进度两件（信息透明·纯显示）：v19.49 战绩行（讨伐/成就/记忆/金币/时长）
   // 已覆盖 run 总结屏的战果口径，但 v21.79 标题预览/v21.82 胜利画面确立的「收集进度三件套」
   // （成就·图鉴·宝箱）在「按 Enter 观看尾声」这一刻仍缺 图鉴 N/13 与 宝箱 N/12——玩家站在这趟

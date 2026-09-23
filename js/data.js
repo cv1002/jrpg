@@ -1489,6 +1489,14 @@
 // drawPause/drawBattle 同读 (MAPS[curMap()]||{}).name||curMap() 一份源（防御式加/删/改名地图自动跟随
 // 零裸字面量；menus.js 既有 MAPS import 与 state.js curMap 零新增依赖），战绩行（y=236）v23.10 困难档
 // 后缀之后追加「 · 📍地图名」（与 v23.10 同款同式行内后缀、基线零位移），纯显示零结算零存档零数值变化。
+// v23.81 体验打磨·信息透明·纯显示：胜利画面/尾声画面战绩行补「📍 所在地」（「我在哪」单一数据源
+// 口径的最后两屏——承 v19.89 状态页 / v23.27 快速旅行 / v23.77 暂停菜单 / v23.78 战斗画面 /
+// v23.79 阵亡画面同一主线：五屏决策现场齐备后，run 总结屏全家桶里的胜利/尾声两屏仍查无一行；
+// 现与 drawStatus/drawPause/drawBattle/drawDead 同读 (MAPS[curMap()]||{}).name||curMap() 一份源
+// （防御式加/删/改名地图自动跟随零裸字面量；menus.js 既有 MAPS import 与 state.js curMap 零新增
+// 依赖），战绩行（drawWin y=362 / drawEnding y=346）v23.10 困难档后缀之后追加「 · 📍地图名」
+// （与 v23.79 同款同式行内后缀、基线零位移），纯显示零结算零存档零数值变化（详见 view/menus.js
+// drawWin/drawEnding 行内注释）。）
 // v23.80 新内容·战斗遭遇维度单档里程碑：新成就「身经百战」（累计遭遇 BATTLE_GOAL 场战斗，见
 // ACH_LIST battles 注释）——承 v23.74/75/76 成对端口先例（成就版图逐线核对：讨伐线 hunt 系读
 // hero.totalWins「赢下来的」、操作线读各指令计数，而「踏入战场」这一最朴素战斗端口查无一行——
@@ -1498,7 +1506,7 @@
 // (g.battles||0) 防御式旧档零迁移；落账当场 applyAchievements（battle.js 既有 import 零新增依赖）；
 // 零战报后缀（承 v23.72-76 口径——进战本就零计数报文，C 页进度 X/BATTLE_GOAL 承载）；
 // 零结算零数值零存档结构变化（seen 计数/困难倍率/遭遇报文/首见战报逐字未动）。）
-const GAME_VERSION = 'v23.80';
+const GAME_VERSION = 'v23.81';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

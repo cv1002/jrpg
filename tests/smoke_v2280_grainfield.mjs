@@ -18,7 +18,7 @@ console.log('— v22.80 帮助页地图指南潮灯镇行「粮田」r[2] 指针
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.80', dataSrc.includes("const GAME_VERSION = 'v23.80'"));
+ok('data.js GAME_VERSION 字面量为 v22.80', dataSrc.includes("const GAME_VERSION = 'v23.81'"));
 ok('旧 v22.79 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "79';"));
 ok('data.js 含 v22.80 版本注释', dataSrc.includes('// v22.80 体验打磨'));
 ok('data.js 仍保留 v22.79 历史注释', dataSrc.includes('// v22.79 体验打磨'));
@@ -177,13 +177,13 @@ ok('package.json test 串含 smoke_v2280_grainfield.mjs 且位于串尾',
   pkg.includes('node tests/smoke_v2279_lampwell.mjs && node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs && node tests/smoke_v2283_menuekey.mjs && node tests/smoke_v2284_skillekey.mjs && node tests/smoke_v2285_winekey.mjs && node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 176 件套', testChain === 215, String(testChain));
-ok('CHANGELOG 含 v22.80 条目（顶 pin）', changelog.startsWith('## v23.80 '));
+ok('CHANGELOG 含 v22.80 条目（顶 pin）', changelog.startsWith('## v23.81 '));
 
 // 7. 姊妹件套 pin（smoke_v2279_lampwell 随新现实更新）
 const s2279 = readFileSync(join(ROOT, 'tests/smoke_v2279_lampwell.mjs'), 'utf8');
 const s2260 = readFileSync(join(ROOT, 'tests/smoke_v2260_fountripple.mjs'), 'utf8');
-ok('smoke_v2279 的 GAME_VERSION 字面量 pin 已更新为 v22.80', s2279.includes("const GAME_VERSION = 'v23.80';"));
-ok('smoke_v2279 的 CHANGELOG 顶 pin 已更新为 ## v22.80', s2279.includes("startsWith('## v23.80'"));
+ok('smoke_v2279 的 GAME_VERSION 字面量 pin 已更新为 v22.80', s2279.includes("const GAME_VERSION = 'v23.81';"));
+ok('smoke_v2279 的 CHANGELOG 顶 pin 已更新为 ## v22.80', s2279.includes("startsWith('## v23.81'"));
 ok('smoke_v2279 的件套 pin 已更新为二百一十五件套（二百一十四件套清除）', s2279.includes('二百一十五件套（二百一十四件套清除）'));
 ok('smoke_v2279 的 README 串尾 pin 已延伸至 smoke_v2280_grainfield', s2279.includes('smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc（npm test 串跑）'));
 ok('smoke_v2260 的 package.json 串尾 pin 已延伸至 smoke_v2280_grainfield', s2260.includes('node tests/smoke_v2280_grainfield.mjs && node tests/smoke_v2281_starwell.mjs && node tests/smoke_v2282_archgate.mjs'));
