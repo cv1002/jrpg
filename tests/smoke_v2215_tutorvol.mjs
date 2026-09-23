@@ -26,7 +26,7 @@ console.log('— v22.15 新手教程行音量口径冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.14', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 15)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.15（本版独占精确锚点）', GAME_VERSION === 'v23.81', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.15（本版独占精确锚点）', GAME_VERSION === 'v23.82', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -37,7 +37,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.15 版本注释', dataSrc.includes('v22.15 新手教程行补 [ / ] 音量口径'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.15', dataSrc.includes("const GAME_VERSION = 'v23.81';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.15', dataSrc.includes("const GAME_VERSION = 'v23.82';"));
 ok('data.js 仍保留 v22.14 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.14 新成就「菇香满仓」'));
 
 // —— 教程行口径（v22.15 核心）——
@@ -78,19 +78,19 @@ ok('smoke_v2214 的 README 件套 pin 已随新现实更新为二百一十五件
   s2214.includes('二百一十五件套（二百一十四件套清除）'));
 ok('smoke_v2214 的 README 树尾 pin 已更新为 + smoke_v2215_tutorvol', s2214.includes('smoke_v2214_mush + smoke_v2215_tutorvol'));
 ok('smoke_v2214 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2214.includes("const GAME_VERSION = 'v23.81';"));
+  s2214.includes("const GAME_VERSION = 'v23.82';"));
 ok('smoke_v2214 的 GAME_VERSION 恒等 pin 已更新为 === v22.15',
-  s2214.includes("GAME_VERSION === 'v23.81'"));
+  s2214.includes("GAME_VERSION === 'v23.82'"));
 ok('smoke_v2213 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2213.includes("const GAME_VERSION = 'v23.81';"));
+  s2213.includes("const GAME_VERSION = 'v23.82';"));
 ok('smoke_v2212 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2212.includes("const GAME_VERSION = 'v23.81';"));
+  s2212.includes("const GAME_VERSION = 'v23.82';"));
 ok('smoke_v2192 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2192.includes("const GAME_VERSION = 'v23.81';"));
+  s2192.includes("const GAME_VERSION = 'v23.82';"));
 ok('smoke_v2181 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2181.includes("const GAME_VERSION = 'v23.81';"));
+  s2181.includes("const GAME_VERSION = 'v23.82';"));
 ok('smoke_v2179 的 GAME_VERSION 字面量 pin 已更新为 v22.15',
-  s2179.includes("const GAME_VERSION = 'v23.81';"));
+  s2179.includes("const GAME_VERSION = 'v23.82';"));
 ok('smoke_v2176 件套 pin 已更新为二百一十五件套（二百一十四件套清除）',
   s2176.includes('二百一十五件套（二百一十四件套清除）'));
 

@@ -85,7 +85,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.76', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 76)), GAME_VERSION);
 ok('data.js 含 v23.79 注释（暂停菜单当前所在地说明）', dSrc.includes('v23.80 新内容·战斗遭遇维度单档里程碑'));
 ok('GAME_VERSION 字面量已为 v23.79（旧 v23.76 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.81';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "6';"));
+  dSrc.includes("const GAME_VERSION = 'v23.82';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "6';"));
 ok('data.js 仍保留 v23.76 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v23.76 新内容·步行累计维度里程碑'));
 
 // —— menus.js 源级落位：v23.79 注释 + drawPause 头部同数据源派生 + 既有子串保留 ——
@@ -153,7 +153,7 @@ ok('README 仍保留 v23.77 守护描述（暂停菜单「当前所在地」守�
 ok('README 含 smoke_v2317_pausemap 入库（213 份）', readme.includes('smoke_v2317_pausemap 入库（213 份）'));
 ok('README 仍保留 v23.77 Esc 行当前所在地口径（历史口径）', readme.includes('v23.77 起菜单头部常显「📍 当前地图名」'));
 ok('README 仍保留 v23.76 历史守护描述（累积描述，姊妹 pin 不失效）', readme.includes('千里之行 X/1000 步（步行累计，v23.76）'));
-ok('CHANGELOG 顶部已追加 v23.79 条目（暂停菜单当前所在地）', changelog.startsWith('## v23.81 '));
+ok('CHANGELOG 顶部已追加 v23.79 条目（暂停菜单当前所在地）', changelog.startsWith('## v23.82 '));
 ok('CHANGELOG 仍保留 v23.77 条目标题（暂停菜单当前所在地，历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
 
 // —— 旧代 v23.76 pin 全库零残留（不含本件；拆串防误伤，承 v2313 惯例）——
@@ -177,7 +177,7 @@ ok('旧代 v23.76 字面量/恒等/顶 pin/件套/testChain/串尾 全库零残�
 // —— 零回归：ACH_LIST 72 项 / NPCS 37 处不变（本版非成就改动、非新 NPC）——
 ok('ACH_LIST 仍 72 项（本版非成就改动，零回归）', true, '');
 const { ACH_LIST, NPCS } = await import('../js/data.js');
-ok('ACH_LIST 精确总数 72（v23.76 千里之行为末项，未动）', ACH_LIST.length === 73, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 72（v23.76 千里之行为末项，未动）', ACH_LIST.length === 74, String(ACH_LIST.length));
 ok('NPCS 仍 37 处（灯下之声口径未动）', Object.keys(NPCS).length === 37, String(Object.keys(NPCS).length));
 
 console.log(`— v23.79 冒烟结束：${n} 项，失败 ${failed} —`);

@@ -1506,7 +1506,16 @@
 // (g.battles||0) 防御式旧档零迁移；落账当场 applyAchievements（battle.js 既有 import 零新增依赖）；
 // 零战报后缀（承 v23.72-76 口径——进战本就零计数报文，C 页进度 X/BATTLE_GOAL 承载）；
 // 零结算零数值零存档结构变化（seen 计数/困难倍率/遭遇报文/首见战报逐字未动）。）
-const GAME_VERSION = 'v23.81';
+// v23.82 新内容·经济收入维度单档里程碑：新成就「蘑菇商路」（累计售出 SELL_GOAL 株魔法蘑菇，见
+// ACH_LIST sell 注释）——承 v23.74/75/76/80 成对端口先例（成就版图经济线逐线核对：rich 三档读
+// hero.gold「持有」、v23.74 一掷千金读 hero.spent「消费」，唯独「卖出去的菇」这一收入端口查无
+// 一行——攒 3000 金不花一文能富甲一方、花光 1000 金也补不回卖出的菇，gold 只增只减、sold 只增
+// 不减，持有 vs 消费 vs 收入三端口互不覆盖）；计数源 shop.sellMushroom 成功售出唯一产生点写入
+// hero.sold（蘑菇不足/任务保护集齐前早退零计数），snapshotHero 全量快照自动持久化、
+// (g.sold||0) 防御式旧档零迁移；落账当场 applyAchievements（shop.js 既有 import 零新增依赖）；
+// 零战报后缀（承 v23.72-80 口径——售出报文已带价格/余额/剩余株数，C 页进度 X/SELL_GOAL 承载）；
+// 零结算零数值零存档结构变化（售价/判定/保护拦截/报文逐字未动）。）
+const GAME_VERSION = 'v23.82';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3361,6 +3370,16 @@ const STEP_GOAL = 1000;
 // 全游战斗入口唯一：普通遇敌/精英/三祭坛/试炼三连战（含第二三关）/重整旗鼓 retryBoss 全走
 // startBattle，前缀判定零重复计数；纯里程碑零奖励零结算影响，与 STEP_GOAL 同「阈值数据化」家族）。
 const BATTLE_GOAL = 100;
+// v23.82 成就「蘑菇商路」阈值（经济收入端口·单一数据源）：累计售出 N 株魔法蘑菇解锁
+// ——与 ACH_LIST.sell 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 30
+// （「蘑菇商路」——半程菇海（mush3 菇海无涯 50 株）的贩卖途程：30 株 = 蘑菇三源（宝箱 60%/
+// 精英必掉/战斗掉落 12%）流入 - 酿造 2 株/锅消耗后的净余，终局区（无字回廊重复刷级/试炼三连战
+// 再战/图鉴宝箱碎片收集补完）自然积累可达；与 SPEND_GOAL 一掷千金「消费端口」成对——持有
+// （rich 三档）vs 消费 vs 收入是三个互不覆盖的端口：攒 3000 金不花一文能富甲一方、花光 1000 金
+// 也补不回「卖出去的菇」（hero.gold 只增只减、sold 只增不减）；全游唯一贩售点：shop.sellMushroom
+// （卖菇 10 金/株，任务保护期不可卖——集齐前早退零计数）；纯里程碑零奖励零结算影响，与
+// SPEND_GOAL/TRAVEL_GOAL 同「阈值数据化」家族）。
+const SELL_GOAL = 30;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -5029,6 +5048,18 @@ const ACH_LIST=[
   // （承「反馈不迟到」惯例——battle.js 既有 applyAchievements import 零新增依赖）；
   // 零战报后缀（承 v23.72/73/74/75/76 口径——进战本就零计数报文，C 页进度 X/100 承载）。
   {id:'battles', name:'身经百战', d:`累计遭遇 ${BATTLE_GOAL} 场战斗`, ok:g=>(g.battles||0)>=BATTLE_GOAL, prog:g=>`${g.battles||0}/${BATTLE_GOAL}`},
+  // v23.82 成就「蘑菇商路」条目注释（经济收入端口首枚·与 v23.74 一掷千金消费端口成对，承
+  // v23.72/73/74/75/76/80 成对端口先例）：成就版图经济线核对——rich 三档读 hero.gold「持有」
+  // 口径、spend 读 hero.spent「花出去的钱」，唯独「卖出去的菇」这一收入端口查无一行：玩家在
+  // 潮灯镇商店把魔法蘑菇一株一株换成金币（货栈掌柜行脚老货/拾菇人「十金一株也能卖」的唯一兑现
+  // 场所），持有与消费两端口却都不记它——攒 3000 金不花一文能富甲一方、花光 1000 金补不回卖出的
+  // 菇（gold 只增只减、sold 只增不减），现补独立单档（与 rich 三档「持有」/spend「消费」成三端口）；
+  // SELL_GOAL(30) 单一数据源·计数源 shop.sellMushroom 成功售出唯一产生点（蘑菇不足/任务保护
+  // 集齐前早退零计数）写入 hero.sold——随 snapshotHero 全量快照自动持久化、防御式 (g.sold||0)
+  // 旧档零迁移；落账当场 applyAchievements（反馈不迟到——shop.js 既有 applyAchievements import
+  // 零新增依赖，承 v23.74 五消费点紧邻判定先例）；零战报后缀（承 v23.72-80 口径——售出报文已带
+  // 价格/余额/剩余株数，C 页进度 X/30 承载）。
+  {id:'sell', name:'蘑菇商路', d:`累计售出 ${SELL_GOAL} 株魔法蘑菇`, ok:g=>(g.sold||0)>=SELL_GOAL, prog:g=>`${g.sold||0}/${SELL_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5456,5 +5487,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL,
 };

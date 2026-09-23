@@ -73,6 +73,16 @@ export function sellMushroom() {
   }
   hero.mushrooms--;
   hero.gold += MUSHROOM_PRICE;
+  // v23.82 成就「蘑菇商路」计数（经济收入端口首枚里程碑·与 v23.74 一掷千金消费端口成对，承
+  // v23.72/73/74/75/76/80 成对端口先例）：本函数是全游唯一贩售点（卖菇 10 金/株、任务保护集齐
+  // 前早退零计数——蘑菇不足/保护拦截两档 return 均提前，落此行的只有成功售出），成功售出在此
+  // 落账 hero.sold（随 snapshotHero 全量快照自动持久化、(hero.sold||0) 防御式旧档零迁移——
+  // 承 v23.36 deflects / v23.74 spent 同款）；落账当场 applyAchievements（反馈不迟到——
+  // shop.js 既有 applyAchievements import 零新增依赖，承 v23.74 五消费点紧邻判定先例）；
+  // 零战报后缀（承 v23.72-80 口径——售出报文已带价格/余额/剩余株数，C 页进度 X/30 承载）。
+  // hero.mushrooms--/hero.gold += /SFX.coin()/renderHUD/报文逐字未动。
+  hero.sold = (hero.sold || 0) + 1;
+  applyAchievements();
   SFX.coin();
   bind.renderHUD();
   bind.boxMsg(`售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金（剩余 ${hero.mushrooms} 株 / 共 ${hero.gold} 金）`);
