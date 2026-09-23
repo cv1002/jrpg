@@ -88,7 +88,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.77', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 77)), GAME_VERSION);
 ok('data.js 含 v23.79 注释（战斗画面所在地说明）', dSrc.includes('v23.80 新内容·战斗遭遇维度单档里程碑'));
 ok('GAME_VERSION 字面量已为 v23.79（旧 v23.77 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.83';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "7';"));
+  dSrc.includes("const GAME_VERSION = 'v23.84';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "7';"));
 ok('data.js 仍保留 v23.77 历史注释（暂停菜单当前所在地，累积注释块）', dSrc.includes('v23.77 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v23.76 历史注释（步行累计里程碑，姊妹 pin 不失效）', dSrc.includes('v23.76 新内容·步行累计维度里程碑'));
 
@@ -160,7 +160,7 @@ ok('README 含 smoke_v2318_battlemap 入库（214 份）', readme.includes('smok
 ok('README 仍保留 v23.78 战斗行当前所在地口径（历史口径）', readme.includes('v23.78 起战斗画面顶部常显「📍 当前地图名」'));
 ok('README 仍保留 v23.77 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.77 起含 暂停菜单「当前所在地」守护') && readme.includes('smoke_v2317_pausemap 入库（213 份）'));
-ok('CHANGELOG 顶部已追加 v23.79 条目（战斗画面所在地）', changelog.startsWith('## v23.83 '));
+ok('CHANGELOG 顶部已追加 v23.79 条目（战斗画面所在地）', changelog.startsWith('## v23.84 '));
 ok('CHANGELOG 仍保留 v23.78 条目标题（战斗画面顶部右缘补「📍 所在地」，历史口径）', changelog.includes('## v23.78 战斗画面顶部右缘补「📍 所在地」'));
 ok('CHANGELOG 仍保留 v23.77 条目标题（历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
 
