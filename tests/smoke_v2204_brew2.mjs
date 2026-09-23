@@ -33,7 +33,7 @@ console.log('— v22.4 妙手回春酿造线第二档里程碑冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.3', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 4)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.4（本版独占精确锚点）', GAME_VERSION === 'v23.89', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.4（本版独占精确锚点）', GAME_VERSION === 'v23.90', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -44,7 +44,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.4 版本注释', dataSrc.includes('v22.4 新成就「妙手回春」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.4', dataSrc.includes("const GAME_VERSION = 'v23.89';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.4', dataSrc.includes("const GAME_VERSION = 'v23.90';"));
 ok('data.js 仍保留 v22.3 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.3 阵亡画面收集行补「🕯️ 记忆碎片 N/4」'));
 ok('data.js 导出 BREW2_GOAL（export 块落位，与 ELIXIR_GOAL 相邻）', dataSrc.includes('ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL'));
 
@@ -243,7 +243,7 @@ const vers100 = ['smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v
 for (const nm of vers100) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.4`,
-    src.includes("const GAME_VERSION = 'v23.89';"));
+    src.includes("const GAME_VERSION = 'v23.90';"));
 }
 for (const nm of ['smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
   'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
@@ -251,7 +251,7 @@ for (const nm of ['smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.4`,
-    src.includes("GAME_VERSION === 'v23.89'"));
+    src.includes("GAME_VERSION === 'v23.90'"));
 }
 for (const nm of ['smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
   'smoke_v2200_stock.mjs', 'smoke_v2199_rich2.mjs', 'smoke_v2198_winsave.mjs', 'smoke_v2197_lucky2.mjs',
