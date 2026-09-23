@@ -169,7 +169,7 @@ try {
   let threw = null;
   try { drawStatus(); } catch (e) { threw = e; }
   ok('drawStatus 渲染不抛错', threw === null, threw && String(threw.stack || threw));
-  ok('drawStatus 页底「J 任务日志」提示零回归', drawnCalls.some((c) => c.t.includes('J 任务日志')));
+  ok('drawStatus 页底「J 日志 · H 帮助」提示零回归（v23.83 四直达）', drawnCalls.some((c) => c.t.includes('J 日志') && c.t.includes('H 帮助')));
 } finally {
   CTX.fillText = origFill;
   S.scene = origScene;
@@ -189,7 +189,7 @@ ok('README 件套口径为存活性断言（v21.72 起件数由新版冒烟守�
 ok('README 含 v21.71 守护描述（任务日志页脚 I 状态页互切提示守护）',
   readme.includes('v21.71 起含任务日志页脚「I 状态页」互切提示守护'));
 ok('README 快速上手表 J 行含「I 状态页」互切口吻', readme.includes('`J`') && readme.includes('「I 状态页」'));
-ok('README 快速上手表 I 行含「J 任务日志 · C 成就 · B 图鉴」直达口径（v23.69）', readme.includes('状态界面（页底常驻「J 任务日志 · C 成就 · B 图鉴」直达提示'));
+ok('README 快速上手表 I 行含「J 日志 · C 成就 · B 图鉴 · H 帮助」直达口径（v23.69/v23.83）', readme.includes('状态界面（页底常驻「J 日志 · C 成就 · B 图鉴 · H 帮助」直达提示'));
 ok('package.json 已收录 smoke_v2171_journalikey（npm test 串跑第 67 份）',
   pkg.includes('smoke_v2171_journalikey.mjs'));
 const s2170 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2170_winreset.mjs'), 'utf8');

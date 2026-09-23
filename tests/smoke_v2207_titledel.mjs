@@ -87,7 +87,7 @@ console.log('— v22.7 标题页 X 删除存档槽两按确认冒烟 —');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.6', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 7)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.7（本版独占精确锚点）', GAME_VERSION === 'v23.82', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.7（本版独占精确锚点）', GAME_VERSION === 'v23.83', GAME_VERSION);
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => { try { return fs.readFileSync(path.join(ROOT, p), 'utf8'); } catch { return ''; } };
@@ -102,7 +102,7 @@ const changelog = read('CHANGELOG.md');
 
 // —— data.js 版本契约 ——
 ok('data.js 含 v22.7 版本注释', dataSrc.includes('v22.7 标题页 X 删除存档槽'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.7', dataSrc.includes("const GAME_VERSION = 'v23.82';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.7', dataSrc.includes("const GAME_VERSION = 'v23.83';"));
 ok('data.js 仍保留 v22.6 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.6 新成就「药香满囊」'));
 
 // —— core.js 源级落位：纯状态机 + 删除函数 + 导出 ——
@@ -317,7 +317,7 @@ const vers103 = ['smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs', 'smoke_v
 for (const nm of vers103) {
   const src = read(`tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.7`,
-    src.includes("const GAME_VERSION = 'v23.82';"));
+    src.includes("const GAME_VERSION = 'v23.83';"));
 }
 for (const nm of ['smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs', 'smoke_v2204_brew2.mjs',
   'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
@@ -326,7 +326,7 @@ for (const nm of ['smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs', 'smoke_
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.7`,
-    src.includes("GAME_VERSION === 'v23.82'"));
+    src.includes("GAME_VERSION === 'v23.83'"));
 }
 for (const nm of ['smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs', 'smoke_v2204_brew2.mjs',
   'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
