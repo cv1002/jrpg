@@ -36,7 +36,7 @@ console.log('— v22.8 灵药盈囊高级灵药持有线首枚里程碑冒烟 �
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.7', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 8)), GAME_VERSION);
-ok('GAME_VERSION 字面量已为 v22.8（本版独占精确锚点）', GAME_VERSION === 'v23.85', GAME_VERSION);
+ok('GAME_VERSION 字面量已为 v22.8（本版独占精确锚点）', GAME_VERSION === 'v23.86', GAME_VERSION);
 
 const fs = await import('node:fs');
 const read = (p) => { try { return fs.readFileSync(new URL(p, import.meta.url), 'utf8'); } catch { return ''; } };
@@ -47,7 +47,7 @@ const pkg = read('../package.json');
 const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v22.8 版本注释', dataSrc.includes('v22.8 新成就「灵药盈囊」'));
-ok('data.js GAME_VERSION 字面量已更新为 v22.8', dataSrc.includes("const GAME_VERSION = 'v23.85';"));
+ok('data.js GAME_VERSION 字面量已更新为 v22.8', dataSrc.includes("const GAME_VERSION = 'v23.86';"));
 ok('data.js 仍保留 v22.7 历史注释（累积注释块，姊妹 pin 不失效）', dataSrc.includes('v22.7 标题页 X 删除存档槽'));
 ok('data.js 导出 ELIXIR_STOCK_GOAL（export 块落位，与 POTIONS2_GOAL/POTIONS3_GOAL 相邻）', dataSrc.includes('POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD'));
 
@@ -246,7 +246,7 @@ const vers104 = ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2
 for (const nm of vers104) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v22.8`,
-    src.includes("const GAME_VERSION = 'v23.85';"));
+    src.includes("const GAME_VERSION = 'v23.86';"));
 }
 for (const nm of ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs',
   'smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
@@ -255,7 +255,7 @@ for (const nm of ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v
   'smoke_v2193_hunt100.mjs', 'smoke_v2192_travelwarn.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 恒等 pin（===）已随新现实更新为 v22.8`,
-    src.includes("GAME_VERSION === 'v23.85'"));
+    src.includes("GAME_VERSION === 'v23.86'"));
 }
 for (const nm of ['smoke_v2207_titledel.mjs', 'smoke_v2206_stock2.mjs', 'smoke_v2205_fragtitle.mjs',
   'smoke_v2204_brew2.mjs', 'smoke_v2203_fragdead.mjs', 'smoke_v2202_fragwin.mjs', 'smoke_v2201_fragstatus.mjs',
