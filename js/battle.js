@@ -826,6 +826,13 @@ function loseBattle() {
   cancelBattleQueue();
   S.G.rushStage = 0;
   S.G.poison = 0;
+  // v23.87 成就「败而不馁」计数（战斗败北端口·与 v23.80 身经百战遭遇端口成对）：loseBattle 是
+  // 全游戏唯一战败结算点（普通遇敌败北/强敌战败/试炼败北全走此处，retryBoss 只恢复战斗子集字段
+  // 不清零——强敌反复 B 再战也如实累计），落账 hero.deaths——随 snapshotHero 全量快照自动持久化、
+  // 防御式 (S.G.deaths||0) 旧档零迁移（承 v23.80 hero.battles 同款）；落账当场 applyAchievements
+  // （反馈不迟到——本模块既有 import 零新增依赖）。
+  S.G.deaths = (S.G.deaths || 0) + 1;
+  applyAchievements();
   stopBgm();
   goto('dead');
   SFX.death();

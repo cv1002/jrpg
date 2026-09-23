@@ -1548,7 +1548,20 @@
 // 「旧灯卫的名字」where 列（收集记忆碎片 → 回镇找巡灯人）承载；见 HELP_PAGES 潮灯镇行 v23.86
 // 行内注释，12px estW（= @napi-rs/canvas 12px 实测）421.2→462.3 ≤470、行数不变仍 8、r[2] 数
 // 不变仍 7、末行基线仍 414 零页长/基线变化；纯文字零逻辑零结算零存档零数值变化。）
-const GAME_VERSION = 'v23.86';
+// v23.87 新内容·战斗败北维度单档里程碑：新成就「败而不馁」（累计阵亡 DEATH_GOAL 次，见
+// ACH_LIST deaths 注释）——成就版图战斗线逐端口核对：hunt 系读 hero.totalWins「胜利」、
+// v23.80 身经百战读 hero.battles「遭遇」、v23.36-66 六指令读各自操作计数，唯独「败北」这一
+// 战斗结果端口查无一行——强敌战败按 B 重整旗鼓再战/普通战败回镇补给后再次出发的玩家，倒下
+// 本身零回响（身经百战记「踏入战场」、hunt 系记「打赢了」，倒下既不记胜也不记遇的独立一刻）；
+// 现补败北单档与 身经百战 成对端口（遭遇 vs 败北互不覆盖）；计数 battle.loseBattle 全游戏唯一
+// 战败结算点写入 hero.deaths（普通/强敌/试炼全走此处、retryBoss 只恢复战斗子集字段不清零——
+// 强敌反复 B 再战也如实累计）、随 snapshotHero 全量快照自动持久化、防御式 (g.deaths||0)
+// 旧档零迁移；落账当场 applyAchievements（反馈不迟到——battle.js 既有 applyAchievements
+// import 零新增依赖，承 v23.80 startBattle 当场判定先例）；无 r 字段纯里程碑（与 battles/steps/
+// travels 同款——倒下本身即是这份纪念）；零战报后缀（承 v23.72-80 口径——阵亡画面本就无
+// 计数报文，C 页进度 X/10 承载）；数值取 10（「败而不馁」——强敌三连 B 再战的量级，纯纪念
+// 零奖励零结算影响，与 BATTLE_GOAL/SELL_GOAL 同「阈值数据化」家族）。
+const GAME_VERSION = 'v23.87';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -3413,6 +3426,13 @@ const BATTLE_GOAL = 100;
 // （卖菇 10 金/株，任务保护期不可卖——集齐前早退零计数）；纯里程碑零奖励零结算影响，与
 // SPEND_GOAL/TRAVEL_GOAL 同「阈值数据化」家族）。
 const SELL_GOAL = 30;
+// v23.87 成就「败而不馁」阈值（战斗败北端口·单一数据源）：累计阵亡 N 次解锁
+// ——与 ACH_LIST.deaths 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 10
+// （「败而不馁」——强敌三连 B 再战/开荒期普通战败的自然量级：与 v23.80 BATTLE_GOAL「遭遇
+// 端口」成对——遭遇=踏入战场的每一次（胜/败/逃都算），败北=倒下（loseBattle 唯一产生点、
+// retryBoss 只恢复战斗子集字段不清零，强敌反复重整旗鼓也如实累计）；纯里程碑零奖励零结算
+// 影响，与 BATTLE_GOAL/SELL_GOAL 同「阈值数据化」家族）。
+const DEATH_GOAL = 10;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -5093,6 +5113,18 @@ const ACH_LIST=[
   // 零新增依赖，承 v23.74 五消费点紧邻判定先例）；零战报后缀（承 v23.72-80 口径——售出报文已带
   // 价格/余额/剩余株数，C 页进度 X/30 承载）。
   {id:'sell', name:'蘑菇商路', d:`累计售出 ${SELL_GOAL} 株魔法蘑菇`, ok:g=>(g.sold||0)>=SELL_GOAL, prog:g=>`${g.sold||0}/${SELL_GOAL}`},
+  // v23.87 成就「败而不馁」条目注释（战斗败北端口单档·与 v23.80 身经百战遭遇端口成对，承
+  // v23.72/73/74/75/76/80/82 成对端口先例）：成就版图战斗线核对——hunt 系读 totalWins「打赢了」、
+  // battles 读 hero.battles「踏入战场」、六指令读各自操作计数，唯独「败北」这一战斗结果端口查无
+  // 一行：玩家在强敌面前倒下（B 重整旗鼓再战/普通战败回镇补给）那一刻，胜/遇/操作三端口都不记它
+  // （倒下既不记胜也不记遇的独立一刻——死磕 Boss 十几次才过的玩家毫无回响）；现补独立单档与
+  // 身经百战成对（遭遇 vs 败北互不覆盖）；DEATH_GOAL(10) 单一数据源·计数源 battle.loseBattle
+  // 全游戏唯一战败结算点（普通遇敌败北/强敌战败/试炼败北全走此处，retryBoss 只恢复战斗子集字段
+  // 不清零——强敌反复 B 再战也如实累计）写入 hero.deaths——随 snapshotHero 全量快照自动持久化、
+  // 防御式 (g.deaths||0) 旧档零迁移；落账当场 applyAchievements（反馈不迟到——battle.js 既有
+  // applyAchievements import 零新增依赖，承 v23.80 startBattle 当场判定先例）；零战报后缀
+  // （承 v23.72-80 口径——阵亡画面本就零计数报文，C 页进度 X/10 承载）。
+  {id:'deaths', name:'败而不馁', d:`累计阵亡 ${DEATH_GOAL} 次`, ok:g=>(g.deaths||0)>=DEATH_GOAL, prog:g=>`${g.deaths||0}/${DEATH_GOAL}`},
 ];
 
 function codexTag(name) {
@@ -5558,5 +5590,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL,
 };
