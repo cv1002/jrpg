@@ -18,7 +18,7 @@ console.log('— v22.87 帮助页地图指南通关之路行「真结局/记忆�
 
 // 1. 版本锚点
 const dataSrc = readFileSync(join(ROOT, 'js/data.js'), 'utf8');
-ok('data.js GAME_VERSION 字面量为 v22.87', dataSrc.includes("const GAME_VERSION = 'v23.94'"));
+ok('data.js GAME_VERSION 字面量为 v22.87', dataSrc.includes("const GAME_VERSION = 'v23.95'"));
 ok('旧 v22.86 字面量零残留', !dataSrc.includes("const GAME_VERSION = 'v22." + "86';"));
 ok('data.js 含 v22.87 版本注释', dataSrc.includes('// v22.87 体验打磨·信息透明·纯文字'));
 ok('data.js 仍保留 v22.86 历史注释', dataSrc.includes('// v22.86 体验打磨·标题页/创建页开始键补 E 键别名'));
@@ -198,19 +198,19 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const pkg = readFileSync(join(ROOT, 'package.json'), 'utf8');
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 ok('README tests 树串尾已延伸至 smoke_v2287_trueroute（v2286 后接 v2287）',
-  readme.includes('smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback（npm test 串跑）'));
-ok('README 件套口径为二百一十八件套（二百一十七件套清除）且旧 182 口径零残留',
-  readme.includes('冒烟二百一十八件套（二百一十七件套清除）') && !readme.includes('冒烟一百八十二件套（一百八十一件套清' + '除）'));
+  readme.includes('smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll（npm test 串跑）'));
+ok('README 件套口径为二百一十九件套（二百一十八件套清除）且旧 182 口径零残留',
+  readme.includes('冒烟二百一十九件套（二百一十八件套清除）') && !readme.includes('冒烟一百八十二件套（一百八十一件套清' + '除）'));
 ok('README 含 v22.87 守护描述（通关之路行真结局/记忆碎片指针守护）',
   readme.includes('v22.87 起含帮助页「地图指南」通关之路行真结局/记忆碎片指针守护'));
 ok('README 含 smoke_v2287_trueroute 入库（183 份）', readme.includes('smoke_v2287_trueroute 入库（183 份）'));
 ok('README 仍保留 smoke_v2286_titleekey 入库（182 份）历史口径', readme.includes('smoke_v2286_titleekey 入库（182 份）'));
 ok('README 仍保留 v22.86 守护描述（历史口径）', readme.includes('v22.86 起含标题页/创建页开始键 E 键别名守护'));
 ok('package.json test 串含 smoke_v2287_trueroute.mjs 且位于串尾',
-  pkg.includes('node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs"'));
+  pkg.includes('node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 183 件套', testChain === 218, String(testChain));
-ok('CHANGELOG 含 v22.87 条目（顶 pin）', changelog.startsWith('## v23.94 '));
+ok('package.json test 串共 183 件套', testChain === 219, String(testChain));
+ok('CHANGELOG 含 v22.87 条目（顶 pin）', changelog.startsWith('## v23.95 '));
 
 // 7. 姊妹件套 pin（smoke_v2286 及地图指南几何 pin 随新现实更新）
 const readTest = (name) => readFileSync(join(ROOT, 'tests', name), 'utf8');
@@ -223,15 +223,15 @@ const s2282 = readTest('smoke_v2282_archgate.mjs');
 const s2237 = readTest('smoke_v2237_minimaplegend.mjs');
 const s2238 = readTest('smoke_v2238_starwell.mjs');
 const s2243 = readTest('smoke_v2243_encguide.mjs');
-ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.87', s2286.includes("const GAME_VERSION = 'v23.94';"));
-ok('smoke_v2286 的 CHANGELOG 顶 pin 已更新为 ## v22.87', s2286.includes("startsWith('## v23.94 '"));
-ok('smoke_v2286 的件套 pin 已更新为二百一十八件套（二百一十七件套清除）', s2286.includes('二百一十八件套（二百一十七件套清除）'));
+ok('smoke_v2286 的 GAME_VERSION 字面量 pin 已更新为 v22.87', s2286.includes("const GAME_VERSION = 'v23.95';"));
+ok('smoke_v2286 的 CHANGELOG 顶 pin 已更新为 ## v22.87', s2286.includes("startsWith('## v23.95 '"));
+ok('smoke_v2286 的件套 pin 已更新为二百一十九件套（二百一十八件套清除）', s2286.includes('二百一十九件套（二百一十八件套清除）'));
 ok('smoke_v2286 的 README 串尾 pin 已延伸至 smoke_v2287_trueroute',
-  s2286.includes('smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback（npm test 串跑）'));
+  s2286.includes('smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll（npm test 串跑）'));
 ok('smoke_v2286 的 package 串尾 pin 已延伸至 smoke_v2287_trueroute',
-  s2286.includes('node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs"'));
-ok('smoke_v2286 的 testChain pin 已更新为 183', s2286.includes('testChain === 218'));
-ok('smoke_v2285 的 GAME_VERSION 字面量 pin 已更新为 v22.87', s2285.includes("const GAME_VERSION = 'v23.94';"));
+  s2286.includes('node tests/smoke_v2286_titleekey.mjs && node tests/smoke_v2287_trueroute.mjs && node tests/smoke_v2288_scrollhint.mjs && node tests/smoke_v2289_winprog.mjs && node tests/smoke_v2290_statlink.mjs && node tests/smoke_v2291_lampguide.mjs && node tests/smoke_v2292_cavewatch.mjs && node tests/smoke_v2293_deadsave.mjs && node tests/smoke_v2294_crystalwatch.mjs && node tests/smoke_v2295_deadprog.mjs && node tests/smoke_v2296_endingprog.mjs && node tests/smoke_v2297_chestmid.mjs && node tests/smoke_v2298_encnum.mjs && node tests/smoke_v2299_crosslink.mjs && node tests/smoke_v2300_sidemore.mjs && node tests/smoke_v2301_eco.mjs && node tests/smoke_v2302_cmdprev.mjs && node tests/smoke_v2303_rushnum.mjs && node tests/smoke_v2304_achgoal.mjs && node tests/smoke_v2305_monnum.mjs && node tests/smoke_v2306_skillnum.mjs && node tests/smoke_v2307_bossnum.mjs && node tests/smoke_v2308_diffnum.mjs && node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs"'));
+ok('smoke_v2286 的 testChain pin 已更新为 183', s2286.includes('testChain === 219'));
+ok('smoke_v2285 的 GAME_VERSION 字面量 pin 已更新为 v22.87', s2285.includes("const GAME_VERSION = 'v23.95';"));
 ok('smoke_v2258 的地图指南 r[2] 数 pin 已更新为 === 7', s2258.includes('.filter((r) => r.length > 2).length === 7'));
 ok('smoke_v2281 的地图指南 r[2] 数 pin 已更新为 === 7', s2281.includes('0) === 7'));
 ok('smoke_v2282 的地图指南 r[2] 数 pin 已更新为 === 7', s2282.includes('0) === 7'));
@@ -256,9 +256,9 @@ ok('旧代 v22.86 字面量/恒等/件套/testChain/串尾/版本锚 pin 全库�
 
 // 9. 哨兵链（件套守护领先一位）已指向下一版 184 口径
 const s2143 = readTest('smoke_v2143_talkekey.mjs');
-ok('哨兵链 v2143 已含下一版件套口径（二百一十八件套（二百一十七件套清除））',
-  s2143.includes('二百一十九件套（二百一十八件套清除）') &&
-  s2143.includes("!readme.includes('二百一十九件套（二百一十八件套清除）')"));
+ok('哨兵链 v2143 已含下一版件套口径（二百一十九件套（二百一十八件套清除））',
+  s2143.includes('二百二十件套（二百一十九件套清除）') &&
+  s2143.includes("!readme.includes('二百二十件套（二百一十九件套清除）')"));
 
 console.log(`\n— v22.87 帮助页地图指南通关之路行「真结局/记忆碎片」r[2] 指针冒烟：${pass}/${pass + fail} 通过 —`);
 process.exit(fail ? 1 : 0);

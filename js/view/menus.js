@@ -18,24 +18,45 @@ export function drawShop(){
   const hero = S.G;
   drawWorld(); panel(60,50,520,360,'杂货商店');
   text('💰 '+hero.gold+' 金币',520,80,'14px','#ffd24a','right');
-  S.shopList.forEach((it,i)=>{
+  // v23.95 商品清单视窗滚动（体验打磨·可发现性·纯显示）：v23.92 星铁剑入店后清单最长 10 行
+  // （新手持木剑布衣+持菇：药水/卖菇/铁剑/秘银剑/星铁剑/勇者之剑/皮甲/锁子甲/龙鳞甲/离开——
+  // buildShopList 实测），第 9 行（i=8，rect 400..432）已画出 360 高的面板底（410）、第 10 行
+  // （i=9，rect 438..470）与页脚提示（470）相撞，「离开商店」长期被挤出面板；现仿成就页
+  // achScroll 视窗（S.achScroll，drawAch）：固定可视 8 行（i=0..7 末行底 394 ≤410 面板预算），
+  // 窗口起点由 shopSel 派生（无新状态——↑↓ 仍只移动选中行，选中行永不被裁掉；shopSel 回绕
+  // 时窗口随之回滑），超出部分按成就页同款口径补「还有 N 项未在本页显示/上方还有 N 项」提示
+  // （信息透明：被裁商品一眼可见）；零结算零存档零数值变化，购买/选择键位零改动。
+  const list = S.shopList;
+  const PAGE = 8;                       // 面板 8 行预算（96+7*38+32=394 ≤ 410）
+  const maxStart = Math.max(0, list.length - PAGE);
+  let start = S.shopSel - (PAGE - 1);   // 选中行贴视窗底部，回绕时自然回滑
+  if (start < 0) start = 0;
+  if (start > maxStart) start = maxStart;
+  list.slice(start, start + PAGE).forEach((it,j)=>{
+    const i = start + j;                // 全局序号（选中判定），j 为视窗内行号（y 定位）
     const sel=i===S.shopSel;
     let afford=true;
     if(it.kind==='potion'||it.t.startsWith('🍖')) afford=(hero.gold>=it.price&&hero.item<POTION_CAP);
     else if(it.price>0) afford=hero.gold>=it.price;
     if(it.blocked) afford=false;
-    if(sel){ CTX.fillStyle='rgba(255,210,74,.15)'; rr(70,96+i*38,500,32,6); CTX.fill(); }
+    if(sel){ CTX.fillStyle='rgba(255,210,74,.15)'; rr(70,96+j*38,500,32,6); CTX.fill(); }
     const col=sel?'#ffd24a':(!afford?'#7d93a3':(it.up?'#8ff0a0':'#e8eef1'));
-    text((sel?'▶':' ')+' '+it.t,86,118+i*38,'15px',col);
+    text((sel?'▶':' ')+' '+it.t,86,118+j*38,'15px',col);
     if(it.price>0){
       // 购买差价提示（信息透明·纯显示）：延续 v3.13 旅馆「还差 N 金」/ v3.14 酿造差额 / v14.2 技能
       // MP「还差 N」同一短缺口径——此前买不起只笼统写「（不足）」，差 5 金还是差 500 金要自己心算；
       // 直接报出差额（gold<price 时），背包满（药水背包上限 POTION_CAP=99）则如实标注「背包满」，零结算变化
       const lack = (!afford && hero.gold < it.price) ? `（还差 ${it.price-hero.gold} 金）`
         : (!afford && it.t.startsWith('🍖')) ? '（背包满）' : '';
-      text(it.price+'💰'+lack,560,118+i*38,'13px',afford?'#62c6ff':'#e14b3f','right');
+      text(it.price+'💰'+lack,560,118+j*38,'13px',afford?'#62c6ff':'#e14b3f','right');
     }
   });
+  if (list.length > PAGE) {
+    // 视窗裁切提示（与 drawAch「还有 N 项未在本页显示」同口径）：滑到底显示上方被裁数
+    const remain = list.length - (start + PAGE);
+    text(remain > 0 ? `↓ 还有 ${remain} 项未在本页显示` : `↑ 上方还有 ${start} 项`,
+      320, 428, '12px', '#7d93a3', 'center');
+  }
   text('绿色▲=更强升级 灰色=买不起 · ↑↓选择  Enter/E购买  Esc离开',320,470,'12px','#7d93a3','center');
 }
 
