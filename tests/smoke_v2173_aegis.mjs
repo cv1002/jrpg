@@ -104,8 +104,9 @@ ok('BEST_ARMOR 派生正确（=== ARMORS 防御值最大者，当前为龙鳞甲
   BEST_ARMOR);
 ok('BEST_ARMOR 源级派生零裸字面量（reduce 派生落位，无字符串字面量直赋）',
   dSrc.includes('const BEST_ARMOR = Object.keys(ARMORS).reduce') && !dSrc.includes("const BEST_ARMOR = '"));
-ok('ARMORS 契约（四件铠甲，龙鳞甲 防13 价480——最佳即最贵，成就目标的经济份量锚点）',
-  Object.keys(ARMORS).length === 4 && ARMORS['龙鳞甲'].def === 13 && ARMORS['龙鳞甲'].price === 480);
+ok('ARMORS 契约（五件铠甲，v23.96 补 精钢甲 10/300 拆 锁子甲→龙鳞甲 最大跳档；龙鳞甲 防13 价480——最佳即最贵，成就目标的经济份量锚点）',
+  Object.keys(ARMORS).length === 5 && ARMORS['精钢甲'].def === 10 && ARMORS['精钢甲'].price === 300 &&
+  ARMORS['龙鳞甲'].def === 13 && ARMORS['龙鳞甲'].price === 480);
 
 // —— ACH_LIST：龙鳞加身契约（承 legend 装备里程碑 + lvl5/lvl10/memoir 纯里程碑模式）——
 const achAegis = ACH_LIST.find((a) => a.id === 'aegis');

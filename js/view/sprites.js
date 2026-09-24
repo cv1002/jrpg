@@ -172,7 +172,7 @@ function heroSheet() {
   return sheets.hero;
 }
 
-const ARM_COL = { '布衣': '#3b6fe0', '皮甲': '#b0702f', '锁子甲': '#aab6c6', '龙鳞甲': '#36c97e' };
+const ARM_COL = { '布衣': '#3b6fe0', '皮甲': '#b0702f', '锁子甲': '#aab6c6', '精钢甲': '#8fa8bd', '龙鳞甲': '#36c97e' };
 const WPN_COL = { '木剑': '#8a5a2b', '铁剑': '#9aa4ad', '秘银剑': '#cfe0ee', '勇者之剑': '#e8c33a', '圣光之剑': '#ffd24a' };
 
 export function drawHero(px, py, dir, anim, scale) {
