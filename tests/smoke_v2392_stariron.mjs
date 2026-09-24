@@ -86,7 +86,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.92', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 91)), GAME_VERSION);
 ok('data.js 含 v23.92 注释（装备曲线补全说明）', dSrc.includes('v23.92 数值平衡·装备曲线补全'));
 ok('data.js GAME_VERSION 字面量已为 v23.92（旧 v23.91 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.93';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "1';"));
+  dSrc.includes("const GAME_VERSION = 'v23.94';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "1';"));
 ok('data.js 仍保留 v23.91 历史注释（提灯夜行说明，累积注释块）', dSrc.includes('v23.91 新内容·昼夜维度单档里程碑'));
 
 // —— data.js 源级落位：星铁剑 逐字 + 五把既有剑逐字未动 + 行内注释 ——
@@ -148,15 +148,15 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 216 件套', testChain === 217, String(testChain));
+ok('package.json test 串共 216 件套', testChain === 218, String(testChain));
 ok('package.json 已收录 smoke_v2392_stariron（npm test 串跑第 216 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2392_stariron.mjs'));
-ok('package.json 串尾为 ... smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs"',
-  pkg.includes('node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs"'));
+ok('package.json 串尾为 ... smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs"',
+  pkg.includes('node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs"'));
 ok('README tests 树串尾已延伸至 smoke_v2392_stariron',
-  readme.includes('+ smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey（npm test 串跑）'));
-ok('README 件套口径为二百一十七件套（二百一十六件套清除）且旧 214 口径零残留',
-  readme.includes('冒烟二百一十七件套（二百一十六件套清除）') && !readme.includes('冒烟二百一十四件套（二百一十三件套清' + '除）'));
+  readme.includes('+ smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback（npm test 串跑）'));
+ok('README 件套口径为二百一十八件套（二百一十七件套清除）且旧 214 口径零残留',
+  readme.includes('冒烟二百一十八件套（二百一十七件套清除）') && !readme.includes('冒烟二百一十四件套（二百一十三件套清' + '除）'));
 ok('README 含 v23.92 守护描述（新武器「星铁剑」守护）', readme.includes('v23.92 起含 新武器「星铁剑」守护'));
 ok('README 含 smoke_v2392_stariron 入库（216 份）', readme.includes('smoke_v2392_stariron 入库（216 份）'));
 ok('README 仍保留 v23.91 历史守护描述与入库口径（历史累积）',
@@ -169,15 +169,15 @@ ok('README 装备属性行保留 v23.37 补录标记并补 v23.92 补星铁剑',
   readme.includes('（v23.37 补录、v23.92 补星铁剑） | `WEAPONS` / `ARMORS` / `BEST_ARMOR` |'));
 ok('README 装备价格行仍在装备属性行之前（行序位置正确）',
   readme.indexOf('| 装备价格 |') < readme.indexOf('| 装备属性 |'));
-ok('CHANGELOG 顶部已追加 v23.92 条目（星铁剑）', changelog.startsWith('## v23.93 '));
+ok('CHANGELOG 顶部已追加 v23.92 条目（星铁剑）', changelog.startsWith('## v23.94 '));
 ok('CHANGELOG 顶部条目含 v23.92 星铁剑说明', changelog.includes('## v23.92 新武器「星铁剑」——装备曲线补全'));
 ok('CHANGELOG 仍保留 v23.91 条目标题（历史口径）', changelog.includes('## v23.91 新成就「提灯夜行」'));
 
 // —— 哨兵链：v2143 前哨前望 217 且 README 尚无 217 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百一十八件套（二百一十七件套清除）',
-  s2143.includes('二百一十八件套（二百一十七件套清除）') && s2143.includes("!readme.includes('二百一十八件套（二百一十七件套清除）')"));
-ok('README 尚无二百一十八件套（二百一十七件套清除）前望口径', !readme.includes('二百一十八件套（二百一十七件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百一十九件套（二百一十八件套清除）',
+  s2143.includes('二百一十九件套（二百一十八件套清除）') && s2143.includes("!readme.includes('二百一十九件套（二百一十八件套清除）')"));
+ok('README 尚无二百一十九件套（二百一十八件套清除）前望口径', !readme.includes('二百一十九件套（二百一十八件套清除）'));
 
 // —— 旧代 v23.91 pin 全库零残留（不含本件；拆串防误伤，承 v2319 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2392_stariron.mjs');
