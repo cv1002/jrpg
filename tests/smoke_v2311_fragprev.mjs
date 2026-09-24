@@ -4,7 +4,7 @@
 // 源：四强敌 石心魔像/幽冥魔王/洞窟领主/终焉之神 首胜未集时补「· 🧩 首胜必掉记忆碎片」、已集零噪音——
 // 与「🍄 必掉蘑菇/⚔️ 必掉圣光之剑/战胜另+N金」同式收口）+ 运行期实证（精英/Boss 两档渲染捕获逐值 +
 // 已集/未集两档 + 普通怪零噪音三档）+ 行宽预算（estW 四强敌真实上限 ≤640）+ README/package.json/
-// CHANGELOG 同步（冒烟二百二十一件套（二百二十件套清除）/串尾/入库 207 份/顶 pin）+ 姊妹件套 pin
+// CHANGELOG 同步（冒烟二百二十二件套（二百二十一件套清除）/串尾/入库 207 份/顶 pin）+ 姊妹件套 pin
 // （smoke_v2310 随新现实更新）+ 哨兵链领先一位（208 口径）+ 旧代 v23.10 pin 全库零残留。
 import { GAME_VERSION, FRAGMENTS, ELITE_GOLEM } from '../js/data.js';
 import { canonicalName } from '../js/rules.js';
@@ -34,7 +34,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.11 版本注释', dataSrc.includes('// v23.11 体验打磨·信息透明·同一口径：战斗「战利品预览」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.11（旧 v23.10 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v23.97';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "10';"));
+  dataSrc.includes("const GAME_VERSION = 'v23.98';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "10';"));
 ok('data.js 仍保留 v23.10 历史注释（run 总结屏困难档标注注释未动）', dataSrc.includes('// v23.10 体验打磨·信息透明·同一口径：run 总结屏三屏'));
 
 // —— FRAGMENTS 单源契约（与 battle.winBattle 同读一份源）——
@@ -186,42 +186,42 @@ ok('运行期：普通怪预览行零碎片后缀（无 🧩 无 🍄）',
   CAPTURED.filter((t) => t.startsWith('战利品预览：')).join(' | '));
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README 件套口径为二百二十一件套（二百二十件套清除）且旧 206 口径零残留',
-  readme.includes('冒烟二百二十一件套（二百二十件套清除）') && !readme.includes('冒烟二百零六件套（二百零五件套清' + '除）'));
-ok('README 不含哨兵领先一位（二百二十二件套（二百二十一件套清除））',
-  !readme.includes('二百二十二件套（二百二十一件套清除）'));
+ok('README 件套口径为二百二十二件套（二百二十一件套清除）且旧 206 口径零残留',
+  readme.includes('冒烟二百二十二件套（二百二十一件套清除）') && !readme.includes('冒烟二百零六件套（二百零五件套清' + '除）'));
+ok('README 不含哨兵领先一位（二百二十三件套（二百二十二件套清除））',
+  !readme.includes('二百二十三件套（二百二十二件套清除）'));
 ok('README 含 v23.11 守护描述（战利品预览记忆碎片守护）',
   readme.includes('v23.11 起含 战斗「战利品预览」记忆碎片守护'));
 ok('README 含 smoke_v2311_fragprev 入库（207 份）', readme.includes('smoke_v2311_fragprev 入库（207 份）'));
 ok('README 仍保留 v23.10 守护描述（历史口径）', readme.includes('v23.10 起含 run 总结屏「困难档」标注守护'));
 ok('README 仍保留 smoke_v2310_diffsum 入库（206 份）历史口径', readme.includes('smoke_v2310_diffsum 入库（206 份）'));
 ok('README tests 树串尾已延伸至 smoke_v2311_fragprev（v2310 后接 v2311）',
-  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow（npm test 串跑）'));
+  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow（npm test 串跑）'));
 ok('README 旧串尾零残留（v2310 后无串尾收口）',
   !readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum（npm test 串' + '跑）'));
 ok('package.json 已收录 smoke_v2311_fragprev', JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2311_fragprev.mjs'));
-ok('package.json 串尾为 ... node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs"',
-  pkg.includes('node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs"'));
+ok('package.json 串尾为 ... node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"',
+  pkg.includes('node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 207 件套', testChain === 221, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.11 条目', changelog.startsWith('## v23.97 '));
+ok('package.json test 串共 207 件套', testChain === 222, String(testChain));
+ok('CHANGELOG 顶部已追加 v23.11 条目', changelog.startsWith('## v23.98 '));
 ok('CHANGELOG 仍保留 v23.10 条目（历史口径）', changelog.includes('## v23.10 run 总结屏三屏「困难档」标注'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.10 pin 零残留 ——
 const s2310 = read('smoke_v2310_diffsum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2310 的 GAME_VERSION 字面量 pin 已更新为 v23.11', s2310.includes("const GAME_VERSION = 'v23.97';"));
+ok('smoke_v2310 的 GAME_VERSION 字面量 pin 已更新为 v23.11', s2310.includes("const GAME_VERSION = 'v23.98';"));
 ok('smoke_v2310 的 CHANGELOG 顶 pin 已更新为 ## v23.12',
-  s2310.includes("startsWith('## v23.97 "));
-ok('smoke_v2310 的件套 pin 已更新为二百二十一件套（二百二十件套清除）',
-  s2310.includes('二百二十一件套（二百二十件套清除）'));
+  s2310.includes("startsWith('## v23.98 "));
+ok('smoke_v2310 的件套 pin 已更新为二百二十二件套（二百二十一件套清除）',
+  s2310.includes('二百二十二件套（二百二十一件套清除）'));
 ok('smoke_v2310 的 README 串尾 pin 已延伸至 smoke_v2311_fragprev',
-  s2310.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow（npm test 串跑）'));
+  s2310.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow（npm test 串跑）'));
 ok('smoke_v2310 的 package 串尾 pin 已延伸至 smoke_v2311_fragprev',
-  s2310.includes('node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs"'));
-ok('smoke_v2310 的 testChain pin 已更新为 207', s2310.includes('testChain === 221'));
-ok('smoke_v2143 哨兵链已推进至二百二十二件套（二百二十一件套清除）',
-  s2143.includes('二百二十二件套（二百二十一件套清除）') && s2143.includes("!readme.includes('二百二十二件套（二百二十一件套清除）')"));
+  s2310.includes('node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"'));
+ok('smoke_v2310 的 testChain pin 已更新为 207', s2310.includes('testChain === 222'));
+ok('smoke_v2143 哨兵链已推进至二百二十三件套（二百二十二件套清除）',
+  s2143.includes('二百二十三件套（二百二十二件套清除）') && s2143.includes("!readme.includes('二百二十三件套（二百二十二件套清除）')"));
 
 // 旧代 v23.10 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2311_fragprev.mjs');

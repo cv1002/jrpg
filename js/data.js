@@ -1631,7 +1631,14 @@
 // （全部由 data.js baseStats 派生——与 hero.grantXp 升级结算差分/创建页每级成长标注/状态页 HP/MP/攻/防
 // 同读一份源，改 Lv1 基数只改 baseStats 一处、速查行自动跟随），纯文档零逻辑零结算零存档零数值变化，
 // baseStats/LEVEL_GROWTH 数值逐字未动。
-const GAME_VERSION = 'v23.97';
+// v23.98 文档整理·数值说明·同源口径（README「数值速查」「经济」行 灵药恢复量口径补全，详见 README 行内注释）：
+// 经济行「酿造 2 菇+10 金→灵药（80%HP+40%MP）」漏了 FLAT 恢复项——实际结算为
+// ELIXIR_HP_PCT(0.8)×最大HP + ELIXIR_HP_FLAT(20) 并回 ELIXIR_MP_PCT(0.4)×最大MP（与 H 页
+// 「喝药（普通/灵药）」行 v23.26 口径/战斗指令栏 [3] 预览/#help F 块同读一份源，调恢复量只改
+// 本文件 POTION_*/ELIXIR_* 常量一处全端自动跟随）；现按「灵药 80%HP+20并回40%MP」收口，
+// 纯文档零逻辑零结算零存档零数值变化，POTION_HP_PCT/POTION_HP_FLAT/ELIXIR_HP_PCT/
+// ELIXIR_HP_FLAT/ELIXIR_MP_PCT 数值逐字未动。
+const GAME_VERSION = 'v23.98';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
