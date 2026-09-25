@@ -225,6 +225,36 @@ const MUSIC = {
     seq: [220, 0, 0, 0, 208, 0, 0, 0, 196, 0, 0, 0, 185, 0, 0, 0],
     bass: [110, 0, 0, 0, 98, 0, 0, 0],
   },
+  // v24.01 胜利/阵亡/尾声三屏专属 BGM（音效反馈·听觉信息透明，承 v23.45 battleBoss 分轨同族收口）：
+  // v23.45 只给「战斗持续侧」分了强敌轨——战斗的结果侧三屏（scene.js goto 进入 win/dead 时 stopBgm、
+  // ending 由 battle.js isTrue 分支 stopBgm）仍是静音：打赢幽冥魔王/洞窟领主（「灯芯回来了」决策现场）、
+  // 战败复盘（B/R/T/P 四键决策现场）、真结局总结屏（记名字回灯下）是 run 最重要的三个场景，音乐却
+  // 在战斗结束的瞬间戛然而止（战斗轨.step 还在时被 stopBgm 掐掉，只剩 SFX.victory/death 一响）；
+  // 现补三轨（与 battleBoss 同法：纯音乐数据声明，scheduleStep/gain 共用既有渲染管线）：
+  //   win    凯旋上行大调琶音 G-B-D-G（triangle 0.26s，与 title sine 262 起/C 大调 village 同族不同调，
+  //          一听即知是「灯芯回来了」而非镇子日常）——scene.js goto('win') 分轨；body 仍在 drawWin
+  //          P 存档/R 重开/Enter 尾声的决策静腔里给出凯旋底噪；普通遇敌胜利不经 win 场景零影响。
+  //   dead   阵亡复盘下行低吟 G3→F#3→F3→E3 半音阶（sine 0.42s，慢于 gallery 0.45 快于 cave 0.32，
+  //          与 darkheal 下行低吟/boss 警报一听即分）——倒下即闻其声知是复盘不是地图。
+  //   ending 尾声安宁 C-E-G-C 上行回落（triangle 0.34s，与 win 凯旋同族但更慢更稀，真结局「名字都回
+  //          灯下了」的收束感）；win.onKey E/Enter 经 goto('ending') 无缝换轨（startBgm 自带 stopBgm）。
+  // 零结算零数值零存档（仅 audio.js MUSIC 数据 + scene.js goto 分轨三行；走出回 world 的 resumeBgm
+  // 照旧回地图轨——scene.js `prev win/dead → resumeBgm` 逐字未动）。
+  win: {
+    step: 0.26, wave: 'triangle',
+    seq: [392, 0, 523, 0, 659, 0, 523, 0, 392, 0, 523, 0, 659, 0, 784, 0],
+    bass: [131, 0, 98, 0],
+  },
+  dead: {
+    step: 0.42, wave: 'sine',
+    seq: [196, 0, 0, 0, 185, 0, 0, 0, 175, 0, 0, 0, 165, 0, 0, 0],
+    bass: [98, 0, 0, 0, 87, 0, 0, 0],
+  },
+  ending: {
+    step: 0.34, wave: 'triangle',
+    seq: [262, 0, 329, 0, 392, 0, 523, 0, 392, 0, 329, 0, 294, 0, 262, 0],
+    bass: [131, 0, 0, 0, 98, 0, 0, 0],
+  },
 };
 
 function startBgm(track) {

@@ -1638,6 +1638,14 @@
 // 本文件 POTION_*/ELIXIR_* 常量一处全端自动跟随）；现按「灵药 80%HP+20并回40%MP」收口，
 // 纯文档零逻辑零结算零存档零数值变化，POTION_HP_PCT/POTION_HP_FLAT/ELIXIR_HP_PCT/
 // ELIXIR_HP_FLAT/ELIXIR_MP_PCT 数值逐字未动。
+// v24.01 音效反馈·听觉信息透明（胜利/阵亡/尾声三屏专属 BGM，详见 audio.js MUSIC win/dead/ending 行内注释）：
+// v23.45 只给「战斗持续侧」分了强敌轨 battleBoss——战斗的结果侧三屏（scene.js goto 进入 win/dead 时
+// stopBgm、ending 由 battle.js isTrue 分支 stopBgm）仍是静音：打赢幽冥魔王/洞窟领主（「灯芯回来了」
+// 决策现场）、战败复盘（B/R/T/P 四键决策现场）、真结局总结屏是 run 最重要的三个场景，音乐却在战斗
+// 结束的瞬间戛然而止（只剩 SFX.victory/death 一响）；现补三轨（win 凯旋上行大调琶音 triangle 0.26 /
+// dead 阵亡复盘下行低吟 sine 0.42 / ending 尾声安宁 C-E-G-C 上行回落 triangle 0.34，与 battleBoss
+// 同法：纯音乐数据声明、scheduleStep/gain 共用既有渲染管线），scene.js goto 按场景分轨（startBgm
+// 自带 stopBgm、走出回 world 的 resumeBgm 照旧回地图轨）；零结算零数值零存档。
 // v24.00 体验打磨·信息透明·决策现场（试炼碑等级达标预警，详见 view/drawWorld.js 试炼碑标签行内注释）：
 // 碑上标签 v21.46 起只报「建议Lv.N」（与守碑人台词/H 页同读 RUSH_REC_LV 一份源），唯独不报「你当前几级」
 // ——Lv.6 玩家站在碑前只知道该 12 级、不知道差 6 级，与 v21.92 快速旅行红色预警行同款缺口形态
@@ -1654,7 +1662,7 @@
 // 现于「战斗」行之后补录「伤害公式」行（常量源：rules.cmdDmg + CRIT_MULT/CHARGE_MULT/ELEM_MULT/
 // SHIELD_MULT/HEAVY_MULT/HEAVY_MULT_PHASED 全为既有单一数据源），纯文档零逻辑零结算零存档零数值变化，
 // cmdDmg/全部倍率常量逐字未动。
-const GAME_VERSION = 'v24.00';
+const GAME_VERSION = 'v24.01';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

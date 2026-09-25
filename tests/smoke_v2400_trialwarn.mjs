@@ -9,7 +9,7 @@
 // 字面量零残留 / v23.99 历史注释保留 / 预警行代码与主标签模板共存）、运行期真实 drawWorld 四态实证
 // （ready+未达标→预警行命中且主标签照常 / ready+达标→零噪音 / ready+超额→零噪音 / 未解锁→零噪音且
 // 「试炼·未解锁」）、README/package.json/CHANGELOG 同步（件套口径 224 + v24.00 守护描述 + 入库 224 +
-// tests 树串尾 + package 串尾 + 试炼碑句）、哨兵链（v2143 前望 225 且 README 尚无 225 口径）、
+// tests 树串尾 + package 串尾 + 试炼碑句）、哨兵链（v2143 前望 226 且 README 尚无 225 口径）、
 // 旧代 v23.99 pin 全库零残留扫描（字面量/恒等/顶 pin/件套 223-222 口径/testChain 223）。
 import { S } from '../js/state.js';
 import { GAME_VERSION, RUSH_REC_LV } from '../js/data.js';
@@ -95,8 +95,8 @@ ok('GAME_VERSION 格式合法且已越过 v23.99', !!_gv && (_gv[0] > 23 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js 含 v24.00 注释（试炼碑等级达标预警说明）', dSrc.includes('// v24.00 体验打磨·信息透明·决策现场'));
-ok('data.js GAME_VERSION 字面量已为 v24.00（旧 v23.99 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.00';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "9';"));
+ok('data.js GAME_VERSION 字面量已为 v24.01（旧 v23.99 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.01';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "9';"));
 ok('data.js 仍保留 v23.99 历史注释（伤害公式速查行说明，累积注释块）',
   dSrc.includes('// v23.99 文档整理·数值说明·同源口径'));
 
@@ -160,15 +160,15 @@ try {
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 224 件套', testChain === 224, String(testChain));
+ok('package.json test 串共 224 件套', testChain === 225, String(testChain));
 ok('package.json 已收录 smoke_v2400_trialwarn（npm test 串跑第 224 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2400_trialwarn.mjs'));
-ok('package.json 串尾为 ... smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs"',
-  pkg.includes('node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs"'));
+ok('package.json 串尾为 ... smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"',
+  pkg.includes('node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"'));
 ok('README tests 树串尾已延伸至 smoke_v2400_trialwarn',
-  readme.includes('+ smoke_v2399_dmgformula + smoke_v2400_trialwarn（npm test 串跑）'));
-ok('README 件套口径为二百二十四件套（二百二十三件套清除）且旧 223 口径零残留',
-  readme.includes('冒烟二百二十四件套（二百二十三件套清除）') && !readme.includes('冒烟二百二十三件套（二百二十二件套清除）'));
+  readme.includes('+ smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm（npm test 串跑）'));
+ok('README 件套口径为二百二十五件套（二百二十四件套清除）且旧 223 口径零残留',
+  readme.includes('冒烟二百二十五件套（二百二十四件套清除）') && !readme.includes('冒烟二百二十三件套（二百二十二件套清除）'));
 ok('README 含 v24.00 守护描述（「试炼碑等级达标预警」守护）', readme.includes('v24.00 起含 试炼碑等级达标预警守护'));
 ok('README 含 smoke_v2400_trialwarn 入库（224 份）', readme.includes('smoke_v2400_trialwarn 入库（224 份）'));
 ok('README 试炼碑句含 v24.00 红色预警口径（⚠️ 建议 Lv.N · 你当前 Lv.M · 差 K 级）',
@@ -181,17 +181,17 @@ ok('README 快速旅行预警行零回归（v21.92 口径逐字保留）',
   readme.includes('⚠️ 推荐 Lv.N · 你当前 Lv.M · 先补给再战！'));
 ok('README 数值速查「试炼推荐等级」行零回归（RUSH_REC_LV 派生口径逐字保留）',
   readme.includes('`RUSH_REC_LV`（`SPECIES[].lv` 派生）'));
-ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.00 '));
+ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.01 '));
 ok('CHANGELOG 顶部条目含预警口径说明', changelog.includes('试炼碑等级达标预警') && changelog.includes('差 K 级'));
 ok('CHANGELOG 仍保留 v23.99 与 v23.98 条目标题（历史口径）',
   changelog.includes('## v23.99 文档整理·数值说明·同源口径') &&
   changelog.includes('## v23.98 文档整理·数值说明·同源口径'));
 
-// —— 哨兵链：v2143 前哨前望 225 且 README 尚无 225 口径 ——
+// —— 哨兵链：v2143 前哨前望 226 且 README 尚无 225 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百二十五件套（二百二十四件套清除）',
-  s2143.includes('二百二十五件套（二百二十四件套清除）') && s2143.includes("!readme.includes('二百二十五件套（二百二十四件套清除）')"));
-ok('README 尚无二百二十五件套（二百二十四件套清除）前望口径', !readme.includes('二百二十五件套（二百二十四件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百二十六件套（二百二十五件套清除）',
+  s2143.includes('二百二十六件套（二百二十五件套清除）') && s2143.includes("!readme.includes('二百二十六件套（二百二十五件套清除）')"));
+ok('README 尚无二百二十六件套（二百二十五件套清除）前望口径', !readme.includes('二百二十六件套（二百二十五件套清除）'));
 
 // —— 旧代 v23.99 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392-99 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2400_trialwarn.mjs');
