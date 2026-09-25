@@ -1302,6 +1302,25 @@ export function drawWorld() {
           : (S.G.rushDone ? `✅ 试炼三连战 · 已通关（可再战）` : `⚔️ 试炼三连战 ${roster} · 建议Lv.${RUSH_REC_LV}`);
         const lx = x * T - c.x + T / 2;
         const ly = y * T - c.y;
+        // v24.00 试炼碑等级达标预警（体验打磨·信息透明·决策现场，承 v21.92 快速旅行目的地等级预警同一
+        // 「决策现场一眼看清够不够格」主线）：碑上标签 v21.46 起只报「建议Lv.N」（与守碑人台词/H 页同读
+        // RUSH_REC_LV 一份源），唯独不报「你当前几级」——Lv.6 玩家站在碑前只知道该 12 级、不知道差 6 级，
+        // 与 v21.92 红色预警行同款缺口形态（踩上即开战、无可反悔，级别差却查无一眼之数）；现 ready 态且
+        // S.G.level < RUSH_REC_LV 时于主标签上方追加红色预警行「⚠️ 建议 Lv.N · 你当前 Lv.M · 差 K 级」
+        // （N/M/K 全由 RUSH_REC_LV 与 S.G.level 单一数据源派生，与 v21.92 红字同色 #ff5b5b，达标/已通关
+        // 超额零噪音——与快速旅行预警同「未达标才报」口径；主标签/通关奖行/未解锁档逐字未动），
+        // 纯显示零结算零存档零数值变化（只读 S.G.level，与成就/守碑人/试炼结算零接触）。
+        if (ready && S.G.level < RUSH_REC_LV) {
+          const warn = '⚠️ 建议 Lv.' + RUSH_REC_LV + ' · 你当前 Lv.' + S.G.level + ' · 差 ' + (RUSH_REC_LV - S.G.level) + ' 级';
+          CTX.font = '12px sans-serif';
+          const ww = CTX.measureText(warn).width + 12;
+          CTX.fillStyle = 'rgba(10,16,24,.88)';
+          rr(lx - ww / 2, ly - 44, ww, 17, 4);
+          CTX.fill();
+          CTX.fillStyle = '#ff5b5b';
+          CTX.textAlign = 'center';
+          CTX.fillText(warn, lx, ly - 31);
+        }
         CTX.font = 'bold 12px sans-serif';
         const w = CTX.measureText(lab).width + 12;
         CTX.fillStyle = ready ? 'rgba(45,150,82,.92)' : 'rgba(145,120,65,.92)';
