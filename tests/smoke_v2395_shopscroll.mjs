@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.94', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 94)), GAME_VERSION);
 ok('data.js 含 v23.95 注释（商店视窗滚动说明）', dSrc.includes('v23.95 体验打磨·可发现性·纯显示（商店商品清单视窗滚动'));
 ok('data.js GAME_VERSION 字面量已为 v23.95（旧 v23.94 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.98';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "4';"));
+  dSrc.includes("const GAME_VERSION = 'v23.99';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "4';"));
 ok('data.js 仍保留 v23.94 历史注释（重整旗鼓行 P 口径说明，累积注释块）',
   dSrc.includes('v23.94 文档整理·口径收口（帮助页「试炼进阶」重整旗鼓行补 P 存档口径'));
 
@@ -172,30 +172,30 @@ ok('main.js 商店键位零回归（shopSel 回绕 + Enter/E 购买路径逐字�
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 219 件套', testChain === 222, String(testChain));
+ok('package.json test 串共 219 件套', testChain === 223, String(testChain));
 ok('package.json 已收录 smoke_v2395_shopscroll（npm test 串跑第 219 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2395_shopscroll.mjs'));
-ok('package.json 串尾为 ... smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"',
-  pkg.includes('node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"'));
+ok('package.json 串尾为 ... smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs"',
+  pkg.includes('node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs"'));
 ok('README tests 树串尾已延伸至 smoke_v2395_shopscroll',
-  readme.includes('+ smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow（npm test 串跑）'));
-ok('README 件套口径为二百二十二件套（二百二十一件套清除）且旧 215 口径零残留',
-  readme.includes('冒烟二百二十二件套（二百二十一件套清除）') && !readme.includes('冒烟二百一十五件套（二百一十四件套清' + '除）'));
+  readme.includes('+ smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula（npm test 串跑）'));
+ok('README 件套口径为二百二十三件套（二百二十二件套清除）且旧 215 口径零残留',
+  readme.includes('冒烟二百二十三件套（二百二十二件套清除）') && !readme.includes('冒烟二百一十五件套（二百一十四件套清' + '除）'));
 ok('README 含 v23.95 守护描述（商店商品清单视窗滚动守护）',
   readme.includes('v23.95 起含 商店商品清单视窗滚动守护'));
 ok('README 含 smoke_v2395_shopscroll 入库（219 份）', readme.includes('smoke_v2395_shopscroll 入库（219 份）'));
 ok('README 仍保留 v23.94 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.94 起含 帮助页「试炼进阶」重整旗鼓行 P 存档口径守护') &&
   readme.includes('smoke_v2394_fightback 入库（218 份）'));
-ok('CHANGELOG 顶部已追加 v23.95 条目（商店视窗滚动）', changelog.startsWith('## v23.98 '));
+ok('CHANGELOG 顶部已追加 v23.95 条目（商店视窗滚动）', changelog.startsWith('## v23.99 '));
 ok('CHANGELOG 顶部条目含视窗滚动说明', changelog.includes('商店商品清单视窗滚动'));
 ok('CHANGELOG 仍保留 v23.94 条目标题（历史口径）', changelog.includes('## v23.94 帮助页「试炼进阶」重整旗鼓行补 P 存档'));
 
 // —— 哨兵链：v2143 前哨前望 220 且 README 尚无 220 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百二十三件套（二百二十二件套清除）',
-  s2143.includes('二百二十三件套（二百二十二件套清除）') && s2143.includes("!readme.includes('二百二十三件套（二百二十二件套清除）')"));
-ok('README 尚无二百二十三件套（二百二十二件套清除）前望口径', !readme.includes('二百二十三件套（二百二十二件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百二十四件套（二百二十三件套清除）',
+  s2143.includes('二百二十四件套（二百二十三件套清除）') && s2143.includes("!readme.includes('二百二十四件套（二百二十三件套清除）')"));
+ok('README 尚无二百二十四件套（二百二十三件套清除）前望口径', !readme.includes('二百二十四件套（二百二十三件套清除）'));
 
 // —— 旧代 v23.94 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392/v2393/v2394 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2395_shopscroll.mjs');

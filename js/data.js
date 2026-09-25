@@ -1638,7 +1638,16 @@
 // 本文件 POTION_*/ELIXIR_* 常量一处全端自动跟随）；现按「灵药 80%HP+20并回40%MP」收口，
 // 纯文档零逻辑零结算零存档零数值变化，POTION_HP_PCT/POTION_HP_FLAT/ELIXIR_HP_PCT/
 // ELIXIR_HP_FLAT/ELIXIR_MP_PCT 数值逐字未动。
-const GAME_VERSION = 'v23.98';
+// v23.99 文档整理·数值说明·同源口径（README「数值速查」补「伤害公式」行，详见 README 行内注释）：
+// 数值速查 22 行已覆盖 基础属性/每级成长/升级经验/技能领悟/装备/经济/区域修正/试炼推荐等级/战斗/
+// 克制状态/掉落/遇敌槽/出没生态/试炼彩头/成就档位/魔物数值/技能数值/强敌变身/难度倍率/支线奖励/
+// 昼夜时段——唯独全游最核心的「伤害公式」查无一行：基础伤害 `max(1, 攻×2−防)` 的唯一定义在
+// rules.js cmdDmg（威胁预警/伤害估算/技能结算/敌方AI 全部经此函数，改公式只改这一处），普攻结算带
+// ±10% 浮动（×0.9~1.1，cmdDmg 第 4 参 rollVariance）再 × 暴击 ×1.8/技能倍率，技能/敌方伤害无浮动；
+// 现于「战斗」行之后补录「伤害公式」行（常量源：rules.cmdDmg + CRIT_MULT/CHARGE_MULT/ELEM_MULT/
+// SHIELD_MULT/HEAVY_MULT/HEAVY_MULT_PHASED 全为既有单一数据源），纯文档零逻辑零结算零存档零数值变化，
+// cmdDmg/全部倍率常量逐字未动。
+const GAME_VERSION = 'v23.99';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

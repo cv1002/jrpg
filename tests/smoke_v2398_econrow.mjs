@@ -87,8 +87,8 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.97', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 97)), GAME_VERSION);
 ok('data.js 含 v23.98 注释（经济行灵药恢复量口径说明）', dSrc.includes('// v23.98 文档整理·数值说明·同源口径'));
-ok('data.js GAME_VERSION 字面量已为 v23.98（旧 v23.97 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v23.98';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "7';"));
+ok('data.js GAME_VERSION 字面量已为 v23.99（旧 v23.98 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v23.99';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
 ok('data.js 仍保留 v23.97 历史注释（基础属性速查行说明，累积注释块）',
   dSrc.includes('// v23.97 文档整理·数值说明·同源口径'));
 
@@ -115,17 +115,17 @@ const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 const indexHtml = read('index.html');
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 222 件套', testChain === 222, String(testChain));
+ok('package.json test 串共 223 件套', testChain === 223, String(testChain));
 ok('package.json 已收录 smoke_v2398_econrow（npm test 串跑第 222 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2398_econrow.mjs'));
-ok('package.json 串尾为 ... smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"',
-  pkg.includes('node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs"'));
-ok('README tests 树串尾已延伸至 smoke_v2398_econrow',
-  readme.includes('+ smoke_v2397_baserow + smoke_v2398_econrow（npm test 串跑）'));
-ok('README 件套口径为二百二十二件套（二百二十一件套清除）且旧 216 口径零残留',
-  readme.includes('冒烟二百二十二件套（二百二十一件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
-ok('README 含 v23.98 守护描述（「经济」数值速查行灵药恢复量口径守护）', readme.includes('v23.98 起含 「经济」数值速查行灵药恢复量口径守护'));
-ok('README 含 smoke_v2398_econrow 入库（222 份）', readme.includes('smoke_v2398_econrow 入库（222 份）'));
+ok('package.json 串尾为 ... smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs"',
+  pkg.includes('node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs"'));
+ok('README tests 树串尾已延伸至 smoke_v2399_dmgformula',
+  readme.includes('+ smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula（npm test 串跑）'));
+ok('README 件套口径为二百二十三件套（二百二十二件套清除）且旧 216 口径零残留',
+  readme.includes('冒烟二百二十三件套（二百二十二件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
+ok('README 含 v23.99 守护描述（「伤害公式」数值速查行守护）', readme.includes('v23.99 起含 「伤害公式」数值速查行守护'));
+ok('README 含 smoke_v2399_dmgformula 入库（223 份）', readme.includes('smoke_v2399_dmgformula 入库（223 份）'));
 ok('README 仍保留 v23.97 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.97 起含 「基础属性」数值速查行守护') &&
   readme.includes('smoke_v2397_baserow 入库（221 份）'));
@@ -146,32 +146,32 @@ ok('README 升级经验行零回归（XP_INIT 20 链式口径）',
 ok('index.html #help F 块零回归（同样 80%HP+20并回40%MP 口径）',
   indexHtml.includes('灵药 80%HP+20并回40%MP'));
 
-ok('CHANGELOG 顶部已追加 v23.98 条目（经济行灵药恢复量口径）', changelog.startsWith('## v23.98 '));
-ok('CHANGELOG 顶部条目含经济行口径说明', changelog.includes('「经济」') && changelog.includes('80%HP+20并回40%MP'));
-ok('CHANGELOG 仍保留 v23.97 与 v23.96 条目标题（历史口径）',
-  changelog.includes('## v23.97 文档整理·数值说明·同源口径') &&
-  changelog.includes('## v23.96 新防具「精钢甲」'));
+ok('CHANGELOG 顶部已追加 v23.99 条目（伤害公式数值速查行）', changelog.startsWith('## v23.99 '));
+ok('CHANGELOG 顶部条目含伤害公式口径说明', changelog.includes('「伤害公式」') && changelog.includes('攻×2−防'));
+ok('CHANGELOG 仍保留 v23.98 与 v23.97 条目标题（历史口径）',
+  changelog.includes('## v23.98 文档整理·数值说明·同源口径') &&
+  changelog.includes('## v23.97 文档整理·数值说明·同源口径'));
 
-// —— 哨兵链：v2143 前哨前望 223 且 README 尚无 223 口径 ——
+// —— 哨兵链：v2143 前哨前望 224 且 README 尚无 224 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百二十三件套（二百二十二件套清除）',
-  s2143.includes('二百二十三件套（二百二十二件套清除）') && s2143.includes("!readme.includes('二百二十三件套（二百二十二件套清除）')"));
-ok('README 尚无二百二十三件套（二百二十二件套清除）前望口径', !readme.includes('二百二十三件套（二百二十二件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百二十四件套（二百二十三件套清除）',
+  s2143.includes('二百二十四件套（二百二十三件套清除）') && s2143.includes("!readme.includes('二百二十四件套（二百二十三件套清除）')"));
+ok('README 尚无二百二十四件套（二百二十三件套清除）前望口径', !readme.includes('二百二十四件套（二百二十三件套清除）'));
 
-// —— 旧代 v23.97 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392-97 惯例）——
+// —— 旧代 v23.98 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392-98 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2398_econrow.mjs');
 const stale = [];
 for (const f of allTests) {
   const src = read('tests/' + f);
-  if (src.includes("const GAME_VERSION = 'v23.9" + "7';") ||
-      src.includes("const GAME_VERSION = 'v23.9" + "7'") ||
-      src.includes("GAME_VERSION === 'v23.9" + "7'") ||
-      src.includes("startsWith('## v23.9" + "7 ") ||
-      src.includes("startsWith('## v23.9" + "7'") ||
-      src.includes('二百二十一件套（二百二十件套清' + '除）') ||
-      src.includes('testChain === ' + '221')) stale.push(f);
+  if (src.includes("const GAME_VERSION = 'v23.9" + "8';") ||
+      src.includes("const GAME_VERSION = 'v23.9" + "8'") ||
+      src.includes("GAME_VERSION === 'v23.9" + "8'") ||
+      src.includes("startsWith('## v23.9" + "8 ") ||
+      src.includes("startsWith('## v23.9" + "8'") ||
+      src.includes('二百二十二件套（二百二十一件套清' + '除）') ||
+      src.includes('testChain === ' + '222')) stale.push(f);
 }
-ok('旧代 v23.97 字面量/恒等/顶 pin/件套 221-220 口径/testChain 221 全库零残留（' + allTests.length + ' 件扫描，仅 v23.97 特性标签保留）',
+ok('旧代 v23.98 字面量/恒等/顶 pin/件套 222-221 口径/testChain 222 全库零残留（' + allTests.length + ' 件扫描，仅 v23.98 特性标签保留）',
   stale.length === 0, stale.join(','));
 
 console.log(`\n=== ${n} 项断言，${failed === 0 ? '全部通过' : '存在 ' + failed + ' 项失败'} ===`);
