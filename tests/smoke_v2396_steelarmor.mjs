@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.95', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 95)), GAME_VERSION);
 ok('data.js 含 v23.96 注释（装备曲线补全说明）', dSrc.includes('v23.96 数值平衡·装备曲线补全'));
 ok('data.js GAME_VERSION 字面量已为 v23.96（旧 v23.95 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.01';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "5';"));
+  dSrc.includes("const GAME_VERSION = 'v24.02';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "5';"));
 ok('data.js 仍保留 v23.95 历史注释（商店视窗滚动说明，累积注释块）',
   dSrc.includes('v23.95 体验打磨·可发现性·纯显示（商店商品清单视窗滚动'));
 
@@ -183,15 +183,15 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 220 件套', testChain === 225, String(testChain));
+ok('package.json test 串共 220 件套', testChain === 226, String(testChain));
 ok('package.json 已收录 smoke_v2396_steelarmor（npm test 串跑第 220 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2396_steelarmor.mjs'));
-ok('package.json 串尾为 ... smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"',
-  pkg.includes('node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"'));
+ok('package.json 串尾为 ... smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs"',
+  pkg.includes('node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs"'));
 ok('README tests 树串尾已延伸至 smoke_v2396_steelarmor',
-  readme.includes('+ smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm（npm test 串跑）'));
-ok('README 件套口径为二百二十五件套（二百二十四件套清除）且旧 216 口径零残留',
-  readme.includes('冒烟二百二十五件套（二百二十四件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
+  readme.includes('+ smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin（npm test 串跑）'));
+ok('README 件套口径为二百二十六件套（二百二十五件套清除）且旧 216 口径零残留',
+  readme.includes('冒烟二百二十六件套（二百二十五件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
 ok('README 含 v23.96 守护描述（新防具「精钢甲」守护）', readme.includes('v23.96 起含 新防具「精钢甲」守护'));
 ok('README 含 smoke_v2396_steelarmor 入库（220 份）', readme.includes('smoke_v2396_steelarmor 入库（220 份）'));
 ok('README 仍保留 v23.95 历史守护描述与入库口径（历史累积）',
@@ -202,15 +202,15 @@ ok('README 装备属性行收录 精钢甲 10（防具 def 五档）',
   readme.includes('防具 def：布衣 1 / 皮甲 4 / 锁子甲 8 / 精钢甲 10 / 龙鳞甲 13'));
 ok('README 装备属性行补录标记含 v23.96 补精钢甲',
   readme.includes('（v23.37 补录、v23.92 补星铁剑、v23.96 补精钢甲） | `WEAPONS` / `ARMORS` / `BEST_ARMOR` |'));
-ok('CHANGELOG 顶部已追加 v23.96 条目（精钢甲）', changelog.startsWith('## v24.01 '));
+ok('CHANGELOG 顶部已追加 v23.96 条目（精钢甲）', changelog.startsWith('## v24.02 '));
 ok('CHANGELOG 顶部条目含精钢甲说明', changelog.includes('新防具「精钢甲」'));
 ok('CHANGELOG 仍保留 v23.95 条目标题（历史口径）', changelog.includes('## v23.95 商店商品清单视窗滚动'));
 
 // —— 哨兵链：v2143 前哨前望 221 且 README 尚无 221 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百二十六件套（二百二十五件套清除）',
-  s2143.includes('二百二十六件套（二百二十五件套清除）') && s2143.includes("!readme.includes('二百二十六件套（二百二十五件套清除）')"));
-ok('README 尚无二百二十六件套（二百二十五件套清除）前望口径', !readme.includes('二百二十六件套（二百二十五件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百二十七件套（二百二十六件套清除）',
+  s2143.includes('二百二十七件套（二百二十六件套清除）') && s2143.includes("!readme.includes('二百二十七件套（二百二十六件套清除）')"));
+ok('README 尚无二百二十七件套（二百二十六件套清除）前望口径', !readme.includes('二百二十七件套（二百二十六件套清除）'));
 
 // —— 旧代 v23.95 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392/v2393/v2394/v2395 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2396_steelarmor.mjs');

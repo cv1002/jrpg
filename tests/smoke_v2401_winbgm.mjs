@@ -96,8 +96,8 @@ ok('GAME_VERSION 格式合法且已越过 v24.00', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js 含 v24.01 注释（胜利/阵亡/尾声专属 BGM 说明）', dSrc.includes('// v24.01 音效反馈·听觉信息透明'));
-ok('data.js GAME_VERSION 字面量已为 v24.01（旧 v24.00 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.01';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "0';"));
+ok('data.js GAME_VERSION 字面量已为 v24.02（旧 v24.00 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.02';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "0';"));
 ok('data.js 仍保留 v24.00 历史注释（试炼碑等级达标预警说明，累积注释块）',
   dSrc.includes('// v24.00 体验打磨·信息透明·决策现场'));
 
@@ -168,31 +168,31 @@ try {
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 225 件套', testChain === 225, String(testChain));
+ok('package.json test 串共 225 件套', testChain === 226, String(testChain));
 ok('package.json 已收录 smoke_v2401_winbgm（npm test 串跑第 225 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2401_winbgm.mjs'));
-ok('package.json 串尾为 ... smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"',
-  pkg.includes('node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"'));
-ok('README tests 树串尾已延伸至 smoke_v2401_winbgm',
-  readme.includes('+ smoke_v2400_trialwarn + smoke_v2401_winbgm（npm test 串跑）'));
-ok('README 件套口径为二百二十五件套（二百二十四件套清除）且旧 216 口径零残留',
-  readme.includes('冒烟二百二十五件套（二百二十四件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
+ok('package.json 串尾为 ... smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs"',
+  pkg.includes('node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs"'));
+ok('README tests 树串尾已延伸至 smoke_v2402_firstwin',
+  readme.includes('+ smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin（npm test 串跑）'));
+ok('README 件套口径为二百二十六件套（二百二十五件套清除）且旧 216 口径零残留',
+  readme.includes('冒烟二百二十六件套（二百二十五件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
 ok('README 含 v24.01 守护描述（「胜利/阵亡/尾声专属 BGM」守护）', readme.includes('v24.01 起含 胜利/阵亡/尾声专属 BGM 守护'));
 ok('README 含 smoke_v2401_winbgm 入库（225 份）', readme.includes('smoke_v2401_winbgm 入库（225 份）'));
 ok('README 仍保留 v24.00 历史守护描述与入库口径（历史累积）',
   readme.includes('v24.00 起含 试炼碑等级达标预警守护') && readme.includes('smoke_v2400_trialwarn 入库（224 份）'));
 ok('README v23.45 战斗 Boss 轨历史守护描述保留（Boss/试炼战专属战斗 BGM）',
   readme.includes('battleBoss') || readme.includes('Boss/试炼战专属战斗 BGM'));
-ok('CHANGELOG 顶部已追加 v24.01 条目（胜利/阵亡/尾声专属 BGM）', changelog.startsWith('## v24.01 '));
+ok('CHANGELOG 顶部已追加 v24.02 条目（胜利/阵亡/尾声专属 BGM）', changelog.startsWith('## v24.02 '));
 ok('CHANGELOG 顶部条目含三轨口径说明', changelog.includes('胜利/阵亡/尾声三屏专属 BGM') && changelog.includes('C-E-G-C'));
 ok('CHANGELOG 仍保留 v24.00 与 v23.99 条目标题（历史口径）',
   changelog.includes('## v24.00 体验打磨·信息透明·决策现场') && changelog.includes('## v23.99 文档整理·数值说明·同源口径'));
 
 // —— 哨兵链：v2143 前哨前望 226 且 README 尚无 226 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百二十六件套（二百二十五件套清除）',
-  s2143.includes('二百二十六件套（二百二十五件套清除）') && s2143.includes("!readme.includes('二百二十六件套（二百二十五件套清除）')"));
-ok('README 尚无二百二十六件套（二百二十五件套清除）前望口径', !readme.includes('二百二十六件套（二百二十五件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百二十七件套（二百二十六件套清除）',
+  s2143.includes('二百二十七件套（二百二十六件套清除）') && s2143.includes("!readme.includes('二百二十七件套（二百二十六件套清除）')"));
+ok('README 尚无二百二十七件套（二百二十六件套清除）前望口径', !readme.includes('二百二十七件套（二百二十六件套清除）'));
 
 // —— 旧代 v24.00 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392-2400 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2401_winbgm.mjs');

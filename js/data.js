@@ -1638,6 +1638,18 @@
 // 本文件 POTION_*/ELIXIR_* 常量一处全端自动跟随）；现按「灵药 80%HP+20并回40%MP」收口，
 // 纯文档零逻辑零结算零存档零数值变化，POTION_HP_PCT/POTION_HP_FLAT/ELIXIR_HP_PCT/
 // ELIXIR_HP_FLAT/ELIXIR_MP_PCT 数值逐字未动。
+// v24.02 文档整理·数值说明·同源口径（README「数值速查」补「首胜 / 彩头」行，详见 README 行内注释）：
+// 速查表 23 行已覆盖 基础属性/每级成长/升级经验/技能领悟/装备/经济/区域修正/试炼推荐等级/战斗/
+// 伤害公式/克制状态/掉落/遇敌槽/出没生态/试炼彩头/成就档位/魔物数值/技能数值/强敌变身/难度倍率/
+// 支线奖励/昼夜时段——唯独「强敌首胜掉落 / 精英必掉」查无一行：精英石心魔像必掉 1 株魔法蘑菇
+// （battle.winBattle isElite 分支）、幽冥魔王首胜 ⚔️ 圣光之剑（WEAPONS legend，与战斗预览
+// 「⚔️ 必掉圣光之剑」同源）、洞窟领主首胜星砂宝箱显形（CAVE_TREASURE）、终焉之神额外 +300 金
+// （TRUE_BONUS_GOLD）、图鉴全收成就「记忆守护者」另 +999 金（PERFECTION_GOLD）散见 battle.js
+// winBattle 分支与各版 CHANGELOG——调任何首胜奖励/碎片表需先通读代码才能对上口径；四枚记忆碎片
+// （FRAGMENTS 单一数据源：石心魔像/幽冥魔王/洞窟领主/终焉之神首胜掉落，与战利品预览/J 日志碎片节/
+// 真结局「全记忆」判定同读一份源，集齐触发真结局加页）此前只在游戏内与 README 图鉴段可见；
+// 现于「掉落」行之后补录「首胜 / 彩头」行（全部由 FRAGMENTS/WEAPONS.legend/CAVE_TREASURE/
+// TRUE_BONUS_GOLD/PERFECTION_GOLD 派生），纯文档零逻辑零结算零存档零数值变化，全部数值逐字未动。
 // v24.01 音效反馈·听觉信息透明（胜利/阵亡/尾声三屏专属 BGM，详见 audio.js MUSIC win/dead/ending 行内注释）：
 // v23.45 只给「战斗持续侧」分了强敌轨 battleBoss——战斗的结果侧三屏（scene.js goto 进入 win/dead 时
 // stopBgm、ending 由 battle.js isTrue 分支 stopBgm）仍是静音：打赢幽冥魔王/洞窟领主（「灯芯回来了」
@@ -1662,7 +1674,7 @@
 // 现于「战斗」行之后补录「伤害公式」行（常量源：rules.cmdDmg + CRIT_MULT/CHARGE_MULT/ELEM_MULT/
 // SHIELD_MULT/HEAVY_MULT/HEAVY_MULT_PHASED 全为既有单一数据源），纯文档零逻辑零结算零存档零数值变化，
 // cmdDmg/全部倍率常量逐字未动。
-const GAME_VERSION = 'v24.01';
+const GAME_VERSION = 'v24.02';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、

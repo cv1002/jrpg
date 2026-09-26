@@ -85,7 +85,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.76', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 76)), GAME_VERSION);
 ok('data.js 含 v23.79 注释（暂停菜单当前所在地说明）', dSrc.includes('v23.80 新内容·战斗遭遇维度单档里程碑'));
 ok('GAME_VERSION 字面量已为 v23.79（旧 v23.76 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.01';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "6';"));
+  dSrc.includes("const GAME_VERSION = 'v24.02';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "6';"));
 ok('data.js 仍保留 v23.76 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v23.76 新内容·步行累计维度里程碑'));
 
 // —— menus.js 源级落位：v23.79 注释 + drawPause 头部同数据源派生 + 既有子串保留 ——
@@ -140,20 +140,20 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 213 件套', testChain === 225, String(testChain));
+ok('package.json test 串共 213 件套', testChain === 226, String(testChain));
 ok('package.json 已收录 smoke_v2317_pausemap（npm test 串跑第 215 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2317_pausemap.mjs'));
-ok('package.json 串尾为 ... smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"',
-  pkg.includes('node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs"'));
+ok('package.json 串尾为 ... smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs"',
+  pkg.includes('node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs"'));
 ok('README tests 树串尾已延伸至 smoke_v2319_deadloc',
-  readme.includes('+ smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm（npm test 串跑）'));
-ok('README 件套口径为二百二十五件套（二百二十四件套清除）',
-  readme.includes('冒烟二百二十五件套（二百二十四件套清除）') && !readme.includes('冒烟二百一十二件套（二百一十一件套清' + '除）'));
+  readme.includes('+ smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin（npm test 串跑）'));
+ok('README 件套口径为二百二十六件套（二百二十五件套清除）',
+  readme.includes('冒烟二百二十六件套（二百二十五件套清除）') && !readme.includes('冒烟二百一十二件套（二百一十一件套清' + '除）'));
 ok('README 仍保留 v23.77 守护描述（暂停菜单「当前所在地」守护，历史口径）', readme.includes('v23.77 起含 暂停菜单「当前所在地」守护'));
 ok('README 含 smoke_v2317_pausemap 入库（213 份）', readme.includes('smoke_v2317_pausemap 入库（213 份）'));
 ok('README 仍保留 v23.77 Esc 行当前所在地口径（历史口径）', readme.includes('v23.77 起菜单头部常显「📍 当前地图名」'));
 ok('README 仍保留 v23.76 历史守护描述（累积描述，姊妹 pin 不失效）', readme.includes('千里之行 X/1000 步（步行累计，v23.76）'));
-ok('CHANGELOG 顶部已追加 v23.79 条目（暂停菜单当前所在地）', changelog.startsWith('## v24.01 '));
+ok('CHANGELOG 顶部已追加 v23.79 条目（暂停菜单当前所在地）', changelog.startsWith('## v24.02 '));
 ok('CHANGELOG 仍保留 v23.77 条目标题（暂停菜单当前所在地，历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
 
 // —— 旧代 v23.76 pin 全库零残留（不含本件；拆串防误伤，承 v2313 惯例）——
