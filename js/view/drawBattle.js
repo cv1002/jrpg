@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS, MAPS } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, DIFFS, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS, MAPS } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe, potionRestore, elixirRestore } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -203,6 +203,15 @@ export function drawBattle() {
   const hero = S.G;
   const enemy = S.enemy;
   text(`⚔️ 回合 ${S.battleTurn || 1}`, 60, 26, 'bold 14px', '#ffd24a');
+  // v24.03 体验打磨·信息透明·纯显示（战斗画面补「⚡ 困难」角标，承 v23.08 难度口径五端——创建页
+  // 倍率标注/状态页 I「[困难 · 魔物HP×1.35 攻×1.15 防×1.12]」/HUD ⚡ 角标/标题槽预览难度/总结屏
+  // （drawDead·drawWin·drawEnding v23.10 战绩行「 · 困难」）同读 hero.diff · DIFFS 一份源，唯战斗
+  // 画面查无一行：困难档倍率（battle.startBattle 按 DIFF_SCALE 乘算）实际生效的场景，玩家却看不出
+  // 「这局是困难档」（HUD ⚡ 在画布下方 DOM、战斗画面内零指示）；现与五端同读 hero.diff（0 普通/
+  // 1 困难）· DIFFS 单一数据源（本模块补 DIFFS import 零新增模块依赖）——仅困难档追加「⚡ 困难」
+  // 角标（普通档零噪音零位移；x=200 与「⚔️ 回合 999」实测宽 ≈147 零重叠、与右缘 📍 地图名
+  // （548 起）零重叠），纯显示零结算零存档零数值变化（回合/敌方/预览/指令栏逐字未动）。
+  if (hero.diff) text(`⚡ ${DIFFS[hero.diff] || '困难'}`, 200, 26, 'bold 12px', '#ff9a7a');
   // v23.78 体验打磨·信息透明·纯显示：战斗画面顶部右缘补「📍 所在地」——承 v23.77 暂停菜单头部
   // 「📍 地图名」/ v19.89 状态页「📍 地图名」/ v23.27 快速旅行「当前所在地标注」同一「我在哪」单一
   // 数据源口径收口：战斗是玩家最容易忘记自己在哪个图的场景——祭坛/试炼碑/传送门直接切战，打赢想回

@@ -1674,7 +1674,14 @@
 // 现于「战斗」行之后补录「伤害公式」行（常量源：rules.cmdDmg + CRIT_MULT/CHARGE_MULT/ELEM_MULT/
 // SHIELD_MULT/HEAVY_MULT/HEAVY_MULT_PHASED 全为既有单一数据源），纯文档零逻辑零结算零存档零数值变化，
 // cmdDmg/全部倍率常量逐字未动。
-const GAME_VERSION = 'v24.02';
+// v24.03 体验打磨·信息透明·纯显示（战斗画面补「⚡ 困难」角标，详见 view/drawBattle.js 回合行旁注释）：
+// 难度口径五端（创建页倍率标注/状态页 I「[困难 · 魔物HP×1.35 攻×1.15 防×1.12]」/HUD ⚡ 角标/
+// 标题槽预览难度/总结屏三屏 v23.10 战绩行「 · 困难」）同读 hero.diff · 本文件 DIFFS 一份源，唯战斗
+// 画面查无一行——困难档倍率（battle.startBattle 按 DIFF_SCALE 乘算）实际生效的场景，玩家却看不出
+// 「这局是困难档」；现 drawBattle 与五端同读 hero.diff（0 普通/1 困难）· DIFFS 单一数据源，仅困难档
+// 追加「⚡ 困难」角标（读本文件 DIFFS[1]='困难'，调难度档名只改 DIFFS 一处六端自动跟随），
+// 纯显示零结算零存档零数值变化，DIFFS/DIFF_SCALE 数值逐字未动。
+const GAME_VERSION = 'v24.03';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
