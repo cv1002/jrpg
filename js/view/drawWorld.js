@@ -2,7 +2,7 @@
 // view/drawWorld.js —— 大地图绘制
 // ============================================================
 import { S, curMap } from '../state.js';
-import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, dayPhase, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BOSS_ALTAR, MB_ALTAR } from '../data.js';
+import { T, TY, NPC_SPOTS, NPCS, SOLID, MAPS, SPECIES, RUSH_BOSSES, RUSH_CLEAR_GOAL, RUSH_REC_LV, ENCOUNTER, UI_PULSE_MS, dayPhase, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, GALLERY_ARCH, CAMP_FIRE, BOSS_ALTAR, MB_ALTAR } from '../data.js';
 import { at, MBounds, dangerAt, facingCell, portalDest, isTallGrass } from '../world.js';
 import { rushReward } from '../rules.js';
 import { npcQuestMark } from '../quests.js';
@@ -1332,9 +1332,21 @@ export function drawWorld() {
         if (ready) {
           // v21.85 奖励行随 rushDone 分档：已通关档如实标注「再战」（winBattle 无 rushDone 守卫，
           // 再战仍发全额通关奖——与状态标签同口径如实展示，不藏不误导）；未通关档逐字零回归。
+          // v24.05 奖励行补「📜 千锤百炼 N/3」进度角标（体验打磨·信息透明·决策现场，承 v23.62
+          // 图鉴行「· 📜 支线 N/M」同款行内角标 / v23.67 千锤百炼成就同一「成就进度于决策现场可见」
+          // 主线）：碑上 v21.85 已如实分档「✅ 已通关（可再战）+ 💰 再战通关奖（随等级）」——「还能
+          // 不能再打/还能不能再拿奖」有了答案，唯「再战几次才能拿满成就」仍查无一眼之数（千锤百炼
+          // =试炼场累计通关 RUSH_CLEAR_GOAL 次，进度此前只藏在 C 成就页一行 X/3，试炼战报才在打完
+          // 之后报「 · 千锤百炼 N/M」——站碑前这个「要不要再打一轮」的决策现场查无一行）；现按
+          // v23.62 同款行内角标在奖励行补「 · 📜 千锤百炼 N/3」：N 读 hero.rushClears（防御式
+          // (S.G.rushClears||0) 旧档零迁移，与 battle.winBattle 写入点/ACH_LIST rushs 同一字段）、
+          // 分母读 data.js RUSH_CLEAR_GOAL 单一数据源（与 ACH_LIST rushs 的 ok/prog/d 同读一份源，
+          // 调门槛只改 data.js 一处三端自动跟随）；纯显示零结算零存档零数值变化（只读，不碰试炼
+          // 结算/成就判定），未解锁档零噪音（奖励行整体在 ready 分支内），主标签/预警行/既有奖励
+          // 文案逐字未动。
           const rewLab = (S.G.rushDone
-            ? `💰 再战通关奖 ${rushReward(S.G.level)} 金（随等级）`
-            : `💰 通关奖 ${rushReward(S.G.level)} 金（随等级）`);
+            ? `💰 再战通关奖 ${rushReward(S.G.level)} 金（随等级） · 📜 千锤百炼 ${(S.G.rushClears || 0)}/${RUSH_CLEAR_GOAL}`
+            : `💰 通关奖 ${rushReward(S.G.level)} 金（随等级） · 📜 千锤百炼 ${(S.G.rushClears || 0)}/${RUSH_CLEAR_GOAL}`);
           const rw = CTX.measureText(rewLab).width + 12;
           CTX.fillStyle = 'rgba(10,16,24,.88)';
           rr(lx - rw / 2, ly + 2, rw, 17, 4);

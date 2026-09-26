@@ -9,7 +9,7 @@
 // 同步 + 姊妹件套 pin（v2184..v2176 八十二件套 / v2184·v2183·v2182·v2181·v2179 GAME_VERSION v21.86）
 // 随新现实更新。
 import { S } from '../js/state.js';
-import { GAME_VERSION, RUSH_REC_LV, RUSH_BOSSES, SPECIES } from '../js/data.js';
+import { GAME_VERSION, RUSH_REC_LV, RUSH_BOSSES, SPECIES, RUSH_CLEAR_GOAL } from '../js/data.js';
 import { rushReward } from '../js/rules.js';
 import { newGame } from '../js/core.js';
 import { loadMap } from '../js/world.js';
@@ -90,7 +90,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.84', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 99)), GAME_VERSION);
 ok('data.js 含 v21.85 注释（试炼碑通关后状态如实分档说明）', dSrc.includes('v21.85 体验打磨'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.85', dSrc.includes("const GAME_VERSION = 'v24.04';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.85', dSrc.includes("const GAME_VERSION = 'v24.05';"));
 
 // —— 源级落位：drawWorld.js 三处分档 + 既有档逐字零回归 ——
 ok('drawWorld.js 碑上标签已通关档落位（✅ 试炼三连战 · 已通关（可再战））', wSrc.includes('✅ 试炼三连战 · 已通关（可再战）'));
@@ -128,8 +128,10 @@ function renderCave(flags) {
 const roster = RUSH_BOSSES.map((b) => `${b.name}Lv${(SPECIES[b.name] && SPECIES[b.name].lv) || 1}`).join('→');
 const FRESH_LABEL = `⚔️ 试炼三连战 ${roster} · 建议Lv.${RUSH_REC_LV}`;
 const DONE_LABEL = '✅ 试炼三连战 · 已通关（可再战）';
-const DONE_REWARD = `💰 再战通关奖 ${rushReward(12)} 金（随等级）`;
-const FRESH_REWARD = `💰 通关奖 ${rushReward(12)} 金（随等级）`;
+// v24.05 起奖励行附「📜 千锤百炼 N/3」进度角标（RUSH_CLEAR_GOAL/hero.rushClears 单一数据源派生，与
+// ACH_LIST rushs 同读一份源；本件精确串随 v24.05 新现实更新：newGame 不写 rushClears → 防御式 0/3）
+const DONE_REWARD = `💰 再战通关奖 ${rushReward(12)} 金（随等级） · 📜 千锤百炼 0/${RUSH_CLEAR_GOAL}`;
+const FRESH_REWARD = `💰 通关奖 ${rushReward(12)} 金（随等级） · 📜 千锤百炼 0/${RUSH_CLEAR_GOAL}`;
 
 let cap = renderCave({ boss: true, cave: true, done: true });
 ok('已通关档：碑上标签为 ✅ 已通关（可再战）', cap.includes(DONE_LABEL), cap.filter((t) => t.includes('试炼')).join(' | '));
@@ -160,7 +162,7 @@ ok('再战奖励行宽度预算（12px 级 ≈ ' + (DONE_REWARD.length * 8 + 12)
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2185_steleclear', readme.includes('smoke_v2185_steleclear'));
-ok('README 件套口径为二百二十八件套（二百二十七件套清除）', readme.includes('二百二十八件套（二百二十七件套清除）'));
+ok('README 件套口径为二百二十九件套（二百二十八件套清除）', readme.includes('二百二十九件套（二百二十八件套清除）'));
 ok('README 含 v21.85 守护描述', readme.includes('v21.85 起含'));
 ok('README 系统清单试炼碑标签补已通关分档口径（✅ 已通关（可再战））', readme.includes('已通关（可再战）'));
 ok('package.json 已收录 smoke_v2185_steleclear（npm test 串跑第 81 份）',
@@ -172,13 +174,13 @@ const suite81 = ['smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_
   'smoke_v2178_codexseen.mjs', 'smoke_v2177_elites.mjs', 'smoke_v2176_allchests.mjs'];
 for (const nm of suite81) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为二百二十八件套（二百二十七件套清除）`,
-    src.includes('二百二十八件套（二百二十七件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为二百二十九件套（二百二十八件套清除）`,
+    src.includes('二百二十九件套（二百二十八件套清除）'));
 }
 for (const nm of ['smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = fs.readFileSync(path.join(ROOT, 'tests', nm), 'utf8');
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.85`,
-    src.includes("const GAME_VERSION = 'v24.04';"));
+    src.includes("const GAME_VERSION = 'v24.05';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过`);
