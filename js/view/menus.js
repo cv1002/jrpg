@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SPEND_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -18,6 +18,18 @@ export function drawShop(){
   const hero = S.G;
   drawWorld(); panel(60,50,520,360,'杂货商店');
   text('💰 '+hero.gold+' 金币',520,80,'14px','#ffd24a','right');
+  // v24.09 商店界面标题行左缘补「💰 一掷千金 N/1000」消费进度角标（体验打磨·信息透明·决策现场，承 v24.08
+  // 快速旅行面板「🚶 行者无疆 N/15」/ v24.07 旅馆「🏨 夜宿灯下 N/15」/ v24.05 试炼碑「📜 千锤百炼
+  // N/3」同款行内角标 / v23.74 一掷千金成就同一「成就进度于决策现场可见」主线：「买装备/药水/卖蘑菇」的
+  // 消费决策现场此前只报 金币余额/商品差价，成就「一掷千金」（累计消费 SPEND_GOAL(1000) 金，计数
+  // hero.spent 由 shop.buyPotion/buyWeapon/buyArmor/stayInn 四处扣款 + core.brewNow 酿造成本五处唯一
+  // 产生点写入（金币不足/背包满/精神饱满早退零计数）、snapshotHero 全量快照自动持久化、防御式
+  // (hero.spent||0) 旧档零迁移）进度只藏在 C 成就页一行 X/1000——站柜台前查无一眼之数；现按 v24.08
+  // 同款在标题行左缘补「💰 一掷千金 N/1000」（分子读 hero.spent 防御式 (hero.spent || 0)、分母读
+  // data.js SPEND_GOAL 单一数据源，与 ACH_LIST spend 的 ok/prog 同读一份源，调阈值只改 data.js 一处
+  // 三端自动跟随），12px 灰字左对齐 x=80 与右缘「💰 N 金币」（520 右对齐）对称、与居中标题零重叠；
+  // 纯显示零结算零存档零数值变化（SPEND_GOAL/五扣款点结算/价签/差价/页脚逐字未动）。
+  text(`💰 一掷千金 ${(hero.spent || 0)}/${SPEND_GOAL}`, 80, 80, '12px', '#7d93a3', 'left');
   // v23.95 商品清单视窗滚动（体验打磨·可发现性·纯显示）：v23.92 星铁剑入店后清单最长 10 行
   // （新手持木剑布衣+持菇：药水/卖菇/铁剑/秘银剑/星铁剑/勇者之剑/皮甲/锁子甲/龙鳞甲/离开——
   // buildShopList 实测），第 9 行（i=8，rect 400..432）已画出 360 高的面板底（410）、第 10 行
