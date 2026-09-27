@@ -1674,6 +1674,17 @@
 // 现于「战斗」行之后补录「伤害公式」行（常量源：rules.cmdDmg + CRIT_MULT/CHARGE_MULT/ELEM_MULT/
 // SHIELD_MULT/HEAVY_MULT/HEAVY_MULT_PHASED 全为既有单一数据源），纯文档零逻辑零结算零存档零数值变化，
 // cmdDmg/全部倍率常量逐字未动。
+// v24.06 文档整理·数值说明·同源口径（README「数值速查」补「恢复点 / 补给」行，详见 README
+// 「数值速查」行内注释）：速查表 24 行已覆盖 基础属性/每级成长/升级经验/技能领悟/装备/经济/
+// 区域修正/试炼推荐等级/战斗/伤害公式/克制状态/掉落/首胜彩头/宝箱宝藏/遇敌槽/出没生态/试炼彩头/
+// 成就档位/魔物数值/技能数值/强敌变身/难度倍率/支线奖励/昼夜时段——唯独「打到一半去哪回血」
+// 查无一行：全游恢复链条（喷泉·泉水全恢复（免费）/旅馆 INN_PRICE 住店回满（全游唯一花钱恢复点，
+// v23.73「夜宿灯下」计数 hero.innRests·INN_REST_GOAL）/试炼关间 RUSH_RECOVER 35%HP·50%MP（免费）/
+// 药水·灵药恢复量见「经济」行）散见本文件 ENCOUNTER.fountain/INN_PRICE/RUSH_RECOVER/INN_REST_GOAL
+// 与 world.js 踩泉报文、shop.js stayInn 结算、battle.js 三连战结算、H 页机制行——调任何恢复数值需先
+// 通读代码才能对上口径；现于「遇敌槽」行之后补录「恢复点 / 补给」行（全部由 ENCOUNTER.fountain/
+// INN_PRICE/RUSH_RECOVER/INN_REST_GOAL 派生、与踩泉报文/stayInn 结算/三连战结算/H 页机制行同读
+// 同源），纯文档零逻辑零结算零存档零数值变化，以上常量数值逐字未动。
 // v24.05 体验打磨·信息透明·决策现场（试炼碑奖励行补「📜 千锤百炼 N/3」进度角标，详见
 // view/drawWorld.js 试炼碑奖励行行内注释）：碑上 v21.85 起已如实分档「✅ 已通关（可再战）+ 💰 再战
 // 通关奖（随等级）」——「还能不能再打/还能不能再拿奖」有了答案，唯「再战几次才能拿满成就」仍查无
@@ -1704,7 +1715,7 @@
 // 「这局是困难档」；现 drawBattle 与五端同读 hero.diff（0 普通/1 困难）· DIFFS 单一数据源，仅困难档
 // 追加「⚡ 困难」角标（读本文件 DIFFS[1]='困难'，调难度档名只改 DIFFS 一处六端自动跟随），
 // 纯显示零结算零存档零数值变化，DIFFS/DIFF_SCALE 数值逐字未动。
-const GAME_VERSION = 'v24.05';
+const GAME_VERSION = 'v24.06';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
