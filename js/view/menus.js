@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -71,6 +71,16 @@ export function drawInn(){
     if(hero.gold<INN_PRICE) text(`💰 金币不足（还差 ${INN_PRICE-hero.gold} 金），无法入住！`,320,254,'14px','#e14b3f','center');
   } else text('你现在精神饱满，不需要休息。',320,228,'14px','#7d93a3','center');
   text('[Enter/E] 住宿休息   [Esc] 离开',320,275,'13px','#7d93a3','center');
+  // v24.07 旅馆界面补「🏨 夜宿灯下 N/15」进度行（体验打磨·信息透明·决策现场，承 v24.05 试炼碑
+  // 「📜 千锤百炼 N/3」同款行内角标 / v23.73 夜宿灯下成就同一「成就进度于决策现场可见」主线：
+  // 「要不要花 10 金住店」的决策现场此前只报恢复量与金币余额，成就「夜宿灯下」（旅馆住宿累计
+  // INN_REST_GOAL(15) 次，计数 hero.innRests 由 shop.stayInn 成功住店唯一产生点写入、snapshotHero
+  // 全量快照自动持久化、防御式 (hero.innRests||0) 旧档零迁移）进度只藏在 C 成就页一行 X/15——
+  // 站旅店柜台前查无一眼之数；现按 v24.05 同款补「🏨 夜宿灯下 N/15」（分子读 hero.innRests
+  // 防御式 (hero.innRests || 0)、分母读 data.js INN_REST_GOAL 单一数据源，与 ACH_LIST innrest 的
+  // ok/prog 同读一份源，调阈值只改 data.js 一处三端自动跟随），纯显示零结算零存档零数值变化
+  // （INN_REST_GOAL/住宿结算/价格行/恢复预览/提示行逐字未动）。
+  text(`🏨 夜宿灯下 ${(hero.innRests || 0)}/${INN_REST_GOAL}`,320,300,'13px','#8ff0a0','center');
 }
 
 export function drawBrew(){
