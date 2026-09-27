@@ -44,8 +44,8 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.06', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 6)), GAME_VERSION);
 
 // —— data.js 源级落位 ——
-ok('data.js GAME_VERSION 字面量已为 v24.07（旧 v24.05 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.07';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "5';"));
+ok('data.js GAME_VERSION 字面量已为 v24.08（旧 v24.05 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.08';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "5';"));
 ok('data.js 含 v24.06 注释（「恢复点 / 补给」数值速查行说明）',
   dSrc.includes('// v24.06 文档整理·数值说明·同源口径'));
 ok('data.js 仍保留 v24.05 历史注释（试炼碑「📜 千锤百炼 N/3」进度角标说明，累积注释块）',
@@ -93,15 +93,15 @@ ok('README H 页「遇敌槽 / 危险格」机制行零回归（喷泉-25 单一
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 230 件套', testChain === 231, String(testChain));
+ok('package.json test 串共 230 件套', testChain === 232, String(testChain));
 ok('package.json 已收录 smoke_v2406_restrow（npm test 串跑第 230 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2406_restrow.mjs'));
-ok('package.json 串尾为 ... smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs"',
-  pkg.includes('node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs"'));
-ok('README tests 树串尾已延伸至 smoke_v2406_restrow（... + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest（npm test 串跑））',
-  readme.includes('+ smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest（npm test 串跑）'));
-ok('README 件套口径为二百三十一件套（二百三十件套清除）且旧 229 口径零残留',
-  readme.includes('冒烟二百三十一件套（二百三十件套清除）') && !readme.includes('冒烟二百二十九件套（二百二十八件套清除）'));
+ok('package.json 串尾为 ... smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs"',
+  pkg.includes('node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs"'));
+ok('README tests 树串尾已延伸至 smoke_v2406_restrow（... + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal（npm test 串跑））',
+  readme.includes('+ smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal（npm test 串跑）'));
+ok('README 件套口径为二百三十二件套（二百三十一件套清除）且旧 229 口径零残留',
+  readme.includes('冒烟二百三十二件套（二百三十一件套清除）') && !readme.includes('冒烟二百二十九件套（二百二十八件套清除）'));
 ok('README 含 v24.06 守护描述（「恢复点 / 补给」数值速查行守护）',
   readme.includes('v24.06 起含 「恢复点 / 补给」数值速查行守护'));
 ok('README 含 smoke_v2406_restrow 入库（230 份）', readme.includes('smoke_v2406_restrow 入库（230 份）'));
@@ -109,7 +109,7 @@ ok('README 仍保留 v24.05 历史守护描述与入库口径（试炼碑千锤�
   readme.includes('v24.05 起含 试炼碑「千锤百炼」进度角标守护') && readme.includes('smoke_v2405_trialgoal 入库（229 份）'));
 ok('README 仍保留 v24.04 历史守护描述（宝箱 / 宝藏 + 228 份）',
   readme.includes('v24.04 起含 「宝箱 / 宝藏」数值速查行守护') && readme.includes('smoke_v2404_chestrow 入库（228 份）'));
-ok('CHANGELOG 顶部已追加 v24.07 条目（「恢复点 / 补给」数值速查行）', changelog.startsWith('## v24.07 '));
+ok('CHANGELOG 顶部已追加 v24.08 条目（「恢复点 / 补给」数值速查行）', changelog.startsWith('## v24.08 '));
 ok('CHANGELOG 顶部条目含恢复点与 INN_PRICE/RUSH_RECOVER 口径说明',
   changelog.includes('恢复点') && changelog.includes('INN_PRICE') && changelog.includes('RUSH_RECOVER') && changelog.includes('数值速查'));
 ok('CHANGELOG 仍保留 v24.05 与 v24.04 条目标题（历史口径）',
@@ -117,9 +117,9 @@ ok('CHANGELOG 仍保留 v24.05 与 v24.04 条目标题（历史口径）',
 
 // —— 哨兵链：v2143 前哨前望 231 且 README 尚无 231 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百三十二件套（二百三十一件套清除）',
-  s2143.includes('二百三十二件套（二百三十一件套清除）') && s2143.includes("!readme.includes('二百三十二件套（二百三十一件套清除）')"));
-ok('README 尚无二百三十二件套（二百三十一件套清除）前望口径', !readme.includes('二百三十二件套（二百三十一件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百三十三件套（二百三十二件套清除）',
+  s2143.includes('二百三十三件套（二百三十二件套清除）') && s2143.includes("!readme.includes('二百三十三件套（二百三十二件套清除）')"));
+ok('README 尚无二百三十三件套（二百三十二件套清除）前望口径', !readme.includes('二百三十三件套（二百三十二件套清除）'));
 
 // —— 旧代 v24.05 pin 全库零残留（不含本件；拆串防误伤，承 v2400/v2404/v2405 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2406_restrow.mjs');

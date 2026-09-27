@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -710,6 +710,19 @@ export function drawTravel(){
   // 承 progressSpacing/travelFootY「派生化防回归」族），纯显示零结算零存档零数值变化。
   const _visitedN = TRAVEL_LIST.filter(([k]) => (hero.visited || []).includes(k)).length;
   text(`已探索 ${_visitedN}/${TRAVEL_LIST.length}`, 510, 86, '12px', '#7d93a3', 'right');
+  // v24.08 快速旅行面板标题行左侧补「🚶 行者无疆 N/15」进度角标（体验打磨·信息透明·决策现场，承
+  // v24.07 旅馆「🏨 夜宿灯下 N/15」/ v24.05 试炼碑「📜 千锤百炼 N/3」同款行内角标 / v23.75 行者无疆
+  // 成就同一「成就进度于决策现场可见」主线：面板标题右缘 v23.27 起已有「已探索 N/4」收集计数，唯
+  // 「旅行动作」成就——行者无疆（快速旅行累计 TRAVEL_GOAL(15) 次，计数 hero.travels 由 core.doTravel
+  // 成功旅行唯一产生点写入（未探索/已在原地早退零计数）、snapshotHero 全量快照自动持久化、防御式
+  // (g.travels||0) 旧档零迁移）进度只藏在 C 成就页一行 X/15——「按 Enter/E 传送」这个旅行动作决策现场
+  // 查无一眼之数；现按 v24.07 同款在标题行左缘补「🚶 行者无疆 N/15」（分子读 hero.travels 防御式
+  // (hero.travels||0)、分母读 data.js TRAVEL_GOAL 单一数据源，与 ACH_LIST travels 的 ok/prog 同读
+  // 一份源，调阈值只改 data.js 一处三端自动跟随），12px 灰字左对齐 x=138 与右缘「已探索 N/4」
+  // （510 右对齐）对称、与 16px 居中标题（≈275..365）零重叠（左侧最宽档
+  // 「🚶 行者无疆 15/15」12px ≈97px 右缘 ≈235 <275）；纯显示零结算零存档零数值变化
+  // （TRAVEL_GOAL/doTravel 结算/行态/页脚/预警行逐字未动）。
+  text(`🚶 行者无疆 ${(hero.travels || 0)}/${TRAVEL_GOAL}`, 138, 86, '12px', '#7d93a3', 'left');
   TRAVEL_LIST.forEach(([k,nm,desc,hint],i)=>{
     const on=i===S.travelSel, unlocked=(hero.visited||[]).includes(k);
     // 当前所在地标注（信息透明·纯显示）：绿色 📍 一眼看出自己在哪，避免误传送
