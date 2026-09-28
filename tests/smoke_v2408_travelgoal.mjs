@@ -43,8 +43,8 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.07', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 7)), GAME_VERSION);
 
 // —— data.js 源级落位 ——
-ok('data.js GAME_VERSION 字面量已为 v24.08（旧 v24.07 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.08';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "7';"));
+ok('data.js GAME_VERSION 字面量已为 v24.09（旧 v24.07 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.09';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "7';"));
 ok('data.js 含 v24.08 注释（快速旅行面板「🚶 行者无疆 N/15」进度角标说明）',
   dSrc.includes('// v24.08 体验打磨·信息透明·决策现场'));
 ok('data.js 仍保留 v24.07 历史注释（旅馆「🏨 夜宿灯下 N/15」进度行说明，累积注释块）',
@@ -92,24 +92,24 @@ ok('README 含 v24.08 守护描述（快速旅行面板「🚶 行者无疆 N/15
   readme.includes('v24.08 起含 快速旅行面板「🚶 行者无疆 N/15」进度角标守护'));
 ok('README T 行含 v24.08 快速旅行面板口径（v24.08 起快速旅行面板标题行左侧常显）',
   readme.includes('**v24.08 起快速旅行面板标题行左侧常显「🚶 行者无疆 N/15」进度角标**'));
-ok('README tests 树串尾已延伸至 smoke_v2408_travelgoal（... + smoke_v2407_innrest + smoke_v2408_travelgoal（npm test 串跑））',
-  readme.includes('+ smoke_v2407_innrest + smoke_v2408_travelgoal（npm test 串跑）'));
-ok('README 件套口径为二百三十二件套（二百三十一件套清除）且旧 231 口径零残留',
-  readme.includes('冒烟二百三十二件套（二百三十一件套清除）') && !readme.includes('冒烟二百三十一件套（二百三十件套清除）'));
+ok('README tests 树串尾已延伸至 smoke_v2408_travelgoal（... + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal（npm test 串跑））',
+  readme.includes('+ smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal（npm test 串跑）'));
+ok('README 件套口径为二百三十三件套（二百三十二件套清除）且旧 231 口径零残留',
+  readme.includes('冒烟二百三十三件套（二百三十二件套清除）') && !readme.includes('冒烟二百三十一件套（二百三十件套清除）'));
 ok('README 含 smoke_v2408_travelgoal 入库（232 份）', readme.includes('smoke_v2408_travelgoal 入库（232 份）'));
 ok('README 仍保留 v24.07 历史守护描述与入库口径（旅馆界面 + 231 份）',
   readme.includes('v24.07 起含 旅馆界面「🏨 夜宿灯下 N/15」进度行守护') && readme.includes('smoke_v2407_innrest 入库（231 份）'));
 
 // —— package.json 同步 ——
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 232 件套', testChain === 232, String(testChain));
+ok('package.json test 串共 232 件套', testChain === 233, String(testChain));
 ok('package.json 已收录 smoke_v2408_travelgoal（npm test 串跑第 232 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2408_travelgoal.mjs'));
-ok('package.json 串尾为 ... smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs"',
-  pkg.includes('node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs"'));
+ok('package.json 串尾为 ... smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs"',
+  pkg.includes('node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs"'));
 
 // —— CHANGELOG 同步 ——
-ok('CHANGELOG 顶部已追加 v24.08 条目（快速旅行面板行者无疆进度角标）', changelog.startsWith('## v24.08 '));
+ok('CHANGELOG 顶部已追加 v24.09 条目（快速旅行面板行者无疆进度角标）', changelog.startsWith('## v24.09 '));
 ok('CHANGELOG 顶部条目含行者无疆与 TRAVEL_GOAL/快速旅行面板口径说明',
   changelog.includes('行者无疆') && changelog.includes('TRAVEL_GOAL') && changelog.includes('快速旅行面板'));
 ok('CHANGELOG 仍保留 v24.07 与 v24.06 条目标题（历史口径）',
@@ -117,9 +117,9 @@ ok('CHANGELOG 仍保留 v24.07 与 v24.06 条目标题（历史口径）',
 
 // —— 哨兵链：v2143 前哨前望 233 且 README 尚无 233 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百三十三件套（二百三十二件套清除）',
-  s2143.includes('二百三十三件套（二百三十二件套清除）') && s2143.includes("!readme.includes('二百三十三件套（二百三十二件套清除）')"));
-ok('README 尚无二百三十三件套（二百三十二件套清除）前望口径', !readme.includes('二百三十三件套（二百三十二件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百三十四件套（二百三十三件套清除）',
+  s2143.includes('二百三十四件套（二百三十三件套清除）') && s2143.includes("!readme.includes('二百三十四件套（二百三十三件套清除）')"));
+ok('README 尚无二百三十四件套（二百三十三件套清除）前望口径', !readme.includes('二百三十四件套（二百三十三件套清除）'));
 
 // —— 旧代 v24.07 pin 全库零残留（不含本件；拆串防误伤，承 v2404-v2407 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2408_travelgoal.mjs');
