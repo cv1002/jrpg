@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, BREW2_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, BREW2_GOAL, DEATH_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -1135,6 +1135,18 @@ export function drawDead(){
   if (hero) {
     const progD = adventureProgress(hero);
     text('冒险进度：' + progD.map(([nm, dn]) => (dn ? '✓ ' : '✗ ') + nm).join(' · '), CV.width / 2, 432, '12px', '#7d93a3', 'center');
+    // v24.11 体验打磨·信息透明·计数现场（阵亡画面补「💪 败而不馁 N/10」进度行，承 v24.10 酿造
+    // 「🍶 妙手回春 N/5」/ v24.09 商店「🍄 蘑菇商路 N/30」/ v24.08 快速旅行「🚶 行者无疆 N/15」/
+    // v24.07 旅馆「🏨 夜宿灯下 N/15」/ v24.05 试炼碑「📜 千锤百炼 N/3」同款行内进度 / v23.87 败而不馁
+    // 成就同一「进度于计数现场可见」主线：hero.deaths 的计数现场正是本屏——battle.loseBattle 全游
+    // 唯一战败结算点在跳出本屏前写入（防御式 (S.G.deaths||0) 旧档零迁移），成就「败而不馁」（累计阵亡
+    // DEATH_GOAL(10) 次，C 页进度 X/10）此前只在 C 成就页一行——倒下的瞬间（败于行/战绩行/余粮行/
+    // 建议行/收集行/五徽记行排队坐）进度却查无一眼之数；现按 v24.10 同款补「💪 败而不馁 N/10」
+    // （分子读 hero.deaths 防御式 (hero.deaths||0)、分母读 data.js DEATH_GOAL 单一数据源，与
+    // ACH_LIST deaths 的 ok/prog 同读一份源，调阈值只改 data.js 一处三端自动跟随），13px 绿字居中
+    // y=452（冒险进度行 432 之下、画布底 480 之内、行间 20 ≥16 不触），纯显示零结算零存档零数值变化
+    // （loseBattle 结算/战绩行/余粮行/建议行/收集行/按键行/未存档行/冒险进度行逐字未动）。
+    text(`💪 败而不馁 ${(hero.deaths || 0)}/${DEATH_GOAL}`, CV.width / 2, 452, '13px', '#8ff0a0', 'center');
   }
 }
 bind.drawDead=drawDead;
