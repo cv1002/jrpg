@@ -11,7 +11,7 @@
 // hp/atk/def/gold 逐字未动）、曲线单调性与平滑收益（Village 池 Lv1-2 零变化 / Gallery 池加权均场
 // Lv10-12 严格递增且低于改前 / XP_GROW·XP_INIT 逐值）、README/package.json/CHANGELOG 同步
 // （件套口径 239 + 魔物数值行 16+6/17+6/18+6/22+6 + v24.13 守护描述 + 入库 239 + package 串尾 +
-// CHANGELOG 顶 pin）、哨兵链（前望 241 且 README 尚无 239 口径）。
+// CHANGELOG 顶 pin）、哨兵链（前望 242 且 README 尚无 239 口径）。
 import { MON_BASE, GAME_VERSION, XP_GROW, XP_INIT, MAPS } from '../js/data.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -39,8 +39,8 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.12', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 12)), GAME_VERSION);
 
 // —— data.js 源级落位 ——
-ok('data.js GAME_VERSION 字面量已为 v24.16（旧 v24.12 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.16';") && !dSrc.includes("const GAME_VERSION = 'v24.12';"));
+ok('data.js GAME_VERSION 字面量已为 v24.17（旧 v24.12 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.17';") && !dSrc.includes("const GAME_VERSION = 'v24.12';"));
 ok('data.js 含 v24.13 注释（后期经验曲线续平滑说明）',
   dSrc.includes('// v24.13 数值平衡·后期经验曲线续平滑'));
 ok('data.js 仍保留 v24.12 历史注释（胜利画面「⚔️ 身经百战 N/100」进度行说明，累积注释块）',
@@ -152,28 +152,28 @@ ok('Village 池 Lv1-2 单场经验零变化（四基础怪未动，13.2/16.9 口
 ok('XP_GROW/XP_INIT 逐值未动（1.42 / 20）', XP_GROW === 1.42 && XP_INIT === 20);
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百四十件套（二百三十九件套清除）',
-  readme.includes('冒烟二百四十件套（二百三十九件套清除）'));
+ok('README 件套口径已为二百四十一件套（二百四十件套清除）',
+  readme.includes('冒烟二百四十一件套（二百四十件套清除）'));
 ok('README 魔物数值行已为 16+6/17+6/18+6/22+6（四强怪每级经验 +1）',
   readme.includes('骷髅兵 26+6/8+2/5+1/16+6/15+4') && readme.includes('雾灵 24+5/9+2/4+1/17+6/14+4') &&
   readme.includes('树精 30+6/7+2/6+1/18+6/16+4') && readme.includes('石魔像 36+7/8+2/10+1/22+6/20+4'));
 ok('README 魔物数值行四基础怪逐字未动（8+3/12+3/10+3/15+3）',
   readme.includes('史莱姆 16+5/5+2/2+1/8+3/8+2') && readme.includes('野狼 22+5/7+2/3+1/12+3/12+2') &&
   readme.includes('哥布林 20+5/6+2/3+1/10+3/10+2') && readme.includes('毒蛇 20+5/8+2/3+1/15+3/13+2'));
-ok('README tests 树含 v24.13 守护描述与 smoke_v2413_xpcurve 入库（240 份）',
-  readme.includes('v24.13 起含 「后期经验曲线续平滑」守护') && readme.includes('smoke_v2413_xpcurve 入库（240 份）'));
-ok('README 已有 240 件套口径且尚无 241（哨兵前望 241 语义：下一版才写 241）',
-  readme.includes('二百四十件套') &&
-  !readme.includes('二百四十一件套') && !readme.includes('冒烟二百四十一件套'));
+ok('README tests 树含 v24.13 守护描述与 smoke_v2413_xpcurve 入库（241 份）',
+  readme.includes('v24.13 起含 「后期经验曲线续平滑」守护') && readme.includes('smoke_v2413_xpcurve 入库（241 份）'));
+ok('README 已有 241 件套口径且尚无 242（哨兵前望 242 语义：下一版才写 242）',
+  readme.includes('二百四十一件套') &&
+  !readme.includes('二百四十二件套') && !readme.includes('冒烟二百四十二件套'));
 ok('package.json test 串已含 smoke_v2413_xpcurve（第 237 份，紧接 smoke_v2412_battlegoal）',
-  pkg.includes('smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs"'));
+  pkg.includes('smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs"'));
 ok('package.json test 串 smoke_v2413 出现次数为 1', (pkg.match(/smoke_v2413_xpcurve/g) || []).length === 1);
 const testsDir0 = path.join(ROOT, 'tests');
 const fileCount = fs.readdirSync(testsDir0).filter((f) => f.endsWith('.mjs')).length;
-ok('tests 目录件套 = 240（237 + smoke_v2413_xpcurve 入库）', fileCount === 240, String(fileCount));
-ok('CHANGELOG.md 顶部条目已为 v24.16（startsWith）', changelog.startsWith('## v24.16'));
+ok('tests 目录件套 = 241（237 + smoke_v2413_xpcurve 入库）', fileCount === 241, String(fileCount));
+ok('CHANGELOG.md 顶部条目已为 v24.17（startsWith）', changelog.startsWith('## v24.17'));
 ok('CHANGELOG v24.13 条目含「数值平衡」与「续平滑」',
-  changelog.startsWith('## v24.16') && changelog.includes('数值平衡') && changelog.includes('续平滑'));
+  changelog.startsWith('## v24.17') && changelog.includes('数值平衡') && changelog.includes('续平滑'));
 ok('CHANGELOG 仍保留 v24.12 条目（历史保留）', changelog.includes('## v24.12'));
 
 // —— 哨兵链（旧代 pin 全库零残留：无任何测试再断言 v24.12 GAME_VERSION 字面量）——

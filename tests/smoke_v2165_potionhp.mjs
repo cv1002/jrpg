@@ -98,10 +98,10 @@ ok('battle.js 药水新文案落位（HP X/Y · 库存同括号）',
 ok('battle.js 旧裸文案零残留（恢复量后直接收尾库存的旧句已清除）',
   !bSrc.includes('MP（高级灵药剩余') && !bSrc.includes('HP（药水剩余'));
 ok('core.js 含 v21.65 注释（喝药战报补恢复后状态）', cSrc.includes('v21.65 喝药战报补恢复后 HP/MP 状态'));
-ok('core.js 灵药新文案落位（与战斗内同式、无 hero.name 前缀）',
-  cSrc.includes('`🧪 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）`'));
-ok('core.js 药水新文案落位（与战斗内同式、无 hero.name 前缀）',
-  cSrc.includes('`🍖 使用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）`'));
+ok('core.js 灵药新文案落位（与战斗内同式、无 hero.name 前缀；v24.17 起带「💧 渴饮甘露 N/10」进度后缀）',
+  cSrc.includes('`🧪 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）（💧 渴饮甘露 ${hero.mapPotions || 0}/${MAP_POTION_GOAL}）`'));
+ok('core.js 药水新文案落位（与战斗内同式、无 hero.name 前缀；v24.17 起带「💧 渴饮甘露 N/10」进度后缀）',
+  cSrc.includes('`🍖 使用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）（💧 渴饮甘露 ${hero.mapPotions || 0}/${MAP_POTION_GOAL}）`'));
 ok('core.js 旧裸文案零残留（恢复量后直接收尾库存的旧句已清除）',
   !cSrc.includes('MP（高级灵药剩余') && !cSrc.includes('HP（药水剩余'));
 
@@ -183,8 +183,8 @@ function runWorldPotion(hero) {
 {
   const h = mkHero({ hp: 10, item: 2 });
   const m = runWorldPotion(h);
-  ok('运行期：大地图药水档报文逐字「🍖 使用药水，恢复 38 点 HP（HP 48/60 · 药水剩余 1 瓶）」',
-    m.length === 1 && m[0] === '🍖 使用药水，恢复 38 点 HP（HP 48/60 · 药水剩余 1 瓶）', m.join(' | '));
+  ok('运行期：大地图药水档报文逐字（无 hero.name 前缀；v24.17 起带「💧 渴饮甘露 1/10」进度后缀）',
+    m.length === 1 && m[0] === '🍖 使用药水，恢复 38 点 HP（HP 48/60 · 药水剩余 1 瓶）（💧 渴饮甘露 1/10）', m.join(' | '));
   ok('运行期：大地图药水档结算一致（hp 10→48 / item 2→1）', h.hp === 48 && h.item === 1);
 }
 
@@ -192,8 +192,8 @@ function runWorldPotion(hero) {
 {
   const h = mkHero({ hp: 20, mp: 10, item: 0, potion2: 1 });
   const m = runWorldPotion(h);
-  ok('运行期：大地图灵药档报文逐字「🧪 服下高级灵药，恢复 68 HP、12 MP（HP 60/60 · MP 22/30 · 高级灵药剩余 0 瓶）」',
-    m.length === 1 && m[0] === '🧪 服下高级灵药，恢复 68 HP、12 MP（HP 60/60 · MP 22/30 · 高级灵药剩余 0 瓶）', m.join(' | '));
+  ok('运行期：大地图灵药档报文逐字（无 hero.name 前缀；v24.17 起带「💧 渴饮甘露 1/10」进度后缀）',
+    m.length === 1 && m[0] === '🧪 服下高级灵药，恢复 68 HP、12 MP（HP 60/60 · MP 22/30 · 高级灵药剩余 0 瓶）（💧 渴饮甘露 1/10）', m.join(' | '));
   ok('运行期：大地图灵药档结算一致（hp 20→60 钳制 / mp 10→22 / potion2 1→0）',
     h.hp === 60 && h.mp === 22 && h.potion2 === 0);
 }

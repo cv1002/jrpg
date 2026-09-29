@@ -94,10 +94,19 @@ function usePotion() {
   // v21.65 喝药战报补恢复后 HP/MP 状态（信息透明·口径一致·纯显示）：与战斗内 doItem
   // 同式把结算后 HP（灵药含 MP）并入括号句首——恢复量是上限钳制前的公式量，报恢复后
   // 状态让钳制透明（与治愈术 v19.97「（HP X/Y）」同一口径），零结算零数值变化。
+  // v24.17 体验打磨·信息透明·计数现场（承 v24.16 HUD「🚶 千里之行 N/1000」/ v24.12 胜利「⚔️ 身经百战
+  // N/100」/ v24.10 酿造「🍶 妙手回春 N/5」/ v24.09 商店「🍄 蘑菇商路 N/30」同一「计数现场报进度」主线）：
+  // 成就「渴饮甘露」（大地图按 F 喝药累计 MAP_POTION_GOAL(10) 次，计数 hero.mapPotions 由本函数成功喝药
+  // 唯一产生点写入）此前进度只藏在 C 成就页一行 X/10（v23.72 当时口径「零战报后缀」——那版只给报文补了
+  // 恢复量/剩余库存/HPMP 括号；而它的计数现场正是每次按 F 的喝药战报本身，喝药当场查无一眼之数，与
+  // v24.16「步数的现场是地图本身」同族：这里「现场」是动作本身）；现报文末尾补「（💧 渴饮甘露 N/10）」——
+  // 分子读 hero.mapPotions 防御式 (hero.mapPotions||0) 旧档零迁移、分母读 data.js MAP_POTION_GOAL 单一
+  // 数据源（与 C 页/成就判定/描述同读一份源，调阈值只改 data.js 一处全端自动跟随），纯显示零结算零存档
+  // 零数值变化（计数落账/applyAchievements 时机/takePotion 结算/两档拦截判定逐字未动）。
   bind.boxMsg(
     result.strong
-      ? `🧪 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）`
-      : `🍖 使用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）`
+      ? `🧪 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）（💧 渴饮甘露 ${hero.mapPotions || 0}/${MAP_POTION_GOAL}）`
+      : `🍖 使用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）（💧 渴饮甘露 ${hero.mapPotions || 0}/${MAP_POTION_GOAL}）`
   );
 }
 
