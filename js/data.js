@@ -1775,7 +1775,16 @@
 // 旧档零迁移）进度只藏在 C 成就页一行 X/100；现 drawWin 补「⚔️ 身经百战 N/100」——分子读
 // hero.battles（防御式 (hero.battles||0)）、分母读本文件 BATTLE_GOAL 单一数据源，与 ACH_LIST
 // battles 的 ok/prog 同读一份源（调阈值只改本行一处三端自动跟随），纯显示零结算零存档零数值变化。
-const GAME_VERSION = 'v24.12';
+const GAME_VERSION = 'v24.13';
+// v24.13 数值平衡·后期经验曲线续平滑（承 v19.58 经验平滑同一方法论的第二轮）：四强怪（骷髅兵/雾灵/
+// 树精/石魔像）每级经验再 +1（xp[1] 5→6），四基础怪（史莱姆/野狼/哥布林/毒蛇）不动——升级需求按
+// ×XP_GROW(1.42) 复利增长而怪物经验只随等级线性（基准+每级×lv），v19.58 把「每级所需场数」从
+// Lv10-11 的 6.10/8.11 缓到 5.21/6.90 后，同一条曲线在更后段再次越线：Lv11→12 已达 9.2 场、
+// Lv13→14 约 18.4 场且继续无界膨胀（加权平均实测：镇/林/矿/廊 × zone 修正）；本次只把上场较晚、
+// 承担 Lv3+ 中后期刷级主力的四强怪每级经验产出再抬 1 点（本轮实测：Lv10-12 每级所需场数
+// 5.20/6.90/9.20 → 4.54/6.01/7.98、Lv13-14 13.0/18.4 → 10.6/14.2），曲线仍严格单调递增
+// （升级本就该变慢），开局 Lv1-2 镇内只遇四基础怪逐字不变；hp/atk/def/gold/权重/门槛/区域倍率逐字
+// 不动，遇敌/掉落/战斗/成就/存档零影响。
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
@@ -4100,12 +4109,12 @@ const MON_BASE=[
   // 不动，确保 Lv1-2 新手收入逐字不变；hp/atk/def/xp/权重/门槛/区域倍率全程未动，遇敌/掉落/战斗/成就/存档零影响。
   {name:'史莱姆',hp:[16,5],atk:[5,2],def:[2,1],xp:[8,3],gold:[8,2],color:'#7fd84f',weak:'fire',draw:'slime',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
   {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf',w:(lv)=>Math.max(1,3-Math.floor(lv/4))},
-  {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,5],gold:[15,4],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',minLv:2,w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
+  {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,6],gold:[15,4],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',minLv:2,w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
   {name:'哥布林',hp:[20,5],atk:[6,2],def:[3,1],xp:[10,3],gold:[10,2],color:'#6fae4f',weak:'ice',draw:'goblin',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
   {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:POISON_CHANCE,weak:'ice',draw:'snake',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
-  {name:'雾灵',  hp:[24,5],atk:[9,2],def:[4,1],xp:[17,5],gold:[14,4],color:'#b48ae8',weak:'ice',resist:'fire',draw:'ghost',minLv:2,w:(lv)=>2+Math.floor(lv/3)},
-  {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,5],gold:[16,4],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
-  {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,5],gold:[20,4],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
+  {name:'雾灵',  hp:[24,5],atk:[9,2],def:[4,1],xp:[17,6],gold:[14,4],color:'#b48ae8',weak:'ice',resist:'fire',draw:'ghost',minLv:2,w:(lv)=>2+Math.floor(lv/3)},
+  {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,6],gold:[16,4],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
+  {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,6],gold:[20,4],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
 ];
 
 // 精英「石心魔像」成长基准（单一数据源）：battle.eliteEncounter 生成、rules.codexStats/monReward 图鉴参考同读此表
