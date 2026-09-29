@@ -2,11 +2,16 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, DIFFS, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS, MAPS } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, DIFFS, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS, MAPS, dayPhase, NIGHT_WIN_GOAL } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe, potionRestore, elixirRestore } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
 import { bind } from '../bind.js';
+
+// v24.14 战斗画面相位标签显示映射（与 view/hud.js PERIOD 同式同词的本地映射——显示映射非数据，
+// 承 v23.35 小地图相位倍率标 `({night:'🌙夜',dawn:'🌅黎'})` 同款本地映射先例；相位计算单一数据源
+// 是 data.js dayPhase()，标签与 HUD 昼夜标签同口径零漂移）。
+const BATTLE_PHASE_TAG = { day: '☀️ 白天', dusk: '🌆 黄昏', night: '🌙 夜晚', dawn: '🌅 黎明' };
 
 export function burst(x, y, colors, n = 18) {
   for (let i = 0; i < n; i++) {
@@ -223,6 +228,24 @@ export function drawBattle() {
   // 「📍 无字回廊」实测宽 ≈72px 至左缘 548 与敌方名字（居中 320 起 ≈116px 至 436）零重叠；
   // 纯显示零结算零存档零数值变化（回合/敌方/预览/指令栏逐字未动，试炼关行/治愈封印/变身角标各 y 位零回归）。
   text(`📍 ${(MAPS[curMap()] || {}).name || curMap()}`, 620, 26, '12px', '#7d93a3', 'right');
+  // v24.14 体验打磨·信息透明·相位入画布（承 v23.78 战斗画面「📍 所在地」画面内口径 / v14.8 HUD
+  // 🌑 恒暗 / v23.39 HUD 相位标签 / v23.91 提灯夜行同一「这仗赢了算不算」决策现场）：画布下方
+  // DOM HUD（s-map）虽有昼夜标签但战斗画面内查无一行——战斗背景按图分区（arenaTheme）不随时段
+  // 变化、强敌战动辄跨过整点相位翻转（DAY_PHASE_S 90s），「这仗赢了算不算提灯夜行」只能靠猜
+  // （winBattle 按胜利瞬间 dayPhase(hero.time) 判定，打一半入夜/天亮结果就不同）；现与
+  // world.tickEncounter/battle.winBattle/HUD 同读 data.js dayPhase((S.G&&S.G.time)||0) 一份单一
+  // 数据源，顶部行右缘补 12px 灰字相位标签（右对齐 x=510——与右缘 📍 地图名（最宽 548 起）零重叠、
+  // 与 ⚔️ 回合 N（≈147 止）/ ⚡ 困难（≈272 止）/ 居中敌方名（≤436 止）零重叠）；无字回廊标
+  // 「🌑 恒暗」零进度（与 winBattle nightWins 同一判定——「被忘掉的地方没有晨昏」不数也不标）；
+  // 仅夜晚且非回廊追加「 · 提灯夜行 N/10」（分子读 (S.G.nightWins||0) 防御式旧档零迁移、分母读
+  // NIGHT_WIN_GOAL 单一数据源，与 C 页/ACH_LIST nightwins/胜利结算同读一份源，调阈值只改
+  // data.js 一处四端自动跟随）；纯显示零结算零存档零数值变化（回合/困难/地图名/敌方/预览/指令栏
+  // 逐字未动，试炼关行/治愈封印/变身角标各 y 位零回归）。
+  const _phKey = curMap() === 'gallery' ? null : dayPhase((S.G && S.G.time) || 0);
+  const _phTag = _phKey === null ? '🌑 恒暗' : (BATTLE_PHASE_TAG[_phKey] || '');
+  if (_phTag) text(
+    _phTag + (_phKey === 'night' ? ` · 提灯夜行 ${(S.G && S.G.nightWins) || 0}/${NIGHT_WIN_GOAL}` : ''),
+    510, 26, '12px', '#7d93a3', 'right');
   if (enemy && enemy.isRush) {
     const st = Math.min(RUSH_BOSSES.length, Math.max(1, hero.rushStage || 1));
     // v12.9 试炼每关自动回血透明化（纯显示·与结算同源）：每胜一关悄然回血 35%HP/50%MP，此数值 v3.15 只标
