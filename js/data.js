@@ -1784,7 +1784,15 @@
 // 5.20/6.90/9.20 → 4.54/6.01/7.98、Lv13-14 13.0/18.4 → 10.6/14.2），曲线仍严格单调递增
 // （升级本就该变慢），开局 Lv1-2 镇内只遇四基础怪逐字不变；hp/atk/def/gold/权重/门槛/区域倍率逐字
 // 不动，遇敌/掉落/战斗/成就/存档零影响。
-const GAME_VERSION = 'v24.14';
+const GAME_VERSION = 'v24.15';
+// v24.15 文档整理·README tests 树串漏录补记 + 树串全量恒等守护（承 v21.92 README tests 树漏录补记
+// 先例：README「项目结构」tests 树串自称「全量冒烟」却漏录 7 件套（v22.3 阵亡碎片 smoke_v2203_fragdead
+// / v22.5 标题碎片 smoke_v2205_fragtitle / v22.6 药香满囊 smoke_v2206_stock2 / v22.7 标题删档
+// smoke_v2207_titledel / v22.8 灵药盈囊 smoke_v2208_elixir / v22.10 离站提醒 smoke_v2210_unsaved /
+// v22.39 星砂车 smoke_v2239_minercart——各自「入库（N 份）」守护链早已记录，唯独树串从未收录，维护者
+// 按树串数件套对不上 package.json 实跑链）；现按 npm test 实跑链逐名织入 7 件（顺序与实跑一致）并新增
+// 树串恒等守护 smoke_v2415_treepin（树串 token 序列 == package 实跑链 token 序列，加/漏任何件套立即
+// 红灯）；纯文档零逻辑零结算零存档零数值变化，game 代码逐字未动。
 // v24.14 体验打磨·信息透明·相位入画布（战斗画面顶部右缘补昼夜相位标签 + 🌙 夜晚「提灯夜行 N/10」
 // 进度，详见 view/drawBattle.js drawBattle 行内注释）：承 v23.78 战斗画面「📍 所在地」画面内口径 /
 // v14.8 HUD 🌑 恒暗 / v23.39 HUD 相位标签 / v23.91 提灯夜行成就同一「这仗赢了算不算」决策现场——
