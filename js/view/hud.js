@@ -2,7 +2,7 @@
 // view/hud.js
 // ============================================================
 import { S, curMap } from '../state.js';
-import { MAPS, ENCOUNTER, DAY_PHASE_S } from '../data.js';
+import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -53,6 +53,14 @@ export function renderHUD() {
   set('s-potion', hero.item);
   set('s-potion2', hero.potion2 || 0);
   set('s-mushroom', hero.mushrooms || 0);
+  // v24.16 体验打磨·信息透明·计数现场：HUD 常驻「🚶 千里之行 N/1000」步数进度（承 v24.12 胜利画面
+  // 「⚔️ 身经百战 N/100」/ v24.09 商店「🍄 蘑菇商路 N/30」/ v24.05 试炼碑「📜 千锤百炼 N/3」同一
+  // 「计数现场报进度」主线 / v23.76 千里之行成就：计数 hero.steps 由 world.move 成功落地唯一产生点
+  // 写入（本 HUD 每一帧/每步 renderHUD 刷新——步数这枚成就的计数现场正是大地图本身，行走全程
+  // 此前查无一眼之数，进度只藏在 C 成就页一行 X/1000）；分子读 (hero.steps||0) 防御式旧档零迁移、
+  // 分母读 data.js STEP_GOAL 单一数据源，与 C 页/ACH_LIST steps 的 ok/prog 同读一份源，调阈值只改
+  // data.js 一处三端自动跟随；纯显示零结算零存档零数值变化（world.move 计数/存档结构逐字未动）。
+  set('s-steps', (hero.steps || 0) + '/' + STEP_GOAL);
   // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
   // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
   set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');
