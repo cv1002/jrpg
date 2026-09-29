@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, BREW2_GOAL, DEATH_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, BREW2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -1217,6 +1217,20 @@ export function drawWin(){
   const progW = adventureProgress(S.G);
   CTX.fillStyle='#7d93a3'; CTX.font='12px sans-serif';
   CTX.fillText('冒险进度：' + progW.map(([nm, dn]) => (dn ? '✓ ' : '✗ ') + nm).join(' · '),CV.width/2,434);
+  // v24.12 体验打磨·信息透明·计数现场：胜利画面补「⚔️ 身经百战 N/100」进度行（承 v24.11 阵亡画面
+  // 「💪 败而不馁 N/10」同款行内进度 / v23.80 身经百战成就同一「计数现场报进度」主线——承 v23.36
+  // 以守为攻起「落账当场报进度」主线：胜利画面（drawWin · battle.winBattle 全游唯一胜利结算点）此前
+  // 只报 战绩/收集三件套/碎片/页脚/冒险进度（v19.49-v22.89），成就「身经百战」（累计遭遇
+  // BATTLE_GOAL(100) 场战斗，计数 hero.battles 由 battle.startBattle 全游唯一战斗入口写入、
+  // snapshotHero 全量快照自动持久化、防御式 (S.G.battles||0) 旧档零迁移）进度只藏在 C 成就页一行
+  // X/100——「灯芯回来了」的瞬间查无一眼之数（与 v24.11 阵亡「败而不馁」成对——遭遇 vs 败北
+  // 两个端口各回各自的总结屏）；现按 v24.11 同款补「⚔️ 身经百战 N/100」（分子读 S.G.battles
+  // 防御式 (S.G.battles||0)、分母读 data.js BATTLE_GOAL 单一数据源，与 ACH_LIST battles 的
+  // ok/prog 同读一份源，调阈值只改 data.js 一处三端自动跟随），13px 绿字居中 y=452（冒险进度行
+  // 434 之下、画布底 480 之内、行间 18 ≥16 不触）；纯显示零结算零存档零数值变化（BATTLE_GOAL/
+  // startBattle 计数/战绩行/收集行/碎片行/页脚提示/未存档行/冒险进度行逐字未动）。
+  CTX.fillStyle='#8ff0a0'; CTX.font='bold 13px sans-serif';
+  CTX.fillText(`⚔️ 身经百战 ${(S.G.battles || 0)}/${BATTLE_GOAL}`,CV.width/2,452);
 }
 bind.drawWin=drawWin;
 

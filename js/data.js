@@ -1767,7 +1767,15 @@
 // 「🏨 夜宿灯下 N/15」——分子读 hero.innRests（防御式 (hero.innRests||0)）、分母读本文件
 // INN_REST_GOAL 单一数据源，与 ACH_LIST innrest 的 ok/prog 同读一份源（调阈值只改本行一处三端
 // 自动跟随），纯显示零结算零存档零数值变化（INN_REST_GOAL/住宿结算/价格行/恢复预览逐字未动）。
-const GAME_VERSION = 'v24.11';
+// v24.12 体验打磨·信息透明·计数现场（胜利画面补「⚔️ 身经百战 N/100」进度行，详见 view/menus.js
+// drawWin 行内注释）：承 v24.11 阵亡画面「💪 败而不馁 N/10」同款行内进度 / v23.80 身经百战成就同一
+// 「计数现场报进度」主线——「灯芯回来了」的胜利画面此前只报 战绩/收集三件套/碎片/页脚/冒险进度，
+// 成就「身经百战」（累计遭遇本文件 BATTLE_GOAL(100) 场战斗，v23.80 新成就；计数 hero.battles 由
+// battle.startBattle 全游唯一战斗入口写入、snapshotHero 全量快照自动持久化、防御式 (S.G.battles||0)
+// 旧档零迁移）进度只藏在 C 成就页一行 X/100；现 drawWin 补「⚔️ 身经百战 N/100」——分子读
+// hero.battles（防御式 (hero.battles||0)）、分母读本文件 BATTLE_GOAL 单一数据源，与 ACH_LIST
+// battles 的 ok/prog 同读一份源（调阈值只改本行一处三端自动跟随），纯显示零结算零存档零数值变化。
+const GAME_VERSION = 'v24.12';
 // v23.14 体验打磨·信息透明·可发现性：J 任务日志新增「灯下之声」节（view/menus.js drawJournal）——v23.13
 // 社交成就「有口皆碑」在 C 成就页只有一行 X/37 进度，玩家想补全 37 处灯下之声却不知道「还差谁」；
 // 现由 view/menus.js voiceList 纯函数从本文件 NPCS 派生全部交谈对象（加/删 NPC 自动跟随零裸字面量）、
