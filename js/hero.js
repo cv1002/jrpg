@@ -3,7 +3,7 @@
 // boxMsg ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { learnsAt, ACH_LIST, WEAPONS, ARMORS, SKILL_DATA, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD, SYS_MSG_MS, ACH_MSG_MS, CODEX_MSG_MS } from './data.js';
+import { learnsAt, LEARN_AT, ACH_LIST, WEAPONS, ARMORS, SKILL_DATA, baseStats, MAX_LEARN_LV, XP_GROW, XP_INIT, PERFECTION_GOLD, SYS_MSG_MS, ACH_MSG_MS, CODEX_MSG_MS } from './data.js';
 import { unlockedAchievements, potionRestore, elixirRestore } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -51,7 +51,19 @@ export function checkSkills() {
     // 防御式读取：SKILL_DATA 漏配时保持原句逐字不变不抛错（LEARN_AT 现 6 招均有配，由冒烟契约守护）。
     // 零结算零数值零存档变化（push 与 includes 拦截逐字未动，只改 1 条文案 + import 接入）。
     const sd = SKILL_DATA[skill];
-    bind.boxMsg(`🌟 领悟了新技能【${skill}】！${sd ? `（${sd.mp} MP · ${sd.hint} · 战斗中按 2 选用）` : ''}`, SYS_MSG_MS);
+    // v24.20 体验打磨·信息透明·计数现场：领悟报文补「📖 诸技通明 N/8」进度后缀（承 v24.19 额外掉落
+    // 战报「🍀 鸿运当头 N/30」/ v24.17 喝药战报「💧 渴饮甘露 N/10」/ v24.16 HUD「🚶 千里之行 N/1000」/
+    // v24.12 胜利「⚔️ 身经百战 N/100」同一「计数现场报进度」主线 / v21.59 诸技通明成就（技能全领悟
+    // 里程碑 = 领悟全部 8 招）：计数 hero.skills 由本函数升级领悟唯一写入点 push、snapshotHero 全量快照
+    // 自动持久化、防御式 (hero.skills||[]) 旧档零迁移，此前进度只藏在 C 成就页一行 X/8——而技能线的计数
+    // 现场正是每次「🌟 领悟了新技能」战报本身：升级领悟当场查无一眼之数（领悟是低频事件（整局至多 8 次）、
+    // 不像 v23.64 熟能生巧每发一报需零战报后缀的取舍，与 v24.19「现场是动作本身」同族）；现报文末尾补
+    // 「（📖 诸技通明 N/8）」（分子读 (hero.skills||[]).length 防御式旧档零迁移、分母读 data.js
+    // Object.keys(LEARN_AT).length 单一数据源——本版 LEARN_AT 由模块内常量改为导出，与 I 状态页
+    // 「已学技能 N/8」/战斗技能菜单「已学 N/7」/ACH_LIST skills 的 ok/prog 同读一份源，调技能表只改
+    // data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化（LEARN_AT 八招表/learnsAt/MAX_LEARN_LV/
+    // checkSkills 拦截与 push/经验结算/成就判定逐字未动，push 先于 boxMsg 落账，进度差分即本场）。
+    bind.boxMsg(`🌟 领悟了新技能【${skill}】！${sd ? `（${sd.mp} MP · ${sd.hint} · 战斗中按 2 选用）` : ''}（📖 诸技通明 ${(hero.skills || []).length}/${Object.keys(LEARN_AT).length}）`, SYS_MSG_MS);
     SFX.levelup();
   }
 }
