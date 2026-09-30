@@ -17,7 +17,7 @@
 // battle.js winBattle same-source 互证、运行期 drawBattle 真实渲染 fillText 捕获五档（夜晚村/
 // 夜晚回廊/白天/黄昏或黎明/恒暗回廊 + 进度分子 0·7 档 + 全档渲染不抛错 + 与地图名/回合/困难
 // 角标同屏零位移）、README/package.json/CHANGELOG 同步（件套口径 239 + v24.14 守护描述 +
-// smoke_v2414_nightbattle 入库（241 份）+ package 串尾 + CHANGELOG 顶 pin）、哨兵链
+// smoke_v2414_nightbattle 入库（242 份）+ package 串尾 + CHANGELOG 顶 pin）、哨兵链
 // （前望 242 且 README 尚无 240 口径）、旧代 v24.13 pin 全库零残留扫描、
 // drawBattle 既有行零回归（回合/困难/地图名/敌方特性/招数一览/战斗预判逐字未动）。
 import fs from 'node:fs';
@@ -103,8 +103,8 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.13', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 13)), GAME_VERSION);
 
 // —— data.js 源级落位 ——
-ok('data.js GAME_VERSION 字面量已为 v24.17（旧 v24.13 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.17';") && !dSrc.includes("const GAME_VERSION = 'v24.13';"));
+ok('data.js GAME_VERSION 字面量已为 v24.18（旧 v24.13 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.18';") && !dSrc.includes("const GAME_VERSION = 'v24.13';"));
 ok('data.js 含 v24.14 注释（战斗画面相位标签·相位入画布说明）',
   dSrc.includes('// v24.14 体验打磨·信息透明·相位入画布'));
 ok('data.js 仍保留 v24.13 历史注释（四强怪每级经验 +1 说明，累积注释块）',
@@ -235,25 +235,25 @@ ok('运行期：黎明档亮「🌅 黎明」且零进度（黎明不计数，�
 S.G.map = 'village'; S.G.time = 0; S.G.nightWins = 0;
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百四十一件套（二百四十件套清除）',
-  readme.includes('冒烟二百四十一件套（二百四十件套清除）'));
-ok('README tests 树含 v24.14 守护描述与 smoke_v2414_nightbattle 入库（241 份）',
-  readme.includes('v24.14 起含 战斗画面相位标签守护') && readme.includes('smoke_v2414_nightbattle 入库（241 份）'));
+ok('README 件套口径已为二百四十二件套（二百四十一件套清除）',
+  readme.includes('冒烟二百四十二件套（二百四十一件套清除）'));
+ok('README tests 树含 v24.14 守护描述与 smoke_v2414_nightbattle 入库（242 份）',
+  readme.includes('v24.14 起含 战斗画面相位标签守护') && readme.includes('smoke_v2414_nightbattle 入库（242 份）'));
 ok('README 战斗段落含 v24.14 相位标签口径（顶部右缘常驻昼夜相位标签 · 提灯夜行 N/10）',
   readme.includes('v24.14 起顶部右缘常驻昼夜相位标签') && readme.includes('🌙 夜晚 · 提灯夜行 N/10'));
 ok('README 成就 bullet 含 v24.14 提灯夜行进度口径（战斗画面顶部常显）',
   readme.includes('v24.14 起战斗画面顶部常显「🌙 夜晚 · 提灯夜行 N/10」进度'));
 ok('README 视觉 bullet 含 v24.14 战斗画面相位标签口径（BATTLE_PHASE_TAG 与 HUD PERIOD 同词）',
   readme.includes('v24.14 起战斗画面顶部右缘同式常驻相位标签') && readme.includes('BATTLE_PHASE_TAG'));
-ok('README 尚无 240 件套口径（哨兵前望 242 语义：下一版才写 242）',
-  !readme.includes('二百四十二件套') && !readme.includes('冒烟二百四十二件套'));
+ok('README 尚无 240 件套口径（哨兵前望 243 语义：下一版才写 242）',
+  !readme.includes('二百四十三件套') && !readme.includes('冒烟二百四十三件套'));
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 238 件套', testChain === 241, String(testChain));
+ok('package.json test 串共 238 件套', testChain === 242, String(testChain));
 ok('package.json test 串已含 smoke_v2414_nightbattle（第 239 份，紧接 smoke_v2413_xpcurve）',
-  pkg.includes('smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.17（startsWith）', changelog.startsWith('## v24.17'));
+  pkg.includes('smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.18（startsWith）', changelog.startsWith('## v24.18'));
 ok('CHANGELOG v24.14 条目含「相位标签」与「提灯夜行」',
-  changelog.startsWith('## v24.17') && changelog.includes('相位标签') && changelog.includes('提灯夜行'));
+  changelog.startsWith('## v24.18') && changelog.includes('相位标签') && changelog.includes('提灯夜行'));
 ok('CHANGELOG 仍保留 v24.13 条目（历史保留）', changelog.includes('## v24.13'));
 
 // —— 哨兵链（旧代 v24.13 pin 全库零残留）——
