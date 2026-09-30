@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -702,7 +702,16 @@ function winBattle() {
   if (drop) {
     bind.renderHUD();
     applyAchievements();
-    bind.boxMsg('🎁 额外掉落：' + drop, WIN_MSG_MS);
+    // v24.19 体验打磨·信息透明·计数现场：🎁 额外掉落战报补「🍀 鸿运当头 N/30」进度后缀（承 v24.17 喝药
+    // 战报「💧 渴饮甘露 N/10」/ v24.16 HUD「🚶 千里之行 N/1000」/ v24.12 胜利「⚔️ 身经百战 N/100」/
+    // v24.10 酿造「🍶 妙手回春 N/5」/ v24.09 商店「🍄 蘑菇商路 N/30」同一「计数现场报进度」主线 /
+    // v21.97 鸿运当头成就：计数 hero.drops 由 rules.rollDrop 各掉落档唯一写入点累加（防御式
+    // (hero.drops||0) 旧档零迁移），此前进度只藏在 C 成就页一行 X/30——掉落线的计数现场正是每次
+    // 「🎁 额外掉落」战报本身：捡到战利品当场查无一眼之数（与 v24.17「现场是动作本身」同族）；现
+    // 报文末尾补「（🍀 鸿运当头 N/30）」（分子读 hero.drops 防御式旧档零迁移、分母读 data.js
+    // LUCKY2_GOAL 单一数据源，与 C 页/ACH_LIST lucky2 的 ok/prog 同读一份源，调阈值只改 data.js
+    // 一处全端自动跟随），纯显示零结算零存档零数值变化（rollDrop 计数/掉落结算/成就判定逐字未动）。
+    bind.boxMsg(`🎁 额外掉落：${drop}（🍀 鸿运当头 ${hero.drops || 0}/${LUCKY2_GOAL}）`, WIN_MSG_MS);
   }
 
   const result = {
