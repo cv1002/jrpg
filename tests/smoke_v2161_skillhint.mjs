@@ -131,22 +131,22 @@ function runLearn(hero) {
 // 冰霜击档：Lv3 领悟 → 报文逐字「（5 MP · 30%冻结（跳过敌回合） · 战斗中按 2 选用）」
 const hA = { level: 3, skills: ['火焰斩'] };
 const mA = runLearn(hA);
-ok('运行期：Lv3 领悟冰霜击报文逐字（SKILL_DATA mp/hint 同源派生）',
-  mA.includes('🌟 领悟了新技能【冰霜击】！（5 MP · 30%冻结（跳过敌回合） · 战斗中按 2 选用）'), mA.join(' | '));
+ok('运行期：Lv3 领悟冰霜击报文逐字（SKILL_DATA mp/hint 同源派生 · v24.20 起带「📖 诸技通明 2/8」进度后缀）',
+  mA.includes('🌟 领悟了新技能【冰霜击】！（5 MP · 30%冻结（跳过敌回合） · 战斗中按 2 选用）（📖 诸技通明 2/8）'), mA.join(' | '));
 ok('运行期：领悟结算零回归（skills 追加冰霜斩外的冰霜击）',
   hA.skills.length === 2 && hA.skills[1] === '冰霜击');
 
 // 治愈术档：Lv4 领悟 → 报文逐字「（5 MP · 恢复HP并解毒 · 战斗中按 2 选用）」
 const hB = { level: 4, skills: ['火焰斩', '冰霜击'] };
 const mB = runLearn(hB);
-ok('运行期：Lv4 领悟治愈术报文逐字（heal 招 hint 同源）',
-  mB.includes('🌟 领悟了新技能【治愈术】！（5 MP · 恢复HP并解毒 · 战斗中按 2 选用）'), mB.join(' | '));
+ok('运行期：Lv4 领悟治愈术报文逐字（heal 招 hint 同源 · v24.20 起带「📖 诸技通明 3/8」进度后缀）',
+  mB.includes('🌟 领悟了新技能【治愈术】！（5 MP · 恢复HP并解毒 · 战斗中按 2 选用）（📖 诸技通明 3/8）'), mB.join(' | '));
 
 // 汲光击档：Lv9 领悟 → 报文逐字「（9 MP · 汲回伤害50%为HP·上限25%HP · 战斗中按 2 选用）」
 const hC = { level: 9, skills: ['火焰斩', '冰霜击', '治愈术', '雷鸣', '陨石术'] };
 const mC = runLearn(hC);
-ok('运行期：Lv9 领悟汲光击报文逐字（drain 招 hint 同源，承 v21.48）',
-  mC.includes('🌟 领悟了新技能【汲光击】！（9 MP · 汲回伤害50%为HP·上限25%HP · 战斗中按 2 选用）'), mC.join(' | '));
+ok('运行期：Lv9 领悟汲光击报文逐字（drain 招 hint 同源，承 v21.48 · v24.20 起带「📖 诸技通明 6/8」进度后缀）',
+  mC.includes('🌟 领悟了新技能【汲光击】！（9 MP · 汲回伤害50%为HP·上限25%HP · 战斗中按 2 选用）（📖 诸技通明 6/8）'), mC.join(' | '));
 
 // 已会不多报：Lv3 但 skills 已含冰霜击 → includes 拦截零报文
 const hD = { level: 3, skills: ['火焰斩', '冰霜击'] };
@@ -170,8 +170,8 @@ const sdSave = SKILL_DATA['冰霜击'];
 delete SKILL_DATA['冰霜击'];
 let mG = null, gThrew = null;
 try { mG = runLearn(hG); } catch (e) { gThrew = e; } finally { SKILL_DATA['冰霜击'] = sdSave; }
-ok('运行期：SKILL_DATA 漏配防御档——不抛错且保持原句「🌟 领悟了新技能【冰霜击】！」逐字（无摘要尾缀）',
-  !gThrew && mG && mG.length === 1 && mG[0] === '🌟 领悟了新技能【冰霜击】！', (gThrew && gThrew.message) || (mG || []).join(' | '));
+ok('运行期：SKILL_DATA 漏配防御档——不抛错且保持原句「🌟 领悟了新技能【冰霜击】！」（无摘要尾缀 · v24.20 起带「📖 诸技通明 2/8」进度后缀）',
+  !gThrew && mG && mG.length === 1 && mG[0] === '🌟 领悟了新技能【冰霜击】！（📖 诸技通明 2/8）', (gThrew && gThrew.message) || (mG || []).join(' | '));
 
 // grantXp 集成档：Lv2（xp 0/20）吃 20 经验 → 升 Lv3 → checkSkills 领悟冰霜击报文带摘要
 const hH = { name: '测试者', level: 2, xp: 0, xpNext: 20, hp: 60, hpMax: 60, mp: 20, mpMax: 20,
@@ -188,8 +188,8 @@ try {
   bind.boxMsg = origBoxH;
   S.G = null;
 }
-ok('运行期：grantXp 集成档领悟报文带效果摘要（与直调 checkSkills 同式逐字）',
-  msgsH.includes('🌟 领悟了新技能【冰霜击】！（5 MP · 30%冻结（跳过敌回合） · 战斗中按 2 选用）'), msgsH.join(' | '));
+ok('运行期：grantXp 集成档领悟报文带效果摘要（与直调 checkSkills 同式逐字 · v24.20 起带「📖 诸技通明 2/8」进度后缀）',
+  msgsH.includes('🌟 领悟了新技能【冰霜击】！（5 MP · 30%冻结（跳过敌回合） · 战斗中按 2 选用）（📖 诸技通明 2/8）'), msgsH.join(' | '));
 
 // —— README / package.json / 既有冒烟去硬化 同步守护 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');

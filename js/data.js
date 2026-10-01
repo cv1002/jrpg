@@ -1784,7 +1784,7 @@
 // 5.20/6.90/9.20 → 4.54/6.01/7.98、Lv13-14 13.0/18.4 → 10.6/14.2），曲线仍严格单调递增
 // （升级本就该变慢），开局 Lv1-2 镇内只遇四基础怪逐字不变；hp/atk/def/gold/权重/门槛/区域倍率逐字
 // 不动，遇敌/掉落/战斗/成就/存档零影响。
-const GAME_VERSION = 'v24.19';
+const GAME_VERSION = 'v24.20';
 // v24.19 体验打磨·信息透明·计数现场：🎁 额外掉落战报补「🍀 鸿运当头 N/30」进度后缀（承 v24.17 喝药
 // 战报「💧 渴饮甘露 N/10」/ v24.16 HUD「🚶 千里之行 N/1000」/ v24.12 胜利「⚔️ 身经百战 N/100」/
 // v24.10 酿造「🍶 妙手回春 N/5」/ v24.09 商店「🍄 蘑菇商路 N/30」同一「计数现场报进度」主线，详见
@@ -1797,6 +1797,19 @@ const GAME_VERSION = 'v24.19';
 // 一处全端自动跟随），纯显示零结算零存档零数值变化（LUCKY2_GOAL/rollDrop 计数/掉落结算/成就判定
 // 逐字未动；幸运眷顾 N/5 与洪福齐天 N/120 同线另两档由 C 页承载，本版只报中档里程碑同 v24.10
 // 「妙手回春 N/5」先例）。
+// v24.20 体验打磨·信息透明·计数现场：🌟 领悟新技能战报补「📖 诸技通明 N/8」进度后缀（承 v24.19 掉落
+// 战报「🍀 鸿运当头 N/30」/ v24.17 喝药「💧 渴饮甘露 N/10」/ v24.16 HUD「🚶 千里之行 N/1000」/
+// v24.12 胜利「⚔️ 身经百战 N/100」同一「计数现场报进度」主线，详见 hero.js checkSkills 行内注释）：
+// 成就「诸技通明」（v21.59 技能全领悟里程碑，判定/进度/描述同读本文件 LEARN_AT 单一数据源——
+// 现共 8 招 Lv1/3/4/5/7/9/11/12，计数 hero.skills 由 checkSkills 升级领悟唯一写入点 push、随
+// snapshotHero 全量快照自动持久化）此前进度只藏在 C 成就页一行 X/8，而它的计数现场正是每次
+// 「🌟 领悟了新技能」战报本身——升级领悟当场查无一眼之数（领悟是低频事件（整局至多 8 次）、
+// 不像 v23.64 熟能生巧每发一报需零战报后缀的取舍；与 v24.19 掉落战报同族）；现 hero.checkSkills
+// 领悟报文末尾补「（📖 诸技通明 N/8）」（分子读 (hero.skills||[]).length 防御式旧档零迁移、分母读
+// 本文件 Object.keys(LEARN_AT).length 单一数据源——本版 LEARN_AT 由模块内常量改为导出，与 I 状态页
+// 「已学技能 N/8」/战斗技能菜单「已学 N/7」/ACH_LIST skills 的 ok/prog 同读一份源，调技能表只改
+// 本处一处全端自动跟随），纯显示零结算零存档零数值变化（LEARN_AT 表/checkSkills 领悟拦截/
+// skills push/经验结算/成就判定逐字未动）。
 // v24.18 数值平衡·后期金币曲线续平滑（承 v19.66 金币平滑第二轮）：四强怪（骷髅兵/雾灵/树精/石魔像）
 // 每级金币再 +1（gold[1] 4→5），四基础怪（史莱姆/野狼/哥布林/毒蛇）gold[1]=2 不动——v19.66 首轮把
 // Lv10 自然收入从 ≈762 金抬到 ≈876 金、与全身毕业装（勇者之剑 600 + 龙鳞甲 480 = 1080 金）的缺口从
@@ -5932,6 +5945,6 @@ export {
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
-  baseStats, learnsAt, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
+  baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
   SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL,
 };

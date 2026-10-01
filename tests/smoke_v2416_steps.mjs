@@ -15,7 +15,7 @@
 // （ok/prog/d 逐值）、index.html s-steps 落位（#hud 第二行 🍄 之右 + title 口径）、hud.js 源级
 // （STEP_GOAL import + set 逐字）、运行期 renderHUD 真实渲染三档（42/1000 · 0/1000 · 缺字段
 // 防御式 0/1000）、world.js 步数计数同源互证（成功落地唯一写入点）、README/package.json/
-// CHANGELOG 同步（件套口径 243 + v24.16 守护描述 + smoke_v2416_steps 入库（243 份）+ package
+// CHANGELOG 同步（件套口径 243 + v24.16 守护描述 + smoke_v2416_steps 入库（244 份）+ package
 // 串尾 + CHANGELOG 顶 pin）、哨兵链（前望 242 且 README 尚无 241 口径）、旧代 v24.15 pin 全库
 // 零残留扫描、HUD 既有项零回归（s-mushroom/s-gold 等 21 项 set 仍逐字在列）。
 import fs from 'node:fs';
@@ -101,8 +101,8 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.15', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 15)), GAME_VERSION);
 
 // —— data.js 源级落位 ——
-ok('data.js GAME_VERSION 字面量已为 v24.19（旧 v24.16 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.19';") && !dSrc.includes("const GAME_VERSION = 'v24.16';"));
+ok('data.js GAME_VERSION 字面量已为 v24.20（旧 v24.16 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.20';") && !dSrc.includes("const GAME_VERSION = 'v24.16';"));
 ok('data.js 含 v24.16 注释（HUD 步数进度·计数现场说明）',
   dSrc.includes('// v24.16 体验打磨·信息透明·计数现场'));
 ok('data.js 仍保留 v24.15 历史注释（文档整理·README tests 树串漏录补记，累积注释块）',
@@ -159,27 +159,27 @@ ok('world.js 步数计数逐字落位（成功落地唯一产生点 hero.steps+1
   worldSrc.includes('hero.steps = (hero.steps || 0) + 1;'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百四十三件套（二百四十二件套清除）',
-  readme.includes('冒烟二百四十三件套（二百四十二件套清除）'));
-ok('README tests 树含 v24.16 守护描述与 smoke_v2416_steps 入库（243 份）',
-  readme.includes('v24.16 起含 HUD 步数进度守护') && readme.includes('smoke_v2416_steps 入库（243 份）'));
+ok('README 件套口径已为二百四十四件套（二百四十三件套清除）',
+  readme.includes('冒烟二百四十四件套（二百四十三件套清除）'));
+ok('README tests 树含 v24.16 守护描述与 smoke_v2416_steps 入库（244 份）',
+  readme.includes('v24.16 起含 HUD 步数进度守护') && readme.includes('smoke_v2416_steps 入库（244 份）'));
 ok('README 成就 bullet 含 v24.16 HUD 步数进度口径（v24.16 起 HUD 常驻「🚶 千里之行 N/1000」步数进度）',
   readme.includes('v24.16 起 HUD 常驻「🚶 千里之行 N/1000」步数进度'));
 ok('README 视觉 bullet 含 v24.16 HUD 步数进度口径（HUD 常驻「🚶 千里之行 N/1000」步数进度（v24.16）',
   readme.includes('HUD 常驻「🚶 千里之行 N/1000」步数进度**（v24.16'));
-ok('README 尚无 243 件套口径（哨兵前望 244 语义：下一版才写 243）',
-  !readme.includes('二百四十四件套') && !readme.includes('冒烟二百四十四件套'));
+ok('README 尚无 245 件套口径（哨兵前望 245 语义：下一版才写 243）',
+  !readme.includes('二百四十五件套') && !readme.includes('冒烟二百四十五件套'));
 ok('README 仍保留 v24.15 守护描述（历史保留）', readme.includes('v24.15 起含 README tests 树串全量恒等守护'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 243 份（smoke.mjs + 242 专项）', chain.length === 242 && chainAll.length === 243, String(chain.length));
-ok('package.json 链尾为 smoke_v2419_luckdrp（第 243 份）', chain[chain.length - 1] === 'smoke_v2419_luckdrp', chain[chain.length - 1]);
+ok('package.json 实跑链共 244 份（smoke.mjs + 243 专项）', chain.length === 243 && chainAll.length === 244, String(chain.length));
+ok('package.json 链尾为 smoke_v2420_skillprog（第 244 份）', chain[chain.length - 1] === 'smoke_v2420_skillprog', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2416_steps.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2416_steps.mjs'));
-ok('package.json 链锚逐字（smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs"）',
-  pkgRaw.includes('smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.19（startsWith）', changelog.startsWith('## v24.19'));
+ok('package.json 链锚逐字（smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs"）',
+  pkgRaw.includes('smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.20（startsWith）', changelog.startsWith('## v24.20'));
 ok('CHANGELOG v24.16 条目含「千里之行」与「HUD」与「步数」',
   changelog.includes('千里之行') && changelog.includes('HUD') && changelog.includes('步数'));
 ok('CHANGELOG 仍保留 v24.15 条目（历史保留）', changelog.includes('## v24.15'));
@@ -189,7 +189,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 243（240 + smoke_v2417_mapdrink）', files.length === 243, String(files.length));
+ok('tests 目录件套 = 243（240 + smoke_v2417_mapdrink）', files.length === 244, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
