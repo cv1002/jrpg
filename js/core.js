@@ -12,7 +12,7 @@ import { goto } from './scene.js';
 import { loadMap, transition, at } from './world.js';
 import { startBattle } from './battle.js';
 import { takePotion, potionAvailability, checkSkills, skillXpHint, applyAchievements } from './hero.js';
-import { migrateQuests, questObjective, questLines, adventureProgress, mushroomQuestProtects, npcQuestPages, resolveNpcTalk } from './quests.js';
+import { migrateQuests, questObjective, questLines, adventureProgress, mushroomQuestProtects, npcQuestPages, resolveNpcTalk, sideQuestDone } from './quests.js';
 
 function newGame(name) {
   return migrateQuests({
@@ -270,7 +270,19 @@ function talkNext() {
     const remain = [];
     if (act.item) remain.push(`药水 ${hero.item}/${POTION_CAP} 瓶`);
     if (act.potion2) remain.push(`灵药 ${hero.potion2} 瓶`);
-    bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}（剩余 ${hero.gold} 金${remain.length ? '；' + remain.join('，') : ''}）`, WIN_MSG_MS);
+    // v24.21 体验打磨·信息透明·计数现场：🎁 支线交付报文补「🏮 灯火同心 N/11」进度后缀（承 v24.20 领悟
+    // 战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/ v24.17 喝药战报「💧 渴饮甘露
+    // N/10」/ v24.16 HUD「🚶 千里之行 N/1000」同一「计数现场报进度」主线，详见 quests.js
+    // sideQuestDone 行内注释 / v19.61 灯火同心成就同一「成就进度于计数现场可见」主线：支线全收集
+    // 里程碑（完成全部 kind==='side' 支线——现 11 条，数量由 QUESTS 派生不写死）此前进度只藏在
+    // C 成就页一行 X/11——每次「🎁 「…」完成」的交付现场查无一眼之数（与 v24.19「现场是动作本身」
+    // 同族：支线交付正是灯火同心的计数现场，且 resolveNpcTalk 交付侧已先落 'done'、applyAchievements
+    // 已在报文前判定——进度差分即本场）；现报文末尾补「（🏮 灯火同心 N/11）」（分子读
+    // quests.sideQuestDone(hero).done 防御式 (hero.quests||{}) 旧档零迁移、分母读 .total 与
+    // ACH_LIST allquests 的 prog 同读 QUESTS 一份源，加/删支线只改 data.js 一处全端自动跟随）；
+    // 纯显示零结算零存档零数值变化（交付结算/奖励/成就判定逐字未动）。
+    const sq = sideQuestDone(hero);
+    bind.boxMsg(`🎁 「${act.name}」完成：金币 +${act.gold}${extra}（剩余 ${hero.gold} 金${remain.length ? '；' + remain.join('，') : ''}）（🏮 灯火同心 ${sq.done}/${sq.total}）`, WIN_MSG_MS);
     goto('world');
     return;
   }

@@ -295,3 +295,18 @@ export function questKillProg(hero, monName) {
   }
   return null;
 }
+
+// v24.21 体验打磨·信息透明·计数现场：支线交付报文补「🏮 灯火同心 N/11」进度（详见 core.js
+// talkNext 行内注释 / v19.61 灯火同心同一「成就进度于计数现场可见」主线）：支线全收集里程碑
+// （完成全部 kind==='side' 支线——现 11 条：灯长的委托/星砂之约/名字归还/雾中辨形/旧账已结/
+// 残焰已熄/亡骨还乡/树精的菌库/护粮的委托/夜路的狼嚎/蛇影的药引，数量由 QUESTS 派生不写死）
+// 此前进度只藏在 C 成就页一行 X/11，而支线全收集的计数现场正是每次「🎁 「…」完成」交付报文
+// 本身——交付当场查无一眼之数（与 v24.19「现场是动作本身」同族）；本辅助与 ACH_LIST allquests
+// 的 ok/prog 同读本文件 QUESTS 一份源（加/删支线自动跟随、绝无第二套口径），计数读既有
+// hero.quests 存档字段（交付侧 questStatus/setSideQuest 写定 'done'），防御式 (hero.quests||{})
+// 旧档零迁移；纯显示零结算零存档零数值变化。
+export function sideQuestDone(hero) {
+  const sides = Object.values(QUESTS).filter((q) => q.kind === 'side');
+  const done = sides.filter((q) => (hero && hero.quests ? hero.quests[q.id] === 'done' : false)).length;
+  return { done, total: sides.length };
+}

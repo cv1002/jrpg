@@ -101,8 +101,8 @@ ok('battle.js QUESTS / questStatus import 接入（单一数据源读取面）',
   bSrc.includes("import { questStatus } from './quests.js';") && /, QUESTS \} from '\.\/data\.js';/.test(bSrc));
 ok('battle.js bestiary 计数结算逐字零回归（hero.bestiary[bookName] +1 未动）',
   bSrc.includes('hero.bestiary[bookName] = (hero.bestiary[bookName] || 0) + 1;'));
-ok('battle.js 普通胜利文案「🏆 胜利！获得…（剩余 N 金）」逐字零回归（v19.80 口径未动）',
-  bSrc.includes('🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）'));
+ok('battle.js 普通胜利文案「🏆 胜利！获得…（剩余 N 金）（⚔️ 驱雾百战 N/100）」带讨伐进度后缀（v24.22 随新现实更新）',
+  bSrc.includes('🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）（⚔️ 驱雾百战 ${hero.totalWins || 0}/${HUNT2_GOAL}）'));
 
 // —— 数据契约：八条讨伐支线 condProg/turnin/name 齐备（战报读取面单一数据源；v21.80 side_grain 入列、v23.32 side_tree 入列、v23.42 side_wolf 入列、v23.57 side_snake 入列后随新现实更新）——
 const HUNTS = ['side_mist', 'side_stone', 'side_ember', 'side_bone', 'side_grain', 'side_tree', 'side_wolf', 'side_snake'];
@@ -145,8 +145,8 @@ const hA = mkHero({ quests: { side_bone: 'active' }, bestiary: { '骷髅兵': 1 
 const mA = runWin(hA, mkFoe());
 ok('运行期：进度档补报「📜 支线【未归的矿灯】讨伐进度 2/3 只」（condProg 同源派生）',
   mA.includes('📜 支线【未归的矿灯】讨伐进度 2/3 只'), mA.join(' | '));
-ok('运行期：进度档普通胜利文案逐字零回归（🏆 获得 15 金币、16 经验 · 剩余 15 金）',
-  mA.includes(`🏆 胜利！获得 15 金币、16 经验 · 距 Lv.6 升级还需 ${9999 - 16} 经验（剩余 15 金）`), mA.join(' | '));
+ok('运行期：进度档普通胜利文案带讨伐进度后缀（🏆 获得 15 金币、16 经验 · 剩余 15 金 · ⚔️ 驱雾百战 1/100，v24.22 随新现实更新）',
+  mA.includes(`🏆 胜利！获得 15 金币、16 经验 · 距 Lv.6 升级还需 ${9999 - 16} 经验（剩余 15 金）（⚔️ 驱雾百战 1/100）`), mA.join(' | '));
 ok('运行期：进度档战报顺序 胜利→任务进度（📜 在 🏆 之后，结算落账后再补报）',
   mA.findIndex((m) => m.startsWith('📜')) > mA.findIndex((m) => m.startsWith('🏆')) &&
   mA.findIndex((m) => m.startsWith('🏆')) >= 0, mA.join(' | '));

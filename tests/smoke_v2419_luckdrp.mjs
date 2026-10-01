@@ -15,7 +15,7 @@
 // rollDrop 先于 boxMsg 的顺序 / v24.19 注释）、运行期 rollDrop（受控随机：金币档 drops 8→9 +
 // 无掉落档 drops 恒等 + 报文组合逐一核对）、LUCKY2_GOAL(30) 与 ACH_LIST lucky2 同源互证、
 // README/package.json/CHANGELOG 同步（件套口径 243 + v24.19 守护描述 + 入库 243 + package 串尾 +
-// CHANGELOG 顶 pin）、哨兵链（前望 245 且 README 尚无 244 口径）、旧代 v24.18 pin 全库零残留扫描
+// CHANGELOG 顶 pin）、哨兵链（前望 247 且 README 尚无 244 口径）、旧代 v24.18 pin 全库零残留扫描
 // （字面量/顶 pin/242 口径）。
 import { LUCKY2_GOAL, GAME_VERSION, ACH_LIST } from '../js/data.js';
 import { rollDrop } from '../js/rules.js';
@@ -48,8 +48,8 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.18', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 18)), GAME_VERSION);
 
 // —— data.js 源级落位 ——
-ok('data.js GAME_VERSION 字面量已为 v24.20（旧 v24.18 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.20';") && !dSrc.includes("const GAME_VERSION = 'v24.18';"));
+ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.18 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.22';") && !dSrc.includes("const GAME_VERSION = 'v24.18';"));
 ok('data.js 含 v24.19 注释（额外掉落战报「🍀 鸿运当头 N/30」进度后缀说明）',
   dSrc.includes('// v24.19 体验打磨·信息透明·计数现场'));
 ok('data.js 仍保留 v24.18 历史注释（后期金币曲线续平滑说明，累积注释块）',
@@ -69,7 +69,7 @@ ok('ACH_LIST lucky2 判定/进度同读 (drops||0) 与 LUCKY2_GOAL',
 
 // —— battle.js 源级落位 ——
 ok('battle.js import 含 LUCKY2_GOAL（data.js 既有导出，零新增模块依赖）',
-  bSrc.includes('POTION_USE_GOAL, LUCKY2_GOAL, RUSH_CLEAR_GOAL'));
+  bSrc.includes('POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL'));
 ok('battle.js 额外掉落报文含「🍀 鸿运当头 N/30」进度后缀（模板逐字）',
   bSrc.includes('（🍀 鸿运当头 ${hero.drops || 0}/${LUCKY2_GOAL}）'));
 ok('battle.js 报文分子读 hero.drops 防御式（(hero.drops||0)）', bSrc.includes('${hero.drops || 0}'));
@@ -107,27 +107,27 @@ try {
 }
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百四十四件套（二百四十三件套清除）',
-  readme.includes('冒烟二百四十四件套（二百四十三件套清除）'));
-ok('README tests 含 v24.19 守护描述与 smoke_v2419_luckdrp 入库（244 份）',
+ok('README 件套口径已为二百四十六件套（二百四十五件套清除）',
+  readme.includes('冒烟二百四十六件套（二百四十五件套清除）'));
+ok('README tests 含 v24.19 守护描述与 smoke_v2419_luckdrp 入库（246 份）',
   readme.includes('v24.19 起含 「🎁 额外掉落」战报「🍀 鸿运当头 N/30」进度后缀守护') &&
-  readme.includes('smoke_v2419_luckdrp 入库（244 份）'));
+  readme.includes('smoke_v2419_luckdrp 入库（246 份）'));
 ok('README 仍有 v24.18 守护描述（历史保留）', readme.includes('v24.18 起含 「后期金币曲线续平滑」守护'));
-ok('README 已有二百四十四件套口径且尚无 244（哨兵前望 245 语义：下一版才写 243）',
-  readme.includes('冒烟二百四十四件套（二百四十三件套清除）') &&
-  !readme.includes('二百四十五件套'));
+ok('README 已有二百四十五件套口径且尚无 244（哨兵前望 247 语义：下一版才写 243）',
+  readme.includes('冒烟二百四十六件套（二百四十五件套清除）') &&
+  !readme.includes('二百四十七件套'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 244 份（smoke.mjs + 243 专项）', chain.length === 243 && chainAll.length === 244, String(chain.length));
-ok('package.json 链尾为 smoke_v2420_skillprog（第 244 份）', chain[chain.length - 1] === 'smoke_v2420_skillprog', chain[chain.length - 1]);
+ok('package.json 实跑链共 246 份（smoke.mjs + 245 专项）', chain.length === 245 && chainAll.length === 246, String(chain.length));
+ok('package.json 链尾为 smoke_v2422_huntprog（第 246 份）', chain[chain.length - 1] === 'smoke_v2422_huntprog', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2419_luckdrp.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2419_luckdrp.mjs'));
-ok('package.json 链锚逐字（smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs"）',
-  pkgRaw.includes('smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs"'));
-ok('README tests 树串尾已延伸（smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog（npm test 串跑））',
-  readme.includes('smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog（npm test 串跑）'));
-ok('CHANGELOG.md 顶部条目已为 v24.20（startsWith）', changelog.startsWith('## v24.20'));
+ok('package.json 链锚逐字（smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs"）',
+  pkgRaw.includes('smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs"'));
+ok('README tests 树串尾已延伸（smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog（npm test 串跑））',
+  readme.includes('smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog（npm test 串跑）'));
+ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.22'));
 ok('CHANGELOG v24.19 条目含「鸿运当头」与「计数现场」与「额外掉落」',
   changelog.includes('鸿运当头') && changelog.includes('计数现场') && changelog.includes('额外掉落'));
 ok('CHANGELOG 仍保留 v24.18 条目（历史保留）', changelog.includes('## v24.18'));
@@ -137,7 +137,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 243（243 + smoke_v2420_skillprog）', files.length === 244, String(files.length));
+ok('tests 目录件套 = 243（244 + smoke_v2421_allquest）', files.length === 246, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 

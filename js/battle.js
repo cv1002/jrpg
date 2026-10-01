@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -683,7 +683,21 @@ function winBattle() {
     // 任务奖励/药水购买成功文案带上余额，但战斗胜利（高频收入来源）仍只报「获得 N 金币」；玩家刚拿到一笔
     // 收入想确认「兜里还剩多少」仍需再按 I 看状态页。直接读结算后的 hero.gold（line 399 已加 enemy.gold），
     // 零数值变化，只追加显示。
-    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）`, WIN_MSG_MS);
+    // v24.22 体验打磨·信息透明·计数现场（承 v24.21 支线交付「🏮 灯火同心 N/11」/ v24.20 领悟战报
+    // 「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/ v24.17 喝药战报「💧 渴饮甘露 N/10」
+    // 同一「计数现场报进度」主线）：成就「驱雾百战」（讨伐线中档里程碑 = 累计讨伐 HUNT2_GOAL(100) 只，
+    // 计数 hero.totalWins 由 winBattle 胜利结算唯一产生点累加、snapshotHero 全量快照自动持久化、
+    // 防御式 (hero.totalWins||0) 旧档零迁移）此前进度只藏在 C 成就页一行 X/100——讨伐线的计数现场
+    // 正是每次「🏆 胜利！」战报本身：打赢当场查无一眼之数（与 v24.17「现场是动作本身」同族；v24.12
+    // 胜利画面已报「⚔️ 身经百战 N/100」但那是遭遇端口（battles），讨伐端口（totalWins）全游无一个
+    //  live 窗口——drawWin 的「累计讨伐 N 只」是 bestiary 击杀合计且只在 Boss 胜利总结屏，普通胜利
+    // 战报零口径）；现普通胜利报文末尾补「（⚔️ 驱雾百战 N/100）」（分子读 hero.totalWins 防御式
+    // 旧档零迁移、分母读 data.js HUNT2_GOAL 单一数据源，与 C 页/ACH_LIST hunt100 的 ok/prog 同读
+    // 一份源，调阈值只改 data.js 一处全端自动跟随；totalWins++ 先于 boxMsg 落账，进度差分即本场；
+    // 同 lucky 线 v24.19 只报中档里程碑先例——初露锋芒 1/驱雾十战 10/驱雾三百战 300 三档仍由 C 页
+    // 承载）。纯显示零结算零存档零数值变化（totalWins 计数/金币经验结算/升级分支/掉落/碎片/支线
+    // 进度战报逐字未动）。
+    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）（⚔️ 驱雾百战 ${hero.totalWins || 0}/${HUNT2_GOAL}）`, WIN_MSG_MS);
   }
   // v23.23 首杀记忆图鉴收录反馈（体验打磨·信息透明·纯显示——承 v19.41 已遭遇揭示 / v21.37 已遭遇
   // 计数同一「击败 = 被记起」主线）：击败即写入记忆图鉴（上方 hero.bestiary 累计），但胜利报文（升级/
