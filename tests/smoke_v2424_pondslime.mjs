@@ -15,7 +15,7 @@
 // （offer→active→turnin→done 全链路 + resolveNpcTalk 接取/交付结算 30 金+2 药水 + npcQuestMark/
 // npcQuestPages 四态 + sideQuestDone 0/12·3/12·12/12）、NPCS.granny 升格落位（mark/坐标/NPC_SPOTS
 // 零回归）、README/package.json/CHANGELOG 同步（件套口径 248 + v24.24 守护描述 + 入库 248 + package
-// 串尾 + CHANGELOG 顶 pin）、tests 目录与实跑链恒等（248）、哨兵链（前望 249 且 README 尚无 249
+// 串尾 + CHANGELOG 顶 pin）、tests 目录与实跑链恒等（248）、哨兵链（前望 250 且 README 尚无 250
 // 口径）、旧代 v24.23 pin 全库零残留扫描（字面量/顶 pin/247 口径 · 豁免上一版套件
 // smoke_v2423_eliteprog）。
 import { GAME_VERSION, QUESTS, SLIME_GOAL, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, WOLF_GOAL, SNAKE_GOAL, ACH_LIST, NPCS } from '../js/data.js';
@@ -49,7 +49,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.23', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.24（旧 v24.23 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.24';") && !dSrc.includes("const GAME_VERSION = 'v24.23';"));
+  dSrc.includes("const GAME_VERSION = 'v24.25';") && !dSrc.includes("const GAME_VERSION = 'v24.23';"));
 ok('data.js 含 v24.24 注释（新支线「塘底的灯影」说明）',
   dSrc.includes('// v24.24 新内容·新支线'));
 ok('data.js 仍保留 v24.23 历史注释（精英战报进度后缀说明，累积注释块）',
@@ -169,29 +169,29 @@ ok('data.js village.extras 含掌灯阿婆 (14,8) 与 NPC_SPOTS 键「14,8」（
   dSrc.includes('{ x: 14, y: 8, ty: \'NPC\' }') && dSrc.includes("'14,8'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百四十八件套（二百四十七件套清除）',
-  readme.includes('冒烟二百四十八件套（二百四十七件套清除）'));
-ok('README tests 含 v24.24 守护描述与 smoke_v2424_pondslime 入库（248 份）',
+ok('README 件套口径已为二百四十九件套（二百四十八件套清除）',
+  readme.includes('冒烟二百四十九件套（二百四十八件套清除）'));
+ok('README tests 含 v24.24 守护描述与 smoke_v2424_pondslime 入库（249 份）',
   readme.includes('v24.24 起含 新支线「塘底的灯影」守护') &&
-  readme.includes('smoke_v2424_pondslime 入库（248 份）'));
+  readme.includes('smoke_v2424_pondslime 入库（249 份）'));
 ok('README 仍有 v24.23 守护描述（历史保留）', readme.includes('v24.23 起含 💎 精英战报「⚔️ 精英猎手 N/2」进度后缀守护'));
-ok('README 已有二百四十八件套口径且尚无 249（哨兵前望 249 语义：下一版才写 249）',
-  readme.includes('冒烟二百四十八件套（二百四十七件套清除）') && !readme.includes('二百四十九件套'));
-ok('README tests 树串尾已延伸（…+ smoke_v2423_eliteprog + smoke_v2424_pondslime（npm test 串跑））',
-  readme.includes('smoke_v2423_eliteprog + smoke_v2424_pondslime（npm test 串跑）'));
+ok('README 已有二百四十八件套口径且尚无 250（哨兵前望 250 语义：下一版才写 250）',
+  readme.includes('冒烟二百四十九件套（二百四十八件套清除）') && !readme.includes('二百五十件套'));
+ok('README tests 树串尾已延伸（…+ smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog（npm test 串跑））',
+  readme.includes('smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十二条 · 塘底的灯影 · SLIME_GOAL）',
   readme.includes('十二条支线目标/奖励全部由') && readme.includes('塘底的灯影（掌灯阿婆 · 3 只史莱姆 `SLIME_GOAL`）30 金 + 2 药水') &&
   readme.includes('`SLIME_GOAL`'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 248 份（smoke.mjs + 247 专项）', chain.length === 247 && chainAll.length === 248, String(chain.length));
-ok('package.json 链尾为 smoke_v2424_pondslime（第 248 份）', chain[chain.length - 1] === 'smoke_v2424_pondslime', chain[chain.length - 1]);
+ok('package.json 实跑链共 248 份（smoke.mjs + 248 专项）', chain.length === 248 && chainAll.length === 249, String(chain.length));
+ok('package.json 链尾为 smoke_v2425_potionprog（第 249 份）', chain[chain.length - 1] === 'smoke_v2425_potionprog', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2424_pondslime.mjs（node tests/ 前缀形态）',
-  pkgRaw.includes('node tests/smoke_v2424_pondslime.mjs'));
-ok('package.json 链锚逐字（smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs"）',
-  pkgRaw.includes('smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.24（startsWith）', changelog.startsWith('## v24.24'));
+  pkgRaw.includes('node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs'));
+ok('package.json 链锚逐字（smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs"）',
+  pkgRaw.includes('smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.24（startsWith）', changelog.startsWith('## v24.25'));
 ok('CHANGELOG v24.24 条目含「塘底的灯影」与「史莱姆」与「SLIME_GOAL」',
   changelog.includes('塘底的灯影') && changelog.includes('史莱姆') && changelog.includes('SLIME_GOAL'));
 ok('CHANGELOG 仍保留 v24.23 条目（历史保留）', changelog.includes('## v24.23'));
@@ -201,7 +201,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 248（247 + smoke_v2424_pondslime）', files.length === 248, String(files.length));
+ok('tests 目录件套 = 248（247 + smoke_v2424_pondslime）', files.length === 249, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 

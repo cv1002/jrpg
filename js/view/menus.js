@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, BREW2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, POTIONS2_GOAL, BREW2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -30,6 +30,19 @@ export function drawShop(){
   // 「🍄 蘑菇商路 30/30」≈110px 右缘 ≈196 < 面板中点 320 与金币左缘 ≈425）；纯显示零结算零存档
   // 零数值变化（SELL_GOAL/sellMushroom 结算/商品清单/页脚逐字未动）。
   text(`🍄 蘑菇商路 ${(hero.sold || 0)}/${SELL_GOAL}`, 86, 80, '12px', '#7d93a3', 'left');
+  // v24.25 商店界面补「🧪 药香满囊 N/50」进度角标（体验打磨·信息透明·决策现场，承 v24.09 商店
+  // 「🍄 蘑菇商路 N/30」同屏同款行内角标 / v23.82 蘑菇商路先例同一「成就进度于决策现场可见」主线：
+  // 卖菇侧 v24.09 已补（卖货决策现场），药水线的计数现场正是「买药水」本身——把药水补满这个动作的
+  // 决策现场（杂货商店 药水行）此前只报 价格/背包满/还差 N 金，成就「药香满囊」（持有 POTIONS2_GOAL(50)
+  // 瓶药水，计数 hero.item 由 shop.buyPotion 买入/开箱/任务奖励共享同一持有量字段、防御式
+  // (hero.item||0) 旧档零迁移）进度只藏在 C 成就页一行 X/50——站柜台前补药查无一眼之数；现按 v24.09
+  // 同款补「🧪 药香满囊 N/50」（分子读 hero.item 防御式 (hero.item || 0)、分母读 data.js
+  // POTIONS2_GOAL 单一数据源，与 ACH_LIST stock2 的 ok/prog 同读一份源，调阈值只改 data.js 一处三端
+  // 自动跟随；同 v24.19 只报中档里程碑先例——有备无患 N/20 与万全之备 N/99 同线另两档由 C 页承载），
+  // 12px 灰字左对齐 x=206（「🍄 蘑菇商路 30/30」右缘 ≈196 之后、与右缘「💰 N 金币」（520 右对齐）
+  // 零重叠，最宽档「🧪 药香满囊 50/50」≈100px 右缘 ≈306 < 面板中点 320 与金币左缘 ≈425）；纯显示
+  // 零结算零存档零数值变化（POTIONS2_GOAL/药水持有/购买结算/商品清单/页脚逐字未动）。
+  text(`🧪 药香满囊 ${(hero.item || 0)}/${POTIONS2_GOAL}`, 206, 80, '12px', '#7d93a3', 'left');
   // v23.95 商品清单视窗滚动（体验打磨·可发现性·纯显示）：v23.92 星铁剑入店后清单最长 10 行
   // （新手持木剑布衣+持菇：药水/卖菇/铁剑/秘银剑/星铁剑/勇者之剑/皮甲/锁子甲/龙鳞甲/离开——
   // buildShopList 实测），第 9 行（i=8，rect 400..432）已画出 360 高的面板底（410）、第 10 行
