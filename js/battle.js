@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -668,7 +668,21 @@ function winBattle() {
     // v19.79 精英怪掉落蘑菇反馈追加剩余库存（信息透明·纯显示）：此前击败石心魔像只报「捡到 1 株」，
     // 玩家想确认「包里现在有几株」还需再按 I 看状态页；现在直接读结算后的 hero.mushrooms，与 v19.73 卖菇剩余量、
     // v19.74 用药剩余量同源，零数值变化。
-    bind.boxMsg(`💎 从魔像残骸中捡到 1 株魔法蘑菇！（剩余 ${hero.mushrooms || 0} 株）`, NARR_MSG_MS);
+    // v24.23 体验打磨·信息透明·计数现场（承 v24.22 胜利战报「⚔️ 驱雾百战 N/100」/ v24.21 支线交付
+    // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」
+    // 同一「计数现场报进度」主线 / v21.75 精英猎手成就（精英讨伐线里程碑 = 讨伐精英「石心魔像」与
+    // 「残焰魔像」各至少一次，计数由 hero.bestiary 击杀累计派生，与 B 图鉴页/ACH_LIST elites 的
+    // ok/prog 同读 data.js ELITE_GOLEM/EMBER_GOLEM 一份源）——精英怪全游仅两尊（雾语林精英·石心魔像 /
+    // 无字回廊·残焰魔像），每局至多 2 次击杀，是比 v24.20 诸技通明（整局至多 8 次）更稀有的低频事件；
+    // 此前进度只藏在 C 成就页一行 X/2，而精英线的计数现场正是每次「💎 从魔像残骸中捡到」战报本身——
+    // 打倒精英的当场查无一眼之数（承 v24.19「现场是动作本身」同族）；现精英蘑菇战报末尾补
+    // 「（⚔️ 精英猎手 N/2）」（分子与 ACH_LIST elites 的 prog 同式——bestiary[ELITE_GOLEM.name]≥1
+    // 与 bestiary[EMBER_GOLEM.name]≥1 各计 1、分母 2 与 ACH_LIST elites 的 /2 同口径，调精英表只改
+    // data.js 一处全端自动跟随；hero.bestiary[bookName]++ 已先于本行落账（上方 winBattle 结算头），
+    // 进度差分即本场；防御式 (hero.bestiary||{}) 旧档零迁移）；纯显示零结算零存档零数值变化
+    // （mushrooms 计数/掉落/金币经验结算/成就判定逐字未动）。
+    const eliteN = (((hero.bestiary || {})[ELITE_GOLEM.name] || 0) >= 1 ? 1 : 0) + (((hero.bestiary || {})[EMBER_GOLEM.name] || 0) >= 1 ? 1 : 0);
+    bind.boxMsg(`💎 从魔像残骸中捡到 1 株魔法蘑菇！（剩余 ${hero.mushrooms || 0} 株）（⚔️ 精英猎手 ${eliteN}/2）`, NARR_MSG_MS);
   }
   hero.gold += enemy.gold;
   const g = grantXp(hero, enemy.xp);
