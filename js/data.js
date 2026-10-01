@@ -1797,7 +1797,14 @@
 // ELITE_GOLEM/EMBER_GOLEM 一处全端自动跟随；hero.bestiary[bookName]++ 先于本行落账，进度差分即本场；
 // 防御式 (hero.bestiary||{}) 旧档零迁移），纯显示零结算零存档零数值变化（mushrooms 计数/掉落/金币经验
 // 结算/成就判定逐字未动）。
-const GAME_VERSION = 'v24.23';
+// v24.24 新内容·新支线：四基础怪版图收口——第十二条支线「塘底的灯影」（掌灯阿婆·讨伐 3 只史莱姆
+// SLIME_GOAL，承 v23.32 拾菇人 / v23.42 客栈老板娘 / v23.57 酿药师「风味 NPC 升格为支线委托人」
+// 先例，详见 QUESTS.side_pond 行内注释）：v23.57 补「蛇影的药引」时四基础怪版图仅余史莱姆无
+// 支线（SNAKE_GOAL 注释当时「刻意的留白」），本轮收口——全 8 种普通怪至此各有专属讨伐线
+// （史莱姆/野狼/哥布林/毒蛇/雾灵/树精/骷髅兵/石魔像 + 精英残焰魔像），与 v19.61 灯火同心
+// 「完成全部 kind==='side' 支线」同一「支线版图逐怪核对」主线（条款数由 QUESTS 派生不写死，
+// 成就/状态页/任务日志/交付报文口径全端自动跟随，零裸字面量）。
+const GAME_VERSION = 'v24.24';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -2514,8 +2521,17 @@ const WOLF_GOAL = 3;        // 客栈老板娘支线需驱赶的野狼只数
 // 目标文案（obj）/接取对话（offer）全同步；毒蛇是潮灯镇遇敌池限定四基础怪之一（village.pool，
 // Lv.1 即可撞见、镇外高草危险格出没——与护粮/夜路同池不同怪），也是全游戏唯一「施毒」机制怪
 // （SPECIES.tag「会施毒 · 扣血N回合」与 POISON_* 结算同源，战斗特性角标/图鉴 codexTag/帮助页
-// 「试炼进阶」同口径）——四基础怪版图至此只余史莱姆（新手垫脚怪）无支线，刻意留白。
+// 「试炼进阶」同口径）。
 const SNAKE_GOAL = 3;       // 酿药师支线需带回的毒蛇只数
+
+// 史莱姆讨伐目标（单一数据源）：掌灯阿婆支线「塘底的灯影」需讨伐的史莱姆只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL / BONE_GOAL / GRAIN_GOAL / TREE_GOAL /
+// WOLF_GOAL / SNAKE_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/
+// 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；史莱姆是潮灯镇遇敌池限定四基础怪
+// 之一（village.pool，Lv.1 即可撞见、贴水塘与镇边草地出没——与护粮/夜路/蛇影同池不同怪），
+// 也是四基础怪里最后一只补上支线的（v23.57 SNAKE_GOAL 注释「四基础怪版图至此只余史莱姆（新手
+// 垫脚怪）无支线，刻意留白」——v24.24 按 v23.32/v23.42/v23.57「风味 NPC 升格」先例收口）。
+const SLIME_GOAL = 3;       // 掌灯阿婆支线需讨伐的史莱姆只数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -2767,9 +2783,13 @@ const NPCS={
     ['守碑人：三场都胜了。碑光熄灭的那一瞬，我以为它会像镇上的灯一样亮一整夜——','结果它只是把三道刻痕照得更深了。 [Enter] 继续'],
     ['守碑人：刻痕深一分，忘掉的东西就少一分。','老朽守碑守到灯都亮了，值了。','去吧，记得把名字带回来。 [Enter] 结束'],
   ]},
-  // 掌灯阿婆（v21.36 新 NPC·纯风味·潮灯镇水塘南岸）：讲旧故事的老人——linesByStage 按主线旗标选段
+  // 掌灯阿婆（v21.36 新 NPC·水塘南岸）：讲旧故事的老人——linesByStage 按主线旗标选段
   // （默认/夺回灯芯 bossDefeated/回廊开启 galleryOpen，与巡灯人/雾径猎手同款既有机制、零新逻辑），
-  // trueBoss 后走 after 彩蛋（npcQuestPages 同源读取）；无任务、零结算、零裸字面量。
+  // trueBoss 后走 after 彩蛋（npcQuestPages 同源读取）。
+  // v24.24 升格为支线委托人（QUESTS.side_pond「塘底的灯影」·讨伐 SLIME_GOAL 只史莱姆，承 v23.32 拾菇人/
+  // v23.42 客栈老板娘/v23.57 酿药师「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走任务页
+  // （talk.offer/active/turnin/done 四态），原有 linesByStage 三档叙事与 trueBoss after 彩蛋「阿灯」
+  // 已并入 side_pond 的 done 分档（零内容丢失，详见 QUESTS.side_pond 行内注释）。
   granny:{name:'掌灯阿婆', mark:'lamp', linesByStage:[
     { gate:null, lines:[
       ['掌灯阿婆：灯灭那晚，塘里的月亮也熄了。','雾是从井底爬上来的——可灯芯，怎么就去了林子里。','[Enter] 继续'],
@@ -4870,6 +4890,65 @@ const QUESTS={
       ]],
     },
   },
+  // 掌灯阿婆·塘底的灯影（v24.24 新支线·第十二条）：讨伐 SLIME_GOAL 只史莱姆（bestiary 计数）——
+  // 十二支线版图逐怪核对后，四基础怪里唯一没有任何任务挂钩的只剩史莱姆（哥布林=护粮的委托/
+  // 野狼=夜路的狼嚎/毒蛇=蛇影的药引，v23.57 当时「刻意留白」，本轮按 v23.32 拾菇人 / v23.42 客栈
+  // 老板娘 / v23.57 酿药师同一「风味 NPC 升格为支线委托人」先例收口）；史莱姆是潮灯镇遇敌池限定
+  // 四基础怪之一（village.pool，Lv.1 即可撞见、贴水塘与镇边草地出没），接取→讨伐→交付全流程在
+  // 镇内完成，是开荒期与「护粮的委托」并行的第二条镇内讨伐线；掌灯阿婆（v21.36 纯风味 NPC·水塘
+  // 南岸）升格为委托人：她守着「灯灭那晚，塘里的月亮也熄了」的旧故事，塘底的史莱姆把灯影一口
+  // 一口吞进肚子——讨伐 3 只让影子重新落回水面；与 side_mist / side_stone / side_grain 同一
+  // 「讨伐采集型支线」模式（无 unlockOn → 从开局即 offer，保留完整接取流程），阈值单一数据源
+  // SLIME_GOAL（判定/进度/目标文案/接取对话同读），奖励 30 金 + 2 生命药水——开荒期最低档
+  // （史莱姆是全游戏最弱怪，介于护粮 50 金+药水之下、与新手药水补给匹配）；active 页按 hero
+  // 实时报进度（与 side_stone/side_wolf 同款函数页），done 页按 hero.trueBoss 分档（承 side_ember /
+  // side_bone / side_mushroom done 页先例，把 granny 原有 linesByStage 三档叙事与 trueBoss after
+  // 彩蛋「阿灯」并入任务页分档——npcQuestPages 有任务后不再单独展示 after，转由 done 分档承载，
+  // 零内容丢失）。
+  side_pond:{
+    id:'side_pond', kind:'side', store:true, npc:'granny', giver:'granny',
+    cond:(g)=>(((g.bestiary||{})['史莱姆'])||0) >= SLIME_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})['史莱姆'])||0}/${SLIME_GOAL} 只`,
+    name:'塘底的灯影', where:'潮灯镇·水塘与镇边草地',
+    obj:`讨伐 ${SLIME_GOAL} 只吞了灯影的【史莱姆】`,
+    offer:'去潮灯镇水塘南岸找掌灯阿婆，接下塘底的委托',
+    turnin:'灯影还回来了！回水塘找掌灯阿婆',
+    done:'塘里的灯影回来了，月亮重新落在水上。',
+    reward:{ gold:30, item:2 },
+    talk:{
+      offer:[[
+        '掌灯阿婆：灯灭那晚，塘里的月亮也熄了。',
+        '可这两天连影子也没了——塘底的史莱姆，把灯影一口一口吞进了肚子。',
+        `替我讨回 ${SLIME_GOAL} 只，影子才落得回水面上。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '掌灯阿婆：史莱姆就贴着水塘和镇边的草地滚，软乎乎的，好认。',
+        '雾是从井底爬上来的——孩子，出门前把药水装满。',
+        `（已讨伐 ${((hero.bestiary||{})['史莱姆'])||0}/${SLIME_GOAL} 只）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '掌灯阿婆：影子回来了……你看塘水，月亮重新落上来了。',
+        '这两瓶药水你带上。镇子外头雾大，别把影子也走丢了。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [[
+        '掌灯阿婆：你看这塘水，倒映着整座镇子的灯。',
+        '名字找回来了，灯也亮了。那孩子叫阿灯——他被忘掉的名字，现在刻在你心里了。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '掌灯阿婆：灯芯回来了，塘里的影子也回来了。',
+        '可那影子，听说是旧灯卫变的；回廊开了，被忘掉的名字都该回家看看了。',
+        '替我去最旧那块碑上看看——有没有一个叫「阿灯」的名字。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]] : [[
+        '掌灯阿婆：灯影回来了，月亮重新落在水上。',
+        '雾里长出来的东西，都是被忘掉的旧事。等灯芯回来，影子才真正安稳。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]]),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -5979,7 +6058,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, SLIME_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,

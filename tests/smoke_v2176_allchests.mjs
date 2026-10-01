@@ -163,7 +163,7 @@ ok('开箱寻宝（chests）半程档零回归（仍 6 只阈值：6 只 ok=true
   achChests.prog({ chests: new Set(['a', 'b', 'c', 'd', 'e', 'f']) }) === '6/6');
 const achAllQuests = ACH_LIST.find((a) => a.id === 'allquests');
 ok('灯火同心（allquests）支线分母 v23.57 随新现实更新为 0/11（side_grain/side_tree/side_wolf/side_snake 是支线，allchests 不是）',
-  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/11', achAllQuests && achAllQuests.prog({ quests: {} }));
+  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/12', achAllQuests && achAllQuests.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：12 只档新解锁含 allchests；11 只档不含',
@@ -246,7 +246,7 @@ ok('成就页 drawAch 两态 + 第三页滚动渲染不抛错（未解锁/已解
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2176_allchests', readme.includes('smoke_v2176_allchests'));
-ok('README 件套口径为二百四十七件套（二百四十六件套清除）', readme.includes('二百四十七件套（二百四十六件套清除）'));
+ok('README 件套口径为二百四十八件套（二百四十七件套清除）', readme.includes('二百四十八件套（二百四十七件套清除）'));
 ok('README 含 v21.76 守护描述（新成就「一箱不漏」（全图宝箱全收集里程碑）守护）',
   readme.includes('新成就「一箱不漏」（全图宝箱全收集里程碑）守护'));
 // v21.77 随新现实更新：README 成就口径由「27 项」双处递增为「28 项」双处（elites 成就入列），

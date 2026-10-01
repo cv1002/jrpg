@@ -1,12 +1,12 @@
 // smoke_v2309_questnum.mjs —— v23.09 README「数值速查」支线/奖励行守护（文档整理·数值说明·同源口径）
 // 承 v21.10-v23.08 冒烟入库先例：版本锚点 + 源级落位（data.js v23.09 注释/GAME_VERSION 字面量 v23.09/
-// v23.08 历史注释保留零 v23.08 字面量残留）+ 支线契约（十一条支线 kind==='side' + 九组 *_GOAL 逐值 +
+// v23.08 历史注释保留零 v23.08 字面量残留）+ 支线契约（十二条支线 kind==='side' + 九组 *_GOAL 逐值 +
 // FRAGMENTS.length 逐值 + QUESTS[].reward 逐值（蘑菇支线随等级实时 gold:(lv)=>40+lv*10 抽样逐值）+
 // quests.applyQuestReward 源级落位（gold 函数式/item/potion2 三通道与 README 行同读一份源））+ README
 // 数值速查「支线 / 奖励」行落位（与任务日志奖励行/交付结算同源口径，零裸字面量）+ README/package.json/
-// CHANGELOG 同步（冒烟二百四十七件套（二百四十六件套清除）/串尾/入库 205 份/顶 pin）+ 姊妹件套 pin
+// CHANGELOG 同步（冒烟二百四十八件套（二百四十七件套清除）/串尾/入库 205 份/顶 pin）+ 姊妹件套 pin
 // （smoke_v2308 随新现实更新）+ 哨兵链领先一位（206 口径）+ 旧代 v23.08 pin 全库零残留。
-import { GAME_VERSION, QUESTS, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, GRAIN_GOAL, BONE_GOAL, EMBER_GOAL, TREE_GOAL, WOLF_GOAL, SNAKE_GOAL, FRAGMENTS } from '../js/data.js';
+import { GAME_VERSION, QUESTS, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, GRAIN_GOAL, BONE_GOAL, EMBER_GOAL, TREE_GOAL, WOLF_GOAL, SNAKE_GOAL, SLIME_GOAL, FRAGMENTS } from '../js/data.js';
 
 let n = 0, failed = 0;
 function ok(name, cond, extra) {
@@ -31,7 +31,7 @@ const changelog = read('../CHANGELOG.md');
 
 ok('data.js 含 v23.09 版本注释', dataSrc.includes('// v23.09 文档整理·数值说明·同源口径：README「数值速查」补「支线 / 奖励」行'));
 ok('data.js GAME_VERSION 字面量已为 v23.35（旧 v23.33 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.23';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "33';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.24';") && !dataSrc.includes("const GAME_VERSION = 'v23." + "33';"));
 ok('data.js 仍保留 v23.08 历史注释（难度/倍率数值速查行注释未动）', dataSrc.includes('// v23.08 文档整理·数值说明·同源口径：README「数值速查」补「难度 / 倍率」行'));
 
 ok('data.js 含 v23.32 版本注释（新支线「树精的菌库」/TREE_GOAL 单一数据源）',
@@ -46,13 +46,13 @@ ok('data.js 仍保留 v23.29 历史注释（标题页存档预览·徽记 N/5 �
   dataSrc.includes('// v23.29 体验打磨·信息透明·纯显示：标题页存档预览补「·徽记 N/5」冒险进度计数'));
 
 // —— 支线目标常量逐值（单一数据源）——
-ok('九组支线目标逐值：蘑菇 3 / 雾灵 3 / 石魔像 3 / 哥布林 3 / 骷髅兵 3 / 残焰魔像 1 / 树精 3 / 野狼 3 / 毒蛇 3',
-  MUSHROOM_GOAL === 3 && MIST_GOAL === 3 && STONE_GOAL === 3 && GRAIN_GOAL === 3 && BONE_GOAL === 3 && EMBER_GOAL === 1 && TREE_GOAL === 3 && WOLF_GOAL === 3 && SNAKE_GOAL === 3);
+ok('十组支线目标逐值：蘑菇 3 / 雾灵 3 / 石魔像 3 / 哥布林 3 / 骷髅兵 3 / 残焰魔像 1 / 树精 3 / 野狼 3 / 毒蛇 3 / 史莱姆 3',
+  MUSHROOM_GOAL === 3 && MIST_GOAL === 3 && STONE_GOAL === 3 && GRAIN_GOAL === 3 && BONE_GOAL === 3 && EMBER_GOAL === 1 && TREE_GOAL === 3 && WOLF_GOAL === 3 && SNAKE_GOAL === 3 && SLIME_GOAL === 3);
 ok('记忆碎片 FRAGMENTS.length = 4（旧灯卫的名字支线目标同源）', Array.isArray(FRAGMENTS) && FRAGMENTS.length === 4);
 
 // —— QUESTS 支线契约：十一条 kind==='side'（主线四条零回归）——
 const sides = Object.values(QUESTS).filter((q) => q.kind === 'side');
-ok('QUESTS 共 15 条（主线 4 + 支线 11）', Object.keys(QUESTS).length === 15 && sides.length === 11, String(Object.keys(QUESTS).length));
+ok('QUESTS 共 15 条（主线 4 + 支线 11）', Object.keys(QUESTS).length === 16 && sides.length === 12, String(Object.keys(QUESTS).length));
 
 // —— QUESTS[].reward 逐值（与任务日志奖励行/quests.applyQuestReward 同读一份源）——
 ok('灯长的委托：3 株蘑菇（MUSHROOM_GOAL）+ 奖励随等级实时（lv1=50 金 / lv10=140 金）+ 2 药水',
@@ -92,7 +92,7 @@ ok('蛇影的药引：50 金 + 1 高级灵药（酿药师委托人、无 unlockO
 ok('data.js 蘑菇支线奖励字面量逐字（reward:{ gold:(lv)=>40+lv*10, item:2 }）', dataSrc.includes('reward:{ gold:(lv)=>40+lv*10, item:2 },'));
 ok('data.js 旧灯卫的名字奖励字面量逐字（reward:{ gold:120, potion2:1 }）', dataSrc.includes('reward:{ gold:120, potion2:1 },'));
 ok('data.js 树精的菌库字面量逐字（reward:{ gold:70, item:1 } / const TREE_GOAL = 3; / export 落位（WOLF_GOAL 与 GRAIN_GOAL·TREE_GOAL 相邻，v23.57 起 SNAKE_GOAL 并列 WOLF_GOAL 之后；v23.54 起 DEFLECT_GOAL 后并列 CHARGE_GOAL；v23.63 起 CHARGE_GOAL 后并列 CRIT_GOAL；v23.64 起 CRIT_GOAL 后并列 CAST_GOAL；v23.65 起 CAST_GOAL 后并列 FLEE_GOAL））',
-  dataSrc.includes('reward:{ gold:70, item:1 }') && dataSrc.includes('const TREE_GOAL = 3;') && dataSrc.includes('GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE'));
+  dataSrc.includes('reward:{ gold:70, item:1 }') && dataSrc.includes('const TREE_GOAL = 3;') && dataSrc.includes('GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, SLIME_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE'));
 ok('data.js 夜路的狼嚎字面量逐字（reward:{ gold:40, item:2 } / const WOLF_GOAL = 3;）',
   dataSrc.includes('reward:{ gold:40, item:2 }') && dataSrc.includes('const WOLF_GOAL = 3;'));
 ok('data.js 蛇影的药引字面量逐字（id:side_snake kind:side npc:brewer / reward:{ gold:50, potion2:1 } / const SNAKE_GOAL = 3;）',
@@ -110,14 +110,14 @@ ok('quests.applyQuestReward 源级落位（金币函数式/药水 item/灵药 po
   questsSrc.includes('if (reward.potion2) hero.potion2 = (hero.potion2 || 0) + reward.potion2;'));
 
 // —— README 数值速查「支线 / 奖励」行落位（全部由 data.js 派生、与任务日志/交付结算同源）——
-ok('README 支线行开头逐字（十一条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生）', readme.includes('| 支线 / 奖励 | 十一条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生'));
+ok('README 支线行开头逐字（十二条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生）', readme.includes('| 支线 / 奖励 | 十二条支线目标/奖励全部由 `QUESTS[].reward` 单一数据源派生'));
 ok('README 支线行 任务日志/交付结算同源逐字', readme.includes('与任务日志奖励行/交付结算 `quests.applyQuestReward` 同读一份源'));
 ok('README 支线行 蘑菇奖励随等级实时逐字', readme.includes('`40+10×等级` 金 + 2 药水'));
 ok('README 支线行 旧灯卫的名字 FRAGMENTS.length 逐字', readme.includes('集齐 `FRAGMENTS.length` 4 枚记忆碎片'));
 ok('README 支线行 树精的菌库 v23.32 逐字', readme.includes('树精的菌库（拾菇人 · 3 只树精 `TREE_GOAL`）70 金 + 1 药水'));
 ok('README 支线行 夜路的狼嚎 v23.42 逐字', readme.includes('夜路的狼嚎（客栈老板娘 · 3 只野狼 `WOLF_GOAL`）40 金 + 2 药水'));
 ok('README 支线行 蛇影的药引 v23.57 逐字', readme.includes('蛇影的药引（酿药师 · 3 只毒蛇 `SNAKE_GOAL`）50 金 + 1 高级灵药'));
-ok('README 支线行 常量为 (v23.09 补录 · v23.57 补第十一条)', readme.includes('（v23.09 补录 · v23.57 补第十一条） | `QUESTS` `MUSHROOM_GOAL` `MIST_GOAL` `STONE_GOAL` `GRAIN_GOAL` `WOLF_GOAL` `SNAKE_GOAL` `TREE_GOAL` `BONE_GOAL` `EMBER_GOAL` `FRAGMENTS` |'));
+ok('README 支线行 常量为 (v23.09 补录 · v23.57 补第十一条 · v24.24 补第十二条)', readme.includes('（v23.09 补录 · v23.57 补第十一条 · v24.24 补第十二条） | `QUESTS` `MUSHROOM_GOAL` `MIST_GOAL` `STONE_GOAL` `GRAIN_GOAL` `WOLF_GOAL` `SNAKE_GOAL` `TREE_GOAL` `SLIME_GOAL` `BONE_GOAL` `EMBER_GOAL` `FRAGMENTS` |'));
 // —— v23.30 昼夜 / 时段 行落位（与 v23.09 同式：开头/关键口径/补录标记/行序）——
 ok('README 昼夜行开头逐字（世界时钟 S.G.time 秒数·每档 90 秒四档循环）',
   readme.includes('| 昼夜 / 时段 | 世界时钟 `S.G.time` 秒数：每档 `DAY_PHASE_S`(90) 秒四档循环 白天→黄昏→夜晚→黎明'));
@@ -148,13 +148,13 @@ ok('data.js WEAPONS/ARMORS 数值逐字未动（木剑2/铁剑5/秘银剑9/勇�
 
 // —— README / package.json / CHANGELOG 同步守护 ——
 ok('README tests 树串尾已延伸至 smoke_v2309_questnum（v2308 后接 v2309）',
-  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog（npm test 串跑）'));
+  readme.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime（npm test 串跑）'));
 ok('README 旧串尾零残留（v2308 后无串尾收口）',
   !readme.includes('smoke_v2307_bossnum + smoke_v2308_diffnum（npm test 串' + '跑）'));
-ok('README 件套口径为二百四十七件套（二百四十六件套清除）且旧 204 口径零残留',
-  readme.includes('冒烟二百四十七件套（二百四十六件套清除）') && !readme.includes('冒烟二百零四件套（二百零三件套清' + '除）'));
-ok('README 不含哨兵领先一位（二百四十七件套（二百四十六件套清除））',
-  !readme.includes('二百四十八件套（二百四十七件套清除）'));
+ok('README 件套口径为二百四十八件套（二百四十七件套清除）且旧 204 口径零残留',
+  readme.includes('冒烟二百四十八件套（二百四十七件套清除）') && !readme.includes('冒烟二百零四件套（二百零三件套清' + '除）'));
+ok('README 不含哨兵领先一位（二百四十八件套（二百四十七件套清除））',
+  !readme.includes('二百四十九件套（二百四十八件套清除）'));
 ok('README 含 v23.09 守护描述（支线/奖励数值速查行守护）',
   readme.includes('v23.09 起含「支线 / 奖励」数值速查行守护'));
 ok('README 含 smoke_v2309_questnum 入库（205 份）', readme.includes('smoke_v2309_questnum 入库（205 份）'));
@@ -162,29 +162,29 @@ ok('README 仍保留 v23.08 守护描述（历史口径）', readme.includes('v2
 ok('README 仍保留 smoke_v2308_diffnum 入库（204 份）历史口径', readme.includes('smoke_v2308_diffnum 入库（204 份）'));
 ok('package.json 已收录 smoke_v2309_questnum（npm test 串跑第 205 份）',
   JSON.stringify(JSON.parse(pkg).scripts.test).includes('smoke_v2309_questnum.mjs'));
-ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs"',
-  pkg.includes('smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs"'));
+ok('package.json 串尾为 ... smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs"',
+  pkg.includes('smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 205 件套', testChain === 247, String(testChain));
-ok('CHANGELOG 顶部已追加 v23.35 条目', changelog.startsWith('## v24.23 '));
+ok('package.json test 串共 205 件套', testChain === 248, String(testChain));
+ok('CHANGELOG 顶部已追加 v23.35 条目', changelog.startsWith('## v24.24 '));
 ok('CHANGELOG 仍保留 v23.08 条目（历史口径）', changelog.includes('## v23.08 README「数值速查」补「难度 / 倍率」行'));
 
 // —— 姊妹件套 pin 随新现实更新 + 旧代 v23.08 pin 零残留 ——
 const s2308 = read('smoke_v2308_diffnum.mjs');
 const s2143 = read('smoke_v2143_talkekey.mjs');
-ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.35', s2308.includes("const GAME_VERSION = 'v24.23';"));
+ok('smoke_v2308 的 GAME_VERSION 字面量 pin 已更新为 v23.35', s2308.includes("const GAME_VERSION = 'v24.24';"));
 ok('smoke_v2308 的 CHANGELOG 顶 pin 已更新为 ## v23.36',
-  s2308.includes("startsWith('## v24.23 "));
-ok('smoke_v2308 的件套 pin 已更新为二百四十七件套（二百四十六件套清除）',
-  s2308.includes('二百四十七件套（二百四十六件套清除）'));
+  s2308.includes("startsWith('## v24.24 "));
+ok('smoke_v2308 的件套 pin 已更新为二百四十八件套（二百四十七件套清除）',
+  s2308.includes('二百四十八件套（二百四十七件套清除）'));
 ok('smoke_v2308 的 README 串尾 pin 已延伸至 smoke_v2309_questnum',
-  s2308.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog（npm test 串跑）'));
+  s2308.includes('smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime（npm test 串跑）'));
 ok('smoke_v2308 的 package 串尾 pin 已延伸至 smoke_v2309_questnum',
-  s2308.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs"'));
-ok('smoke_v2308 的 testChain pin 已更新为 205', s2308.includes('testChain === 247'));
+  s2308.includes('node tests/smoke_v2309_questnum.mjs && node tests/smoke_v2310_diffsum.mjs && node tests/smoke_v2311_fragprev.mjs && node tests/smoke_v2312_voltitle.mjs && node tests/smoke_v2313_talkall.mjs && node tests/smoke_v2314_voices.mjs && node tests/smoke_v2315_talkfoot.mjs && node tests/smoke_v2316_voiceshead.mjs && node tests/smoke_v2317_pausemap.mjs && node tests/smoke_v2318_battlemap.mjs && node tests/smoke_v2319_deadloc.mjs && node tests/smoke_v2392_stariron.mjs && node tests/smoke_v2393_deadkey.mjs && node tests/smoke_v2394_fightback.mjs && node tests/smoke_v2395_shopscroll.mjs && node tests/smoke_v2396_steelarmor.mjs && node tests/smoke_v2397_baserow.mjs && node tests/smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs"'));
+ok('smoke_v2308 的 testChain pin 已更新为 205', s2308.includes('testChain === 248'));
 ok('smoke_v2308 的版本锚已越过 v23.08 口径（>= 8 对 v23.09 恒真）', s2308.includes('_gv[1] >= 8'));
-ok('smoke_v2143 哨兵链已推进至二百四十七件套（二百四十六件套清除）',
-  s2143.includes('二百四十七件套（二百四十五件套清除）') && s2143.includes("!readme.includes('二百四十八件套（二百四十七件套清除）')"));
+ok('smoke_v2143 哨兵链已推进至二百四十八件套（二百四十七件套清除）',
+  s2143.includes('二百四十七件套（二百四十五件套清除）') && s2143.includes("!readme.includes('二百四十九件套（二百四十八件套清除）')"));
 
 // 旧代 v23.08 pin 全库零残留（不含本件）
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2309_questnum.mjs');

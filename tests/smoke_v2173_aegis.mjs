@@ -137,7 +137,7 @@ ok('既有 25 个成就 id 全部保留（零回归）',
    'chests', 'allquests', 'memoir', 'skills', 'hardtrue'].every((id) => ACH_LIST.some((a) => a.id === id)));
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
 ok('灯火同心（allquests）支线分母 v23.57 随新现实更新为 0/11（side_grain/side_tree/side_wolf/side_snake 是支线，aegis 不是）',
-  achAll && achAll.prog({ quests: {} }) === '0/11', achAll && achAll.prog({ quests: {} }));
+  achAll && achAll.prog({ quests: {} }) === '0/12', achAll && achAll.prog({ quests: {} }));
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：龙鳞甲档新解锁含 aegis；锁子甲档不含',

@@ -103,7 +103,7 @@ function enterTalk(pages) {
   S.talkPages = pages;
   S.talkPage = 0;
   S.talkLineAt = Date.now() - 100000; // 页已打完（打字机完成态）
-  S.curNpc = 'granny';                // 无任务委托 NPC → resolveNpcTalk 返回 null → 走翻页路径
+  S.curNpc = 'villager';              // 无任务委托 NPC → resolveNpcTalk 返回 null → 走翻页路径
 }
 try {
   ok('import 后初始场景为 title（main.js 启动引导原样）', origScene === 'title', origScene);
@@ -122,7 +122,7 @@ try {
   S.talkPages = [['雾语林的草丛很深的。']];
   S.talkPage = 0;
   S.talkLineAt = Date.now();
-  S.curNpc = 'granny';
+  S.curNpc = 'villager';
   const total = pageTotalMs(S.talkPages[0]);
   screens.talk.onKey({ key: 'e' });
   ok('talk.onKey(\'e\')（打字机未打完）→ 只补全本页不翻页（talkPage 不变）',
@@ -172,8 +172,8 @@ const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2143_talkekey', readme.includes('smoke_v2143_talkekey'));
 ok('README 件套口径为存在性断言（v21.44 起件数由本版冒烟守护：二百四十七件套（二百四十五件套清除））',
   readme.includes('冒烟') && readme.includes('件套') &&
-  readme.includes('二百四十七件套（二百四十六件套清除）') &&
-  !readme.includes('二百四十八件套（二百四十七件套清除）'));
+  readme.includes('二百四十八件套（二百四十七件套清除）') &&
+  !readme.includes('二百四十九件套（二百四十八件套清除）'));
 ok('README 含 v21.43 守护描述（对话翻页 E 键别名守护）', readme.includes('对话翻页 E 键别名守护'));
 ok('README 快速上手表 Enter/E 行含对话内同效口径（对话进行中 E 同效继续/翻页）',
   readme.includes('`Enter` / `E`') && readme.includes('对话进行中') && readme.includes('同效'));

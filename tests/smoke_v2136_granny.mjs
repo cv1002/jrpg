@@ -1,4 +1,7 @@
-// v21.36 专项冒烟：潮灯镇水塘南岸新风味 NPC「掌灯阿婆」——纯内容扩充（无任务、零结算、零新逻辑）：
+// v21.36 专项冒烟：潮灯镇水塘南岸新风味 NPC「掌灯阿婆」——纯内容扩充（无任务、零结算、零新逻辑），
+// v24.24 起升格为支线委托人（QUESTS.side_pond「塘底的灯影」，承 v23.32 拾菇人 / v23.42 客栈老板娘 /
+// v23.57 酿药师「风味 NPC 升格」先例）：npcQuestPages 有任务后走任务四档（offer/active/turnin/done）
+// 优先，原有 linesByStage 三档叙事与 trueBoss after 彩蛋并入 done 分档（零内容丢失）：
 // 数据层三件套（village.extras (14,8) + NPC_SPOTS '14,8' + NPCS.granny），台词走既有 linesByStage 机制
 // （巡灯人/雾径猎手同款：按 bossDefeated / galleryOpen 旗标选段；井巫同款 trueBoss after 彩蛋），
 // 造型复用 mwSage（守名者/守碑人同款）。
@@ -113,19 +116,25 @@ ok('全部 8 页：每页为字符串数组且末元素以 [Enter] 收尾（既�
   allPages.length === 8 && allPages.every((pg) => Array.isArray(pg) && pg.length >= 2 &&
     pg.every((ln) => typeof ln === 'string') && /\[Enter\]/.test(pg[pg.length - 1])));
 
-// —— 阶段选段（npcQuestPages 运行期求值，无任务 → 直落 NPCS 数据）——
+// —— 阶段选段（npcQuestPages 运行期求值；v24.24 起阿婆有新支线 side_pond → 任务四档优先，
+// linesByStage 三档叙事与 trueBoss after 彩蛋并入 done 分档，承 v23.32 拾菇人 / v23.42 客栈老板娘
+// / v23.57 酿药师「风味 NPC 升格」同款先例，零内容丢失）——
 const p0 = npcQuestPages({}, 'granny');
-ok('默认段（无旗标）选段落到 stage1（灯灭那晚）', p0 && p0[0].some((ln) => ln.includes('灯灭那晚')), p0 && p0[0] && p0[0][0]);
-const pB = npcQuestPages({ bossDefeated: true }, 'granny');
-ok('bossDefeated 段（灯芯回来了）', pB && pB[0].some((ln) => ln.includes('灯芯回来了')));
-const pG = npcQuestPages({ galleryOpen: true }, 'granny');
-ok('galleryOpen 段（回廊开了 + 阿灯）',
+ok('无旗标选段为任务 offer 页（掌灯阿婆/灯影/史莱姆，灯灭那晚句保留）',
+  p0 && p0[0].some((ln) => ln.includes('掌灯阿婆')) && p0[0].some((ln) => ln.includes('灯影')) &&
+  p0[0].some((ln) => ln.includes('史莱姆')) && p0[0].some((ln) => ln.includes('灯灭那晚')), p0 && p0[0] && p0[0][0]);
+const pB = npcQuestPages({ bossDefeated: true, quests: { side_pond: 'done' } }, 'granny');
+ok('bossDefeated 段（done 分档：灯芯回来了 + 旧灯卫）',
+  pB && pB[0].some((ln) => ln.includes('灯芯回来了')) && pB[0].some((ln) => ln.includes('旧灯卫')));
+const pG = npcQuestPages({ bossDefeated: true, galleryOpen: true, quests: { side_pond: 'done' } }, 'granny');
+ok('galleryOpen 段（done 分档承接原 linesByStage：回廊开了 + 阿灯线索）',
   pG && pG.some((pg) => pg.some((ln) => ln.includes('回廊开了'))) &&
   pG.some((pg) => pg.some((ln) => ln.includes('阿灯'))));
-const pT = npcQuestPages({ trueBoss: true }, 'granny');
-ok('trueBoss 走 after 彩蛋（塘水倒映整座镇子的灯）', pT && pT[0].some((ln) => ln.includes('塘水')));
-ok('galleryOpen 段含守卫旗标下更多剧情？——不，无任务：npcQuestMark===null（无 ❕ 顶标）',
-  npcQuestMark(S.G, 'granny') === null);
+const pT = npcQuestPages({ trueBoss: true, quests: { side_pond: 'done' } }, 'granny');
+ok('trueBoss 走 done 真结局分档（after 彩蛋并入：塘水 + 阿灯）',
+  pT && pT[0].some((ln) => ln.includes('塘水')) && pT[0].some((ln) => ln.includes('阿灯')));
+ok('有可接委托：npcQuestMark===❕ 可接委托（v24.24 升格后不再是无任务 null）',
+  npcQuestMark(S.G, 'granny') === '❕ 可接委托', npcQuestMark(S.G, 'granny'));
 
 // —— 运行期：loadMap 落位 + Enter/E 真实交互开对话 ——
 loadMap('village');
@@ -136,9 +145,9 @@ S.G.x = 14; S.G.y = 9; S.dir = 'U'; S.scene = 'world';
 await screens.world.onKey({ key: 'Enter' });
 ok('面向阿婆按 Enter：进入对话（S.scene==talk）且 curNpc===granny',
   S.scene === 'talk' && S.curNpc === 'granny', S.scene + '/' + S.curNpc);
-ok('对话第 1 页为默认段台词（掌灯阿婆：灯灭那晚…）——S.G 无旗标',
+ok('对话第 1 页为任务 offer 页（掌灯阿婆：灯灭那晚…）——S.G 无旗标',
   Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('灯灭那晚')));
-ok('对话共 2 页（第 1 页 [Enter] 继续 → 第 2 页 [Enter] 结束）', S.talkPages && S.talkPages.length === 2);
+ok('对话共 1 页（任务 offer 单页 4 行，v24.24 升格后不再直落 linesByStage 两页）', S.talkPages && S.talkPages.length === 1);
 S.scene = 'world';
 await screens.world.onKey({ key: 'E' });
 ok('E 键同效（v21.29 交互别名对 NPC 零回归）', S.scene === 'talk' && S.curNpc === 'granny', S.scene + '/' + S.curNpc);
