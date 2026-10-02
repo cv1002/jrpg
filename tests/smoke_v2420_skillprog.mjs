@@ -52,7 +52,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.19', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.19 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.29';") && !dSrc.includes("const GAME_VERSION = 'v24.19';"));
+  dSrc.includes("const GAME_VERSION = 'v24.30';") && !dSrc.includes("const GAME_VERSION = 'v24.19';"));
 ok('data.js 含 v24.20 注释（领悟战报「📖 诸技通明 N/8」进度后缀说明）',
   dSrc.includes('// v24.20 体验打磨·信息透明·计数现场'));
 ok('data.js 仍保留 v24.19 历史注释（额外掉落战报进度后缀说明，累积注释块）',
@@ -128,27 +128,27 @@ const mC = runLearn(hC);
 ok('运行期：无新技等级（Lv2）checkSkills 不报', mC.length === 0, mC.join(' | '));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百五十三件套（二百五十二件套清除）',
-  readme.includes('冒烟二百五十三件套（二百五十二件套清除）'));
-ok('README tests 含 v24.20 守护描述与 smoke_v2420_skillprog 入库（253 份）',
+ok('README 件套口径已为二百五十四件套（二百五十三件套清除）',
+  readme.includes('冒烟二百五十四件套（二百五十三件套清除）'));
+ok('README tests 含 v24.20 守护描述与 smoke_v2420_skillprog 入库（254 份）',
   readme.includes('v24.20 起含 「🌟 领悟新技能」战报「📖 诸技通明 N/8」进度后缀守护') &&
-  readme.includes('smoke_v2420_skillprog 入库（253 份）'));
+  readme.includes('smoke_v2420_skillprog 入库（254 份）'));
 ok('README 仍有 v24.19 守护描述（历史保留）', readme.includes('v24.19 起含 「🎁 额外掉落」战报「🍀 鸿运当头 N/30」进度后缀守护'));
 ok('README 已有二百四十五件套口径且尚无 252（哨兵前望 252 语义：下一版才写 246）',
-  readme.includes('冒烟二百五十三件套（二百五十二件套清除）') &&
-  !readme.includes('二百五十四件套'));
-ok('README tests 树串尾已延伸（smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3（npm test 串跑））',
-  readme.includes('smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3（npm test 串跑）'));
+  readme.includes('冒烟二百五十四件套（二百五十三件套清除）') &&
+  !readme.includes('二百五十五件套'));
+ok('README tests 树串尾已延伸（smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3（npm test 串跑））',
+  readme.includes('smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3（npm test 串跑）'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 247 份（smoke.mjs + 250 专项）', chain.length === 252 && chainAll.length === 253, String(chain.length));
-ok('package.json 链尾为 smoke_v2429_xpcurve3（第 253 份）', chain[chain.length - 1] === 'smoke_v2429_xpcurve3', chain[chain.length - 1]);
+ok('package.json 实跑链共 247 份（smoke.mjs + 250 专项）', chain.length === 253 && chainAll.length === 254, String(chain.length));
+ok('package.json 链尾为 smoke_v2430_goldcurve3（第 254 份）', chain[chain.length - 1] === 'smoke_v2430_goldcurve3', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2420_skillprog.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2420_skillprog.mjs'));
-ok('package.json 链锚逐字（smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs"）',
-  pkgRaw.includes('smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.29'));
+ok('package.json 链锚逐字（smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs"）',
+  pkgRaw.includes('smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.30'));
 ok('CHANGELOG v24.20 条目含「诸技通明」与「计数现场」与「领悟」',
   changelog.includes('诸技通明') && changelog.includes('计数现场') && changelog.includes('领悟'));
 ok('CHANGELOG 仍保留 v24.19 条目（历史保留）', changelog.includes('## v24.19'));
@@ -158,7 +158,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 244（244 + smoke_v2421_allquest）', files.length === 253, String(files.length));
+ok('tests 目录件套 = 244（244 + smoke_v2421_allquest）', files.length === 254, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
