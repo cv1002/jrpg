@@ -15,7 +15,7 @@
 // 字面量零残留 / v24.24 历史注释保留 / POTIONS2_GOAL 常量逐字）、运行期常量实值（POTIONS2_GOAL 50）
 // 与 ACH_LIST stock2 同源互证（ok/prog/d 逐值）、计数源 hero.item 防御式与既有 P POTION_CAP 上限同
 // 源互证、README/package.json/CHANGELOG 同步（件套口径 249 + v24.25 守护描述 + 入库 249 + tests 树串尾 +
-// package 串尾）、tests 目录与实跑链恒等（249）、哨兵链（前望 250 且 README 尚无 250 口径）、旧代
+// package 串尾）、tests 目录与实跑链恒等（249）、哨兵链（前望 251 且 README 尚无 251 口径）、旧代
 // v24.24 pin 全库零残留扫描（豁免上一版套件 smoke_v2424_pondslime.mjs）。
 import { POTIONS2_GOAL, GAME_VERSION, ACH_LIST, POTION_CAP } from '../js/data.js';
 import fs from 'node:fs';
@@ -48,7 +48,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.24', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.25（旧 v24.24 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.25';") && !dSrc.includes("const GAME_VERSION = 'v24.24';"));
+  dSrc.includes("const GAME_VERSION = 'v24.26';") && !dSrc.includes("const GAME_VERSION = 'v24.24';"));
 ok('data.js 含 v24.25 注释（商店界面「🧪 药香满囊 N/50」进度角标说明）',
   dSrc.includes('// v24.25 体验打磨·信息透明·决策现场'));
 ok('data.js 仍保留 v24.24 历史注释（新支线「塘底的灯影」说明，累积注释块）',
@@ -95,26 +95,26 @@ ok('menus.js 页脚行零回归（绿色▲=更强升级 灰色=买不起 · ↑
 // —— README 同步 ——
 ok('README 含 v24.25 守护描述（商店界面「🧪 药香满囊 N/50」进度角标守护）',
   readme.includes('v24.25 起含 商店界面「🧪 药香满囊 N/50」进度角标守护'));
-ok('README tests 树串尾已延伸至 smoke_v2425_potionprog（... + smoke_v2424_pondslime + smoke_v2425_potionprog（npm test 串跑））',
-  readme.includes('smoke_v2424_pondslime + smoke_v2425_potionprog（npm test 串跑）'));
-ok('README 件套口径为二百四十九件套（二百四十八件套清除）',
-  readme.includes('冒烟二百四十九件套（二百四十八件套清除）'));
-ok('README 尚无 250 件套口径（哨兵前望 250 语义：下一版才写 250）',
-  !readme.includes('二百五十件套（二百四十九件套清除）') && !readme.includes('冒烟二百五十件套'));
-ok('README 含 smoke_v2425_potionprog 入库（249 份）', readme.includes('smoke_v2425_potionprog 入库（249 份）'));
+ok('README tests 树串尾已延伸至 smoke_v2425_potionprog（... + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog（npm test 串跑））',
+  readme.includes('smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog（npm test 串跑）'));
+ok('README 件套口径为二百五十件套（二百四十九件套清除）',
+  readme.includes('冒烟二百五十件套（二百四十九件套清除）'));
+ok('README 尚无 251 件套口径（哨兵前望 251 语义：下一版才写 251）',
+  !readme.includes('二百五十一件套（二百五十件套清除）') && !readme.includes('冒烟二百五十一件套'));
+ok('README 含 smoke_v2425_potionprog 入库（250 份）', readme.includes('smoke_v2425_potionprog 入库（250 份）'));
 ok('README 仍保留 v24.24 历史守护描述与新支线入库口径（二百四十八件套 + 248 份）',
-  readme.includes('v24.24 起含 新支线「塘底的灯影」守护') && readme.includes('smoke_v2424_pondslime 入库（249 份）'));
+  readme.includes('v24.24 起含 新支线「塘底的灯影」守护') && readme.includes('smoke_v2424_pondslime 入库（250 份）'));
 
 // —— package.json 同步 ——
 const testChain = (pkg.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 249 件套', testChain === 249, String(testChain));
-ok('package.json 已收录 smoke_v2425_potionprog（npm test 串跑第 249 份）',
+ok('package.json test 串共 249 件套', testChain === 250, String(testChain));
+ok('package.json 已收录 smoke_v2425_potionprog（npm test 串跑第 250 份）',
   pkg.includes('smoke_v2425_potionprog.mjs'));
-ok('package.json 串尾为 ... && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs"',
-  pkgRaw.includes('smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs"'));
+ok('package.json 串尾为 ... && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs"',
+  pkgRaw.includes('smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs"'));
 
 // —— CHANGELOG 同步 ——
-ok('CHANGELOG 顶部已追加 v24.25 条目（商店界面药香满囊进度角标）', changelog.startsWith('## v24.25 '));
+ok('CHANGELOG 顶部已追加 v24.25 条目（商店界面药香满囊进度角标）', changelog.startsWith('## v24.26 '));
 ok('CHANGELOG 顶部条目含药香满囊与 POTIONS2_GOAL/商店界面口径说明',
   changelog.includes('药香满囊') && changelog.includes('POTIONS2_GOAL') && changelog.includes('商店界面'));
 ok('CHANGELOG 仍保留 v24.24 与 v24.09 条目标题（历史口径）',
@@ -125,20 +125,20 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set([...pkg.matchAll(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g)].map((m) => m[0].replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 249 与实跑链恒等', files.length === 249, String(files.length));
+ok('tests 目录件套 = 249 与实跑链恒等', files.length === 250, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
-// —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 250 ——
+// —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 251 ——
 const t2415 = read('tests/smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v2425_potionprog（第 249 份）',
-  t2415.includes("chain[chain.length - 1] === 'smoke_v2425_potionprog'"));
-ok('smoke_v2415 树串 token 数已推进至 249', t2415.includes('treeTok.length === 249'));
-ok('smoke_v2415 哨兵「尚无 250」口径（二百五十件套 bare 否定式）',
-  t2415.includes("!readme.includes('二百五十件套')"));
+ok('smoke_v2415 链尾已推进至 smoke_v2425_potionprog（第 250 份）',
+  t2415.includes("chain[chain.length - 1] === 'smoke_v2426_levelprog'"));
+ok('smoke_v2415 树串 token 数已推进至 249', t2415.includes('treeTok.length === 250'));
+ok('smoke_v2415 哨兵「尚无 251」口径（二百五十件套 bare 否定式）',
+  t2415.includes("!readme.includes('二百五十一件套')"));
 const s2424 = read('tests/smoke_v2424_pondslime.mjs');
-ok('smoke_v2424 哨兵链已推进至「前望 250」口径（二百五十件套 bare 否定式）',
-  s2424.includes("!readme.includes('二百五十件套')"));
+ok('smoke_v2424 哨兵链已推进至「前望 251」口径（二百五十件套 bare 否定式）',
+  s2424.includes("!readme.includes('二百五十一件套')"));
 
 // —— 旧代 v24.24 pin 全库零残留扫描（哨兵链：无任何测试再断言 v24.24 GAME_VERSION 字面量 / 顶 pin / 248 口径）——
 const leftovers = [];

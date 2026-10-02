@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -691,7 +691,16 @@ function winBattle() {
     // 里程碑横幅只报「金币加到 hero.gold 后」的等级属性变化——玩家刚因一场胜仗升级，往往正想确认「兜里
     // 还剩多少」去补给或换装；直接读结算后的 hero.gold（enemy.gold 已在 line399 加入），与 v19.80 普通胜利
     // 余额提示同源，零数值变化。
-    bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}${enemy.isBoss ? '，你终于可以……' : ''}（剩余 ${hero.gold} 金）`, MILESTONE_MS);
+    // v24.26 体验打磨·信息透明·计数现场：🎉 升级横幅补「🌙 守灯者 N/10」进度后缀（承 v24.22 胜利战报
+    // 「⚔️ 驱雾百战 N/100」/ v24.23 精英战报「⚔️ 精英猎手 N/2」/ v24.25 商店角标「🧪 药香满囊 N/50」
+    // 同一「计数现场报进度」主线）：成就「守灯者」（等级线中档里程碑 = 等级达到 LVL10_GOAL(10) 级，
+    // 读既有 hero.level 存档字段）此前进度只藏在 C 成就页一行 X/10——升级瞬间正是等级线的计数现场
+    // （每级只发生一两次、且是成就推进的唯一动作，与 v24.20 诸技通明「现场是动作本身」同族）；现升级
+    // 横幅末尾补「（🌙 守灯者 N/10）」（分子读 hero.level 防御式 (hero.level||1)、分母读本文件
+    // LVL10_GOAL 单一数据源，与 ACH_LIST lvl10 的 ok/prog/d 同读一份源，调阈值只改 data.js 一处
+    // 全端自动跟随；同 v24.19/v24.25 只报中档里程碑先例——独当一面 N/5 与灯燃长夜 N/12 同线另两档
+    // 由 C 页承载），纯显示零结算零存档零数值变化（等级/H P MP 攻防/结余/里程碑判定逐字未动）。
+    bind.boxMsg(`🎉 等级提升到 Lv.${hero.level}！HP+${g.hp} MP+${g.mp} 攻+${g.atk} 防+${g.def}${enemy.isBoss ? '，你终于可以……' : ''}（剩余 ${hero.gold} 金）（🌙 守灯者 ${hero.level || 1}/${LVL10_GOAL}）`, MILESTONE_MS);
   } else if (!enemy.isRush && hero.xpNext > hero.xp) {
     // v19.80 普通战斗胜利反馈追加剩余金币（信息透明·纯显示）：v19.75/19.76/19.77/19.78 已给商店/旅馆/
     // 任务奖励/药水购买成功文案带上余额，但战斗胜利（高频收入来源）仍只报「获得 N 金币」；玩家刚拿到一笔
