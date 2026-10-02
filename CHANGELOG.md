@@ -4,6 +4,7 @@
 - 【修正：`js/data.js` MON_BASE 四强怪（骷髅兵/雾灵/树精/石魔像）`gold[1]` 5→6】——`gold:[15,5]`→`gold:[15,6]` 等 4 处（单一数据源：与图鉴「击败可得」/monReward 结算/README「魔物数值」速查行同读一份表，调曲线只改本文件一处全端自动跟随）；`GAME_VERSION` v24.29→v24.30 + v24.30 注释块（GAME_VERSION 上方 + MON_BASE 行内注释段，v24.29/v24.28/v24.18/v19.66 历史注释保留）。
 - 【零回归面】未动任何结算/存档/战斗/掉落/成就逻辑（纯奖励曲线微调）；未动四基础怪（史莱姆/野狼/哥布林/毒蛇）gold[1]=2 与全部 hp/atk/def/xp/权重/门槛/区域倍率；Lv1-2 镇内只遇四基础怪零变化；只改 2 个运行源码文件（`js/data.js`：MON_BASE 4 行 gold[1] + GAME_VERSION + 注释）+ `README.md`（魔物数值行 15+5→15+6 等 4 处 + tests 树串尾 + 件套口径 253→254 + v24.30 守护描述 + 入库（253 份）→（254 份））+ `package.json`（test 串第 254 份）+ 全库 253 件套 pin 级联（哨兵前望 255）+ 既有 smoke_v2418/v2413/v2305/v2429 数值钉随新现实更新 + smoke_v2430_goldcurve3 入库（254 份）。
 - 【验证】`node --check` js/data.js · tests/smoke_v2430_goldcurve3.mjs 过；`npm run check`（25 模块）全部通过；`npm test` 二百五十四件套端到端全绿 EXIT=0。
+- 【补记（2026-10-03 cron 收尾）】本版经 TCC 封锁期（launchd 网关认领本轮、~Downloads 旧文件读取 EPERM）以「/tmp 主分支工作法」完稿：真实项目 ~/Downloads/my-jrpg 保持 v24.29（04a3c4a6）未动；推送第 3 次尝试成功（`92069ffd..dc0092f6 main -> main`，v24.29 与 v24.30 一并上 origin/main）；持久备份 `~/my-jrpg-v2430-pending.bundle`（含 dc0092f6）；解封后 `git pull origin main` 直达 v24.30。
 
 ## v24.29 数值平衡·后期经验曲线续平滑（第三轮）——四强怪（骷髅兵/雾灵/树精/石魔像）每级经验再 +1（xp[1] 6→7）
 （承 v19.58 第一轮 / v24.13 第二轮同一「升级需求按 ×XP_GROW(1.42) 复利、怪物经验只随等级线性」的方法论
