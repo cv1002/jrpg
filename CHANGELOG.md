@@ -1,3 +1,26 @@
+## v24.29 数值平衡·后期经验曲线续平滑（第三轮）——四强怪（骷髅兵/雾灵/树精/石魔像）每级经验再 +1（xp[1] 6→7）
+（承 v19.58 第一轮 / v24.13 第二轮同一「升级需求按 ×XP_GROW(1.42) 复利、怪物经验只随等级线性」的方法论
+第三轮：v24.13 把 Lv10-12 每级所需场数缓到 4.54/6.01/7.98、Lv13-14 缓到 10.6/14.2 后，同一条曲线在更
+深尾段再次贴线——加权实测（无字回廊池 × zone，与 smoke_v2413 同法）Lv11→12 6.01 场、Lv13→14 10.61 场、
+Lv14→15 14.18 场，Lv14→15 已是全曲线最陡一级（内容线后段的纯 farming：LVL12_GOAL 之后成就线已封顶）；
+本次只把上场较晚、承担 Lv3+ 中后期刷级主力的四强怪每级经验产出再抬 1 点（本轮实测：Lv10→11 4.54→4.03、
+Lv11→12 6.01→5.31、Lv12→13 7.98→7.04、Lv13→14 10.61→9.37、Lv14→15 14.18→12.47，逐级严格单调递增
+保留「升级本就该变慢」），开局 Lv1-2 镇内只遇四基础怪逐字不变（village Lv1/Lv2 13.25/16.91 恒等）；
+hp/atk/def/gold/权重/门槛/区域倍率逐字不动，遇敌/掉落/战斗/成就/存档零影响。
+
+- 【修正：`js/data.js` MON_BASE 四强怪（骷髅兵/雾灵/树精/石魔像）`xp[1]` 6→7】——`xp:[16,6]`→`xp:[16,7]`
+  等 4 处（单一数据源：与图鉴「击败可得」/monReward 结算/README「魔物数值」速查行同读一份表，调曲线只改
+  本文件一处全端自动跟随）；`GAME_VERSION` v24.28→v24.29 + v24.29 注释块（GAME_VERSION 上方 +
+  MON_BASE 行内注释段，v24.28/v24.13/v24.18/v19.58/v19.66 历史注释保留）。
+- 【零回归面】未动任何结算/存档/战斗/掉落/成就逻辑（纯奖励曲线微调）；未动四基础怪（史莱姆/野狼/哥布林/
+  毒蛇）xp[1]=3 与全部 hp/atk/def/gold/权重/门槛/区域倍率；未动 XP_INIT(20)/XP_GROW(1.42)（Lv 阈值链
+  逐值恒等）；Lv1-2 镇内只遇四基础怪零变化；只改 2 个运行源码文件（`js/data.js`：MON_BASE 4 行 xp[1] +
+  GAME_VERSION + 注释）+ `README.md`（魔物数值行 16+6→16+7 等 4 处 + tests 树串尾 + 件套口径 253 +
+  v24.29 守护描述 + 入库 252→253）+ `package.json`（test 串第 253 份）+ 全库 252 件套 pin 级联
+  （哨兵前望 254）+ 既有 smoke_v2305/v2413/v2418 数值钉随新现实更新 + smoke_v2429_xpcurve3 入库（253 份）。
+- 【验证】`node --check` js/data.js · tests/smoke_v2429_xpcurve3.mjs 过；`npm run check`（25 模块）全部通过；
+  `npm test` 二百五十三件套端到端全绿 EXIT=0。
+
 ## v24.28 体验打磨·信息透明·计数现场：🧭 进图报文补「🌏 灯影渐远 N/3」进度后缀——首次踏进新图的当场一眼看清离探索中档里程碑还差几张图（承 v24.26 升级横幅「🌙 守灯者 N/10」/ v24.22 胜利战报「⚔️ 驱雾百战 N/100」/ v24.19 掉落战报「🍀 鸿运当头 N/30」同一「计数现场报进度」主线 / v22.71 灯影渐远成就（探索线中档里程碑 = 到访 OUTSTEP2_GOAL(3) 张地图，读既有 hero.visited 存档字段，随 snapshotHero 全量快照自动持久化、防御式 (g.visited||[]) 旧档零迁移）此前进度只藏在 C 成就页一行 X/3——探索线（踏出灯影 2 图 / 灯影渐远 3 图 / 走遍四方 4 图）全游无一个 live 窗口：v24.08 旅行面板「已探索 N/4」报的是按 T 打开窗口时的计数、不是成就档位（且只在面板开着时可见），而探索线的计数现场正是每次「首次到访新图」的进图事件本身（world.transition 是全游戏唯一的 visited 写入点——传送门/出口/快速旅行/水晶开门四条入口全走本函数，与 v24.26「升级是成就推进的唯一动作」同族）；现 world.transition 进图报文末尾补「（🌏 灯影渐远 N/3）」（分子与 ACH_LIST outstep2 的 prog 同式——Object.keys(MAPS) 过滤 (hero.visited||[]) 防御式、分母读 data.js OUTSTEP2_GOAL 单一数据源，与 C 页/ACH_LIST outstep2 的 ok/prog 同读一份源，调阈值只改 data.js 一处全端自动跟随；visited.push 先于报文落账，进度差分即本场；仅首次到访新图报（重复进图零噪音）；同 v24.26/v24.27 只报中档里程碑先例——踏出灯影 N/2 与走遍四方 N/4 同线另两档由 C 页承载）；纯显示零结算零存档零数值变化（visited 计数/进图落账/等级预警/补给提醒/成就判定逐字未动）；GAME_VERSION v24.27→v24.28，全库 251 件套 pin 级联（哨兵前望 253）+ smoke_v2428_outprog 入库（252 份）；node --check + npm run check 25 模块 + npm test 二百五十二件套端到端全绿 EXIT=0
 
 - 【修正：`js/world.js` transition 进图报文补「（🌏 灯影渐远 N/3）」进度后缀】——import 补 `OUTSTEP2_GOAL`（data.js 既有导出，零新增模块依赖；插于 `STEP_GOAL` 与 `}` 之间，既有 smoke_v2226/smoke_v2313 import 子串 pin `dayPhase, STEP_GOAL } from` 随新现实推进为 `dayPhase, STEP_GOAL, OUTSTEP2_GOAL } from`），transition 头部 visited 落账改走 `const isNewMap = !(S.G.visited || []).includes(name);` + `if (S.G.visited && isNewMap) S.G.visited.push(name);`（与原判逐字等价、仅首到访置真），报文两分支末尾补 `${outTag}`（`const outTag = isNewMap ? \`（🌏 灯影渐远 ${Object.keys(MAPS).filter((m) => ((S.G && S.G.visited) || []).includes(m)).length}/${OUTSTEP2_GOAL}）\` : '';`——分子与 ACH_LIST outstep2 的 prog 同式、分母读 OUTSTEP2_GOAL 单一数据源、重复进图零噪音）；`js/data.js` GAME_VERSION v24.27→v24.28 + v24.28 注释块（v24.27 历史注释保留）。

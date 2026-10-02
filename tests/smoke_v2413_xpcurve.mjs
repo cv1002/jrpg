@@ -40,7 +40,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.12', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.12 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.28';") && !dSrc.includes("const GAME_VERSION = 'v24.12';"));
+  dSrc.includes("const GAME_VERSION = 'v24.29';") && !dSrc.includes("const GAME_VERSION = 'v24.12';"));
 ok('data.js 含 v24.13 注释（后期经验曲线续平滑说明）',
   dSrc.includes('// v24.13 数值平衡·后期经验曲线续平滑'));
 ok('data.js 仍保留 v24.12 历史注释（胜利画面「⚔️ 身经百战 N/100」进度行说明，累积注释块）',
@@ -54,8 +54,8 @@ for (const m of MON_BASE) byName[m.name] = m;
 ok('MON_BASE 八怪齐全', MON_BASE.length === 8, String(MON_BASE.length));
 const FOUR = ['骷髅兵', '雾灵', '树精', '石魔像'];
 const BASE = ['史莱姆', '野狼', '哥布林', '毒蛇'];
-ok('四强怪每级经验均为 6（xp[1] 5→6）',
-  FOUR.every((nm) => byName[nm] && byName[nm].xp[1] === 6),
+ok('四强怪每级经验均为 7（v24.29 第三轮后 6→7）',
+  FOUR.every((nm) => byName[nm] && byName[nm].xp[1] === 7),
   FOUR.map((nm) => nm + '=' + (byName[nm] && byName[nm].xp[1])).join(','));
 ok('四基础怪每级经验逐字未动（3·3·3·3）',
   BASE.every((nm) => byName[nm] && byName[nm].xp[1] === 3),
@@ -118,7 +118,7 @@ function avgXp(mapKey, lv) {
   }
   return xs / tw;
 }
-// 改前基线（xp[1]=5 时）逐值对比
+// 改前基线（xp[1]=6 时，v24.13 二轮后口径）逐值对比
 function avgXpBase5(mapKey, lv) {
   const def = MAPS[mapKey];
   const pool = def.pool || null;
@@ -130,7 +130,7 @@ function avgXpBase5(mapKey, lv) {
   for (const m of use) {
     const w = W(m.name, lv);
     tw += w;
-    const per = m.name === '骷髅兵' || m.name === '雾灵' || m.name === '树精' || m.name === '石魔像' ? 5 : m.xp[1];
+    const per = m.name === '骷髅兵' || m.name === '雾灵' || m.name === '树精' || m.name === '石魔像' ? 6 : m.xp[1];
     xs += Math.round((m.xp[0] + per * lv) * z.xp) * w;
   }
   return xs / tw;
@@ -141,38 +141,38 @@ const bNew = (lv) => need(lv) / avgXp('gallery', lv);
 const bOld = (lv) => need(lv) / avgXpBase5('gallery', lv);
 ok('Gallery 池 Lv10-12 每级所需场数严格单调递增（升级变慢保留）',
   bNew(10) < bNew(11) && bNew(11) < bNew(12), [bNew(10), bNew(11), bNew(12)].map((x) => x.toFixed(2)).join('/'));
-ok('Gallery 池 Lv10-12 每级所需场数较改前下降（5.20/6.90/9.20 → 4.54/6.01/7.98 口径）',
+ok('Gallery 池 Lv10-12 每级所需场数较改前下降（v24.13 口径 4.54/6.01/7.98 → 4.03/5.31/7.04）',
   bNew(10) < bOld(10) && bNew(11) < bOld(11) && bNew(12) < bOld(12),
   'new=' + [bNew(10), bNew(11), bNew(12)].map((x) => x.toFixed(2)).join('/') + ' old=' + [bOld(10), bOld(11), bOld(12)].map((x) => x.toFixed(2)).join('/'));
-ok('Gallery 池 Lv10 改后 4.3-4.9 场窗口（≈4.54 实测口径）',
-  bNew(10) > 4.3 && bNew(10) < 4.9, bNew(10).toFixed(2));
+ok('Gallery 池 Lv10 改后 3.9-4.2 场窗口（≈4.03 实测口径）',
+  bNew(10) > 3.9 && bNew(10) < 4.2, bNew(10).toFixed(2));
 ok('Village 池 Lv1-2 单场经验零变化（四基础怪未动，13.2/16.9 口径）',
   avgXp('village', 1) === avgXpBase5('village', 1) && avgXp('village', 2) === avgXpBase5('village', 2),
   avgXp('village', 1).toFixed(1) + '/' + avgXp('village', 2).toFixed(1));
 ok('XP_GROW/XP_INIT 逐值未动（1.42 / 20）', XP_GROW === 1.42 && XP_INIT === 20);
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百五十二件套（二百五十一件套清除）',
-  readme.includes('冒烟二百五十二件套（二百五十一件套清除）'));
-ok('README 魔物数值行已为 16+6/17+6/18+6/22+6（四强怪每级经验 +1）',
-  readme.includes('骷髅兵 26+6/8+2/5+1/16+6/15+5') && readme.includes('雾灵 24+5/9+2/4+1/17+6/14+5') &&
-  readme.includes('树精 30+6/7+2/6+1/18+6/16+5') && readme.includes('石魔像 36+7/8+2/10+1/22+6/20+5'));
+ok('README 件套口径已为二百五十三件套（二百五十二件套清除）',
+  readme.includes('冒烟二百五十三件套（二百五十二件套清除）'));
+ok('README 魔物数值行已为 16+7/17+7/18+7/22+7（v24.29 第三轮四强怪每级经验 +1）',
+  readme.includes('骷髅兵 26+6/8+2/5+1/16+7/15+5') && readme.includes('雾灵 24+5/9+2/4+1/17+7/14+5') &&
+  readme.includes('树精 30+6/7+2/6+1/18+7/16+5') && readme.includes('石魔像 36+7/8+2/10+1/22+7/20+5'));
 ok('README 魔物数值行四基础怪逐字未动（8+3/12+3/10+3/15+3）',
   readme.includes('史莱姆 16+5/5+2/2+1/8+3/8+2') && readme.includes('野狼 22+5/7+2/3+1/12+3/12+2') &&
   readme.includes('哥布林 20+5/6+2/3+1/10+3/10+2') && readme.includes('毒蛇 20+5/8+2/3+1/15+3/13+2'));
-ok('README tests 树含 v24.13 守护描述与 smoke_v2413_xpcurve 入库（252 份）',
-  readme.includes('v24.13 起含 「后期经验曲线续平滑」守护') && readme.includes('smoke_v2413_xpcurve 入库（252 份）'));
-ok('README 尚无 253 件套口径（哨兵前望 253 语义：下一版才写 253）',
-  !readme.includes('二百五十三件套（二百五十二件套清除）') && !readme.includes('冒烟二百五十三件套'));
+ok('README tests 树含 v24.13 守护描述与 smoke_v2413_xpcurve 入库（253 份）',
+  readme.includes('v24.13 起含 「后期经验曲线续平滑」守护') && readme.includes('smoke_v2413_xpcurve 入库（253 份）'));
+ok('README 尚无 254 件套口径（哨兵前望 254 语义：下一版才写 254）',
+  !readme.includes('二百五十四件套（二百五十三件套清除）') && !readme.includes('冒烟二百五十四件套'));
 ok('package.json test 串已含 smoke_v2413_xpcurve（第 237 份，紧接 smoke_v2412_battlegoal）',
-  pkg.includes('smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs"'));
+  pkg.includes('smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs"'));
 ok('package.json test 串 smoke_v2413 出现次数为 1', (pkg.match(/smoke_v2413_xpcurve/g) || []).length === 1);
 const testsDir0 = path.join(ROOT, 'tests');
 const fileCount = fs.readdirSync(testsDir0).filter((f) => f.endsWith('.mjs')).length;
-ok('tests 目录件套 = 252（251 + smoke_v2428_outprog 入库）', fileCount === 252, String(fileCount));
-ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.28'));
+ok('tests 目录件套 = 253（252 + smoke_v2429_xpcurve3 入库）', fileCount === 253, String(fileCount));
+ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.29'));
 ok('CHANGELOG v24.13 条目含「数值平衡」与「续平滑」',
-  changelog.startsWith('## v24.28') && changelog.includes('数值平衡') && changelog.includes('续平滑'));
+  changelog.startsWith('## v24.29') && changelog.includes('数值平衡') && changelog.includes('续平滑'));
 ok('CHANGELOG 仍保留 v24.12 条目（历史保留）', changelog.includes('## v24.12'));
 
 // —— 哨兵链（旧代 pin 全库零残留：无任何测试再断言 v24.12 GAME_VERSION 字面量）——
