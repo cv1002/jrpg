@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, RICH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -720,7 +720,20 @@ function winBattle() {
     // 同 lucky 线 v24.19 只报中档里程碑先例——初露锋芒 1/驱雾十战 10/驱雾三百战 300 三档仍由 C 页
     // 承载）。纯显示零结算零存档零数值变化（totalWins 计数/金币经验结算/升级分支/掉落/碎片/支线
     // 进度战报逐字未动）。
-    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）（⚔️ 驱雾百战 ${hero.totalWins || 0}/${HUNT2_GOAL}）`, WIN_MSG_MS);
+    // v24.27 体验打磨·信息透明·计数现场（承 v24.26 升级横幅「🌙 守灯者 N/10」/ v24.22 胜利战报
+    // 「⚔️ 驱雾百战 N/100」/ v24.19 掉落战报「🍀 鸿运当头 N/30」同一「计数现场报进度」主线 /
+    // v21.99 金玉满堂成就（金币线中档里程碑 = 持有 RICH2_GOAL(1500) 金，读既有 hero.gold 字段、
+    // snapshotHero 全量快照自动持久化）——v24.22 起胜利战报已带「（剩余 X 金）」余额但那是余额
+    // 读数不是成就档位，金币线的中档里程碑（500 小富翁/1500 金玉满堂/3000 富甲一方）全游无一个
+    // live 窗口：C 成就页一行 X/1500 是唯一口径，而金币线的计数现场正是每次「🏆 胜利！」战报本身
+    // （金币结算并入 hero.gold 的当场，获得金币后持有额达标的瞬间——v24.22 同款战报同族，普通胜利
+    // 是全游最频繁的金币收入事件）；现普通胜利报文末尾补「（💰 金玉满堂 N/1500）」（分子读
+    // hero.gold 防御式 Math.floor((hero.gold||0))、分母读 data.js RICH2_GOAL 单一数据源，与 C 页/
+    // ACH_LIST rich2 的 ok/prog 同读一份源，调阈值只改 data.js 一处全端自动跟随；hero.gold +=
+    // enemy.gold 已先于本行落账，进度差分即本场；同 v24.22 只报中档里程碑先例——小富翁 N/500 与
+    // 富甲一方 N/3000 同线另两档由 C 页承载），纯显示零结算零存档零数值变化（金币结算/升级/掉落/
+    // 碎片/支线进度战报逐字未动）。
+    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）（⚔️ 驱雾百战 ${hero.totalWins || 0}/${HUNT2_GOAL}）（💰 金玉满堂 ${Math.floor(hero.gold || 0)}/${RICH2_GOAL}）`, WIN_MSG_MS);
   }
   // v23.23 首杀记忆图鉴收录反馈（体验打磨·信息透明·纯显示——承 v19.41 已遭遇揭示 / v21.37 已遭遇
   // 计数同一「击败 = 被记起」主线）：击败即写入记忆图鉴（上方 hero.bestiary 累计），但胜利报文（升级/
