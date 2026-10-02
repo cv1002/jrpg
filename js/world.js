@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL, OUTSTEP2_GOAL } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -419,7 +419,21 @@ function interact() {
 function transition(name) {
   loadMap(name);
   clearHeld();
-  if (S.G.visited && !S.G.visited.includes(name)) S.G.visited.push(name);
+  // v24.28 体验打磨·信息透明·计数现场：进图报文补「🌏 灯影渐远 N/3」进度后缀（承 v24.26 升级横幅
+  // 「🌙 守灯者 N/10」/ v24.22 胜利战报「⚔️ 驱雾百战 N/100」/ v24.19 掉落战报「🍀 鸿运当头 N/30」
+  // 同一「计数现场报进度」主线 / v22.71 灯影渐远成就（探索线中档里程碑 = 到访 OUTSTEP2_GOAL(3) 张
+  // 地图，计数读既有 hero.visited 存档字段、防御式 (g.visited||[]) 旧档零迁移、与 ACH_LIST outstep2
+  // 的 ok/prog 同读一份源）——探索线（踏出灯影 2 图/灯影渐远 3 图/走遍四方 4 图）此前进度只藏在 C
+  // 成就页一行 X/3，v24.08 旅行面板「已探索 N/4」报的是按 T 打开窗口时的计数而非常态可见的成就档位，
+  // 而探索线的计数现场正是每次「首次到访新图」的进图事件本身（本函数是全游戏唯一的 visited 写入点，
+  // 与 v24.26「升级是成就推进的唯一动作」同族）；现进图报文末尾补「（🌏 灯影渐远 N/3）」（分子与
+  // ACH_LIST outstep2 的 prog 同式——Object.keys(MAPS) 过滤 (hero.visited||[]) 防御式、分母读 data.js
+  // OUTSTEP2_GOAL 单一数据源，调阈值只改 data.js 一处全端自动跟随；visited.push 先于报文落账，进度
+  // 差分即本场；仅首次到访新图报（重复进图零噪音）；同 v24.26/v24.27 只报中档里程碑先例——踏出灯影
+  // N/2 与走遍四方 N/4 同线另两档由 C 页承载）；纯显示零结算零存档零数值变化（visited 计数/进图
+  // 落账/等级预警/补给提醒/成就判定逐字未动）。
+  const isNewMap = !(S.G.visited || []).includes(name);
+  if (S.G.visited && isNewMap) S.G.visited.push(name);
   const start = MAPS[name].playerStart;
   S.G.x = start.x;
   S.G.y = start.y;
@@ -433,10 +447,11 @@ function transition(name) {
   // 水晶开门三条入口同走本函数，统一生效）。只读不改，零结算/遇敌概率变化；等级达标或回村级安全图
   // 则维持原「进入了【X】」提示，行为逐字不变
   const rec = MAPS[name].recLv || 0;
+  const outTag = isNewMap ? `（🌏 灯影渐远 ${Object.keys(MAPS).filter((m) => ((S.G && S.G.visited) || []).includes(m)).length}/${OUTSTEP2_GOAL}）` : '';
   if (S.G && S.G.level < rec) {
-    bind.boxMsg(`⚠️ 前方【${MAPS[name].name}】的魔物远强于你（推荐 Lv.${rec} · 当前 Lv.${S.G.level}），先补给再战！`, NARR_MSG_MS);
+    bind.boxMsg(`⚠️ 前方【${MAPS[name].name}】的魔物远强于你（推荐 Lv.${rec} · 当前 Lv.${S.G.level}），先补给再战！${outTag}`, NARR_MSG_MS);
   } else {
-    bind.boxMsg(`进入了【${MAPS[curMap()].name}】`, SHORT_MSG_MS);
+    bind.boxMsg(`进入了【${MAPS[curMap()].name}】${outTag}`, SHORT_MSG_MS);
   }
   // v21.40 无泉水/旅店图进图补给提醒（信息透明·纯显示，承 v21.17 老矿工「矿脉没有泉水/旅店」/v21.36
   // 叙事同口径：把「这图没有免费恢复点」从 NPC 台词搬到入口决策点——cave/gallery 是全图唯二无泉水/旅店

@@ -35,7 +35,7 @@ const coreSrc = read('../js/core.js');
 const worldSrc = read('../js/world.js');
 
 ok('data.js 含 v21.89 版本注释', dataSrc.includes('v21.89 旧档 visited 兜底与旅行端防御式读取'));
-ok('data.js GAME_VERSION 字面量已更新为 v21.89', dataSrc.includes("const GAME_VERSION = 'v24.27';"));
+ok('data.js GAME_VERSION 字面量已更新为 v21.89', dataSrc.includes("const GAME_VERSION = 'v24.28';"));
 
 // —— 源级落位 ——
 ok('quests.js migrateQuests 含 visited 兜底（读档补 [\'village\']，newGame 起始值同式）',
@@ -45,7 +45,7 @@ ok('menus.js drawTravel 防御式读取（(hero.visited||[]).includes(k)）',
 ok('core.js doTravel 防御式读取（(S.G.visited||[]).includes(key)）',
   coreSrc.includes('if (!(S.G.visited||[]).includes(key)) {') && !coreSrc.includes('if (!S.G.visited.includes(key))'));
 ok('world.js transition 既有 visited 守卫逐字未动（v21.26 起同一行）',
-  worldSrc.includes('if (S.G.visited && !S.G.visited.includes(name)) S.G.visited.push(name);'));
+  worldSrc.includes('if (S.G.visited && isNewMap) S.G.visited.push(name);'));
 ok('quests.js 兜底注释落位（设计意图/零迁移/不误解锁）',
   questsSrc.includes('v21.89 旧档 visited 兜底') && questsSrc.includes('不误解锁「走遍四方」'));
 
@@ -167,8 +167,8 @@ ok('运行期：既有 visited 存档经 migrateQuests 逐字保留零覆盖（�
 const readme = read('../README.md');
 const pkg = read('../package.json');
 ok('README tests 树收录 smoke_v2189_visitedlegacy', readme.includes('smoke_v2189_visitedlegacy'));
-ok('README 件套口径为二百五十一件套（二百五十件套清除）',
-  readme.includes('冒烟二百五十一件套（二百五十件套清除）') && !readme.includes('冒烟八十四件套（八十三件套清除）'));
+ok('README 件套口径为二百五十二件套（二百五十一件套清除）',
+  readme.includes('冒烟二百五十二件套（二百五十一件套清除）') && !readme.includes('冒烟八十四件套（八十三件套清除）'));
 ok('README 含 v21.89 守护描述', readme.includes('v21.89 起含旧档 visited 兜底与旅行端防御式读取守护'));
 ok('package.json 已收录 smoke_v2189_visitedlegacy（npm test 串跑第 85 份）',
   pkg.includes('smoke_v2189_visitedlegacy.mjs') && /smoke_v2188_wander\.mjs && node tests\/smoke_v2189_visitedlegacy\.mjs/.test(pkg));
@@ -181,13 +181,13 @@ const suite85 = ['smoke_v2188_wander.mjs', 'smoke_v2187_endingrecap.mjs', 'smoke
   'smoke_v2176_allchests.mjs'];
 for (const nm of suite85) {
   const src = read(`../tests/${nm}`);
-  ok(`${nm} 的 README 件套 pin 已随新现实更新为二百五十一件套（二百五十件套清除）`,
-    src.includes('二百五十一件套（二百五十件套清除）'));
+  ok(`${nm} 的 README 件套 pin 已随新现实更新为二百五十二件套（二百五十一件套清除）`,
+    src.includes('二百五十二件套（二百五十一件套清除）'));
 }
 for (const nm of ['smoke_v2188_wander.mjs', 'smoke_v2187_endingrecap.mjs', 'smoke_v2186_brew.mjs', 'smoke_v2185_steleclear.mjs', 'smoke_v2184_lvl12.mjs', 'smoke_v2183_mpsip.mjs', 'smoke_v2182_winrecap.mjs', 'smoke_v2181_helpquickcast.mjs', 'smoke_v2179_titlerecap.mjs']) {
   const src = read(`../tests/${nm}`);
   ok(`${nm} 的 GAME_VERSION 字面量 pin 已随新现实更新为 v21.89`,
-    src.includes("const GAME_VERSION = 'v24.27';"));
+    src.includes("const GAME_VERSION = 'v24.28';"));
 }
 
 console.log(`\n${n - failed}/${n} 通过${failed ? '（失败 ' + failed + '）' : ''}`);
