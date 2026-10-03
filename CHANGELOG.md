@@ -31,6 +31,12 @@ trueBoss after 彩蛋「灯芯全亮回来了 / 铁锤归我管」并入真结�
 - 【记录】`CHANGELOG.md`（本条）+ smoke_v2432_golemquest 入库（256 份·断言见文件头）。
 - 【验证】`node --check` js/data.js · tests/smoke_v2432_golemquest.mjs 过；`npm run check`（25 模块）全部通过；
   `npm test` 二百五十六件套端到端全绿 EXIT=0。
+- 【补记（2026-10-03 cron）】本版经 TCC 封锁期（launchd 网关认领、~/Downloads 读取/readdir EPERM，git 全程读被拒）
+  以「/tmp 主分支工作法」完稿：工作克隆 /tmp/jrpg_work_20261003（origin=~/my-jrpg-v2431-pending.bundle，
+  HEAD 与真实项目/远端一致于 cf322375=v24.31）；真实项目 ~/Downloads/my-jrpg 保持 v24.31（cf322375）未动；
+  推送结果：第 1 次尝试成功（`cf322375..e49c53f1 main -> main`）；持久备份
+  `~/my-jrpg-v2432-pending.bundle`（含 e49c53f1）；解封后第一条命令：
+  `cd ~/Downloads/my-jrpg && git pull origin main` 直达 v24.32。
 
 ## v24.31 体验打磨·信息透明·决策现场：酿造界面补「🧪 灵药满柜 N/8」进度角标——站锅前把菇熬成灵药的当场一眼看清还差几瓶拿成就（承 v24.10 酿造界面「🍶 妙手回春 N/5」同屏同款行内角标 / v24.09 商店「🍄 蘑菇商路 N/30」+ v24.25 商店「🧪 药香满囊 N/50」同一「成就进度于决策现场可见」主线 / v22.17 灵药满柜成就（高级灵药持有线中档里程碑 = 持有 ELIXIR_STOCK2_GOAL(8) 瓶，计数 hero.potion2 由 brewNow 酿造成功/支线奖励/战斗掉落共享同一持有量字段、snapshotHero 全量快照自动持久化、防御式 (hero.potion2||0) 旧档零迁移）——酿造界面（drawBrew）材料行早已报「已酿灵药 N 瓶」（余额读数），但成就档位「灵药满柜 N/8」此前只藏在 C 成就页一行 X/8：灵药线三档（灵药盈囊 3 / 灵药满柜 8 / 灵药满仓 16）的中档里程碑恰是「把菇熬成灵药」这个动作本身的计数现场（与 v24.10「现场是动作本身」同族），站锅前查无一眼之数；现 drawBrew 补「🧪 灵药满柜 N/8」（分子读 hero.potion2 防御式 (hero.potion2||0)、分母读 data.js ELIXIR_STOCK2_GOAL 单一数据源，与 C 页/ACH_LIST elixir2 的 ok/prog 同读一份源，调阈值只改 data.js 一处三端自动跟随；同 v24.19/v24.25 只报中档里程碑先例——灵药盈囊 N/3 与灵药满仓 N/16 同线另两档由 C 页承载），13px 绿字居中 y=312（与「🍶 妙手回春」(288) 行间 24、面板底 380 之内零越界）；纯显示零结算零存档零数值变化（ELIXIR_STOCK2_GOAL/brewNow 结算/材料/配方/可酿/提示/妙手回春行逐字未动）；GAME_VERSION v24.30→v24.31，全库 254 件套 pin 级联（哨兵前望 256）+ smoke_v2431_elixirprog 入库（255 份）；node --check + npm run check 25 模块 + npm test 二百五十五件套端到端全绿 EXIT=0
 
