@@ -1887,7 +1887,16 @@
 // （每场 +10/+11/+12），在推荐等级更进一步接近「经验与金币同步毕业」；开局 Lv1-2 镇内只遇四基础怪
 // 逐字不变（village Lv1/Lv2 12.08/14.55 恒等）；hp/atk/def/xp/权重/门槛/区域倍率逐字不动，
 // 遇敌/掉落/战斗/成就/存档零影响。
-const GAME_VERSION = 'v24.33';
+// v24.34 新内容·新支线（第十四条）：守碑人「百炼的刻印」——试炼场三连战累计通关 RUSH_CLEAR_GOAL(3)
+// 次换 200 金 + 1 高级灵药（承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32
+// 锻灯师「风味 NPC 升格为支线委托人」先例：v24.24 让全 8 种普通怪各有专属讨伐线、v24.32 与既有
+// side_ember 让双精英各有支线后，试炼场三连战仍只有 v23.67 成就「千锤百炼」无支线——本版把试炼场线
+// 挂上支线收口；阈值单一数据源 RUSH_CLEAR_GOAL（判定/进度/目标文案/接取对话与 ACH_LIST rushs 同读
+// 一份源），计数 hero.rushClears（winBattle 试炼通关唯一产生点写入、snapshotHero 全量快照自动持久化、
+// 防御式 (g.rushClears||0) 旧档零迁移）；无 unlockOn 从开局即 offer、done 页 trueBoss 分档（after 彩蛋
+// 并入零内容丢失）；200 金 + 1 高级灵药（终局内容且需 3 通，高于 side_name/side_golem 120 档）；
+// 纯 QUESTS 表驱动零新逻辑零新计数零新存档、零数值变化（MON_BASE/战斗/掉落/成就/存档零影响）。
+const GAME_VERSION = 'v24.34';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -2871,6 +2880,11 @@ const NPCS={
   // RUSH_RECOVER / RUSH_BASE_GOLD / RUSH_GOLD_PER_LV / RUSH_BOSSES 派生（试炼恢复/赏金/三连战阵容
   // 单一数据源，调试炼数值只改 data.js 一处、碑旁对话自动跟随；npcQuestPages 对函数型 lines 调用期求值，
   // 见 quests.js 一处分支），trueBoss 后走 after 彩蛋（npcQuestPages 同源读取）。
+  // v24.34 升格为支线委托人（QUESTS.side_trial「百炼的刻印」·试炼场三连战累计通关 RUSH_CLEAR_GOAL 次，
+  // 承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师「风味 NPC 升格」
+  // 先例）：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），原有
+  // sentinelPages 兜底台词与 trueBoss after 彩蛋「三场都胜了……刻痕更深」两页已并入 side_trial 的
+  // done 分档（零内容丢失，详见 QUESTS.side_trial 行内注释）。
   sentinel:{name:'守碑人', mark:'staff', lines: sentinelPages, after:[
     ['守碑人：三场都胜了。碑光熄灭的那一瞬，我以为它会像镇上的灯一样亮一整夜——','结果它只是把三道刻痕照得更深了。 [Enter] 继续'],
     ['守碑人：刻痕深一分，忘掉的东西就少一分。','老朽守碑守到灯都亮了，值了。','去吧，记得把名字带回来。 [Enter] 结束'],
@@ -5100,6 +5114,65 @@ const QUESTS={
       ] : [[
         '锻灯师：锤砧齐了，灯也越打越顺手。',
         '说到底，灯记住路，人跟着灯走。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
+  // 百炼的刻印（v24.34 新内容·新支线（第十四条））：试炼场线收口——v24.24 让全 8 种普通怪各有专属
+  // 讨伐线、v24.32 与既有 side_ember 让双精英各有支线后，试炼场三连战仍只有 v23.67 成就「千锤百炼」
+  // （RUSH_CLEAR_GOAL(3) 次）无支线挂钩：守碑人（v21.24 纯风味 NPC·星井矿脉试炼碑旁 (17,12)）升格为
+  // 委托人——他守碑守了一辈子，碑上三道刻痕总该由活人一遍一遍磨深（与 v23.32 拾菇人/v23.42 客栈
+  // 老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师「风味 NPC 升格为支线委托人」同一先例）；
+  // 阈值单一数据源 RUSH_CLEAR_GOAL(3)（判定/进度/目标文案/接取对话四端同读一份源，与 ACH_LIST rushs
+  // 千锤百炼的 ok/prog/d 同读，调门槛只改 data.js 一处自动跟随），计数 hero.rushClears（battle.winBattle
+  // 试炼通关唯一产生点写入（hero.rushDone = true 同处）、snapshotHero 全量快照自动持久化、防御式
+  // (g.rushClears||0) 旧档零迁移）；无 unlockOn（承 side_pond 同款从开局即 offer，保留完整接取流程——
+  // 守碑人只在星井矿脉可达、接取时机天然正确）；active 页按 hero 实时报进度（与 side_golem/side_stone
+  // 同款函数页）；done 页按 hero.trueBoss 分档（守碑人原有 trueBoss after 彩蛋「三场都胜了……把三道
+  // 刻痕照得更深了」两页并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after）；
+  // 奖励 200 金 + 1 高级灵药（试炼三连战是推荐 Lv.12 的终局内容、且需累计通关 RUSH_CLEAR_GOAL(3) 次——
+  // 高于 side_name/side_golem 120 档、与 side_ember（100 金+灵药·回廊 Lv.10）再拉开一档）；纯内容扩充
+  // 零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动
+  // 跟随），仅 RUSH_CLEAR_GOAL/rushClears 一份既有源复用。
+  side_trial:{
+    id:'side_trial', kind:'side', store:true, npc:'sentinel', giver:'sentinel',
+    cond:(g)=>((g.rushClears||0) >= RUSH_CLEAR_GOAL),
+    condProg:(g)=>`${(g.rushClears||0)}/${RUSH_CLEAR_GOAL} 次`,
+    name:'百炼的刻印', where:'星井矿脉·试炼碑',
+    obj:`通过试炼场三连战 ${RUSH_CLEAR_GOAL} 次`,
+    offer:'去星井矿脉找守碑人，接下百炼刻印的委托',
+    turnin:'三道刻痕齐了！回星井矿脉找守碑人',
+    done:'三道刻痕在碑上又深了一分。活人刻的印，比碑文更重。',
+    reward:{ gold:200, potion2:1 },
+    talk:{
+      offer:[[
+        '守碑人：碑上三道刻痕——试炼场三连战，碑光在每胜一关的间隙替你恢复体力。',
+        '可这碑是死物，刻痕要由活人一遍一遍磨深。',
+        `替我过 ${RUSH_CLEAR_GOAL} 次试炼场，让碑光记住活人的分量。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守碑人：别嫌碑老——它记着每一个敢站上去的人。',
+        '老朽等在碑旁，替你数着。',
+        `（已通关 ${((hero&&hero.rushClears)||0)}/${RUSH_CLEAR_GOAL} 次）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '守碑人：三道刻痕，一道都没浅。',
+        '这方碑替镇子记着——你也替它记着。谢礼收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守碑人：三场都胜了。碑光熄灭的那一瞬，我以为它会像镇上的灯一样亮一整夜——',
+         '结果它只是把三道刻痕照得更深了。',
+         '[Enter] 继续'],
+        ['守碑人：刻痕深一分，忘掉的东西就少一分。',
+         '老朽守碑守到灯都亮了，值了。',
+         '去吧，记得把名字带回来。',
+         '（支线任务·已完成）[Enter] 结束'],
+      ] : [[
+        '守碑人：碑上的刻痕，有你磨出来的一道。',
+        '它记着你，就像这镇子的灯记着所有名字。',
         '（支线任务·已完成）[Enter] 结束',
       ]],
     },

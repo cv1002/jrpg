@@ -108,9 +108,9 @@ ok('battle.js 普通胜利文案「🏆 胜利！获得…（剩余 N 金）（�
 const HUNTS = ['side_mist', 'side_stone', 'side_ember', 'side_bone', 'side_grain', 'side_tree', 'side_wolf', 'side_snake', 'side_pond'];
 ok('九条讨伐支线均具 condProg/turnin/name（战报与日志/NPC 同读一份源）',
   HUNTS.every((id) => { const q = QUESTS[id]; return q && q.condProg && q.turnin && q.name; }));
-ok('side_name（记忆碎片）确有 condProg 且为唯一被排除者（双报排除面精确；v24.24 随新现实更新 9→10 · v24.32 side_golem 入列随新现实更新 10→11）',
+ok('side_name（记忆碎片）确有 condProg 且为唯一被排除者（双报排除面精确；v24.24 随新现实更新 9→10 · v24.32 side_golem 入列随新现实更新 10→11 · v24.34 side_trial 入列随新现实更新 11→12）',
   !!QUESTS.side_name && !!QUESTS.side_name.condProg &&
-  Object.values(QUESTS).filter((q) => q.condProg).length === 11);
+  Object.values(QUESTS).filter((q) => q.condProg).length === 12);
 
 // —— 运行期实证：winBattle 真实路径 + bind.boxMsg 捕获（承 v21.40 捕获桩法）——
 function mkHero(extra) {

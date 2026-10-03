@@ -94,24 +94,27 @@ ok('真源健全：三 Boss SPECIES[].lv 均为正数（8/7/12）',
 ok('RUSH_BOSSES 三关与 RUSH_REC_LV 口径同源（阵容名可查 SPECIES）',
   RUSH_BOSSES.length === 3 && RUSH_BOSSES.every((b) => SPECIES[b.name] && SPECIES[b.name].lv > 0));
 
-// —— 守碑人台词运行期：新推荐等级段 + after 彩蛋零回归 ——
+// —— 守碑人台词运行期：v24.34 起升格为支线委托人 → 任务四档优先，原 sentinelPages 兜底台词与
+// trueBoss after 彩蛋并入 done 分档（承 v24.24 掌灯阿婆 / v24.32 锻灯师升格同款处理，零内容丢失）——
 const sent = NPCS.sentinel;
-ok('sentinel 仍为函数型 lines（sentinelPages）', sent && typeof sent.lines === 'function');
-const pPages = npcQuestPages({ level: 10 }, 'sentinel');
+ok('sentinel 仍为函数型 lines（sentinelPages 兜底未动）', sent && typeof sent.lines === 'function');
 const flat = (arr) => arr.flat(Infinity).map((s) => String(s));
-const p0 = flat(pPages[0]);
-ok('守碑人第一页含推荐等级口径（按 12 级刻的 · 碑光可护不住你）',
-  p0.some((s) => s.includes('按 12 级刻的')) && p0.some((s) => s.includes('碑光可护不住你')), p0.join('|'));
-ok('守碑人第一页其余台词零回归（三道刻痕/恢复/赏金/[Enter] 继续）',
-  p0.some((s) => s.includes('三道刻痕')) && p0.some((s) => s.includes('%HP/')) &&
-  p0.some((s) => s.includes('金（随你等级水涨船高）')) && p0.some((s) => s === '[Enter] 继续'));
-const pages2 = npcQuestPages({ level: 12 }, 'sentinel');
-ok('守碑人第二页（机制页）零回归（真身/石甲/封印治愈/[Enter] 结束）静置',
-  flat(pages2[1] || []).some((s) => s.includes('治愈术会被封印')) &&
-  flat(pages2[1] || []).some((s) => s === '[Enter] 结束'));
-const epi = npcQuestPages({ trueBoss: true, level: 10 }, 'sentinel');
-ok('守碑人 trueBoss 后 after 彩蛋零回归（碑光熄灭/刻痕更深）',
-  flat(epi).some((s) => s.includes('刻痕深一分')) && !flat(epi).some((s) => s.includes('碑光可护不住你')));
+const pOffer = npcQuestPages({ level: 10 }, 'sentinel');
+ok('新档选段为任务 offer 页（守碑人 · 三道刻痕 · 接下委托）',
+  pOffer && pOffer[0] && pOffer[0].some((s) => s.includes('守碑人')) &&
+  pOffer[0].some((s) => s.includes('接下委托')), pOffer && pOffer[0] && pOffer[0][0]);
+const pSp = sent.lines({ level: 10 });
+ok('sentinelPages 兜底第一页仍含推荐等级口径（按 12 级刻的 · 碑光可护不住你）',
+  pSp && pSp[0] && flat(pSp[0]).some((s) => s.includes('按 12 级刻的')) &&
+  flat(pSp[0]).some((s) => s.includes('碑光可护不住你')), pSp && pSp[0] && flat(pSp[0]).join('|'));
+ok('sentinelPages 兜底第一页其余台词零回归（三道刻痕/恢复/赏金/[Enter] 继续）',
+  flat(pSp[0]).some((s) => s.includes('三道刻痕')) && flat(pSp[0]).some((s) => s.includes('%HP/')) &&
+  flat(pSp[0]).some((s) => s.includes('金（随你等级水涨船高）')) && flat(pSp[0]).some((s) => s === '[Enter] 继续'));
+ok('sentinelPages 兜底第二页（机制页）零回归（真身/石甲/封印治愈/[Enter] 结束）静置',
+  flat(pSp[1] || []).some((s) => s.includes('治愈术会被封印')) &&
+  flat(pSp[1] || []).some((s) => s === '[Enter] 结束'));
+ok('任务 done trueBoss 档：after 彩蛋并入（碑光熄灭/刻痕更深）零内容丢失',
+  (() => { const epi = npcQuestPages({ trueBoss: true, level: 10, quests: { side_trial: 'done' } }, 'sentinel'); return epi && flat(epi).some((s) => s.includes('刻痕深一分')) && flat(epi).some((s) => s.includes('三场都胜了')) && !flat(epi).some((s) => s.includes('碑光可护不住你')); })());
 
 // —— H 页「试炼进阶」：r[2] 追加建议等级 + 行宽预算 + 行数不变 ——
 const estW = (s, size) => {

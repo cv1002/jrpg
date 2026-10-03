@@ -57,12 +57,15 @@ ok('after 彩蛋 2 页（trueBoss 后台词）', sent && Array.isArray(sent.afte
 
 function flat(pages) { return (pages || []).flat().join(''); }
 
-// —— 派生台词：与 RUSH_* 常量逐值同源（期望值全部由 data.js 真源复算，非快照）——
+// —— 派生台词：与 RUSH_* 常量逐值同源（期望值全部由 data.js 真源复算，非快照；v24.34 起守碑人
+// 升格为支线委托人「百炼的刻印」→ npcQuestPages 任务四档优先，原 sentinelPages 改为直接经
+// NPCS.sentinel.lines 求值（兜底台词仍在）、trueBoss after 彩蛋并入任务 done 分档（承 v24.32 锻灯师
+// 升格同款处理，零内容丢失）——
 const NAMES = RUSH_BOSSES.map((b) => b.name);
 const hpPct = Math.round(RUSH_RECOVER.hp * 100);
 const mpPct = Math.round(RUSH_RECOVER.mp * 100);
 ok('真源健全：恢复比例/奖金基数为正数', RUSH_RECOVER.hp > 0 && RUSH_RECOVER.mp > 0 && RUSH_BASE_GOLD > 0 && RUSH_GOLD_PER_LV > 0);
-const pLv10 = npcQuestPages({ level: 10 }, 'sentinel');
+const pLv10 = NPCS.sentinel.lines({ level: 10 });
 ok('默认对话 2 页（含 [Enter] 继续/结束 收尾）',
   Array.isArray(pLv10) && pLv10.length === 2 &&
   pLv10[0].some((l) => l.includes('[Enter] 继续')) &&
@@ -76,13 +79,16 @@ ok(`Lv.10 赏金 ${RUSH_BASE_GOLD + 10 * RUSH_GOLD_PER_LV} 金与 RUSH 公式同
 ok('页 2 含三 Boss 机制提示（真身/石甲/封印治愈）',
   flat(pLv10).includes('血过半现真身') && flat(pLv10).includes('石甲加身') && flat(pLv10).includes('封印'));
 ok(`Lv.12 重算为 ${RUSH_BASE_GOLD + 12 * RUSH_GOLD_PER_LV} 金（调用期按 hero.level 求值）`,
-  flat(npcQuestPages({ level: 12 }, 'sentinel')).includes(`${RUSH_BASE_GOLD + 12 * RUSH_GOLD_PER_LV} 金`));
+  flat(NPCS.sentinel.lines({ level: 12 })).includes(`${RUSH_BASE_GOLD + 12 * RUSH_GOLD_PER_LV} 金`));
 ok(`等级缺省（空 hero）按 Lv.1 兜底 ${RUSH_BASE_GOLD + RUSH_GOLD_PER_LV} 金`,
-  flat(npcQuestPages({}, 'sentinel')).includes(`${RUSH_BASE_GOLD + RUSH_GOLD_PER_LV} 金`));
+  flat(NPCS.sentinel.lines({})).includes(`${RUSH_BASE_GOLD + RUSH_GOLD_PER_LV} 金`));
+ok('升格后 npcQuestPages 新档为任务 offer 页（守碑人 · 百炼的刻印 · 接下委托）',
+  (() => { const p = npcQuestPages({ level: 10 }, 'sentinel'); return p && p[0] && p[0].some((l) => l.includes('接下委托')) && p[0].some((l) => l.includes('百炼的刻印') || l.includes('刻痕')); })());
 
-// —— trueBoss 彩蛋优先（npcQuestPages 既有契约：after > lines）——
-const epi = npcQuestPages({ trueBoss: true, level: 10 }, 'sentinel');
-ok('trueBoss 后返回 after 彩蛋 2 页', Array.isArray(epi) && epi.length === 2 && flat(epi).includes('三场都胜了'));
+// —— trueBoss 彩蛋并入任务 done 分档（npcQuestPages 有任务后不再单独展示 after；v24.34 升格契约）——
+const epi = npcQuestPages({ trueBoss: true, level: 10, quests: { side_trial: 'done' } }, 'sentinel');
+ok('trueBoss 后任务 done 档并入 after 彩蛋 2 页（碑光熄灭/刻痕更深）',
+  Array.isArray(epi) && epi.length === 2 && flat(epi).includes('三场都胜了') && flat(epi).includes('刻痕深一分'));
 
 // —— 零回归：静态 NPC / linesByStage / 未知 NPC 契约逐字不变 ——
 const vil = npcQuestPages({}, 'villager');

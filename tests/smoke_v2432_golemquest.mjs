@@ -12,12 +12,12 @@
 // 不再单独展示 after，零内容丢失）；奖励 120 金 + 1 高级灵药（与 side_name 同档：精英级随机遭遇高于
 // ember 100 档）。
 // 本冒烟守护：版本锚点、data.js 源级落位（v24.32 注释 / GAME_VERSION v24.32 与旧 v24.31 字面量
-// 零残留 / v24.31-24.19 历史注释保留 / GOLEM_GOAL 常量与 export）、QUESTS 契约（13 side + 4 main、
+// 零残留 / v24.31-24.19 历史注释保留 / GOLEM_GOAL 常量与 export）、QUESTS 契约（14 side + 4 main、
 // side_golem 字段逐值、与十组 *_GOAL 同源、ACH_LIST allquests 同源互证）、quests.js 运行期状态机
 // （offer→active→turnin→done 全链路 + resolveNpcTalk 接取/交付结算 120 金+1 高级灵药 + npcQuestMark/
-// npcQuestPages 四态 + sideQuestDone 0/13·3/13·13/13）、NPCS.smith 升格落位（mark/坐标/NPC_SPOTS
+// npcQuestPages 四态 + sideQuestDone 0/14·3/14·14/14）、NPCS.smith 升格落位（mark/坐标/NPC_SPOTS
 // 零回归）、README/package.json/CHANGELOG 同步（件套口径 257 + v24.32 守护描述 + 入库 257 + package
-// 串尾 + CHANGELOG 顶 pin）、tests 目录与实跑链恒等（256）、哨兵链（前望 258 且 README 尚无 258
+// 串尾 + CHANGELOG 顶 pin）、tests 目录与实跑链恒等（256）、哨兵链（前望 259 且 README 尚无 259
 // 口径）、旧代 v24.31 pin 全库零残留扫描（字面量/顶 pin/255 口径 · 豁免上一版套件
 // smoke_v2431_elixirprog）。
 import { GAME_VERSION, QUESTS, GOLEM_GOAL, ELITE_GOLEM, ELITE_GATE_LV, ELITE_CHANCE, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, WOLF_GOAL, SNAKE_GOAL, SLIME_GOAL, ACH_LIST, NPCS } from '../js/data.js';
@@ -51,7 +51,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.31', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.32（旧 v24.31 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.33';") && !dSrc.includes("const GAME_VERSION = 'v24.31';"));
+  dSrc.includes("const GAME_VERSION = 'v24.34';") && !dSrc.includes("const GAME_VERSION = 'v24.31';"));
 ok('data.js 含 v24.32 注释（新支线「石心的试炼」说明）',
   dSrc.includes('// v24.32 新内容·新支线（第十三条）'));
 ok('data.js 仍保留 v24.31 历史注释（酿造角标进度说明，累积注释块）',
@@ -73,11 +73,11 @@ ok('十组既有支线目标逐值零回归（蘑菇 3/雾灵 3/石魔像 3/哥�
 ok('ELITE_GOLEM 单一数据源逐值（石心魔像 · Lv≥3 · 7%）',
   ELITE_GOLEM.name === '石心魔像' && ELITE_GATE_LV === 3 && ELITE_CHANCE === 0.07);
 
-// —— QUESTS 契约：13 side + 4 main（数量派生，绝无裸字面量）——
+// —— QUESTS 契约：14 side + 4 main（数量派生，绝无裸字面量）——
 const sideDefs = Object.values(QUESTS).filter((q) => q.kind === 'side');
 const mainDefs = Object.values(QUESTS).filter((q) => q.kind === 'main');
-ok('QUESTS 共 17 条（13 side + 4 main，派生计数）',
-  sideDefs.length === 13 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 17,
+ok('QUESTS 共 18 条（14 side + 4 main，派生计数）',
+  sideDefs.length === 14 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 18,
   `${sideDefs.length}/${mainDefs.length}`);
 ok('side_golem 存在且为第十三条（kind side · store · npc/giver smith · 无 unlockOn）',
   !!QUESTS.side_golem && QUESTS.side_golem.kind === 'side' && QUESTS.side_golem.store === true &&
@@ -98,18 +98,18 @@ ok('side_golem reward 逐值：120 金 + 1 高级灵药（与 side_name 同档·
 
 // —— ACH_LIST allquests 同源互证（与 sideQuestDone 输出一致）——
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('ACH_LIST allquests 名称「灯火同心」且描述派生 13（「13 个支线任务」）',
-  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('13 个支线任务'), achAll && achAll.d);
-ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/13 false · 12/13 false · 13/13 true · prog 13/13）',
-  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 12).map(q => [q.id, 'done'])) }) === false &&
+ok('ACH_LIST allquests 名称「灯火同心」且描述派生 14（「14 个支线任务」）',
+  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('14 个支线任务'), achAll && achAll.d);
+ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/14 false · 12/14 false · 14/14 true · prog 14/14）',
+  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 13).map(q => [q.id, 'done'])) }) === false &&
   achAll.ok({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === true &&
-  achAll.prog({ quests: {} }) === '0/13' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '13/13');
+  achAll.prog({ quests: {} }) === '0/14' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '14/14');
 
 // —— quests.js 运行期：sideQuestDone ——
-ok('运行期：sideQuestDone 0/13 · 3/13 · 13/13 · 主线不入列',
-  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 13 &&
+ok('运行期：sideQuestDone 0/14 · 3/14 · 14/14 · 主线不入列',
+  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 14 &&
   sideQuestDone({ quests: { side_mushroom: 'done', side_cart: 'done', side_pond: 'done' } }).done === 3 &&
-  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 13 &&
+  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 14 &&
   sideQuestDone({ quests: { main_demon: 'done' } }).done === 0);
 
 // —— 运行期状态机：offer → active → turnin → done（quests 纯函数，零 DOM）——
@@ -176,31 +176,31 @@ ok('data.js village.extras 含锻灯师 (7,11) 与 NPC_SPOTS 键「7,11」（零
   dSrc.includes('{ x: 7, y: 11, ty: \'NPC\' }') && dSrc.includes("'7,11'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百五十七件套（二百五十六件套清除）',
-  readme.includes('冒烟二百五十七件套（二百五十六件套清除）'));
-ok('README tests 含 v24.32 守护描述与 smoke_v2432_golemquest 入库（257 份）',
+ok('README 件套口径已为二百五十八件套（二百五十七件套清除）',
+  readme.includes('冒烟二百五十八件套（二百五十七件套清除）'));
+ok('README tests 含 v24.32 守护描述与 smoke_v2432_golemquest 入库（258 份）',
   readme.includes('v24.32 起含 新支线「石心的试炼」守护') &&
-  readme.includes('smoke_v2432_golemquest 入库（257 份）'));
+  readme.includes('smoke_v2432_golemquest 入库（258 份）'));
 ok('README 仍有 v24.31 守护描述（历史保留）', readme.includes('v24.31 起含 酿造界面「🧪 灵药满柜 N/8」进度角标守护'));
-ok('README 已有二百五十六件套口径且尚无 258（哨兵前望 258 语义：下一版才写 258）',
-  readme.includes('冒烟二百五十七件套（二百五十六件套清除）') && !readme.includes('二百五十八件套'));
-ok('README tests 树串尾已延伸（…+ smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4（npm test 串跑））',
-  readme.includes('smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4（npm test 串跑）'));
+ok('README 已有二百五十六件套口径且尚无 259（哨兵前望 259 语义：下一版才写 259）',
+  readme.includes('冒烟二百五十八件套（二百五十七件套清除）') && !readme.includes('二百五十九件套'));
+ok('README tests 树串尾已延伸（…+ smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest（npm test 串跑））',
+  readme.includes('smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十三条 · 石心的试炼 · GOLEM_GOAL）',
-  readme.includes('十三条支线目标/奖励全部由') && readme.includes('石心的试炼（锻灯师 · 1 尊石心魔像 `GOLEM_GOAL`）120 金 + 1 高级灵药') &&
+  readme.includes('十四条支线目标/奖励全部由') && readme.includes('石心的试炼（锻灯师 · 1 尊石心魔像 `GOLEM_GOAL`）120 金 + 1 高级灵药') &&
   readme.includes('`GOLEM_GOAL`') && readme.includes('v24.32 补第十三条'));
 ok('README 地图速览锻灯师行随新现实（v24.32 起讨伐支线委托人）',
   readme.includes('**v24.32 起讨伐支线「石心的试炼」委托人**'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 256 份（smoke.mjs + 256 专项）', chain.length === 256 && chainAll.length === 257, String(chain.length));
-ok('package.json 链尾为 smoke_v2433_goldcurve4（第 257 份）', chain[chain.length - 1] === 'smoke_v2433_goldcurve4', chain[chain.length - 1]);
+ok('package.json 实跑链共 256 份（smoke.mjs + 257 专项）', chain.length === 257 && chainAll.length === 258, String(chain.length));
+ok('package.json 链尾为 smoke_v2434_trialquest（第 258 份）', chain[chain.length - 1] === 'smoke_v2434_trialquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2432_golemquest.mjs（node tests/ 前缀形态）',
-  pkgRaw.includes('node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs"'));
-ok('package.json 链锚逐字（smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs"）',
-  pkgRaw.includes('smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.32（startsWith）', changelog.startsWith('## v24.33'));
+  pkgRaw.includes('node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs"'));
+ok('package.json 链锚逐字（smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs"）',
+  pkgRaw.includes('smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.32（startsWith）', changelog.startsWith('## v24.34'));
 ok('CHANGELOG v24.32 条目含「石心的试炼」与「GOLEM_GOAL」与「锻灯师」',
   changelog.includes('石心的试炼') && changelog.includes('GOLEM_GOAL') && changelog.includes('锻灯师'));
 ok('CHANGELOG 仍保留 v24.31 条目（历史保留）', changelog.includes('## v24.31'));
@@ -210,7 +210,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 256（255 + smoke_v2432_golemquest）', files.length === 257, String(files.length));
+ok('tests 目录件套 = 256（255 + smoke_v2432_golemquest）', files.length === 258, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 

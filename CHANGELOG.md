@@ -1,3 +1,45 @@
+## v24.34 新内容·新支线（第十四条）：守碑人「百炼的刻印」——试炼场三连战累计通关 3 次换 200 金 + 1 高级灵药
+（承 v23.32 拾菇人「树精的菌库」/ v23.42 客栈老板娘「夜路的狼嚎」/ v23.57 酿药师「蛇影的药引」/ v24.24 掌灯阿婆
+「塘底的灯影」/ v24.32 锻灯师「石心的试炼」同一「风味 NPC 升格为支线委托人」先例：v24.24 让全 8 种普通怪各有
+专属讨伐线、v24.32 与既有 side_ember 让双精英各有支线后，试炼场三连战仍只有 v23.67 成就「千锤百炼」无支线——
+本版把试炼场线挂上支线收口；守碑人（v21.24 纯风味 NPC·星井矿脉试炼碑旁 (17,12)）升格为委托人，他守碑守了一辈子，
+碑上三道刻痕总该由活人一遍一遍磨深；量化：RUSH_CLEAR_GOAL(3) 单一数据源（判定 cond/进度 condProg/目标文案
+obj/接取对话 offer 四端同读一份源，与 ACH_LIST rushs「千锤百炼」的 ok/prog/d 同读，调门槛只改 data.js 一处
+自动跟随）、计数 hero.rushClears（battle.winBattle 试炼通关唯一产生点写入（hero.rushDone = true 同处）、
+snapshotHero 全量快照自动持久化、防御式 (g.rushClears||0) 旧档零迁移）、无 unlockOn（承 side_pond 同款从开局
+即 offer，守碑人只在矿脉可达、接取时机天然正确）、done 页按 hero.trueBoss 分档（守碑人原有 trueBoss after
+彩蛋「三场都胜了……把三道刻痕照得更深了」两页并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示
+after）、奖励 200 金 + 1 高级灵药（终局内容且需累计通关 3 次，高于 side_name/side_golem 120 档）；
+纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动
+跟随，仅 RUSH_CLEAR_GOAL/rushClears 一份既有源复用）；GAME_VERSION v24.33→v24.34，全库 257 件套 pin 级联
+（哨兵前望 259）+ smoke_v2434_trialquest 入库（258 份·64 断言）；node --check + npm run check 25 模块 +
+npm test 二百五十八件套端到端全绿 EXIT=0
+
+- 【新增：`js/data.js` QUESTS.side_trial「百炼的刻印」（第十四条）】——`kind:'side'` + `store:true` +
+  npc/giver sentinel + 无 unlockOn；cond/condProg 读 `hero.rushClears` 防御式与 `RUSH_CLEAR_GOAL`（既有
+  试炼通关计数/阈值一份源）；reward `{gold:200, potion2:1}`；talk 四档（offer / active 函数型实时报进度 /
+  turnin / done trueBoss 分档——after 彩蛋并入）；`GAME_VERSION` v24.33→v24.34 + v24.34 注释块
+  （v24.33 及更早历史注释保留）+ NPCS.sentinel 升格注释（承 granny/smith 同款）。
+- 【零回归面】未动任何结算/数值/存档结构（纯 QUESTS 数据追加 + 版本号）；未动 NPCS.sentinel lines/after 逐字
+  （sentinelPages 兜底台词仍在、after 并入 done 分档零内容丢失）；未动 RUSH_CLEAR_GOAL/rushClears/试炼结算/
+  成就/掉落/遇敌；未动 quests.js/core.js/battle.js/world.js（表驱动零新逻辑）；只改 1 个运行源码文件
+  （`js/data.js`：side_trial + 注释 + GAME_VERSION，其余 js/ 逐字未动）+ `README.md`（支线/奖励行
+  十三条→十四条 + 百炼的刻印 + 常量源列 RUSH_CLEAR_GOAL + 守碑人行升格标注 + tests 树串尾 + 件套口径
+  257→258 + v24.34 守护描述 + 入库（257 份）→（258 份））+ `package.json`（test 串第 258 份）+
+  全库 257 件套 pin 级联（哨兵前望 259 + 当前串 257→258 + testChain 257→258 + 串尾/树尾/件套口径/
+  GAME_VERSION 字面量/恒等/顶 pin）+ 既有 allquests 分母 13→14 家族手工推进（v2152/v2159/v2168/v2173/
+  v2176/v2177/v2180/v2421/v2424/v2432 + v2160 condProg 计数 11→12 + v2300 支线行 13→14/（还有 12 条）→
+  （还有 13 条）+ v2309 QUESTS 17 条→18 条/13 side→14 side + v2146 守碑人升格选段更新 + v2235
+  minimapquest 七大任务 NPC）。
+- 【记录】`CHANGELOG.md`（本条）+ smoke_v2434_trialquest 入库（258 份·断言见文件头）。
+- 【验证】`node --check` js/data.js · tests/smoke_v2434_trialquest.mjs 过；`npm run check`（25 模块）
+  全部通过；`npm test` 二百五十八件套端到端全绿 EXIT=0。
+- 【补记（2026-10-03 cron）】本版经 TCC 封锁期（launchd 网关认领、~/Downloads 读取/readdir EPERM，git
+  全程读被拒）以「/tmp 主分支工作法」完稿：工作克隆 /tmp/jrpg_work_v2434（origin=GitHub，HEAD 与远端
+  一致于 3c886f95=v24.33）；真实项目 ~/Downloads/my-jrpg 保持 v24.32（cf322375）未动；持久备份
+  `~/my-jrpg-v2434-pending.bundle`；解封后第一条命令：
+  `cd ~/Downloads/my-jrpg && git pull origin main` 直达 v24.34。
+
 ## v24.33 数值平衡·后期金币曲线续平滑（第四轮）——四强怪（骷髅兵/雾灵/树精/石魔像）每级金币再 +1（gold[1] 6→7）
 （承 v19.66 第一轮 / v24.18 第二轮 / v24.30 第三轮方法论第四轮：金币只随玩家等级线性、顶级装备价格固定
 （勇者之剑 600 + 龙鳞甲 480 = 1080 金），v24.30 把无字回廊 Lv10-12 每场金币抬到 76.76/82.76/88.70 后，
