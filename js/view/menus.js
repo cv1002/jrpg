@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, POTIONS2_GOAL, BREW2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, POTIONS2_GOAL, BREW2_GOAL, ELIXIR_STOCK2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -133,6 +133,19 @@ export function drawBrew(){
   // data.js 一处三端自动跟随），y=288 与「还可酿造」行（236）/提示行（262）行间零重叠、面板底 380
   // 之内零越界；纯显示零结算零存档零数值变化（BREW2_GOAL/brewNow 结算/材料/配方/可酿/提示逐字未动）。
   text(`🍶 妙手回春 ${(hero.brews || 0)}/${BREW2_GOAL}`, 320, 288, '13px', '#8ff0a0', 'center');
+  // v24.31 酿造界面补「🧪 灵药满柜 N/8」进度角标（体验打磨·信息透明·决策现场，承 v24.10 酿造「🍶
+  // 妙手回春 N/5」同屏同款行内角标 / v24.09 商店「🍄 蘑菇商路 N/30」+ v24.25 商店「🧪 药香满囊 N/50」
+  // 同一「成就进度于决策现场可见」主线：灵药线三档（灵药盈囊 3 瓶 / 灵药满柜 8 瓶 / 灵药满仓 16 瓶）
+  // 的中档里程碑计数现场正是「把菇熬成灵药」的酿造决策现场——brewNow 酿造成功/支线奖励/战斗掉落共享
+  // hero.potion2 持有量字段、snapshotHero 全量快照自动持久化、防御式 (hero.potion2||0) 旧档零迁移；
+  // 材料行（140）早已报「已酿灵药 N 瓶」（余额读数）但成就档位「灵药满柜 N/8」从未在锅前一眼可见
+  // （只藏在 C 成就页一行 X/8——同 v24.10 补妙手回春前「站锅前查无一眼之数」）；现补「🧪 灵药满柜
+  // N/8」（分子读 hero.potion2 防御式 (hero.potion2||0)、分母读 data.js ELIXIR_STOCK2_GOAL 单一数据源，
+  // 与 ACH_LIST elixir2 的 ok/prog 同读一份源，调阈值只改 data.js 一处三端自动跟随；同 v24.19/v24.25
+  // 只报中档里程碑先例——灵药盈囊 N/3 与灵药满仓 N/16 同线另两档由 C 页承载），y=312 与「妙手回春」
+  // 行（288）行间 24、面板底 380 之内零越界（13px 字底 ≈325.4）；纯显示零结算零存档零数值变化
+  // （ELIXIR_STOCK2_GOAL/brewNow 结算/材料/配方/可酿/提示/妙手回春行逐字未动）。
+  text(`🧪 灵药满柜 ${(hero.potion2 || 0)}/${ELIXIR_STOCK2_GOAL}`, 320, 312, '13px', '#8ff0a0', 'center');
   if(hero.mushrooms>=BREW_MUSHROOMS&&hero.gold>=BREW_GOLD) text('按 Enter/E 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
   else text(`材料不足（还差 ${Math.max(0,BREW_MUSHROOMS-hero.mushrooms)} 株蘑菇、${Math.max(0,BREW_GOLD-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
 }

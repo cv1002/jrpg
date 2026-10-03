@@ -42,7 +42,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.98', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 98)), GAME_VERSION);
 ok('data.js 含 v23.99 注释（伤害公式速查行说明）', dSrc.includes('// v23.99 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v23.99 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.30';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
+  dSrc.includes("const GAME_VERSION = 'v24.31';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
 ok('data.js 仍保留 v23.98 历史注释（经济行灵药恢复量口径说明，累积注释块）',
   dSrc.includes('// v23.98 文档整理·数值说明·同源口径'));
 
@@ -68,15 +68,15 @@ ok('倍率常量存在且为正（CRIT/CHARGE/ELEM/SHIELD/HEAVY 单一数据源�
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 223 件套', testChain === 254, String(testChain));
+ok('package.json test 串共 223 件套', testChain === 255, String(testChain));
 ok('package.json 已收录 smoke_v2399_dmgformula（npm test 串跑第 223 份）',
   JSON.parse(pkg).scripts.test.includes('smoke_v2399_dmgformula.mjs'));
-ok('package.json 串尾为 ... smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs"',
-  pkg.includes('smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs"'));
+ok('package.json 串尾为 ... smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs"',
+  pkg.includes('smoke_v2398_econrow.mjs && node tests/smoke_v2399_dmgformula.mjs && node tests/smoke_v2400_trialwarn.mjs && node tests/smoke_v2401_winbgm.mjs && node tests/smoke_v2402_firstwin.mjs && node tests/smoke_v2403_diffbattle.mjs && node tests/smoke_v2404_chestrow.mjs && node tests/smoke_v2405_trialgoal.mjs && node tests/smoke_v2406_restrow.mjs && node tests/smoke_v2407_innrest.mjs && node tests/smoke_v2408_travelgoal.mjs && node tests/smoke_v2409_sellgoal.mjs && node tests/smoke_v2410_brewgoal.mjs && node tests/smoke_v2411_deathprog.mjs && node tests/smoke_v2412_battlegoal.mjs && node tests/smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs"'));
 ok('README tests 树串尾已延伸至 smoke_v2399_dmgformula',
-  readme.includes('+ smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3（npm test 串跑）'));
-ok('README 件套口径为二百五十四件套（二百五十三件套清除）且旧 216 口径零残留',
-  readme.includes('冒烟二百五十四件套（二百五十三件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
+  readme.includes('+ smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog（npm test 串跑）'));
+ok('README 件套口径为二百五十五件套（二百五十四件套清除）且旧 216 口径零残留',
+  readme.includes('冒烟二百五十五件套（二百五十四件套清除）') && !readme.includes('冒烟二百一十六件套（二百一十五件套清' + '除）'));
 ok('README 含 v23.99 守护描述（「伤害公式」数值速查行守护）', readme.includes('v23.99 起含 「伤害公式」数值速查行守护'));
 ok('README 含 smoke_v2399_dmgformula 入库（223 份）', readme.includes('smoke_v2399_dmgformula 入库（223 份）'));
 ok('README 仍保留 v23.98/v23.97 历史守护描述与入库口径（历史累积）',
@@ -100,7 +100,7 @@ ok('README 掉落/魔物数值/技能数值行零回归（同表既行逐字未�
   readme.includes('| 掉落 | 战斗胜利 38%：8% 装备或 +60 金 / 12% 药水 / 12% 蘑菇 / 6% 灵药；宝箱 林 60% 菇 · 镇/矿/廊 45% 金 | `DROP_*` `CHEST_*` |') &&
   readme.includes('| 魔物数值 | 普通怪 hp/atk/def/xp/gold 五组均为一阶线性'));
 
-ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.30 '));
+ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.31 '));
 ok('CHANGELOG 顶部条目含伤害公式口径说明', changelog.includes('「伤害公式」') && changelog.includes('攻×2−防'));
 ok('CHANGELOG 仍保留 v23.98 与 v23.97 条目标题（历史口径）',
   changelog.includes('## v23.98 文档整理·数值说明·同源口径') &&
@@ -108,9 +108,9 @@ ok('CHANGELOG 仍保留 v23.98 与 v23.97 条目标题（历史口径）',
 
 // —— 哨兵链：v2143 前哨前望 226 且 README 尚无 225 口径 ——
 const s2143 = read('tests/smoke_v2143_talkekey.mjs');
-ok('smoke_v2143 哨兵链已推进至二百五十四件套（二百五十三件套清除）',
-  s2143.includes('二百四十七件套（二百四十五件套清除）') && s2143.includes("!readme.includes('二百五十五件套（二百五十四件套清除）')"));
-ok('README 尚无二百四十七件套（二百四十五件套清除）前望口径', !readme.includes('二百五十五件套（二百五十四件套清除）'));
+ok('smoke_v2143 哨兵链已推进至二百五十五件套（二百五十四件套清除）',
+  s2143.includes('二百四十七件套（二百四十五件套清除）') && s2143.includes("!readme.includes('二百五十六件套（二百五十五件套清除）')"));
+ok('README 尚无二百四十七件套（二百四十五件套清除）前望口径', !readme.includes('二百五十六件套（二百五十五件套清除）'));
 
 // —— 旧代 v23.98 pin 全库零残留（不含本件；拆串防误伤，承 v2319/v2392-98 惯例）——
 const allTests = fs.readdirSync(new URL('../tests', import.meta.url).pathname).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2399_dmgformula.mjs');
