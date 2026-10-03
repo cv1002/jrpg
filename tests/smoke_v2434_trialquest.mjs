@@ -17,7 +17,7 @@
 // sideQuestDone 0/14·1/14·14/14 + questJournal 目标/进度同源）、NPCS.sentinel 升格落位（lines 函数兜底
 // 仍在/after 两页保留/升格注释）、README/package.json/CHANGELOG 同步（件套口径 258 + v24.34 守护描述 +
 // 入库 258 + package 串尾 + CHANGELOG 顶 pin + 支线奖励行十四条 + 守碑人升格行）、tests 目录与实跑链
-// 恒等（258）、哨兵链（前望 262 且 README 尚无 262 口径）、旧代 v24.33 pin 全库零残留扫描（字面量/
+// 恒等（258）、哨兵链（前望 263 且 README 尚无 263 口径）、旧代 v24.33 pin 全库零残留扫描（字面量/
 // 顶 pin/257 口径 · 豁免上一版套件 smoke_v2433_goldcurve4）。
 import { GAME_VERSION, QUESTS, RUSH_CLEAR_GOAL, ACH_LIST, NPCS } from '../js/data.js';
 import { questStatus, questJournal, sideQuestDone, npcQuestMark, npcQuestPages, resolveNpcTalk, questRewardPreview } from '../js/quests.js';
@@ -50,7 +50,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.33', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.34（旧 v24.33 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.37';") && !dSrc.includes("const GAME_VERSION = 'v24.33';"));
+  dSrc.includes("const GAME_VERSION = 'v24.38';") && !dSrc.includes("const GAME_VERSION = 'v24.33';"));
 ok('data.js 含 v24.34 注释（新支线百炼的刻印说明，第十四条）',
   dSrc.includes('// v24.34 新内容·新支线（第十四条）：守碑人「百炼的刻印」'));
 ok('data.js 仍保留 v24.33 历史注释（后期金币曲线续平滑第四轮说明，累积注释块）',
@@ -160,16 +160,16 @@ ok('NPCS.sentinel 台词仍由试炼数值派生（按 12 级刻的 · 随你等
 ok('data.js NPC_SPOTS 键「17,12」→ sentinel（零新坐标）', dSrc.includes("'17,12': 'sentinel'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百六十一件套（二百六十件套清除）',
-  readme.includes('冒烟二百六十一件套（二百六十件套清除）'));
-ok('README tests 含 v24.34 守护描述与 smoke_v2434_trialquest 入库（261 份）',
+ok('README 件套口径已为二百六十二件套（二百六十一件套清除）',
+  readme.includes('冒烟二百六十二件套（二百六十一件套清除）'));
+ok('README tests 含 v24.34 守护描述与 smoke_v2434_trialquest 入库（262 份）',
   readme.includes('v24.34 起含 新支线「百炼的刻印」守护') &&
-  readme.includes('smoke_v2434_trialquest 入库（261 份）'));
+  readme.includes('smoke_v2434_trialquest 入库（262 份）'));
 ok('README 仍有 v24.33 守护描述（历史保留）', readme.includes('v24.33 起含 「后期金币曲线续平滑（第四轮）」守护'));
-ok('README 尚无 262 件套口径（哨兵前望 262 语义：下一版才写 262）',
-  !readme.includes('二百六十二件套') && !readme.includes('冒烟二百六十二件套'));
-ok('README tests 树串尾已延伸（…+ smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6（npm test 串跑））',
-  readme.includes('smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6（npm test 串跑）'));
+ok('README 尚无 263 件套口径（哨兵前望 263 语义：下一版才写 263）',
+  !readme.includes('二百六十三件套') && !readme.includes('冒烟二百六十三件套'));
+ok('README tests 树串尾已延伸（…+ smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7（npm test 串跑））',
+  readme.includes('smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十四条 · 百炼的刻印 · RUSH_CLEAR_GOAL · v24.34 补第十四条）',
   readme.includes('十四条支线目标/奖励全部由') &&
   readme.includes('百炼的刻印（守碑人 · 试炼场三连战累计通关 `RUSH_CLEAR_GOAL`(3) 次）200 金 + 1 高级灵药') &&
@@ -179,13 +179,13 @@ ok('README 地图速览守碑人行随新现实（v24.34 起为第十四条支�
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 258 份（smoke.mjs + 260 专项）', chain.length === 260 && chainAll.length === 261, String(chain.length));
-ok('package.json 链尾为 smoke_v2437_goldcurve6（第 261 份）', chain[chain.length - 1] === 'smoke_v2437_goldcurve6', chain[chain.length - 1]);
+ok('package.json 实跑链共 258 份（smoke.mjs + 260 专项）', chain.length === 261 && chainAll.length === 262, String(chain.length));
+ok('package.json 链尾为 smoke_v2438_goldcurve7（第 262 份）', chain[chain.length - 1] === 'smoke_v2438_goldcurve7', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2434_trialquest.mjs（node tests/ 前缀形态）',
-  pkgRaw.includes('node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs"'));
-ok('package.json 链锚逐字（smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs"）',
-  pkgRaw.includes('smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.34（startsWith）', changelog.startsWith('## v24.37 '));
+  pkgRaw.includes('node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs"'));
+ok('package.json 链锚逐字（smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs"）',
+  pkgRaw.includes('smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.34（startsWith）', changelog.startsWith('## v24.38 '));
 ok('CHANGELOG v24.34 条目含「百炼的刻印」与「RUSH_CLEAR_GOAL」与「守碑人」',
   changelog.includes('百炼的刻印') && changelog.includes('RUSH_CLEAR_GOAL') && changelog.includes('守碑人'));
 ok('CHANGELOG 仍保留 v24.33 与 v24.32 条目（历史保留）',
@@ -196,24 +196,24 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 258 与实跑链恒等', files.length === 261, String(files.length));
+ok('tests 目录件套 = 258 与实跑链恒等', files.length === 262, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
-// —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 262 ——
+// —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 263 ——
 const t2415 = read('tests/smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v2434_trialquest（第 261 份）',
-  t2415.includes("chain[chain.length - 1] === 'smoke_v2437_goldcurve6'"));
-ok('smoke_v2415 树串 token 数已推进至 258', t2415.includes('treeTok.length === 261'));
-ok('smoke_v2415 哨兵「尚无 262」口径（二百五十八件套 bare 否定式）',
-  t2415.includes("!readme.includes('二百六十二件套')"));
+ok('smoke_v2415 链尾已推进至 smoke_v2434_trialquest（第 262 份）',
+  t2415.includes("chain[chain.length - 1] === 'smoke_v2438_goldcurve7'"));
+ok('smoke_v2415 树串 token 数已推进至 258', t2415.includes('treeTok.length === 262'));
+ok('smoke_v2415 哨兵「尚无 263」口径（二百五十八件套 bare 否定式）',
+  t2415.includes("!readme.includes('二百六十三件套')"));
 const s2429 = read('tests/smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 哨兵链已推进至「前望 262」口径（二百五十八件套 括号/冒烟 bare 否定式）',
-  s2429.includes("!readme.includes('二百六十二件套（二百六十一件套清除）')") &&
-  s2429.includes("!readme.includes('冒烟二百六十二件套')"));
-ok('smoke_v2429 既有断言随新现实推进（件套口径 261 + 链尾 v2437 + 入库 261）',
-  s2429.includes('二百六十一件套（二百六十件套清除）') && s2429.includes("=== 'smoke_v2437_goldcurve6'") &&
-  s2429.includes('入库（261 份）'));
+ok('smoke_v2429 哨兵链已推进至「前望 263」口径（二百五十八件套 括号/冒烟 bare 否定式）',
+  s2429.includes("!readme.includes('二百六十三件套（二百六十二件套清除）')") &&
+  s2429.includes("!readme.includes('冒烟二百六十三件套')"));
+ok('smoke_v2429 既有断言随新现实推进（件套口径 262 + 链尾 v2438 + 入库 262）',
+  s2429.includes('二百六十二件套（二百六十一件套清除）') && s2429.includes("=== 'smoke_v2438_goldcurve7'") &&
+  s2429.includes('入库（262 份）'));
 
 // —— 旧代 pin 零残留扫描（v24.33 / 257 口径；豁免本套件与上一版套件否定式）——
 const leftovers = [];
