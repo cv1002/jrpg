@@ -17,7 +17,7 @@
 // （offer→active→turnin→done 全链路 + resolveNpcTalk 接取/交付结算 120 金+1 高级灵药 + npcQuestMark/
 // npcQuestPages 四态 + sideQuestDone 0/14·3/14·14/14）、NPCS.smith 升格落位（mark/坐标/NPC_SPOTS
 // 零回归）、README/package.json/CHANGELOG 同步（件套口径 257 + v24.32 守护描述 + 入库 257 + package
-// 串尾 + CHANGELOG 顶 pin）、tests 目录与实跑链恒等（256）、哨兵链（前望 259 且 README 尚无 259
+// 串尾 + CHANGELOG 顶 pin）、tests 目录与实跑链恒等（256）、哨兵链（前望 260 且 README 尚无 260
 // 口径）、旧代 v24.31 pin 全库零残留扫描（字面量/顶 pin/255 口径 · 豁免上一版套件
 // smoke_v2431_elixirprog）。
 import { GAME_VERSION, QUESTS, GOLEM_GOAL, ELITE_GOLEM, ELITE_GATE_LV, ELITE_CHANCE, MUSHROOM_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, TREE_GOAL, WOLF_GOAL, SNAKE_GOAL, SLIME_GOAL, ACH_LIST, NPCS } from '../js/data.js';
@@ -51,7 +51,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.31', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.32（旧 v24.31 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.34';") && !dSrc.includes("const GAME_VERSION = 'v24.31';"));
+  dSrc.includes("const GAME_VERSION = 'v24.35';") && !dSrc.includes("const GAME_VERSION = 'v24.31';"));
 ok('data.js 含 v24.32 注释（新支线「石心的试炼」说明）',
   dSrc.includes('// v24.32 新内容·新支线（第十三条）'));
 ok('data.js 仍保留 v24.31 历史注释（酿造角标进度说明，累积注释块）',
@@ -176,16 +176,16 @@ ok('data.js village.extras 含锻灯师 (7,11) 与 NPC_SPOTS 键「7,11」（零
   dSrc.includes('{ x: 7, y: 11, ty: \'NPC\' }') && dSrc.includes("'7,11'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百五十八件套（二百五十七件套清除）',
-  readme.includes('冒烟二百五十八件套（二百五十七件套清除）'));
-ok('README tests 含 v24.32 守护描述与 smoke_v2432_golemquest 入库（258 份）',
+ok('README 件套口径已为二百五十九件套（二百五十八件套清除）',
+  readme.includes('冒烟二百五十九件套（二百五十八件套清除）'));
+ok('README tests 含 v24.32 守护描述与 smoke_v2432_golemquest 入库（259 份）',
   readme.includes('v24.32 起含 新支线「石心的试炼」守护') &&
-  readme.includes('smoke_v2432_golemquest 入库（258 份）'));
+  readme.includes('smoke_v2432_golemquest 入库（259 份）'));
 ok('README 仍有 v24.31 守护描述（历史保留）', readme.includes('v24.31 起含 酿造界面「🧪 灵药满柜 N/8」进度角标守护'));
-ok('README 已有二百五十六件套口径且尚无 259（哨兵前望 259 语义：下一版才写 259）',
-  readme.includes('冒烟二百五十八件套（二百五十七件套清除）') && !readme.includes('二百五十九件套'));
-ok('README tests 树串尾已延伸（…+ smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest（npm test 串跑））',
-  readme.includes('smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest（npm test 串跑）'));
+ok('README 已有二百五十六件套口径且尚无 260（哨兵前望 260 语义：下一版才写 260）',
+  readme.includes('冒烟二百五十九件套（二百五十八件套清除）') && !readme.includes('二百六十件套'));
+ok('README tests 树串尾已延伸（…+ smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5（npm test 串跑））',
+  readme.includes('smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十三条 · 石心的试炼 · GOLEM_GOAL）',
   readme.includes('十四条支线目标/奖励全部由') && readme.includes('石心的试炼（锻灯师 · 1 尊石心魔像 `GOLEM_GOAL`）120 金 + 1 高级灵药') &&
   readme.includes('`GOLEM_GOAL`') && readme.includes('v24.32 补第十三条'));
@@ -194,13 +194,13 @@ ok('README 地图速览锻灯师行随新现实（v24.32 起讨伐支线委托�
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 256 份（smoke.mjs + 257 专项）', chain.length === 257 && chainAll.length === 258, String(chain.length));
-ok('package.json 链尾为 smoke_v2434_trialquest（第 258 份）', chain[chain.length - 1] === 'smoke_v2434_trialquest', chain[chain.length - 1]);
+ok('package.json 实跑链共 256 份（smoke.mjs + 258 专项）', chain.length === 258 && chainAll.length === 259, String(chain.length));
+ok('package.json 链尾为 smoke_v2435_goldcurve5（第 259 份）', chain[chain.length - 1] === 'smoke_v2435_goldcurve5', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2432_golemquest.mjs（node tests/ 前缀形态）',
-  pkgRaw.includes('node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs"'));
-ok('package.json 链锚逐字（smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs"）',
-  pkgRaw.includes('smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.32（startsWith）', changelog.startsWith('## v24.34'));
+  pkgRaw.includes('node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs"'));
+ok('package.json 链锚逐字（smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs"）',
+  pkgRaw.includes('smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.32（startsWith）', changelog.startsWith('## v24.35'));
 ok('CHANGELOG v24.32 条目含「石心的试炼」与「GOLEM_GOAL」与「锻灯师」',
   changelog.includes('石心的试炼') && changelog.includes('GOLEM_GOAL') && changelog.includes('锻灯师'));
 ok('CHANGELOG 仍保留 v24.31 条目（历史保留）', changelog.includes('## v24.31'));
@@ -210,7 +210,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 256（255 + smoke_v2432_golemquest）', files.length === 258, String(files.length));
+ok('tests 目录件套 = 256（255 + smoke_v2432_golemquest）', files.length === 259, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
