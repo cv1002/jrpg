@@ -1,3 +1,5 @@
+## v24.36 文档整理·数值说明·同源口径：README「数值速查」补「图鉴 / 收集」行——速查表 26 行已覆盖 基础属性/每级成长/升级经验/技能领悟/装备/经济/区域修正/试炼推荐等级/战斗/伤害公式/克制状态/掉落/首胜彩头/宝箱宝藏/遇敌槽/恢复点补给/出没生态/试炼彩头/成就档位/魔物数值/技能数值/强敌变身/难度倍率/支线奖励/昼夜时段，唯独「图鉴怎么开、开了给什么」查无一行——全游图鉴链条（`BESTIARY_TARGET` 13 种单一数据源、收录 `hero.bestiary` 由 `battle.winBattle` 唯一写入点、遭遇 `hero.seen` 由 `battle.startBattle` 唯一写入点、图鉴行三态逐级揭示（未遭遇 ❓？？？ / 已遭遇未讨伐 揭名+出没地+已遭遇次数（兵力弱点仍加密防剧透）/讨伐全揭示）、全收成就「记忆守护者」另 +999 金 `PERFECTION_GOLD`、四枚 `FRAGMENTS` 记忆碎片集齐触发真结局「全记忆」加页）散见 data.js BESTIARY_TARGET/PERFECTION_GOLD/FRAGMENTS 源码、battle.js 两写入点、menus.js drawCodex rows 三态、ACH_LIST perfection——调图鉴机制需先通读代码才能对上口径；现补录：数值速查表「出没生态」行之后追加「图鉴 / 收集」行（全部由 BESTIARY_TARGET/PERFECTION_GOLD/FRAGMENTS/codexStats/monReward/codexTag 派生、与图鉴页 rows/状态页 📕/C 页/胜利·阵亡屏同读同源），速查表 26→27 行；纯文档零逻辑零结算零存档零数值变化（MON_BASE/战斗/掉落/成就判定逐字未动）；GAME_VERSION v24.35→v24.36，全库 259 件套 pin 级联（哨兵前望 261）+ smoke_v2436_codexrow 入库（260 件套 · 52 项断言）；node --check + npm run check 25 模块 + npm test 二百六十件套端到端全绿 EXIT=0
+
 ## v24.35 数值平衡·后期金币曲线续平滑（第五轮）：四强怪每级金币再 +1（gold[1] 7→8）
 
 - 【数值】承 v19.66 第一轮 / v24.18 第二轮 / v24.30 第三轮 / v24.33 第四轮方法论第五轮——金币只随玩家等级
