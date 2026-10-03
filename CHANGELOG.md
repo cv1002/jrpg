@@ -1,3 +1,37 @@
+## v24.32 新内容·新支线（第十三条）：锻灯师「石心的试炼」——讨伐 1 尊石心魔像换 120 金 + 1 高级灵药
+（承 v23.32 拾菇人「树精的菌库」/ v23.42 客栈老板娘「夜路的狼嚎」/ v23.57 酿药师「蛇影的药引」/ v24.24 掌灯阿婆
+「塘底的灯影」同一「风味 NPC 升格为支线委托人」先例：v24.24 让全 8 种普通怪各有专属讨伐线收口后，精英线
+（雾语林随机精英·石心魔像 / 无字回廊·残焰魔像）仍只有 v24.23 精英猎手成就无支线——本版把石心魔像挂上
+支线，精英线「成就 + 支线」双挂钩收口；锻灯师（v22.31 纯风味 NPC·镇内 (7,11)）升格为委托人，他打半辈子灯
+独缺一块「试金石」——石心魔像胸口那颗不碎的石心；量化：GOLEM_GOAL(1) 单一数据源（判定 cond/进度 condProg/
+目标文案 obj/接取对话 offer 四端同读一份源，调阈值只改 data.js 一处自动跟随）、bestiary 计数（与 v24.23
+elites 成就同读 hero.bestiary 一份源）、无 unlockOn（承 side_pond 同款从开局即 offer，精英 Lv≥3 起
+ELITE_CHANCE(7%) 撞见、未到等级时 active 页如实报 0/1）、done 页按 hero.trueBoss 分档（锻灯师原有
+trueBoss after 彩蛋「灯芯全亮回来了 / 铁锤归我管」并入真结局分档，零内容丢失；npcQuestPages 有任务后
+不再单独展示 after）、奖励 120 金 + 1 高级灵药（与 side_name 同档：精英级随机遭遇高于 ember 100 档）；
+纯内容扩充零新逻辑零新计数零存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动
+跟随）；GAME_VERSION v24.31→v24.32，全库 255 件套 pin 级联（哨兵前望 257）+ smoke_v2432_golemquest
+入库（256 份）；node --check + npm run check 25 模块 + npm test 二百五十六件套端到端全绿 EXIT=0
+
+- 【新增：`js/data.js` QUESTS.side_golem「石心的试炼」（第十三条）】——`kind:'side'` + `store:true` +
+  npc/giver smith + 无 unlockOn；cond/condProg 读 `ELITE_GOLEM.name` 与 `GOLEM_GOAL`（bestiary 计数）；
+  reward `{gold:120, potion2:1}`；talk 四档（offer / active 函数型实时报进度 / turnin / done trueBoss
+  分档——after 彩蛋并入）；`GOLEM_GOAL`(1) 常量（SLIME_GOAL 之后、与十组 *_GOAL 同族）入 export；
+  `GAME_VERSION` v24.31→v24.32 + v24.32 注释块（v24.31 及更早历史注释保留）。
+- 【零回归面】未动任何结算/数值/存档结构（纯 QUESTS 数据追加 + 常量 + 版本号）；未动 NPCS.smith
+  lines/after 逐字（兜底台词仍在、after 并入 done 分档零内容丢失）；未动 ELITE_GOLEM/ELITE_CHANCE/
+  ELITE_GATE_LV/成就/掉落/遇敌（精英出没概率/石甲机制/碎片掉落逐字未动）；未动 quests.js/core.js/
+  battle.js/world.js（表驱动零新逻辑）；只改 1 个运行源码文件（`js/data.js`：GOLEM_GOAL + side_golem +
+  GAME_VERSION + 注释，其余 js/ 逐字未动）+ `README.md`（支线/奖励行 十二条→十三条 + 石心的试炼 +
+  常量源列 GOLEM_GOAL + 锻灯师行升格标注 + tests 树串尾 + 件套口径 255→256 + v24.32 守护描述 +
+  入库（255 份）→（256 份）二十三处）+ `package.json`（test 串第 256 份）+ 全库 255 件套 pin 级联
+  （哨兵前望 257 + 当前串 255→256 + testChain 255→256 + 串尾/树尾/件套口径/GAME_VERSION 字面量/恒等/顶 pin）+
+  既有 allquests 分母 12→13 家族手工推进（v2421/v2424/v2152/v2159/v2168/v2173/v2176/v2177/v2180/v2300/v2309）
+  + 既有 smoke_v2231_smith 升格断言更新（选段/顶标/对话 offer 优先 + after 并入 done 分档）。
+- 【记录】`CHANGELOG.md`（本条）+ smoke_v2432_golemquest 入库（256 份·断言见文件头）。
+- 【验证】`node --check` js/data.js · tests/smoke_v2432_golemquest.mjs 过；`npm run check`（25 模块）全部通过；
+  `npm test` 二百五十六件套端到端全绿 EXIT=0。
+
 ## v24.31 体验打磨·信息透明·决策现场：酿造界面补「🧪 灵药满柜 N/8」进度角标——站锅前把菇熬成灵药的当场一眼看清还差几瓶拿成就（承 v24.10 酿造界面「🍶 妙手回春 N/5」同屏同款行内角标 / v24.09 商店「🍄 蘑菇商路 N/30」+ v24.25 商店「🧪 药香满囊 N/50」同一「成就进度于决策现场可见」主线 / v22.17 灵药满柜成就（高级灵药持有线中档里程碑 = 持有 ELIXIR_STOCK2_GOAL(8) 瓶，计数 hero.potion2 由 brewNow 酿造成功/支线奖励/战斗掉落共享同一持有量字段、snapshotHero 全量快照自动持久化、防御式 (hero.potion2||0) 旧档零迁移）——酿造界面（drawBrew）材料行早已报「已酿灵药 N 瓶」（余额读数），但成就档位「灵药满柜 N/8」此前只藏在 C 成就页一行 X/8：灵药线三档（灵药盈囊 3 / 灵药满柜 8 / 灵药满仓 16）的中档里程碑恰是「把菇熬成灵药」这个动作本身的计数现场（与 v24.10「现场是动作本身」同族），站锅前查无一眼之数；现 drawBrew 补「🧪 灵药满柜 N/8」（分子读 hero.potion2 防御式 (hero.potion2||0)、分母读 data.js ELIXIR_STOCK2_GOAL 单一数据源，与 C 页/ACH_LIST elixir2 的 ok/prog 同读一份源，调阈值只改 data.js 一处三端自动跟随；同 v24.19/v24.25 只报中档里程碑先例——灵药盈囊 N/3 与灵药满仓 N/16 同线另两档由 C 页承载），13px 绿字居中 y=312（与「🍶 妙手回春」(288) 行间 24、面板底 380 之内零越界）；纯显示零结算零存档零数值变化（ELIXIR_STOCK2_GOAL/brewNow 结算/材料/配方/可酿/提示/妙手回春行逐字未动）；GAME_VERSION v24.30→v24.31，全库 254 件套 pin 级联（哨兵前望 256）+ smoke_v2431_elixirprog 入库（255 份）；node --check + npm run check 25 模块 + npm test 二百五十五件套端到端全绿 EXIT=0
 
 - 【修正：`js/view/menus.js` drawBrew 补「🧪 灵药满柜 N/8」进度角标】——import 补 `ELIXIR_STOCK2_GOAL`（data.js 既有导出，零新增模块依赖；插于 `BREW2_GOAL` 与 `BATTLE_GOAL` 之间，既有 smoke_v2409/v2410/v2425 menus.js import 子串 pin 随新现实推进）；`text(\`🧪 灵药满柜 ${(hero.potion2 || 0)}/${ELIXIR_STOCK2_GOAL}\`, 320, 312, '13px', '#8ff0a0', 'center')` 落位于 v24.10 妙手回春（320,288）之下、面板底 380 之内——分子读 hero.potion2 防御式 (hero.potion2||0) 旧档零迁移、分母读 ELIXIR_STOCK2_GOAL 单一数据源，与 ACH_LIST elixir2 的 ok/prog/d 同读一份源；`js/data.js` GAME_VERSION v24.30→v24.31 + v24.31 注释块（v24.30 及更早历史注释保留）。

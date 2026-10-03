@@ -49,7 +49,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.23', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.24（旧 v24.23 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.31';") && !dSrc.includes("const GAME_VERSION = 'v24.23';"));
+  dSrc.includes("const GAME_VERSION = 'v24.32';") && !dSrc.includes("const GAME_VERSION = 'v24.23';"));
 ok('data.js 含 v24.24 注释（新支线「塘底的灯影」说明）',
   dSrc.includes('// v24.24 新内容·新支线'));
 ok('data.js 仍保留 v24.23 历史注释（精英战报进度后缀说明，累积注释块）',
@@ -59,7 +59,7 @@ ok('data.js 仍保留 v24.22 历史注释（胜利战报进度后缀说明）',
 ok('data.js SLIME_GOAL 常量 = 3 且与九组 *_GOAL 比邻声明（同一家族）',
   dSrc.includes('const SLIME_GOAL = 3;') && dSrc.indexOf('const SLIME_GOAL') > dSrc.indexOf('const SNAKE_GOAL'));
 ok('data.js export 块含 SLIME_GOAL（TREE_GOAL 之后、DEFLECT_GOAL 之前）',
-  dSrc.includes('TREE_GOAL, SLIME_GOAL, DEFLECT_GOAL'));
+  dSrc.includes('TREE_GOAL, SLIME_GOAL, GOLEM_GOAL, DEFLECT_GOAL'));
 ok('data.js SNAKE_GOAL 注释旧「刻意留白」句已随新现实推进（四基础怪版图收口）',
   dSrc.includes('v24.24 按 v23.32/v23.42/v23.57「风味 NPC 升格」先例收口'));
 
@@ -71,8 +71,8 @@ ok('九组既有支线目标逐值零回归（蘑菇 3/雾灵 3/石魔像 3/哥�
 // —— QUESTS 契约：12 side + 4 main（数量派生，绝无裸字面量）——
 const sideDefs = Object.values(QUESTS).filter((q) => q.kind === 'side');
 const mainDefs = Object.values(QUESTS).filter((q) => q.kind === 'main');
-ok('QUESTS 共 16 条（12 side + 4 main，派生计数）',
-  sideDefs.length === 12 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 16,
+ok('QUESTS 共 17 条（13 side + 4 main，派生计数）',
+  sideDefs.length === 13 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 17,
   `${sideDefs.length}/${mainDefs.length}`);
 ok('side_pond 存在且为第十二条（kind side · store · npc/giver granny · 无 unlockOn）',
   !!QUESTS.side_pond && QUESTS.side_pond.kind === 'side' && QUESTS.side_pond.store === true &&
@@ -94,17 +94,17 @@ ok('side_pond reward 逐值：30 金 + 2 药水（开荒期最低档）',
 // —— ACH_LIST allquests 同源互证（与 sideQuestDone 输出一致）——
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
 ok('ACH_LIST allquests 名称「灯火同心」且描述派生 12（「12 个支线任务」）',
-  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('12 个支线任务'), achAll && achAll.d);
-ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/12 false · 11/12 false · 12/12 true · prog 12/12）',
-  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 11).map(q => [q.id, 'done'])) }) === false &&
+  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('13 个支线任务'), achAll && achAll.d);
+ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/13 false · 12/13 false · 13/13 true · prog 13/13）',
+  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 12).map(q => [q.id, 'done'])) }) === false &&
   achAll.ok({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === true &&
-  achAll.prog({ quests: {} }) === '0/12' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '12/12');
+  achAll.prog({ quests: {} }) === '0/13' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '13/13');
 
 // —— quests.js 运行期：sideQuestDone ——
-ok('运行期：sideQuestDone 0/12 · 3/12 · 12/12 · 主线不入列',
-  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 12 &&
+ok('运行期：sideQuestDone 0/13 · 3/13 · 13/13 · 主线不入列',
+  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 13 &&
   sideQuestDone({ quests: { side_mushroom: 'done', side_cart: 'done', side_pond: 'done' } }).done === 3 &&
-  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 12 &&
+  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 13 &&
   sideQuestDone({ quests: { main_demon: 'done' } }).done === 0);
 
 // —— 运行期状态机：offer → active → turnin → done（quests 纯函数，零 DOM）——
@@ -169,29 +169,29 @@ ok('data.js village.extras 含掌灯阿婆 (14,8) 与 NPC_SPOTS 键「14,8」（
   dSrc.includes('{ x: 14, y: 8, ty: \'NPC\' }') && dSrc.includes("'14,8'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百五十五件套（二百五十四件套清除）',
-  readme.includes('冒烟二百五十五件套（二百五十四件套清除）'));
-ok('README tests 含 v24.24 守护描述与 smoke_v2424_pondslime 入库（255 份）',
+ok('README 件套口径已为二百五十六件套（二百五十五件套清除）',
+  readme.includes('冒烟二百五十六件套（二百五十五件套清除）'));
+ok('README tests 含 v24.24 守护描述与 smoke_v2424_pondslime 入库（256 份）',
   readme.includes('v24.24 起含 新支线「塘底的灯影」守护') &&
-  readme.includes('smoke_v2424_pondslime 入库（255 份）'));
+  readme.includes('smoke_v2424_pondslime 入库（256 份）'));
 ok('README 仍有 v24.23 守护描述（历史保留）', readme.includes('v24.23 起含 💎 精英战报「⚔️ 精英猎手 N/2」进度后缀守护'));
 ok('README 已有二百四十八件套口径且尚无 252（哨兵前望 252 语义：下一版才写 252）',
-  readme.includes('冒烟二百五十五件套（二百五十四件套清除）') && !readme.includes('二百五十六件套'));
-ok('README tests 树串尾已延伸（…+ smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog（npm test 串跑））',
-  readme.includes('smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog（npm test 串跑）'));
+  readme.includes('冒烟二百五十六件套（二百五十五件套清除）') && !readme.includes('二百五十七件套'));
+ok('README tests 树串尾已延伸（…+ smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest（npm test 串跑））',
+  readme.includes('smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十二条 · 塘底的灯影 · SLIME_GOAL）',
-  readme.includes('十二条支线目标/奖励全部由') && readme.includes('塘底的灯影（掌灯阿婆 · 3 只史莱姆 `SLIME_GOAL`）30 金 + 2 药水') &&
+  readme.includes('十三条支线目标/奖励全部由') && readme.includes('塘底的灯影（掌灯阿婆 · 3 只史莱姆 `SLIME_GOAL`）30 金 + 2 药水') &&
   readme.includes('`SLIME_GOAL`'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 248 份（smoke.mjs + 250 专项）', chain.length === 254 && chainAll.length === 255, String(chain.length));
-ok('package.json 链尾为 smoke_v2431_elixirprog（第 255 份）', chain[chain.length - 1] === 'smoke_v2431_elixirprog', chain[chain.length - 1]);
+ok('package.json 实跑链共 248 份（smoke.mjs + 250 专项）', chain.length === 255 && chainAll.length === 256, String(chain.length));
+ok('package.json 链尾为 smoke_v2432_golemquest（第 256 份）', chain[chain.length - 1] === 'smoke_v2432_golemquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2424_pondslime.mjs（node tests/ 前缀形态）',
-  pkgRaw.includes('node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs'));
-ok('package.json 链锚逐字（smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs"）',
-  pkgRaw.includes('smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.24（startsWith）', changelog.startsWith('## v24.31'));
+  pkgRaw.includes('node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs'));
+ok('package.json 链锚逐字（smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs"）',
+  pkgRaw.includes('smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.24（startsWith）', changelog.startsWith('## v24.32'));
 ok('CHANGELOG v24.24 条目含「塘底的灯影」与「史莱姆」与「SLIME_GOAL」',
   changelog.includes('塘底的灯影') && changelog.includes('史莱姆') && changelog.includes('SLIME_GOAL'));
 ok('CHANGELOG 仍保留 v24.23 条目（历史保留）', changelog.includes('## v24.23'));
@@ -201,7 +201,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 248（247 + smoke_v2424_pondslime）', files.length === 255, String(files.length));
+ok('tests 目录件套 = 248（247 + smoke_v2424_pondslime）', files.length === 256, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 

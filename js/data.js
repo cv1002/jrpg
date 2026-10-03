@@ -1874,7 +1874,12 @@
 // ELIXIR_STOCK2_GOAL 单一数据源，与 ACH_LIST elixir2 的 ok/prog 同读一份源，调阈值只改 data.js 一处
 // 三端自动跟随；同 v24.19/v24.25 只报中档里程碑先例——灵药盈囊 N/3 与灵药满仓 N/16 同线另两档由
 // C 页承载）；纯显示零结算零存档零数值变化。
-const GAME_VERSION = 'v24.31';
+// v24.32 新内容·新支线（第十三条）：锻灯师升格为支线委托人「石心的试炼」——讨伐 GOLEM_GOAL 尊
+// 石心魔像（雾语林随机精英 ELITE_GOLEM，Lv3 起 7% 撞见）换 120 金 + 1 高级灵药（承 v23.32 拾菇人 /
+// v23.42 客栈老板娘 / v23.57 酿药师 / v24.24 掌灯阿婆「风味 NPC 升格为支线委托人」先例，详见
+// QUESTS.side_golem 行内注释）：纯内容扩充——QUESTS 表驱动零新逻辑零新计数零存档（弹窗对话/任务
+// 日志/顶标/交付结算/灯火同心分母全由 QUESTS 派生自动跟随），精英线至此「成就 + 支线」双挂钩。
+const GAME_VERSION = 'v24.32';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -2602,6 +2607,15 @@ const SNAKE_GOAL = 3;       // 酿药师支线需带回的毒蛇只数
 // 也是四基础怪里最后一只补上支线的（v23.57 SNAKE_GOAL 注释「四基础怪版图至此只余史莱姆（新手
 // 垫脚怪）无支线，刻意留白」——v24.24 按 v23.32/v23.42/v23.57「风味 NPC 升格」先例收口）。
 const SLIME_GOAL = 3;       // 掌灯阿婆支线需讨伐的史莱姆只数
+
+// 石心魔像讨伐目标（单一数据源）：锻灯师支线「石心的试炼」需讨伐的石心魔像只数（bestiary 计数，
+// 集齐后转可交付）——与 MIST_GOAL / STONE_GOAL / EMBER_GOAL / BONE_GOAL / GRAIN_GOAL / TREE_GOAL /
+// WOLF_GOAL / SNAKE_GOAL / SLIME_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/
+// 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；石心魔像是雾语林随机精英（ELITE_GOLEM
+// 单一数据源：Lv≥ELITE_GATE_LV(3) 起 ELITE_CHANCE(7%) 撞见、掉记忆碎片、必掉蘑菇、石甲机制——图鉴
+// 「石甲/碎片」标注与 encounter.eliteEncounter 同源），v24.23 精英成就（elites）已把双精英讨伐收进
+// 成就版图，精英线至此由本版补上支线挂钩。
+const GOLEM_GOAL = 1;       // 锻灯师支线需讨伐的石心魔像只数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -5031,6 +5045,57 @@ const QUESTS={
       ]]),
     },
   },
+  // 锻灯师·石心的试炼（v24.32 新支线·第十三条）：讨伐 GOLEM_GOAL 尊石心魔像（ELITE_GOLEM 精英·
+  // bestiary 计数）——承 v23.32 拾菇人 / v23.42 客栈老板娘 / v23.57 酿药师 / v24.24 掌灯阿婆
+  // 「风味 NPC 升格为支线委托人」先例：锻灯师（v22.31 纯风味 NPC·镇内 (7,11)）升格为委托人——
+  // v24.23 精英成就（elites：石心魔像+残焰魔像各至少一次）以来双精英已进成就版图，但「石心魔像」
+  // 这一尊此前无任何任务挂钩（v24.24 全 8 种普通怪各有专属讨伐线收口后，精英线仍只有成就无支线，
+  // 本版收口）；阈值单一数据源 GOLEM_GOAL（判定/进度/目标文案/接取对话同读），奖励 120 金 + 1 高级
+  // 灵药（与 side_name 同档：精英级随机遭遇——Lv≥3 才撞见、7% 概率，高于 ember 100 档）；active 页
+  // 按 hero 实时报进度（与 side_stone/side_wolf 同款函数页），done 页按 hero.trueBoss 分档（承 side_pond/
+  // side_tree 先例——锻灯师原有 trueBoss after 彩蛋并入 done 真结局分档，零内容丢失）；无 unlockOn
+  // （承 side_pond 同款：从开局即 offer，保留完整接取流程——精英 Lv3 才出没，未到等级时 active 页如实报）。
+  side_golem:{
+    id:'side_golem', kind:'side', store:true, npc:'smith', giver:'smith',
+    cond:(g)=>(((g.bestiary||{})[ELITE_GOLEM.name])||0) >= GOLEM_GOAL,
+    condProg:(g)=>`${((g.bestiary||{})[ELITE_GOLEM.name])||0}/${GOLEM_GOAL} 尊`,
+    name:'石心的试炼', where:'雾语林',
+    obj:`讨伐 ${GOLEM_GOAL} 尊雾语林的【${ELITE_GOLEM.name}】`,
+    offer:'去潮灯镇找锻灯师，接下石心试炼的委托',
+    turnin:'石心到手了！回潮灯镇找锻灯师',
+    done:'锤砧上压着的那块石心，终于有了用武之地。',
+    reward:{ gold:120, potion2:1 },
+    talk:{
+      offer:[[
+        '锻灯师：镇上每盏灯，灯芯钩、油嘴、铜箍全是我打的。',
+        '唯独缺一块「试金石」——雾语林那头石心魔像的胸口，',
+        `藏着一颗不碎的石心。替我取来 ${GOLEM_GOAL} 尊，锤砧才算齐活。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '锻灯师：那东西浑身石甲，刀砍不进去。',
+        '用火焰斩烧它——雷击也管用。它在雾语林深处游荡，',
+        `（已讨伐 ${((hero.bestiary||{})[ELITE_GOLEM.name])||0}/${GOLEM_GOAL} 尊）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '锻灯师：好家伙……这就是不碎的石心。',
+        '这块料子够我打半辈子灯的。谢礼你收好——',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['锻灯师：灯芯全亮回来了，连最旧的铜箍都不用换。',
+         '我打了半辈子灯，头回见灯比人先到家。',
+         '[Enter] 继续'],
+        ['锻灯师：去吧，守灯人。铁锤归我管，灯归你管。',
+         '（支线任务·已完成）[Enter] 结束'],
+      ] : [[
+        '锻灯师：锤砧齐了，灯也越打越顺手。',
+        '说到底，灯记住路，人跟着灯走。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -6140,7 +6205,7 @@ const ENDING_TRUE_FRAG=[
 const KEY={ ArrowUp:'U',w:'U',W:'U',ArrowDown:'D',s:'D',S:'D',ArrowLeft:'L',a:'L',A:'L',ArrowRight:'R',d:'R',D:'R' };
 
 export {
-  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, SLIME_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
+  GAME_VERSION, T, TY, chToTy, SOLID, MAPS, INN_PRICE, VILLAGE_LAMP, VILLAGE_WELL, CAVE_WELL, CAVE_CART, CAVE_SAND, CAVE_CRYSTAL, TRUE_ALTAR, CAVE_RAIL, BOSS_ALTAR, MB_ALTAR, GALLERY_ARCH, CAMP_FIRE, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, MUSH_GOAL, MUSH2_GOAL, MUSH3_GOAL, MIST_GOAL, STONE_GOAL, EMBER_GOAL, BONE_GOAL, GRAIN_GOAL, WOLF_GOAL, SNAKE_GOAL, TREE_GOAL, SLIME_GOAL, GOLEM_GOAL, DEFLECT_GOAL, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, RUSH_CLEAR_GOAL, MUSHROOM_PRICE, RICH_GOLD, RICH2_GOAL, RICH3_GOAL, SCHOLAR_GOAL, SCHOLAR2_GOAL, LUCKY_GOAL, SEEN_GOAL, SEEN2_GOAL, LUCKY2_GOAL, LUCKY3_GOAL, HUNT_GOAL, HUNT2_GOAL, HUNT3_GOAL, LVL5_GOAL, LVL10_GOAL, LVL12_GOAL, FIRSTBLOOD_GOAL, ELIXIR_GOAL, BREW2_GOAL, BREW3_GOAL, PLAY_TIME_GOAL, PLAY_TIME2_GOAL, PLAY_TIME3_GOAL, POTIONS_GOAL, POTIONS2_GOAL, POTIONS3_GOAL, ELIXIR_STOCK_GOAL, ELIXIR_STOCK2_GOAL, ELIXIR_STOCK3_GOAL, PERFECTION_GOLD, SAVE_SLOTS, ENCOUNTER, CAVE_TREASURE, OUTSTEP_GOAL, OUTSTEP2_GOAL,
   NPC_SPOTS, NPCS, WEAPONS, ARMORS, BEST_ARMOR, SKILL_DATA, CHARGE_MULT, ELEM_NAME, ELEM_MULT, DIFF_SCALE, ELITE_GATE_LV, ELITE_CHANCE, RUSH_RECOVER, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, FLEE_SUCCESS, BURN_PCT, POISON_PCT, POISON_TURNS, POISON_CHANCE, SKIP_CHANCE, DRAIN_PCT, DRAIN_HP_CAP, DRAIN_MP_PCT, DRAIN_MP_CAP, CRIT_RATE, CRIT_MULT, BIG_DMG, DOT_MIN, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, IDLE_BOB, DAY_PHASE_S, BLOG_WIN, FX_ENEMY, FX_HERO, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, BATTLE_MON, BATTLE_HERO, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, TUTOR_MSG_MS, CODEX_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, XP_GROW, XP_INIT, START_GOLD, START_POTIONS,
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
