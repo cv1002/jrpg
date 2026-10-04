@@ -1,3 +1,27 @@
+## v24.42 体验打磨·信息透明·计数现场：📦 开箱报文补「🎒 满载而归 N/9」进度后缀
+
+- 【体验】承 v24.16 HUD「🚶 千里之行 N/1000」/ v24.17 喝药战报「💧 渴饮甘露 N/10」/ v24.22 胜利战报
+  「⚔️ 驱雾百战 N/100」/ v24.40 用药战报「💊 药到病除 N/15」同一「计数现场报进度」主线——v22.26 已给
+  三条开箱报文（蘑菇/金币/药水）补「已开 X/全图 12」，但那是收集口径（一箱不漏全图档 `chestTotal()`），
+  成就档位「满载而归」（宝箱线中档里程碑 = 开箱寻宝 6 只 / 满载而归 9 只 / 一箱不漏 12 只，`TREASURE2_GOAL`
+  (9) 单一数据源，ACH_LIST chests2，计数 `chestCount(hero)` 由 world.onChestStep `hero.chests.add` 唯一
+  写入点派生）此前进度只藏在 C 成就页一行 X/9——I 页 v22.9 起收掉「成就 X/6」口径改收集四件套后，
+  宝箱线的计数现场（每次开箱本身）查无一眼之数（与 v24.26「升级是成就推进的唯一动作」同族）；现同
+  v24.22 同款在三分支报文末尾补「（🎒 满载而归 N/9）」（分子读 `chestCount(hero)` 与 v22.26 同式、
+  分母读 data.js `TREASURE2_GOAL` 单一数据源，与 C 页/ACH_LIST chests2 的 ok/prog 同读一份源，调阈值
+  只改 data.js 一处全端自动跟随；`hero.chests.add` 先于 `applyAchievements`/报文落账，进度差分即本只；
+  同 v24.19/v24.25 只报中档里程碑先例——开箱寻宝 N/6 与一箱不漏 N/12 同线另两档由 C 页承载），纯显示
+  零结算零存档零数值变化（TREASURE2_GOAL/chestCount/chestTotal/掉落判定/库存计数/成就判定逐字未动，
+  v22.26 收集口径/「任务还差 N 株」/「蘑菇集齐」/成就即时判定零回归）。
+- 【零回归面】只改 `js/world.js`（import 补 `TREASURE2_GOAL`（插于 `OUTSTEP2_GOAL` 与 `}` 之间，既有
+  smoke_v2226/smoke_v2313/smoke_v2428 import 子串 pin 随新现实推进）+ `chestProg` 计算 1 处 + 三分支
+  报文末尾追加 `${chestProg}` 3 处 + v24.42 注释块）与 `js/data.js`（GAME_VERSION v24.41→v24.42 + v24.42
+  注释块，v24.41 历史注释保留）；battle/core/rules 等模块逐字未动。
+- 【验证】node --check + npm run check 25 模块 + npm test 二百六十六件套端到端全绿；GAME_VERSION
+  v24.41→v24.42，全库 265 件套 pin 级联（哨兵前望 267）+ smoke_v2442_chestprog 入库（266 件套 ·
+  50 项断言）。
+
+
 ## v24.41 数值平衡·后期经验曲线续平滑（第五轮）：四强怪每级经验再 +1（xp[1] 8→9）
 
 - 【数值】承 v19.58 第一轮 / v24.13 第二轮 / v24.29 第三轮 / v24.39 第四轮方法论第五轮——升级需求按

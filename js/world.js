@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL, OUTSTEP2_GOAL } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL, OUTSTEP2_GOAL, TREASURE2_GOAL } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -245,6 +245,18 @@ function onChestStep(x, y, hero) {
   // （chestCount 三形态防御式、chestTotal 由 MAPS/CAVE_TREASURE 派生），在三条报文补「已开 X/全图 N」，
   // 纯显示零结算零存档变化；成就判定/掉落判定/库存计数逐字未动。
   const opened = chestCount(hero), total = chestTotal();
+  // v24.42 开箱报文补「🎒 满载而归 N/9」成就档位进度后缀（体验打磨·信息透明·计数现场·纯显示；承
+  // v24.16 HUD「🚶 千里之行 N/1000」/ v24.17 喝药「💧 渴饮甘露 N/10」/ v24.22 胜利「⚔️ 驱雾百战
+  // N/100」/ v24.40 用药「💊 药到病除 N/15」同一「计数现场报进度」主线）：v22.26 给三条开箱报文补的
+  // 「已开 X/全图 12」是收集口径（一箱不漏全图档 chestTotal()），成就档位「满载而归 X/9」此前只藏在
+  // C 成就页一行 X/9（I 页 v22.9 起改收集四件套口径后零 live 窗口）——宝箱线的计数现场正是每次开箱
+  // （hero.chests.add 全游戏唯一写入点，与 v24.26「升级是成就推进的唯一动作」同族）；现同 v24.22
+  // 同款在三条报文末尾补「（🎒 满载而归 N/9）」（分子读 chestCount(hero) 与 v22.26 同式、分母读
+  // data.js TREASURE2_GOAL 单一数据源，与 C 页/ACH_LIST chests2 的 ok/prog 同读一份源，调阈值只改
+  // data.js 一处全端自动跟随；hero.chests.add 先于 applyAchievements/报文落账，进度差分即本只；同
+  // v24.19/v24.25 只报中档里程碑先例——开箱寻宝 N/6 与一箱不漏 N/12 同线另两档由 C 页承载），纯显示
+  // 零结算零存档零数值变化（chestCount/chestTotal/掉落判定/库存/成就判定逐字未动）。
+  const chestProg = `（🎒 满载而归 ${opened}/${TREASURE2_GOAL}）`;
   // v23.49 宝箱开启专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
   // v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge / v23.48 SFX.darkheal 同一「事件音效各归其位」
   // 主线收口，与 audio.js SFX.chest 同源）：开箱三分支（雾语林蘑菇/金币/药水）此前与商店购买/任务奖励同播
@@ -262,7 +274,7 @@ function onChestStep(x, y, hero) {
     // 支线未激活或已集齐时不额外显示，零结算变化。
     const qm = (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms < MUSHROOM_GOAL)
       ? `，任务还差 ${MUSHROOM_GOAL - hero.mushrooms} 株` : '';
-    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm} · 已开 ${opened}/${total}）`);
+    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm} · 已开 ${opened}/${total}）${chestProg}`);
     if (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms >= MUSHROOM_GOAL) {
       setSideQuest(hero, 'side_mushroom', 'turnin');
       bind.boxMsg('💡 蘑菇集齐了！回去找灯长领取奖励吧！', MILESTONE_MS);
@@ -271,11 +283,11 @@ function onChestStep(x, y, hero) {
     const gold = CHEST_GOLD_BASE + hero.level * CHEST_GOLD_PER_LV;
     hero.gold += gold;
     SFX.chest();
-    bind.boxMsg(`📦 宝箱！获得 ${gold} 金币（共 ${hero.gold} 枚 · 已开 ${opened}/${total}）`);
+    bind.boxMsg(`📦 宝箱！获得 ${gold} 金币（共 ${hero.gold} 枚 · 已开 ${opened}/${total}）${chestProg}`);
   } else {
     hero.item++;
     SFX.chest();
-    bind.boxMsg(`📦 宝箱！获得 1 个🍖 生命药水（共 ${hero.item} 瓶 · 已开 ${opened}/${total}）`);
+    bind.boxMsg(`📦 宝箱！获得 1 个🍖 生命药水（共 ${hero.item} 瓶 · 已开 ${opened}/${total}）${chestProg}`);
   }
   bind.renderHUD();
 }
