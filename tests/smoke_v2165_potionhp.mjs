@@ -10,7 +10,7 @@
 // （战斗药水/战斗灵药/大地图药水/大地图灵药逐字报文与结算一致、钳制档体现上限钳制、
 // 无药拦截/满状态拦截/灵药优先档零回归）、README/package.json 同步 + smoke_v2164 件套断言去硬化（v21.7 惯例）。
 import { S } from '../js/state.js';
-import { GAME_VERSION, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from '../js/data.js';
+import { GAME_VERSION, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT, POTION_USE_GOAL } from '../js/data.js';
 import { startBattle, playerAction } from '../js/battle.js';
 import { usePotion } from '../js/core.js';
 import { bind } from '../js/bind.js';
@@ -91,10 +91,10 @@ ok('data.js 含 v21.65 注释（喝药战报补恢复后 HP/MP 状态说明）',
 const bSrc = fs.readFileSync(path.join(ROOT, 'js/battle.js'), 'utf8');
 const cSrc = fs.readFileSync(path.join(ROOT, 'js/core.js'), 'utf8');
 ok('battle.js 含 v21.65 注释（喝药战报补恢复后状态）', bSrc.includes('v21.65 喝药战报补恢复后 HP/MP 状态'));
-ok('battle.js 灵药新文案落位（HP X/Y · MP A/B · 库存同括号）',
-  bSrc.includes('`🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）`'));
-ok('battle.js 药水新文案落位（HP X/Y · 库存同括号）',
-  bSrc.includes('`🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）`'));
+ok('battle.js 灵药新文案落位（HP X/Y · MP A/B · 库存同括号；v24.40 起带「💊 药到病除 N/15」进度后缀）',
+  bSrc.includes('`🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）（💊 药到病除 ${hero.potionUses || 0}/${POTION_USE_GOAL}）`'));
+ok('battle.js 药水新文案落位（HP X/Y · 库存同括号；v24.40 起带「💊 药到病除 N/15」进度后缀）',
+  bSrc.includes('`🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）（💊 药到病除 ${hero.potionUses || 0}/${POTION_USE_GOAL}）`'));
 ok('battle.js 旧裸文案零残留（恢复量后直接收尾库存的旧句已清除）',
   !bSrc.includes('MP（高级灵药剩余') && !bSrc.includes('HP（药水剩余'));
 ok('core.js 含 v21.65 注释（喝药战报补恢复后状态）', cSrc.includes('v21.65 喝药战报补恢复后 HP/MP 状态'));
@@ -164,7 +164,7 @@ function runWorldPotion(hero) {
   const h = mkHero({ hp: 10, item: 2 });
   const line = runBattleItem(h);
   ok('运行期：战斗药水档报文逐字「🍖 测试者 服用药水，恢复 38 点 HP（HP 48/60 · 药水剩余 1 瓶）」',
-    line === '🍖 测试者 服用药水，恢复 38 点 HP（HP 48/60 · 药水剩余 1 瓶）', line);
+    line === '🍖 测试者 服用药水，恢复 38 点 HP（HP 48/60 · 药水剩余 1 瓶）（💊 药到病除 1/15）', line);
   ok('运行期：战斗药水档结算一致（hp 10→48 = 公式量 38 未钳制 / item 2→1）',
     h.hp === 48 && h.item === 2 - 1, `hp=${h.hp} item=${h.item}`);
 }
@@ -174,7 +174,7 @@ function runWorldPotion(hero) {
   const h = mkHero({ hp: 20, mp: 10, item: 0, potion2: 1 });
   const line = runBattleItem(h);
   ok('运行期：战斗灵药档报文逐字「🧪 测试者 服下高级灵药，恢复 68 HP、12 MP（HP 60/60 · MP 22/30 · 高级灵药剩余 0 瓶）」',
-    line === '🧪 测试者 服下高级灵药，恢复 68 HP、12 MP（HP 60/60 · MP 22/30 · 高级灵药剩余 0 瓶）', line);
+    line === '🧪 测试者 服下高级灵药，恢复 68 HP、12 MP（HP 60/60 · MP 22/30 · 高级灵药剩余 0 瓶）（💊 药到病除 1/15）', line);
   ok('运行期：战斗灵药档结算一致（hp 20→60 钳制 / mp 10→22 / potion2 1→0）',
     h.hp === 60 && h.mp === 22 && h.potion2 === 0, `hp=${h.hp} mp=${h.mp} potion2=${h.potion2}`);
 }
@@ -203,7 +203,7 @@ function runWorldPotion(hero) {
   const h = mkHero({ hp: 55, item: 1 });
   const line = runBattleItem(h);
   ok('运行期：钳制档报「恢复 38 点 HP（HP 60/60 · 药水剩余 0 瓶）」（公式量如实报，钳制由 HP 读数体现）',
-    line === '🍖 测试者 服用药水，恢复 38 点 HP（HP 60/60 · 药水剩余 0 瓶）', line);
+    line === '🍖 测试者 服用药水，恢复 38 点 HP（HP 60/60 · 药水剩余 0 瓶）（💊 药到病除 1/15）', line);
   ok('运行期：钳制档结算一致（hp 55→60 钳到上限 / item 1→0）', h.hp === 60 && h.item === 0);
 }
 

@@ -408,9 +408,10 @@ function doItem() {
   // v23.54 charges / v23.63 crits / v23.64 casts / v23.65 flees 同款）；无 r 字段纯里程碑（与
   // deflect/charge/crit/cast/flee/memoir/skills 同款——药到病除本身就是奖励）；落账当场
   // applyAchievements（承 v23.36 反击落账当场判定「反馈不迟到」惯例，计数源与判定点同处一行
-  // 防漏记）；零战报后缀（承 v23.64 熟能生巧零战报后缀口径——用药战报已带恢复量/剩余库存/
-  // HPMP 状态，再叠进度后缀信息过载，C 页进度 X/15 承载）。takePotion 判定/恢复结算/药水·灵药
-  // 两档战报/afterPlayer 逐字未动。
+  // 防漏记）；v23.66 当时口径「零战报后缀」（承 v23.64 熟能生巧零战报后缀口径——用药战报已带
+  // 恢复量/剩余库存/HPMP 状态，再叠进度后缀信息过载，C 页进度 X/15 承载），v24.40 翻转该口径
+  // （承 v24.17 渴饮甘露先例·双端口口径齐平，见下方报文 v24.40 注释块）。takePotion 判定/恢复
+  // 结算/药水·灵药两档战报/afterPlayer 逐字未动。
   const useN = (hero.potionUses || 0) + 1;
   hero.potionUses = useN;
   applyAchievements();
@@ -425,10 +426,23 @@ function doItem() {
   // 「回完现在多少血」仍需瞄 HUD；现按治愈术同式把结算后 HP（灵药含 MP）并入同一括号
   // 句首，库存量保留——与大地图 usePotion 两端同式（承 v19.74 同源同改），读结算后的
   // hero.hp/hpMax/mp/mpMax，零结算零数值零存档变化。
+  // v24.40 体验打磨·信息透明·计数现场（承 v24.16 HUD「🚶 千里之行 N/1000」/ v24.17 喝药战报
+  // 「💧 渴饮甘露 N/10」/ v24.20 领悟战报「📖 诸技通明 N/8」同一「计数现场报进度」主线）：
+  // v23.66 当时口径「零战报后缀」（承 v23.64 熟能生巧零战报后缀口径——用药战报已带恢复量/
+  // 剩余库存/HPMP 状态，再叠进度后缀信息过载，C 页进度 X/15 承载），而 v24.17 已给大地图 F 喝药
+  // 战报（core.usePotion）补「💧 渴饮甘露 N/10」后缀——战斗 [3] 用药战报（本函数 doItem 的两档
+  // S.blog.push）是同一 takePotion 动作的战斗端（v23.66 明确「大地图 F 键 core.usePotion 走
+  // core.js 另一端 takePotion，不在此列零计数」、两端各自累计互不计入），v24.17 之后同一恢复
+  // 链路的战报一端带进度后缀、一端裸报，口径不一致；现按 v24.17 同款补「（💊 药到病除 N/15）」
+  // （分子读 hero.potionUses 防御式 (hero.potionUses||0)、分母读 data.js POTION_USE_GOAL 单一
+  // 数据源，与 C 页/ACH_LIST potionuses 的 ok/prog 同读一份源，调阈值只改 data.js 一处全端自动
+  // 跟随），纯显示零结算零存档零数值变化（计数落账/applyAchievements 时机/takePotion 结算/
+  // 两档拦截判定逐字未动；大地图端口零串扰——本函数两档报文只挂药到病除、绝不给渴饮甘露挂
+  // 后缀，双端口隔离由 smoke_v2440_potionprog 守护）。
   S.blog.push(
     result.strong
-      ? `🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）`
-      : `🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）`
+      ? `🧪 ${hero.name} 服下高级灵药，恢复 ${result.h} HP、${result.m} MP（HP ${hero.hp}/${hero.hpMax} · MP ${hero.mp}/${hero.mpMax} · 高级灵药剩余 ${hero.potion2} 瓶）（💊 药到病除 ${hero.potionUses || 0}/${POTION_USE_GOAL}）`
+      : `🍖 ${hero.name} 服用药水，恢复 ${result.h} 点 HP（HP ${hero.hp}/${hero.hpMax} · 药水剩余 ${hero.item} 瓶）（💊 药到病除 ${hero.potionUses || 0}/${POTION_USE_GOAL}）`
   );
   afterPlayer();
 }
