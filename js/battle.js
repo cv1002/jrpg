@@ -291,6 +291,18 @@ function doSkill(skillName) {
   // 反击落账当场判定「反馈不迟到」惯例；applyAchievements 为本模块既有 import，零新增依赖）。
   // 零结算零数值变化（MP 扣除/倍率/治疗/汲回/战报主体逐字未动，仅计数与当场判定追加；技能
   // crit 恒 false 与暴击计数零干扰——暴击计数源 doAttack 逐字未动）。
+  // v24.48 体验打磨·信息透明·计数现场（承 v24.16 HUD「🚶 千里之行 N/1000」/ v24.17 喝药「💧 渴饮甘露
+  // N/10」/ v24.22 胜利「⚔️ 驱雾百战 N/100」/ v24.40 用药「💊 药到病除 N/15」同一「计数现场报进度」主线 /
+  // v23.36-23.65「战斗操作」维度给五指令里程碑逐配战报（以守为攻/蓄势待发/暴击如雨/熟能生巧/走为上计）
+  // ——其中 v24.40 已把药到病除按 v24.17 口径翻转补后缀，而 [2]技能的「熟能生巧」（累计释放
+  // CAST_GOAL(30) 次）仍承 v23.64「零战报后缀」旧口径：技能战报（治愈/伤害两分支，v23.64 计数
+  // 两分支都计入）正是施法动作本身的现场，同链路的暴击/蓄力/反击/逃跑四端战报早已各带 N/GOAL
+  // 进度后缀，唯独技能端裸报，同一战斗日志口径不一致；现按同族在两条施法战报末尾补
+  // 「（🔮 熟能生巧 N/30）」（分子读本函数计数唯一产生点已落账的 castN——上方 hero.casts = castN
+  // 先于报文，进度差分即本次；分母读 data.js CAST_GOAL 单一数据源，与 C 页/ACH_LIST cast 的
+  // ok/prog 同读一份源，调阈值只改 data.js 一处全端自动跟随；同 v24.19/v24.25 只报中档里程碑
+  // 先例——本线仅此一档无姊妹档），纯显示零结算零存档零数值变化（hero.casts 计数/MP 扣除/倍率/
+  // 治疗/汲回/灼烧/封印拦截判定/applyAchievements 时机逐字未动）。
   const castN = (hero.casts || 0) + 1;
   hero.casts = castN;
   applyAchievements();
@@ -313,7 +325,7 @@ function doSkill(skillName) {
     // v19.97 治疗技能反馈追加当前 HP（信息透明·纯显示）：v19.74 已给战斗用药反馈带上剩余数量，
     // 但治疗/净化类技能释放后只报恢复量——玩家刚用掉 MP 回血或解毒，想确认「当前 HP 是否安全、能否撑过下一轮」
     // 仍需瞄 HUD；直接读结算后的 hero.hp / hero.hpMax，与状态页 HP 显示同源，零结算变化。
-    S.blog.push(`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力保留）' : ''}！（HP ${hero.hp}/${hero.hpMax}）`);
+    S.blog.push(`💚 ${hero.name} 使出【${skillName}】，恢复 ${heal} 点 HP${extra}${charged ? '（蓄力保留）' : ''}！（HP ${hero.hp}/${hero.hpMax}）（🔮 熟能生巧 ${castN}/${CAST_GOAL}）`);
     bind.renderHUD();
     afterPlayer();
     return;
@@ -384,7 +396,7 @@ function doSkill(skillName) {
     // v20.0 命中已报敌方剩余 HP，唯独「伤害技能扣蓝」后不报我方剩余 MP——玩家施法后想确认「还能不能再放一招」
     // 仍需瞄 HUD；直接读结算后的 hero.mp / hero.mpMax（line 202 已扣 skill.mp），与技能菜单/状态页 MP 显示
     // 同源，零结算变化（普攻不耗蓝，不在此列）。
-    finishPlayer(`✨ ${hero.name} 使出【${skillName}】，造成 <dmg> 伤害${note}${charged ? '（蓄力）' : ''}！（MP ${hero.mp}/${hero.mpMax}）`, dmg);
+    finishPlayer(`✨ ${hero.name} 使出【${skillName}】，造成 <dmg> 伤害${note}${charged ? '（蓄力）' : ''}！（MP ${hero.mp}/${hero.mpMax}）（🔮 熟能生巧 ${castN}/${CAST_GOAL}）`, dmg);
   }, skill.sfx, false, mult);
   enemy.def = defSave;
   return true;
