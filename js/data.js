@@ -1988,6 +1988,15 @@
 // 第九轮后金币曲线与目标贴线收敛（后续如需微调建议动宝箱/任务/成就收入而非继续抬每级金币）；
 // 四基础怪逐字不动、Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域
 // 倍率逐字未动，遇敌/掉落/战斗/成就/存档零影响（see GAME_VERSION 上方 v24.44 注释）。
+// v24.47 数值平衡·后期经验曲线续平滑（第七轮·承 v19.58 第一轮/v24.13 第二轮/v24.29 第三轮/v24.39 第四轮
+// /v24.41 第五轮/v24.43 第六轮方法论前六轮续）：四强怪（骷髅兵/雾灵/树精/石魔像）每级经验 +1（xp[1] 10→11）
+// ——升级需求按 XP_GROW(1.42) 复利增长而怪物经验只随等级线性（MON_BASE [基准,每级]），v24.43 把无字回廊池
+// 加权 Lv10-15 每级所需场数缓到 3.01/3.95/5.21/6.90/9.17 后，同一条曲线在更深尾段再次贴线：本轮加权实测
+// （无字回廊池 × zone，与 smoke_v2413/v2429/v2439/v2441/v2443 同法）Lv10→11 3.01→2.78、Lv11→12 3.95→3.65、
+// Lv12→13 5.21→4.80、Lv13→14 6.90→6.34、Lv14→15 9.17→8.44、Lv15→16 12.27→11.28（每级 -0.23~-0.99 场），
+// 曲线仍严格单调递增（升级本就该变慢；Lv15→16 11.28 场仍为全曲线最陡一级、内容线后段的纯 farming）；
+// 四基础怪逐字不动、Lv1-2 镇内零变化（village Lv1/Lv2 13.25/16.91 恒等），hp/atk/def/gold/权重/门槛/区域
+// 倍率逐字未动，遇敌/掉落/战斗/成就/存档零影响（see GAME_VERSION 上方 v24.46 注释）。
 // v24.46 体验打磨·信息透明·计数现场（纯显示；承 v24.16 HUD「🚶 千里之行 N/1000」/ v24.17 喝药战报
 // 「💧 渴饮甘露 N/10」/ v24.22 胜利战报「⚔️ 驱雾百战 N/100」/ v24.23 精英战报「⚔️ 精英猎手 N/2」/
 // v24.40 用药战报「💊 药到病除 N/15」/ v24.42 开箱报文「🎒 满载而归 N/9」同一「计数现场报进度」主线）：
@@ -1999,7 +2008,7 @@
 // 的 ok/prog 同读一份源，调阈值只改 data.js 一处全端自动跟随；同 v24.19/v24.25 只报中档里程碑先例——
 // 菇香满仓 N/10 与菇海无涯 N/50 同线另两档由 C 页承载），纯显示零结算零存档零数值变化（mushrooms 计数/
 // 掉落/酿造/成就判定逐字未动，see GAME_VERSION 上方 v24.45 注释）。
-const GAME_VERSION = 'v24.46';
+const GAME_VERSION = 'v24.47';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -4477,12 +4486,12 @@ const MON_BASE=[
   // 成就/存档零影响（see GAME_VERSION 上方 v24.35 注释）。
   {name:'史莱姆',hp:[16,5],atk:[5,2],def:[2,1],xp:[8,3],gold:[8,2],color:'#7fd84f',weak:'fire',draw:'slime',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
   {name:'野狼',  hp:[22,5],atk:[7,2],def:[3,1],xp:[12,3],gold:[12,2],color:'#9aa3ad',weak:'fire',draw:'wolf',w:(lv)=>Math.max(1,3-Math.floor(lv/4))},
-  {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,10],gold:[15,12],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',minLv:2,w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
+  {name:'骷髅兵',hp:[26,6],atk:[8,2],def:[5,1],xp:[16,11],gold:[15,12],color:'#d9d3c0',weak:'fire',resist:'ice',draw:'skel',minLv:2,w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
   {name:'哥布林',hp:[20,5],atk:[6,2],def:[3,1],xp:[10,3],gold:[10,2],color:'#6fae4f',weak:'ice',draw:'goblin',w:(lv)=>Math.max(1,4-Math.floor(lv/2))},
   {name:'毒蛇',  hp:[20,5],atk:[8,2],def:[3,1],xp:[15,3],gold:[13,2],color:'#59c96b',poison:POISON_CHANCE,weak:'ice',draw:'snake',w:(lv)=>lv>=2?2+Math.floor(lv/3):1},
-  {name:'雾灵',  hp:[24,5],atk:[9,2],def:[4,1],xp:[17,10],gold:[14,12],color:'#b48ae8',weak:'ice',resist:'fire',draw:'ghost',minLv:2,w:(lv)=>2+Math.floor(lv/3)},
-  {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,10],gold:[16,12],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
-  {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,10],gold:[20,12],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
+  {name:'雾灵',  hp:[24,5],atk:[9,2],def:[4,1],xp:[17,11],gold:[14,12],color:'#b48ae8',weak:'ice',resist:'fire',draw:'ghost',minLv:2,w:(lv)=>2+Math.floor(lv/3)},
+  {name:'树精',  hp:[30,6],atk:[7,2],def:[6,1],xp:[18,11],gold:[16,12],color:'#4c8f5a',weak:'fire',resist:'ice',draw:'tree',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
+  {name:'石魔像',hp:[36,7],atk:[8,2],def:[10,1],xp:[22,11],gold:[20,12],color:'#8a8577',weak:'thunder',resist:'fire',draw:'stone',minLv:3,w:(lv)=>2+Math.floor(lv/2)},
 ];
 
 // 精英「石心魔像」成长基准（单一数据源）：battle.eliteEncounter 生成、rules.codexStats/monReward 图鉴参考同读此表
