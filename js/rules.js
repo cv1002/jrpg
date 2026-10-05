@@ -1,7 +1,7 @@
 // ============================================================
 // rules.js —— 无副作用的战斗 / 成长 / 图鉴计算
 // ============================================================
-import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, EMBER_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, DROP_ELIXIR, DROP_GOLD, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
+import { CHARGE_MULT, MON_BASE, ELITE_GOLEM, EMBER_GOLEM, ACH_LIST, WEAPONS, ARMORS, baseStats, BOSS, CAVE_BOSS, TRUE_BOSS, ELITE_GATE_LV, ELEM_MULT, SHIELD_MULT, DROP_EQUIP, DROP_POTION, DROP_MUSHROOM, MUSH2_GOAL, DROP_ELIXIR, DROP_GOLD, RUSH_BASE_GOLD, RUSH_GOLD_PER_LV, POTION_HP_PCT, POTION_HP_FLAT, ELIXIR_HP_PCT, ELIXIR_HP_FLAT, ELIXIR_MP_PCT } from './data.js';
 
 export function deep(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -208,7 +208,13 @@ export function rollDrop(hero, curMap) {
       hero.drops = (hero.drops || 0) + 1;
       // v19.83 战斗随机掉落蘑菇反馈追加剩余数量（信息透明·纯显示）：与 v19.79 精英魔像蘑菇 /
       // v19.73 卖菇剩余量同源，零数值变化。
-      return `🍄 掉落：魔法蘑菇 ×1（剩余 ${hero.mushrooms || 0} 株）`;
+      // v24.46 体验打磨·信息透明·计数现场·纯显示（承 v19.83 剩余库存 / v24.42 开箱报文「🎒 满载而归
+      // N/9」同一「计数现场报进度」主线）：蘑菇持有线中档里程碑「菇山菌海」（MUSH2_GOAL(25) 株，与
+      // C 页/ACH_LIST mush2 的 ok/prog 同读 data.js 一份源）的计数现场正是每次「捡到蘑菇」——战斗随机
+      // 掉落 12% 蘑菇是蘑菇三获取点之一；现蘑菇掉落文案末尾补「（🍄 菇山菌海 N/25）」（分子读
+      // (hero.mushrooms||0) 防御式旧档零迁移、分母读 MUSH2_GOAL 单一数据源；hero.mushrooms++ 已先于本行
+      // 落账，进度差分即本株；同 v24.19/v24.25 只报中档里程碑先例），纯显示零结算零存档零数值变化。
+      return `🍄 掉落：魔法蘑菇 ×1（剩余 ${hero.mushrooms || 0} 株）（🍄 菇山菌海 ${hero.mushrooms || 0}/${MUSH2_GOAL}）`;
     }
     hero.item++;
     hero.drops = (hero.drops || 0) + 1;

@@ -7,7 +7,7 @@
 // MAPS[].dangerTiles + loadMap 建立的 'G' 坐标集——单一数据源，无 ASCII 双轨。
 // ============================================================
 import { S, curMap } from './state.js';
-import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, dayPhase, STEP_GOAL, OUTSTEP2_GOAL, TREASURE2_GOAL } from './data.js';
+import { TY, SOLID, MAPS, NPC_SPOTS, chToTy, BOSS, CAVE_BOSS, TRUE_BOSS, EMBER_GOLEM, CAVE_TREASURE, ENCOUNTER, CHEST_MUSHROOM, CHEST_GOLD, CHEST_GOLD_BASE, CHEST_GOLD_PER_LV, MUSHROOM_GOAL, ALTAR_LEAD_MS, ALTAR_TXT_MS, SYS_MSG_MS, MILESTONE_MS, SHORT_MSG_MS, NARR_MSG_MS, FINAL_LEAD_MS, EVENT_MSG_MS, trialSteleHint, hasRecoveryPoint, chestCount, chestTotal, MUSH2_GOAL, dayPhase, STEP_GOAL, OUTSTEP2_GOAL, TREASURE2_GOAL } from './data.js';
 import { SFX, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
 import { hooks } from './hooks.js';
@@ -256,6 +256,16 @@ function onChestStep(x, y, hero) {
   // data.js 一处全端自动跟随；hero.chests.add 先于 applyAchievements/报文落账，进度差分即本只；同
   // v24.19/v24.25 只报中档里程碑先例——开箱寻宝 N/6 与一箱不漏 N/12 同线另两档由 C 页承载），纯显示
   // 零结算零存档零数值变化（chestCount/chestTotal/掉落判定/库存/成就判定逐字未动）。
+  // v24.46 体验打磨·信息透明·计数现场·纯显示（承 v24.42 开箱报文「🎒 满载而归 N/9」/ v24.17 喝药
+  // 「💧 渴饮甘露 N/10」/ v24.16 HUD「🚶 千里之行 N/1000」同一「计数现场报进度」主线；v22.14 菇香满仓 /
+  // v22.18 菇山菌海 / v22.69 菇海无涯）：蘑菇持有线的中档里程碑「菇山菌海」（持有 MUSH2_GOAL(25) 株魔法
+  // 蘑菇，计数 hero.mushrooms 由本文件宝箱分支/战斗掉落/精英掉落三处唯一产生点共享同一持有量字段、
+  // snapshotHero 全量快照自动持久化、防御式 (hero.mushrooms||0) 旧档零迁移）此前只藏在 C 成就页一行 X/25，
+  // I 页资源行只报「·蘑菇 N 株」余额读数——蘑菇的计数现场正是每次「捡到」动作本身；现三条蘑菇报文（宝箱
+  // 蘑菇/精英蘑菇/战斗随机掉落）末尾补「（🍄 菇山菌海 N/25）」（分子读 (hero.mushrooms||0) 防御式旧档
+  // 零迁移、分母读 data.js MUSH2_GOAL 单一数据源，与 C 页/ACH_LIST mush2 的 ok/prog 同读一份源，调阈值
+  // 只改 data.js 一处全端自动跟随；同 v24.19/v24.25 只报中档里程碑先例——菇香满仓 N/10 与菇海无涯 N/50
+  // 同线另两档由 C 页承载），纯显示零结算零存档零数值变化（mushrooms 计数/掉落判定/支线进度/成就判定逐字未动）。
   const chestProg = `（🎒 满载而归 ${opened}/${TREASURE2_GOAL}）`;
   // v23.49 宝箱开启专属音效（音效反馈·语义修正——承 v23.22 SFX.ach / v23.33 SFX.craft / v23.40 SFX.flee /
   // v23.43 SFX.crit / v23.46 SFX.transform / v23.47 SFX.charge / v23.48 SFX.darkheal 同一「事件音效各归其位」
@@ -274,7 +284,7 @@ function onChestStep(x, y, hero) {
     // 支线未激活或已集齐时不额外显示，零结算变化。
     const qm = (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms < MUSHROOM_GOAL)
       ? `，任务还差 ${MUSHROOM_GOAL - hero.mushrooms} 株` : '';
-    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm} · 已开 ${opened}/${total}）${chestProg}`);
+    bind.boxMsg(`🍄 找到魔法蘑菇！（共 ${hero.mushrooms} 株${qm} · 已开 ${opened}/${total}）${chestProg}（🍄 菇山菌海 ${hero.mushrooms}/${MUSH2_GOAL}）`);
     if (hero.quests && hero.quests.side_mushroom === 'active' && hero.mushrooms >= MUSHROOM_GOAL) {
       setSideQuest(hero, 'side_mushroom', 'turnin');
       bind.boxMsg('💡 蘑菇集齐了！回去找灯长领取奖励吧！', MILESTONE_MS);

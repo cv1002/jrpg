@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, RICH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, RICH2_GOAL, MUSH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -695,8 +695,14 @@ function winBattle() {
     // data.js 一处全端自动跟随；hero.bestiary[bookName]++ 已先于本行落账（上方 winBattle 结算头），
     // 进度差分即本场；防御式 (hero.bestiary||{}) 旧档零迁移）；纯显示零结算零存档零数值变化
     // （mushrooms 计数/掉落/金币经验结算/成就判定逐字未动）。
+    // v24.46 体验打磨·信息透明·计数现场·纯显示（承 v24.23 精英战报「⚔️ 精英猎手 N/2」/ v24.42 开箱报文
+    // 「🎒 满载而归 N/9」同一「计数现场报进度」主线）：蘑菇持有线中档里程碑「菇山菌海」（MUSH2_GOAL(25)
+    // 株，与 C 页/ACH_LIST mush2 的 ok/prog 同读 data.js 一份源）的计数现场正是每次「捡到蘑菇」——精英怪
+    // 必掉 1 株是蘑菇三获取点之一；现精英蘑菇报文末尾再补「（🍄 菇山菌海 N/25）」（分子读
+    // (hero.mushrooms||0) 防御式旧档零迁移、分母读 MUSH2_GOAL 单一数据源；hero.mushrooms++ 已先于本行
+    // 落账，进度差分即本株；同 v24.19/v24.25 只报中档里程碑先例），纯显示零结算零存档零数值变化。
     const eliteN = (((hero.bestiary || {})[ELITE_GOLEM.name] || 0) >= 1 ? 1 : 0) + (((hero.bestiary || {})[EMBER_GOLEM.name] || 0) >= 1 ? 1 : 0);
-    bind.boxMsg(`💎 从魔像残骸中捡到 1 株魔法蘑菇！（剩余 ${hero.mushrooms || 0} 株）（⚔️ 精英猎手 ${eliteN}/2）`, NARR_MSG_MS);
+    bind.boxMsg(`💎 从魔像残骸中捡到 1 株魔法蘑菇！（剩余 ${hero.mushrooms || 0} 株）（⚔️ 精英猎手 ${eliteN}/2）（🍄 菇山菌海 ${hero.mushrooms || 0}/${MUSH2_GOAL}）`, NARR_MSG_MS);
   }
   hero.gold += enemy.gold;
   const g = grantXp(hero, enemy.xp);
