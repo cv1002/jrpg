@@ -12,7 +12,7 @@
 // xp[1]=7 · 四基础怪逐字未动 · hp/atk/def/gold 逐字未动）、曲线单调性与平滑收益（Village 池 Lv1-2 零变化 /
 // Gallery 池加权均场 Lv10-15 严格递增且低于改前基线 / XP_GROW·XP_INIT 逐值）、README/package.json/
 // CHANGELOG 同步（件套口径 253 + 魔物数值行 16+8/17+8/18+8/22+8 + v24.29 守护描述 + 入库 253 +
-// package 串尾 + CHANGELOG 顶 pin）、哨兵链（前望 267 且 README 尚无 267 口径）、旧代 v24.28 pin
+// package 串尾 + CHANGELOG 顶 pin）、哨兵链（前望 268 且 README 尚无 268 口径）、旧代 v24.28 pin
 // 全库零残留扫描（豁免本套件）。
 import { MON_BASE, GAME_VERSION, XP_GROW, XP_INIT, MAPS } from '../js/data.js';
 import fs from 'node:fs';
@@ -44,7 +44,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.28', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.29（旧 v24.28 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.42';") && !dSrc.includes("const GAME_VERSION = 'v24.28';"));
+  dSrc.includes("const GAME_VERSION = 'v24.43';") && !dSrc.includes("const GAME_VERSION = 'v24.28';"));
 ok('data.js 含 v24.29 注释（后期经验曲线续平滑第三轮说明）',
   dSrc.includes('// v24.29 数值平衡·后期经验曲线续平滑'));
 ok('data.js 仍保留 v24.28 历史注释（进图报文「🌏 灯影渐远 N/3」说明，累积注释块）',
@@ -52,8 +52,8 @@ ok('data.js 仍保留 v24.28 历史注释（进图报文「🌏 灯影渐远 N/3
 ok('data.js v19.58/v19.66/v24.13/v24.18 历史注释保留（经验/金币平滑先例行）',
   dSrc.includes('v19.58 数值平衡') && dSrc.includes('v19.66 数值平衡') &&
   dSrc.includes('v24.13 数值平衡') && dSrc.includes('v24.18 数值平衡'));
-ok('data.js 源级四强怪 xp 每级 7 逐字落位（xp:[16,9]/[17,8]/[18,8]/[22,8]）',
-  dSrc.includes('xp:[16,9]') && dSrc.includes('xp:[17,9]') && dSrc.includes('xp:[18,9]') && dSrc.includes('xp:[22,9]'));
+ok('data.js 源级四强怪 xp 每级 7 逐字落位（xp:[16,10]/[17,8]/[18,8]/[22,8]）',
+  dSrc.includes('xp:[16,10]') && dSrc.includes('xp:[17,10]') && dSrc.includes('xp:[18,10]') && dSrc.includes('xp:[22,10]'));
 ok('data.js 源级四基础怪 xp 每级 3 逐字未动（xp:[8,3]/[12,3]/[10,3]/[15,3]）',
   dSrc.includes('xp:[8,3]') && dSrc.includes('xp:[12,3]') && dSrc.includes('xp:[10,3]') && dSrc.includes('xp:[15,3]'));
 
@@ -63,8 +63,8 @@ for (const m of MON_BASE) byName[m.name] = m;
 ok('MON_BASE 八怪齐全', MON_BASE.length === 8, String(MON_BASE.length));
 const FOUR = ['骷髅兵', '雾灵', '树精', '石魔像'];
 const BASE = ['史莱姆', '野狼', '哥布林', '毒蛇'];
-ok('四强怪每级经验均为 9（xp[1] 8→9 第五轮）',
-  FOUR.every((nm) => byName[nm] && byName[nm].xp[1] === 9),
+ok('四强怪每级经验均为 10（xp[1] 9→10 第六轮）',
+  FOUR.every((nm) => byName[nm] && byName[nm].xp[1] === 10),
   FOUR.map((nm) => nm + '=' + (byName[nm] && byName[nm].xp[1])).join(','));
 ok('四基础怪每级经验逐字未动（3·3·3·3）',
   BASE.every((nm) => byName[nm] && byName[nm].xp[1] === 3),
@@ -79,12 +79,12 @@ ok('四基础怪 xp 基准逐字未动（8/12/10/15）',
 const EXPECT = {
   '史莱姆': { hp: [16, 5], atk: [5, 2], def: [2, 1], xp: [8, 3], gold: [8, 2] },
   '野狼':   { hp: [22, 5], atk: [7, 2], def: [3, 1], xp: [12, 3], gold: [12, 2] },
-  '骷髅兵': { hp: [26, 6], atk: [8, 2], def: [5, 1], xp: [16, 9], gold: [15, 10] },
+  '骷髅兵': { hp: [26, 6], atk: [8, 2], def: [5, 1], xp: [16, 10], gold: [15, 10] },
   '哥布林': { hp: [20, 5], atk: [6, 2], def: [3, 1], xp: [10, 3], gold: [10, 2] },
   '毒蛇':   { hp: [20, 5], atk: [8, 2], def: [3, 1], xp: [15, 3], gold: [13, 2] },
-  '雾灵':   { hp: [24, 5], atk: [9, 2], def: [4, 1], xp: [17, 9], gold: [14, 10] },
-  '树精':   { hp: [30, 6], atk: [7, 2], def: [6, 1], xp: [18, 9], gold: [16, 10] },
-  '石魔像': { hp: [36, 7], atk: [8, 2], def: [10, 1], xp: [22, 9], gold: [20, 10] },
+  '雾灵':   { hp: [24, 5], atk: [9, 2], def: [4, 1], xp: [17, 10], gold: [14, 10] },
+  '树精':   { hp: [30, 6], atk: [7, 2], def: [6, 1], xp: [18, 10], gold: [16, 10] },
+  '石魔像': { hp: [36, 7], atk: [8, 2], def: [10, 1], xp: [22, 10], gold: [20, 10] },
 };
 ok('八怪 hp/atk/def/gold 逐字未动 + xp 四强怪 8/四基础怪 3（全表逐值）',
   MON_BASE.every((m) => {
@@ -142,59 +142,59 @@ ok('Gallery 池 Lv10-15 每级所需场数严格单调递增（升级变慢保�
 ok('Gallery 池 Lv10-15 每级所需场数较改前（xp[1]=7）全面下降',
   [10, 11, 12, 13, 14, 15].every((lv) => bNew(lv) < bOld(lv)),
   [10, 11, 12, 13, 14, 15].map((lv) => lv + ':' + bNew(lv).toFixed(2) + '/' + bOld(lv).toFixed(2)).join(' '));
-ok('Gallery 池 Lv10 改后 3.2-3.4 场窗口（≈3.29 实测口径）',
-  bNew(10) > 3.2 && bNew(10) < 3.4, bNew(10).toFixed(2));
-ok('Gallery 池 Lv11 改后 4.2-4.45 场窗口（≈4.32 实测口径）',
-  bNew(11) > 4.2 && bNew(11) < 4.45, bNew(11).toFixed(2));
-ok('Gallery 池 Lv12 改后 5.6-5.85 场窗口（≈5.70 实测口径）',
-  bNew(12) > 5.6 && bNew(12) < 5.85, bNew(12).toFixed(2));
-ok('Gallery 池 Lv13 改后 7.4-7.7 场窗口（≈7.56 实测口径）',
-  bNew(13) > 7.4 && bNew(13) < 7.7, bNew(13).toFixed(2));
-ok('Gallery 池 Lv14 改后 9.9-10.3 场窗口（≈10.07 实测口径，改前 ≈12.47 为全曲线最陡一级）',
-  bNew(14) > 9.9 && bNew(14) < 10.3 && bOld(14) > 12.2 && bOld(14) < 12.8, bNew(14).toFixed(2) + '/' + bOld(14).toFixed(2));
+ok('Gallery 池 Lv10 改后 2.9-3.1 场窗口（≈3.01 实测口径）',
+  bNew(10) > 2.9 && bNew(10) < 3.1, bNew(10).toFixed(2));
+ok('Gallery 池 Lv11 改后 3.85-4.05 场窗口（≈3.95 实测口径）',
+  bNew(11) > 3.85 && bNew(11) < 4.05, bNew(11).toFixed(2));
+ok('Gallery 池 Lv12 改后 5.1-5.3 场窗口（≈5.21 实测口径）',
+  bNew(12) > 5.1 && bNew(12) < 5.3, bNew(12).toFixed(2));
+ok('Gallery 池 Lv13 改后 6.8-7.0 场窗口（≈6.90 实测口径）',
+  bNew(13) > 6.8 && bNew(13) < 7.0, bNew(13).toFixed(2));
+ok('Gallery 池 Lv14 改后 9.05-9.3 场窗口（≈9.17 实测口径，改前 ≈12.47 为全曲线最陡一级）',
+  bNew(14) > 9.05 && bNew(14) < 9.3 && bOld(14) > 12.2 && bOld(14) < 12.8, bNew(14).toFixed(2) + '/' + bOld(14).toFixed(2));
 ok('Village 池 Lv1-2 单场经验零变化（四基础怪未动，13.25/16.91 口径）',
   avgXp('village', 1) === avgXp('village', 1, 6) && avgXp('village', 2) === avgXp('village', 2, 6) &&
   avgXp('village', 1) > 13.0 && avgXp('village', 1) < 13.5 &&
   avgXp('village', 2) > 16.5 && avgXp('village', 2) < 17.3,
   avgXp('village', 1).toFixed(2) + '/' + avgXp('village', 2).toFixed(2));
-ok('Dungeon 池 Lv3-4 单场经验较改前上浮且仅来自四强怪（32.75/42.43 口径）',
+ok('Dungeon 池 Lv3-4 单场经验较改前上浮且仅来自四强怪（34.25/44.87 口径）',
   avgXp('dungeon', 3) > avgXp('dungeon', 3, 7) && avgXp('dungeon', 4) > avgXp('dungeon', 4, 7) &&
-  avgXp('dungeon', 3) > 32.5 && avgXp('dungeon', 3) < 33.0, avgXp('dungeon', 3).toFixed(2));
+  avgXp('dungeon', 3) > 34.0 && avgXp('dungeon', 3) < 34.5, avgXp('dungeon', 3).toFixed(2));
 ok('XP_GROW/XP_INIT 逐值未动（1.42 / 20）', XP_GROW === 1.42 && XP_INIT === 20);
 
 // —— README 同步 ——
-ok('README 件套口径已为二百六十六件套（二百六十五件套清除）',
-  readme.includes('冒烟二百六十六件套（二百六十五件套清除）'));
+ok('README 件套口径已为二百六十七件套（二百六十六件套清除）',
+  readme.includes('冒烟二百六十七件套（二百六十六件套清除）'));
 ok('README 魔物数值行已为 16+8/17+8/18+8/22+8（v24.29 第三轮四强怪每级经验 +1）',
-  readme.includes('骷髅兵 26+6/8+2/5+1/16+9/15+10') && readme.includes('雾灵 24+5/9+2/4+1/17+9/14+10') &&
-  readme.includes('树精 30+6/7+2/6+1/18+9/16+10') && readme.includes('石魔像 36+7/8+2/10+1/22+9/20+10'));
+  readme.includes('骷髅兵 26+6/8+2/5+1/16+10/15+10') && readme.includes('雾灵 24+5/9+2/4+1/17+10/14+10') &&
+  readme.includes('树精 30+6/7+2/6+1/18+10/16+10') && readme.includes('石魔像 36+7/8+2/10+1/22+10/20+10'));
 ok('README 魔物数值行四基础怪逐字未动（8+3/12+3/10+3/15+3）',
   readme.includes('史莱姆 16+5/5+2/2+1/8+3/8+2') && readme.includes('野狼 22+5/7+2/3+1/12+3/12+2') &&
   readme.includes('哥布林 20+5/6+2/3+1/10+3/10+2') && readme.includes('毒蛇 20+5/8+2/3+1/15+3/13+2'));
-ok('README tests 树含 v24.29 守护描述（后期经验曲线续平滑第三轮）与 smoke_v2429_xpcurve3 入库（266 份）',
-  readme.includes('v24.29 起含 「后期经验曲线续平滑（第三轮）」守护') && readme.includes('smoke_v2429_xpcurve3 入库（266 份）'));
+ok('README tests 树含 v24.29 守护描述（后期经验曲线续平滑第三轮）与 smoke_v2429_xpcurve3 入库（267 份）',
+  readme.includes('v24.29 起含 「后期经验曲线续平滑（第三轮）」守护') && readme.includes('smoke_v2429_xpcurve3 入库（267 份）'));
 ok('README 仍保留 v24.28 历史守护描述与入库口径（253 份随新现实推进）',
   readme.includes('v24.28 起含 🧭 进图报文「🌏 灯影渐远 N/3」进度后缀守护') &&
-  readme.includes('smoke_v2428_outprog 入库（266 份）'));
-ok('README tests 树串尾已延伸至 smoke_v2429_xpcurve3（... + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog（npm test 串跑））',
-  readme.includes('smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog（npm test 串跑）'));
-ok('README 尚无 267 件套口径（哨兵前望 267 语义：下一版才写 267）',
-  !readme.includes('二百六十七件套（二百六十六件套清除）') && !readme.includes('冒烟二百六十七件套'));
+  readme.includes('smoke_v2428_outprog 入库（267 份）'));
+ok('README tests 树串尾已延伸至 smoke_v2429_xpcurve3（... + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6（npm test 串跑））',
+  readme.includes('smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6（npm test 串跑）'));
+ok('README 尚无 268 件套口径（哨兵前望 268 语义：下一版才写 268）',
+  !readme.includes('二百六十八件套（二百六十七件套清除）') && !readme.includes('冒烟二百六十八件套'));
 ok('README 历史守护描述链仍保留 v24.13/v24.18 经验/金币平滑守护（历史累积）',
   readme.includes('v24.13 起含 「后期经验曲线续平滑」守护') && readme.includes('v24.18 起含 「后期金币曲线续平滑」守护'));
 
 // —— package.json 同步 ——
 const testChain = (pkg.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 253 件套', testChain === 266, String(testChain));
+ok('package.json test 串共 253 件套', testChain === 267, String(testChain));
 ok('package.json 已收录 smoke_v2429_xpcurve3（npm test 串跑第 266 份）',
   pkg.includes('smoke_v2429_xpcurve3.mjs'));
-ok('package.json 串尾为 ... && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs"',
-  pkgRaw.includes('smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs"'));
-ok('package.json 链锚逐字（... && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs"）',
-  pkgRaw.includes('smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs"'));
+ok('package.json 串尾为 ... && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs"',
+  pkgRaw.includes('smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs"'));
+ok('package.json 链锚逐字（... && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs"）',
+  pkgRaw.includes('smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs"'));
 
 // —— CHANGELOG 同步 ——
-ok('CHANGELOG 顶部已追加 v24.29 条目（数值平衡·后期经验曲线续平滑第三轮）', changelog.startsWith('## v24.42 '));
+ok('CHANGELOG 顶部已追加 v24.29 条目（数值平衡·后期经验曲线续平滑第三轮）', changelog.startsWith('## v24.43 '));
 ok('CHANGELOG 顶部条目含「数值平衡」「续平滑」「xp[1]」「6→7」口径说明',
   changelog.includes('数值平衡') && changelog.includes('续平滑') && changelog.includes('xp[1]') && changelog.includes('6→7'));
 ok('CHANGELOG 仍保留 v24.28 与 v24.13 条目标题（历史积累）',
@@ -205,24 +205,24 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set([...pkg.matchAll(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g)].map((m) => m[0].replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 253 与实跑链恒等', files.length === 266, String(files.length));
+ok('tests 目录件套 = 253 与实跑链恒等', files.length === 267, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
-// —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 267 ——
+// —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 268 ——
 const t2415 = read('tests/smoke_v2415_treepin.mjs');
 ok('smoke_v2415 链尾已推进至 smoke_v2429_xpcurve3（第 266 份）',
-  t2415.includes("chain[chain.length - 1] === 'smoke_v2442_chestprog'"));
-ok('smoke_v2415 树串 token 数已推进至 253', t2415.includes('treeTok.length === 266'));
-ok('smoke_v2415 哨兵「尚无 267」口径（二百五十四件套 bare 否定式）',
-  t2415.includes("!readme.includes('二百六十七件套')"));
+  t2415.includes("chain[chain.length - 1] === 'smoke_v2443_xpcurve6'"));
+ok('smoke_v2415 树串 token 数已推进至 253', t2415.includes('treeTok.length === 267'));
+ok('smoke_v2415 哨兵「尚无 268」口径（二百五十四件套 bare 否定式）',
+  t2415.includes("!readme.includes('二百六十八件套')"));
 const s2428 = read('tests/smoke_v2428_outprog.mjs');
-ok('smoke_v2428 哨兵链已推进至「前望 267」口径（二百五十四件套 括号/冒烟 bare 否定式）',
-  s2428.includes("!readme.includes('二百六十七件套（二百六十六件套清除）')") &&
-  s2428.includes("!readme.includes('冒烟二百六十七件套')"));
+ok('smoke_v2428 哨兵链已推进至「前望 268」口径（二百五十四件套 括号/冒烟 bare 否定式）',
+  s2428.includes("!readme.includes('二百六十八件套（二百六十七件套清除）')") &&
+  s2428.includes("!readme.includes('冒烟二百六十八件套')"));
 ok('smoke_v2428 既有断言随新现实推进（件套口径 253 + 链尾 v2429 + 入库 253）',
-  s2428.includes('二百六十六件套（二百六十五件套清除）') && s2428.includes("=== 'smoke_v2442_chestprog'") &&
-  s2428.includes('入库（266 份）'));
+  s2428.includes('二百六十七件套（二百六十六件套清除）') && s2428.includes("=== 'smoke_v2443_xpcurve6'") &&
+  s2428.includes('入库（267 份）'));
 
 // —— 旧代 pin 零残留扫描（v24.28 / 252 口径；豁免本套件）——
 const leftovers = [];
