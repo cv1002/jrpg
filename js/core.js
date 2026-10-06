@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, BREW2_GOAL, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, TRAVEL_GOAL, DIFFS, NPCS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, BREW2_GOAL, SPEND_GOAL, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, TRAVEL_GOAL, DIFFS, NPCS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -172,7 +172,20 @@ function brewNow() {
   // 进度差分即本次；分母读 data.js BREW2_GOAL 单一数据源，与 C 页/ACH_LIST brew2 的 ok/prog 及
   // v24.10 面板角标同读一份源，调阈值只改 data.js 一处全端自动跟随），纯显示零结算零存档零数值变化
   // （hero.brews 计数/applyAchievements 时机/材料扣减/potion2 库存/可酿瓶数报文逐字未动）。
-  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币${_canBrewMore > 0 ? ` · 还可再酿 ${_canBrewMore} 瓶` : ''}；F/战斗[3]使用）（🍶 妙手回春 ${hero.brews || 0}/${BREW2_GOAL}）`, SYS_MSG_MS);
+  // v24.56 体验打磨·信息透明·计数现场：🧪 酿造成功战报补「💸 一掷千金 N/1000」进度后缀（承
+  // v24.55 住店成功战报「💸 一掷千金 N/1000」/ v24.54 商店购买战报「💸 一掷千金 N/1000」同一
+  // 消费线收口——v24.54 注释预留「住店/酿造两消费端口本版未动，留待后续轮次同族收口」、v24.55
+  // 收口住店端口并预留「酿造端口本版未动，同线留待后续轮次收口」，本版收口最后一个酿造端口）：
+  // 消费线（一掷千金=全游唯一消费端口里程碑，计数 hero.spent 由 buyPotion/buyWeapon/buyArmor/
+  // stayInn/brewNow 五处金币扣减唯一产生点共享累计）的酿造端口计数现场正是每次按下确认键酿成
+  // 扣款的战报本身（与 v24.55「现场是动作本身」同族）——v24.54 已给商店三条购买报文补后缀、
+  // v24.55 已收住店端口，唯独酿造端口仍裸报：酿完想确认离一掷千金还差多少得按 C 翻成就页；
+  // 现报文末尾补「（💸 一掷千金 N/1000）」（分子读上方已落账 hero.spent——BREW_GOLD 扣款计数
+  // 唯一产生点先于报文落账，进度差分即本次；分母读 data.js SPEND_GOAL 单一数据源，与 C 页/
+  // ACH_LIST spend 的 ok/prog 及 v24.54 商店三条购买报文/v24.55 住店报文同读一份源，调阈值只改
+  // data.js 一处全端自动跟随；五端口至此全部收口），纯显示零结算零存档零数值变化（hero.spent
+  // 计数/applyAchievements 时机/材料扣减/potion2 库存/可酿瓶数/🍶 妙手回春后缀报文逐字未动）。
+  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币${_canBrewMore > 0 ? ` · 还可再酿 ${_canBrewMore} 瓶` : ''}；F/战斗[3]使用）（🍶 妙手回春 ${hero.brews || 0}/${BREW2_GOAL}）（💸 一掷千金 ${hero.spent}/${SPEND_GOAL}）`, SYS_MSG_MS);
 }
 
 function doTravel() {
