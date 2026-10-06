@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, INN_REST_GOAL, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SELL_GOAL, SYS_MSG_MS, NARR_MSG_MS } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, INN_REST_GOAL, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SELL_GOAL, SYS_MSG_MS, NARR_MSG_MS, SPEND_GOAL } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -34,14 +34,21 @@ export function buyPotion() {
     // （buyPotion/buyWeapon/buyArmor/stayInn/brewNow），消费端口唯一产生点——扣款成功后
     // 就地累计 hero.spent（金币不足/背包满早退不落此列），紧邻下方既有 applyAchievements
     // 当场判定（反馈不迟到）；(g.spent||0) 防御式 + snapshotHero 全量快照自动持久化，旧档
-    // 零迁移；hero.gold 扣款/判定/报文逐字未动（零战报后缀承 v23.72/73 口径）。
+    // 零迁移；hero.gold 扣款/判定/报文逐字未动。
+    // v24.54 体验打磨·信息透明·计数现场：购买成功战报补「（💸 一掷千金 N/1000）」进度后缀
+    // （承 v24.53 住店「🏨 夜宿灯下 N/15」/ v24.51 售菇「🍄 蘑菇商路 N/30」同一「计数现场报进度」
+    // 主线，翻转 v23.74「零战报后缀」旧口径）：消费线是全游唯一没有任何 live 窗口的行为线（持有线
+    // rich 三档 v24.27 已上胜利战报、收入线 v24.51 已上售出战报），而「购买」正是消费动作最高频的
+    // 计数现场；分子读上方已落账 hero.spent、分母读 data.js SPEND_GOAL 单一数据源，与 C 页/
+    // ACH_LIST spend 的 ok/prog 同读一份源，调阈值只改 data.js 一处全端自动跟随；纯显示零结算零
+    // 存档零数值变化（spent 计数/扣款/进货/背包判定/余额库存报文逐字未动）。
     hero.spent = (hero.spent || 0) + POTION_PRICE;
     hero.item++;
     SFX.shop();
     // v19.78 购买药水反馈追加剩余药水与金币（信息透明·纯显示）：v19.67 已带价格，但玩家消费后
     // 想确认「药水还剩几瓶 / 兜里还剩多少金币」仍需瞄 HUD 或按 I 看状态页；现在直接读结算后的
     // hero.item / hero.gold，与 v19.74 喝药剩余量、v19.75/19.76/19.77 消费余额同源。
-    bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）`);
+    bind.boxMsg(`购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）（💸 一掷千金 ${hero.spent}/${SPEND_GOAL}）`);
     bind.renderHUD();
     // v22.0 买药水当场判定成就（反馈不迟到，承 v21.73 buyArmor 先例）：applyAchievements 幂等（已解锁
     // 不重报、perfection 不重复加奖），买满第 POTIONS_GOAL 瓶（成就「有备无患」= 持有 20 瓶）的瞬间即
@@ -108,8 +115,9 @@ export function buyWeapon(name) {
     const atkBefore = typeof hero.atkMax === 'number' ? hero.atkMax : null;
     hero.gold -= price;
     // v23.74 经济消费成就「一掷千金」计数（同 buyPotion 注释，全游 5 处金币扣减之一）：
-    // 扣款成功就地累计 hero.spent + price，紧邻下方既有 applyAchievements 当场判定；
-    // 零战报后缀，扣款/判定/报文逐字未动。
+    // 扣款成功就地累计 hero.spent + price，紧邻下方既有 applyAchievements 当场判定。
+    // v24.54 战报补「（💸 一掷千金 N/1000）」进度后缀（同 buyPotion 注释，分子读已落账
+    // hero.spent、分母读 SPEND_GOAL 单一数据源，纯显示零结算）。
     hero.spent = (hero.spent || 0) + price;
     hero.weapon = name;
     SFX.shop();
@@ -117,7 +125,7 @@ export function buyWeapon(name) {
     applyAchievements();
     // v19.75 武器购买反馈追加剩余金币（信息透明·纯显示）：v19.67 已带价格，但玩家大额消费后
     // 想确认「兜里还剩多少」仍需瞄 HUD；现在直接读结算后的 hero.gold，与 v19.70/73/74 同源。
-    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${atkBefore !== null ? ` · 攻击 ${atkBefore}→${hero.atkMax}` : ''}）`);
+    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${atkBefore !== null ? ` · 攻击 ${atkBefore}→${hero.atkMax}` : ''}）（💸 一掷千金 ${hero.spent}/${SPEND_GOAL}）`);
     bind.renderHUD();
   } else {
     // v21.63 金币不足拦截报差额：同 buyPotion（差额 = price − hero.gold，本分支恒正）。
@@ -135,6 +143,8 @@ export function buyArmor(name) {
     hero.gold -= price;
     // v23.74 经济消费成就「一掷千金」计数（同 buyPotion 注释，全游 5 处金币扣减之一）：
     // 扣款成功就地累计 hero.spent + price，紧邻下方既有 applyAchievements 当场判定。
+    // v24.54 战报补「（💸 一掷千金 N/1000）」进度后缀（同 buyPotion 注释，分子读已落账
+    // hero.spent、分母读 SPEND_GOAL 单一数据源，纯显示零结算）。
     hero.spent = (hero.spent || 0) + price;
     hero.armor = name;
     SFX.shop();
@@ -146,7 +156,7 @@ export function buyArmor(name) {
     // applyAchievements 幂等（已解锁不重报、perfection 不重复加奖），零结算零数值变化。
     applyAchievements();
     // v19.75 防具购买反馈追加剩余金币（信息透明·纯显示）：同武器购买，零结算变化。
-    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${defBefore !== null ? ` · 防御 ${defBefore}→${hero.defMax}` : ''}）`);
+    bind.boxMsg(`装备了 ${name}（-${price} 金，剩余 ${hero.gold} 金${defBefore !== null ? ` · 防御 ${defBefore}→${hero.defMax}` : ''}）（💸 一掷千金 ${hero.spent}/${SPEND_GOAL}）`);
     bind.renderHUD();
   } else {
     // v21.63 金币不足拦截报差额：同 buyPotion（差额 = price − hero.gold，本分支恒正）。

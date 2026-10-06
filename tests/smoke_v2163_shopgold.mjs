@@ -113,8 +113,9 @@ ok('shop.js 扣款/加库存/恢复结算逐字零回归',
   sSrc.includes('hero.item++;') &&
   sSrc.includes('hero.hp = hero.hpMax;') && sSrc.includes('hero.mp = hero.mpMax;'));
 ok('shop.js 成功/拦截分支其余文案逐字零回归（购买成功/装备了/睡了一晚/背包已满/精神饱满）',
-  sSrc.includes('购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）') &&
+  sSrc.includes('购买成功：生命药水 +1（-${POTION_PRICE} 金，剩余 ${hero.item}/${POTION_CAP} 瓶 / ${hero.gold} 金）（💸 一掷千金 ${hero.spent}/${SPEND_GOAL}）') &&
   (sSrc.match(/装备了 \$\{name\}（-\$\{price\} 金，剩余 \$\{hero\.gold\} 金/g) || []).length === 2 &&
+  (sSrc.match(/（💸 一掷千金 \$\{hero\.spent\}\/\$\{SPEND_GOAL\}）/g) || []).length === 3 &&
   // v21.66 随新现实更新（承 v21.58 smoke_v2154 先例）：stayInn 成功报文整行已按清泉同式插入
   // 恢复量与结算后状态「HP +N（X/Y）· MP +M（A/B）完全恢复！」，v19.76 金币后缀子句逐字保留——
   // 锁前后两段子句，中段量化体由 smoke_v2166 精确守护。
@@ -172,9 +173,9 @@ function runShop(hero, fn, ...args) {
 {
   const h = mkHero({ gold: 15, item: 1 });
   const m = runShop(h, buyPotion);
-  ok('运行期：买药水成功档报文逐字零回归「购买成功：生命药水 +1（-15 金，剩余 2/99 瓶 / 0 金）」',
-    m.length === 1 && m[0] === '购买成功：生命药水 +1（-15 金，剩余 2/99 瓶 / 0 金）', m.join(' | '));
-  ok('运行期：买药水成功档结算一致（gold 15→0 / item 1→2）', h.gold === 0 && h.item === 2);
+  ok('运行期：买药水成功档报文逐字（v24.54 带一掷千金后缀）「购买成功：生命药水 +1（-15 金，剩余 2/99 瓶 / 0 金）（💸 一掷千金 15/1000）」',
+    m.length === 1 && m[0] === '购买成功：生命药水 +1（-15 金，剩余 2/99 瓶 / 0 金）（💸 一掷千金 15/1000）', m.join(' | '));
+  ok('运行期：买药水成功档结算一致（gold 15→0 / item 1→2 / spent 0→15）', h.gold === 0 && h.item === 2 && h.spent === 15);
 }
 
 // D 档：背包满优先拦截零回归——gold 充足但 item 满，报背包已满、不出现金币不足、零结算

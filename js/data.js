@@ -2048,6 +2048,18 @@
 // 报文落账，进度差分即本次；分母读下方 BREW2_GOAL 单一数据源，与 C 页/ACH_LIST brew2 的 ok/prog 及
 // v24.10 面板角标同读一份源，调阈值只改一处全端自动跟随），纯显示零结算零存档零数值变化
 // （hero.brews 计数/applyAchievements 时机/材料扣减/potion2 库存/可酿瓶数报文逐字未动）。
+// v24.54 体验打磨·信息透明·计数现场：💸 商店购买战报补「一掷千金 N/1000」进度后缀（承 v24.53
+// 住店「🏨 夜宿灯下 N/15」/ v24.52 图鉴收录「📖 见多识广 N/10」/ v24.51 售菇「🍄 蘑菇商路 N/30」/
+// v24.50 酿造「🍶 妙手回春 N/5」同一「计数现场报进度」主线，详见 shop.js buyPotion/buyWeapon/buyArmor
+// 行内注释，翻转 v23.74「零战报后缀」旧口径）：消费线（一掷千金=全游唯一消费端口里程碑，计数
+// hero.spent 由 buyPotion/buyWeapon/buyArmor/stayInn/brewNow 五处金币扣减唯一产生点共享累计）此前进度
+// 只藏在 C 成就页一行 X/1000——全游所有行为线里唯独「花出去的钱」这条线没有任何 live 窗口（持有线
+// rich 三档 v24.27 已上胜利战报、收入线 v24.51 已上售出战报、住宿线 v24.53 已上住店战报），而商店三
+// 条购买报文（药水/武器/防具）正是消费动作最高频的计数现场：买完想确认离一掷千金还差多少得按 C 翻成就
+// 页；现三条购买报文末尾补「（💸 一掷千金 N/1000）」（分子读 hero.spent——扣款计数唯一产生点先于报文
+// 落账、进度差分即本次；分母读下方 SPEND_GOAL 单一数据源，与 C 页/ACH_LIST spend 的 ok/prog 同读一份源，
+// 调阈值只改一处全端自动跟随；住店/酿造两端口本版未动，留待后续轮次同族收口），纯显示零结算零存档零
+// 数值变化（hero.spent 计数/applyAchievements 时机/扣款/换装/攻防对比/库存/余额报文逐字未动）。
 // v24.53 体验打磨·信息透明·计数现场：🏨 住店成功战报补「夜宿灯下 N/15」进度后缀（承 v24.52
 // 图鉴收录「📖 见多识广 N/10」/ v24.51 售菇「🍄 蘑菇商路 N/30」/ v24.50 酿造「🍶 妙手回春 N/5」
 // 同一「计数现场报进度」主线，详见 shop.js stayInn 行内注释，翻转 v23.73「零战报后缀」旧口径）：
@@ -2074,7 +2086,7 @@
 // 本次；分母读下方 SELL_GOAL 单一数据源，与 C 页/ACH_LIST sell 的 ok/prog 及 v24.09 面板角标同读一份
 // 源，调阈值只改一处全端自动跟随），纯显示零结算零存档零数值变化（hero.sold 计数/applyAchievements
 // 时机/售价/剩余株数/余额报文逐字未动）。
-const GAME_VERSION = 'v24.53';
+const GAME_VERSION = 'v24.54';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -4049,6 +4061,9 @@ const INN_REST_GOAL = 15;
 // 5 处唯一产生点（shop.buyPotion/buyWeapon/buyArmor/stayInn 扣款处 + core.brewNow 酿造成本
 // BREW_GOLD）各在 hero.gold -= 之后写入 hero.spent（金币不足/背包满早退零计数），snapshotHero
 // 全量快照自动持久化、(g.spent||0) 防御式读取旧档零迁移；与 RICH_GOLD 同「阈值数据化」家族）。
+// v24.54 起本常量同时是商店购买战报「（💸 一掷千金 N/1000）」的分母（shop.js buyPotion/buyWeapon/
+// buyArmor 三条购买报文，与 C 页/ACH_LIST spend 的 ok/prog 同读一份源，调阈值只改本处一处全端
+// 自动跟随；住店/酿造两消费端口本版未带后缀，同线留待后续轮次收口）。
 const SPEND_GOAL = 1000;
 // v23.75 成就「行者无疆」阈值（旅行动作维度首枚里程碑·单一数据源）：快速旅行累计 N 次解锁
 // ——与 ACH_LIST.travels 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中档 15
@@ -5942,8 +5957,10 @@ const ACH_LIST=[
   // 零迁移（承 v23.36 deflects / v23.72 mapPotions / v23.73 innRests 同款）；判定/进度/描述
   // 同读 SPEND_GOAL 一份源（与 RICH_GOLD 同一「阈值数据化」家族）；无 r 字段纯里程碑（与
   // rich/rich2/rich3 同款——一掷千金本身就是奖励）；解锁时机：扣款落账当场 applyAchievements
-  // （承「反馈不迟到」惯例——5 个计数点均紧邻既有 applyAchievements 调用）；零战报后缀（承
-  // v23.72/73 口径——各消费报文已带价格/余额，C 页进度 X/1000 承载）。
+  // （承「反馈不迟到」惯例——5 个计数点均紧邻既有 applyAchievements 调用）；
+  // （v24.54 翻转：商店三条购买战报（buyPotion/buyWeapon/buyArmor）已补「（💸 一掷千金 N/1000）」
+  // 进度后缀——分子读已落账 hero.spent、分母读 SPEND_GOAL 单一数据源，详见 shop.js 行内注释；住店/
+  // 酿造两消费端口仍零后缀（同线后续轮次收口）；本条目 ok/prog 逐字未动。）
   {id:'spend', name:'一掷千金', d:`累计消费金币 ${SPEND_GOAL} 金`, ok:g=>(g.spent||0)>=SPEND_GOAL, prog:g=>`${g.spent||0}/${SPEND_GOAL}`},
   // 行者无疆（v23.75 新内容·旅行动作维度单成就·全游唯一旅行动作端口里程碑，承 v23.72/73/74
   // 成对端口先例——成就版图逐线核对：探索线三档（outstep 踏出灯影/outstep2 灯影渐远/wander
