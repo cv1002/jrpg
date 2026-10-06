@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SYS_MSG_MS, NARR_MSG_MS } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SELL_GOAL, SYS_MSG_MS, NARR_MSG_MS } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -85,7 +85,17 @@ export function sellMushroom() {
   applyAchievements();
   SFX.coin();
   bind.renderHUD();
-  bind.boxMsg(`售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金（剩余 ${hero.mushrooms} 株 / 共 ${hero.gold} 金）`);
+  // v24.51 体验打磨·信息透明·计数现场：🍄 售菇成功战报补「蘑菇商路 N/30」进度后缀（承 v24.50 酿造
+  // 成功战报「🍶 妙手回春 N/5」/ v24.48 技能战报「🔮 熟能生巧 N/30」/ v24.46 蘑菇报文「🍄 菇山菌海
+  // N/25」同一「计数现场报进度」主线，翻转 v23.82「零战报后缀」旧口径——卖出线 v24.09 已把「🍄 蘑菇
+  // 商路 N/30」补进商店面板（drawShop 决策现场角标），唯独售出成功战报本身始终裸报；「累计售出 N 株」
+  // 这条收入行为线的计数现场正是每次按下确认键售出的战报本身（与 v24.50「现场是动作本身」同族），
+  // 卖完想确认离蘑菇商路还差几株得走回商店面板或按 C 翻成就页；现报文末尾补「（🍄 蘑菇商路 N/30）」
+  // （分子读 hero.sold——sellMushroom 计数唯一产生点先于报文落账，进度差分即本次；分母读 data.js
+  // SELL_GOAL 单一数据源，与 C 页/ACH_LIST sell 的 ok/prog 及 v24.09 面板角标同读一份源，调阈值只改
+  // data.js 一处全端自动跟随），纯显示零结算零存档零数值变化（hero.sold 计数/applyAchievements 时机/
+  // 售价/剩余株数/余额报文逐字未动）。
+  bind.boxMsg(`售出 1 株魔法蘑菇，得 ${MUSHROOM_PRICE} 金（剩余 ${hero.mushrooms} 株 / 共 ${hero.gold} 金）（🍄 蘑菇商路 ${hero.sold || 0}/${SELL_GOAL}）`);
 }
 
 export function buyWeapon(name) {
