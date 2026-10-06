@@ -86,7 +86,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.50）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.50', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 52)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.50', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 53)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.51 注释（精英石心魔像攻击成长收口）', dSrc.includes('v21.51 数值平衡：精英「石心魔像」攻击成长'));
 

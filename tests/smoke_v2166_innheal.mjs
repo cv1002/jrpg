@@ -92,8 +92,8 @@ ok('data.js 含 v21.66 注释（住店结算报文补恢复量与结算后状态
 const sSrc = fs.readFileSync(path.join(ROOT, 'js/shop.js'), 'utf8');
 ok('shop.js 含 v21.66 注释（住店结算报文补恢复量与结算后状态）',
   sSrc.includes('v21.66 住店结算报文补恢复量与结算后状态'));
-ok('shop.js 新文案落位（HP +N（X/Y）· MP +M（A/B）完全恢复！+ v19.76 金币后缀）',
-  sSrc.includes('`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）`'));
+ok('shop.js 新文案落位（HP +N（X/Y）· MP +M（A/B）完全恢复！+ v19.76 金币后缀 + v24.53 夜宿灯下后缀）',
+  sSrc.includes('`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）（🏨 夜宿灯下 ${hero.innRests}/${INN_REST_GOAL}）`'));
 ok('shop.js 旧裸文案零残留（「HP/MP 恢复！」旧句已清除）',
   !sSrc.includes('你美美地睡了一晚，HP/MP 恢复！'));
 ok('shop.js 结算前取值落位（hpBefore/mpBefore 捕获）',
@@ -146,8 +146,8 @@ function runInn(hero) {
 {
   const h = mkHero({ hp: 30, mp: 10, gold: 50 });
   const m = runInn(h);
-  ok('运行期：双缺档报文逐字「🌙 你美美地睡了一晚，HP +30（60/60）· MP +20（30/30）完全恢复！（-10 金，剩余 40 金）」',
-    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +30（60/60）· MP +20（30/30）完全恢复！（-10 金，剩余 40 金）', m.join(' | '));
+  ok('运行期：双缺档报文逐字「🌙 你美美地睡了一晚，HP +30（60/60）· MP +20（30/30）完全恢复！（-10 金，剩余 40 金）（🏨 夜宿灯下 1/15）」（v24.53 起带进度后缀）',
+    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +30（60/60）· MP +20（30/30）完全恢复！（-10 金，剩余 40 金）（🏨 夜宿灯下 1/15）', m.join(' | '));
   ok('运行期：双缺档结算一致（hp 30→60 / mp 10→30 / gold 50→40）',
     h.hp === 60 && h.mp === 30 && h.gold === 40, `hp=${h.hp} mp=${h.mp} gold=${h.gold}`);
 }
@@ -156,8 +156,8 @@ function runInn(hero) {
 {
   const h = mkHero({ hp: 60, mp: 5, gold: 20 });
   const m = runInn(h);
-  ok('运行期：只缺 MP 档报「HP +0（60/60）· MP +25（30/30）完全恢复！（-10 金，剩余 10 金）」',
-    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +0（60/60）· MP +25（30/30）完全恢复！（-10 金，剩余 10 金）', m.join(' | '));
+  ok('运行期：只缺 MP 档报「HP +0（60/60）· MP +25（30/30）完全恢复！（-10 金，剩余 10 金）（🏨 夜宿灯下 1/15）」（v24.53 起带进度后缀）',
+    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +0（60/60）· MP +25（30/30）完全恢复！（-10 金，剩余 10 金）（🏨 夜宿灯下 1/15）', m.join(' | '));
   ok('运行期：只缺 MP 档结算一致（hp 60 不动 / mp 5→30 / gold 20→10）',
     h.hp === 60 && h.mp === 30 && h.gold === 10);
 }
@@ -166,8 +166,8 @@ function runInn(hero) {
 {
   const h = mkHero({ hp: 15, mp: 30, gold: 100 });
   const m = runInn(h);
-  ok('运行期：只缺 HP 档报「HP +45（60/60）· MP +0（30/30）完全恢复！（-10 金，剩余 90 金）」',
-    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +45（60/60）· MP +0（30/30）完全恢复！（-10 金，剩余 90 金）', m.join(' | '));
+  ok('运行期：只缺 HP 档报「HP +45（60/60）· MP +0（30/30）完全恢复！（-10 金，剩余 90 金）（🏨 夜宿灯下 1/15）」（v24.53 起带进度后缀）',
+    m.length === 1 && m[0] === '🌙 你美美地睡了一晚，HP +45（60/60）· MP +0（30/30）完全恢复！（-10 金，剩余 90 金）（🏨 夜宿灯下 1/15）', m.join(' | '));
   ok('运行期：只缺 HP 档结算一致（hp 15→60 / mp 30 不动 / gold 100→90）',
     h.hp === 60 && h.mp === 30 && h.gold === 90);
 }

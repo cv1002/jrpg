@@ -3,7 +3,7 @@
 // boxMsg / renderHUD ← view/hud.js
 // ============================================================
 import { S } from './state.js';
-import { WEAPONS, ARMORS, INN_PRICE, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SELL_GOAL, SYS_MSG_MS, NARR_MSG_MS } from './data.js';
+import { WEAPONS, ARMORS, INN_PRICE, INN_REST_GOAL, POTION_CAP, POTION_PRICE, POTION_HP_PCT, POTION_HP_FLAT, MUSHROOM_GOAL, MUSHROOM_PRICE, SELL_GOAL, SYS_MSG_MS, NARR_MSG_MS } from './data.js';
 import { applyStats } from './rules.js';
 import { SFX } from './audio.js';
 import { bind } from './bind.js';
@@ -191,7 +191,19 @@ export function stayInn() {
       // 结算前后差，与面板预览同读 hpMax-hp/mpMax-mp 一份源；进入本分支至少一项缺损，已满项
       // 如实报 +0，与清泉同口径），v19.76 金币后缀保留。恢复结算（hero.hp/mp = hpMax/mpMax
       // 满恢复）逐字未动，只在其前补两行取值——零结算零数值零存档变化。
-      bind.boxMsg(`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）`);
+      // v24.53 体验打磨·信息透明·计数现场：🏨 住店成功战报补「夜宿灯下 N/15」进度后缀（承
+      // v24.52 图鉴收录战报「📖 见多识广 N/10」/ v24.51 售菇「🍄 蘑菇商路 N/30」/ v24.50 酿造
+      // 「🍶 妙手回春 N/5」/ v24.48 技能「🔮 熟能生巧 N/30」同一「计数现场报进度」主线，翻转
+      // v23.73「零战报后缀」旧口径——住宿线 v24.07 已把「🏨 夜宿灯下 N/15」补进旅馆面板
+      // （drawInn 决策现场角标），唯独住店成功战报本身始终裸报；「累计住宿 N 晚」这条旅中休整
+      // 行为线的计数现场正是每次按下确认键住店的战报本身（与 v24.50「现场是动作本身」同族），
+      // 住完想确认离夜宿灯下还差几晚得走回旅馆面板或按 C 翻成就页；现报文末尾补
+      // 「（🏨 夜宿灯下 N/15）」（分子读 hero.innRests——stayInn 计数唯一产生点先于报文落账，
+      // 进度差分即本次；分母读 data.js INN_REST_GOAL 单一数据源，与 C 页/ACH_LIST innrest 的
+      // ok/prog 及 v24.07 面板角标同读一份源，调阈值只改 data.js 一处全端自动跟随），
+      // 纯显示零结算零存档零数值变化（hero.innRests 计数/applyAchievements 时机/恢复结算/
+      // 价格/余额报文逐字未动）。
+      bind.boxMsg(`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）（🏨 夜宿灯下 ${hero.innRests}/${INN_REST_GOAL}）`);
     } else {
       // v21.63 金币不足拦截报差额：同 buyPotion；与 drawInn 面板红字「（还差 N 金）」同口径。
       bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金（当前 ${hero.gold} 金，还差 ${INN_PRICE - hero.gold} 金）`);
