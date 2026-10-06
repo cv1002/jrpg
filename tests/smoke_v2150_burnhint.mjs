@@ -83,7 +83,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // —— 版本锚点（v21.7 去硬化惯例：格式合法 + 已越过 v21.49）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v21.49', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 51)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v21.49', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 52)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.50 注释（灼烧命中瞬间战报追加每回合烧血数）', dSrc.includes('v21.50 新增：灼烧命中瞬间战报追加'));
 

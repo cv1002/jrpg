@@ -2048,6 +2048,14 @@
 // 报文落账，进度差分即本次；分母读下方 BREW2_GOAL 单一数据源，与 C 页/ACH_LIST brew2 的 ok/prog 及
 // v24.10 面板角标同读一份源，调阈值只改一处全端自动跟随），纯显示零结算零存档零数值变化
 // （hero.brews 计数/applyAchievements 时机/材料扣减/potion2 库存/可酿瓶数报文逐字未动）。
+// v24.52 体验打磨·信息透明·计数现场：📕 图鉴新收录战报补「📖 见多识广 N/10」进度后缀（承 v24.51
+// 售菇「🍄 蘑菇商路 N/30」/ v24.50 酿造「🍶 妙手回春 N/5」/ v24.48 技能「🔮 熟能生巧 N/30」同一
+// 「计数现场报进度」主线，详见 battle.js winBattle 收录反馈分支行内注释）：图鉴收录线三档（5/10/13）
+// 的战报端收口——收录反馈战报自 v23.23 已带封顶档「已记起 N/13 种」，唯独中档「见多识广 N/10」此前
+// 只有 C 成就页一行 X/10，首杀收录当场查无一眼之数；现战报末尾补「（📖 见多识广 N/10）」（分子读
+// battle.js 现算 codexGotN 与既有「已记起 N/13」同一真身、分母读本文件 SCHOLAR2_GOAL 单一数据源，与
+// C 页/ACH_LIST scholar2 的 ok/prog 同读一份源，调阈值只改本处一处全端自动跟随），纯显示零结算零存档
+// 零数值变化（bestiary 计数/收录判定/成就判定逐字未动）。
 // v24.51 体验打磨·信息透明·计数现场：🍄 售菇成功战报补「蘑菇商路 N/30」进度后缀（承 v24.50 酿造
 // 「🍶 妙手回春 N/5」/ v24.48 技能「🔮 熟能生巧 N/30」/ v24.46 蘑菇「🍄 菇山菌海 N/25」同一「计数现场
 // 报进度」主线，详见 shop.js sellMushroom 行内注释，翻转 v23.82「零战报后缀」旧口径）：卖出线 v24.09
@@ -2057,7 +2065,7 @@
 // 本次；分母读下方 SELL_GOAL 单一数据源，与 C 页/ACH_LIST sell 的 ok/prog 及 v24.09 面板角标同读一份
 // 源，调阈值只改一处全端自动跟随），纯显示零结算零存档零数值变化（hero.sold 计数/applyAchievements
 // 时机/售价/剩余株数/余额报文逐字未动）。
-const GAME_VERSION = 'v24.51';
+const GAME_VERSION = 'v24.52';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -4227,6 +4235,8 @@ const SCHOLAR_GOAL = 5;    // 成就「记忆收藏家」需收录的魔物种�
 // SCHOLAR2_GOAL）、描述文案（d「收录 N 种魔物」）、进度条（prog「X/N」）三处同读此源；承 SCHOLAR_GOAL
 // 同一「成就阈值数据化」家族——scholar（5 种）与 perfection（全部 13 种）之间的中程（5→10→13），计数
 // 读既有 hero.bestiary（Object.keys 计数与 scholar/perfection 同式），(g.bestiary||{}) 防御式旧档零迁移。
+// v24.52 起本常量同时是图鉴新收录战报「（📖 见多识广 N/10）」的分母（battle.js winBattle 收录反馈
+// 分支报文，与 C 页/ACH_LIST scholar2 的 ok/prog 同读一份源，调阈值只改本处一处全端自动跟随）。
 const SCHOLAR2_GOAL = 10;   // 成就「见多识广」需收录的魔物种数（图鉴线中档=5→10→13）
 
 // 成就「一面之缘」图鉴遭遇首档阈值（单一数据源·v22.73）：ACH_LIST 该条的判定（ok: seen 遭遇种数 >=
@@ -5732,6 +5742,9 @@ const ACH_LIST=[
   // SCHOLAR_GOAL 同一「成就阈值数据化」家族——5→10→13 中程），计数读既有 hero.bestiary（Object.keys
   // 计数与 scholar/perfection 同式、(g.bestiary||{}) 防御式旧档零迁移），无 r 字段纯里程碑（承 scholar 同款）。
   {id:'scholar2', name:'见多识广', d:`记忆图鉴收录 ${SCHOLAR2_GOAL} 种魔物`, ok:g=>Object.keys(g.bestiary||{}).length>=SCHOLAR2_GOAL, prog:g=>`${Object.keys(g.bestiary||{}).length}/${SCHOLAR2_GOAL}`},
+  // （v24.52 补记：图鉴新收录战报已带「（📖 见多识广 N/10）」进度后缀——分子读 battle.js winBattle
+  // 收录反馈分支现算 codexGotN（与战报既有「已记起 N/13」同一真身）、分母读本文件 SCHOLAR2_GOAL 同读
+  // 一份源，首杀收录当场 live 报中档进度；纯显示零结算，bestiary 计数/判定逐字未动。）
   // 一面之缘（v22.73 新成就·图鉴遭遇线首档里程碑·承 v22.70 踏出灯影 / v22.72 见多识广 多档先例）：收集线
   // 补档逐线核对——图鉴收录线（scholar 5 / scholar2 10 / perfection 全部 13）早已三档齐备，唯独同属图鉴的
   // 「已遭遇」线（metall 萍水相逢=全部 13 种）只有封顶档：玩家撞见第 1~12 种期间（图鉴页每行「已遭遇 ✕N」

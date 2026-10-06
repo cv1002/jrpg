@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, ELEM_MULT, RICH2_GOAL, MUSH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
+import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, SCHOLAR2_GOAL, ELEM_MULT, RICH2_GOAL, MUSH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -775,8 +775,21 @@ function winBattle() {
   // （bestiary[bookName] 0→1）补一条「📕 记忆图鉴新收录」报文（带 N/M 已记起进度）；再杀同怪零噪音
   // 零变化，旧档布尔 bestiary（true+1=2≠1）不误报，纯显示零结算零存档零数值变化。
   const codexGotN = BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length;
+  // v24.52 体验打磨·信息透明·计数现场：📕 图鉴新收录战报补「📖 见多识广 N/10」进度后缀（图鉴收录线
+  // 战报端收口·承 v24.51 售菇「🍄 蘑菇商路 N/30」/ v24.50 酿造「🍶 妙手回春 N/5」/ v24.48 施法
+  // 「🔮 熟能生巧 N/30」/ v24.46 捡菇「🍄 菇山菌海 N/25」同一「计数现场报进度」主线）：收录线三档
+  // （scholar 记忆收藏家 5 / scholar2 见多识广 10 / perfection 记忆守护者 13 全收录）中，本条战报自
+  // v23.23 起已带封顶档进度「已记起 N/13 种」（上方现算 codexGotN，与 C 页 perfection 同源），唯独
+  // 中档「见多识广 N/10」全游无 live 窗口——C 成就页一行 X/10 是唯一口径，而收录线的计数现场正是这条
+  // 「📕 记忆图鉴新收录」战报本身（首杀即收录的当场，与 v24.50「现场是动作本身」同族）：收录完想确认
+  // 离见多识广还差几种得按 C 翻成就页；现报文末尾补「（📖 见多识广 N/10）」（分子读本行上方现算
+  // codexGotN——与既有「已记起 N/13」同一分子同一真身（BESTIARY_TARGET.filter(...)|0 防御式口径逐字
+  // 同源），分母读 data.js SCHOLAR2_GOAL 单一数据源，与 C 页/ACH_LIST scholar2 的 ok/prog 同读一份源，
+  // 调阈值只改 data.js 一处全端自动跟随；同 v24.19/v24.25 只报中档先例——记忆收藏家 N/5 由 C 页承载、
+  // 记忆守护者 N/13 由本行既有「已记起 N/13」承载），纯显示零结算零存档零数值变化（bestiary 计数/收录
+  // 判定/再杀零噪音/成就判定时机逐字未动）。
   if (hero.bestiary[bookName] === 1) {
-    bind.boxMsg(`📕 记忆图鉴新收录：【${bookName}】（已记起 ${codexGotN}/${BESTIARY_TARGET.length} 种 · 世界画面按 B 查看）`, WIN_MSG_MS);
+    bind.boxMsg(`📕 记忆图鉴新收录：【${bookName}】（已记起 ${codexGotN}/${BESTIARY_TARGET.length} 种 · 世界画面按 B 查看）（📖 见多识广 ${codexGotN}/${SCHOLAR2_GOAL}）`, WIN_MSG_MS);
   }
   bind.renderHUD();
   applyAchievements();
