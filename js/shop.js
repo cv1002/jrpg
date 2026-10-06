@@ -213,7 +213,17 @@ export function stayInn() {
       // ok/prog 及 v24.07 面板角标同读一份源，调阈值只改 data.js 一处全端自动跟随），
       // 纯显示零结算零存档零数值变化（hero.innRests 计数/applyAchievements 时机/恢复结算/
       // 价格/余额报文逐字未动）。
-      bind.boxMsg(`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）（🏨 夜宿灯下 ${hero.innRests}/${INN_REST_GOAL}）`);
+      // v24.55 体验打磨·信息透明·计数现场：🏨 住店成功战报补「💸 一掷千金 N/1000」进度后缀
+      // （承 v24.54 商店购买战报「💸 一掷千金 N/1000」同一消费线收口——v24.54 注释预留「住店/
+      // 酿造两消费端口本版未动，留待后续轮次同族收口」，本版收口住店端口）：消费线计数现场
+      // 正是每次按下确认键住店扣款的战报本身（与 v24.54「现场是动作本身」同族），住完想确认
+      // 离一掷千金还差多少得按 C 翻成就页；现报文末尾补「（💸 一掷千金 N/1000）」（分子读
+      // 上方已落账 hero.spent——stayInn 扣款计数唯一产生点先于报文落账，进度差分即本次；
+      // 分母读 data.js SPEND_GOAL 单一数据源，与 C 页/ACH_LIST spend 的 ok/prog 及 v24.54 商店
+      // 三条购买报文同读一份源，调阈值只改 data.js 一处全端自动跟随；酿造端口本版未动，同线
+      // 留待后续轮次收口），纯显示零结算零存档零数值变化（hero.spent 计数/applyAchievements
+      // 时机/恢复结算/价格/余额/住宿后缀报文逐字未动）。
+      bind.boxMsg(`🌙 你美美地睡了一晚，HP +${hero.hp - hpBefore}（${hero.hp}/${hero.hpMax}）· MP +${hero.mp - mpBefore}（${hero.mp}/${hero.mpMax}）完全恢复！（-${INN_PRICE} 金，剩余 ${hero.gold} 金）（🏨 夜宿灯下 ${hero.innRests}/${INN_REST_GOAL}）（💸 一掷千金 ${hero.spent}/${SPEND_GOAL}）`);
     } else {
       // v21.63 金币不足拦截报差额：同 buyPotion；与 drawInn 面板红字「（还差 N 金）」同口径。
       bind.boxMsg(`金币不足：住一晚需 ${INN_PRICE} 金（当前 ${hero.gold} 金，还差 ${INN_PRICE - hero.gold} 金）`);
