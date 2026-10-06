@@ -3,7 +3,7 @@
 // boxMsg / renderHUD / drawStory ← bind.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, TRAVEL_GOAL, DIFFS, NPCS } from './data.js';
+import { MAPS, HERO_NAMES, DEFAULT_NAME, learnsAt, TRAVEL_LIST, BOSS, CAVE_BOSS, TRUE_BOSS, SOLID, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS, BREW_MUSHROOMS, BREW_GOLD, BREW2_GOAL, MUSHROOM_GOAL, XP_INIT, START_GOLD, START_POTIONS, POTION_CAP, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, EVENT_MSG_MS, STRONG_MSG_MS, WIN_MSG_MS, WRAP_GAP_MS, TITLE_RESET_CONFIRM_MS, MAP_POTION_GOAL, TRAVEL_GOAL, DIFFS, NPCS } from './data.js';
 import { applyStats, deep, pageTotalMs } from './rules.js';
 import { SFX, startBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -160,7 +160,19 @@ function brewNow() {
   // 配方调整两端自动跟随），成功报文就地续报「· 还可再酿 N 瓶」；可酿 0 瓶时零噪音不显示
   // （与 v23.17 面板端「可酿 0 瓶时不显示」同一语义，剩余材料数已自明），纯显示零结算零存档零数值变化。
   const _canBrewMore = Math.min(Math.floor((hero.mushrooms || 0) / BREW_MUSHROOMS), Math.floor((hero.gold || 0) / BREW_GOLD));
-  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币${_canBrewMore > 0 ? ` · 还可再酿 ${_canBrewMore} 瓶` : ''}；F/战斗[3]使用）`, SYS_MSG_MS);
+  // v24.50 体验打磨·信息透明·计数现场（承 v24.16 HUD「🚶 千里之行 N/1000」/ v24.17 喝药战报「💧 渴饮甘露
+  // N/10」/ v24.40 用药战报「药到病除 N/15」/ v24.48 技能战报「🔮 熟能生巧 N/30」同一「计数现场报进度」
+  // 主线；酿造线 v24.10 已把「🍶 妙手回春 N/5」补进酿造面板决策现场角标 / v24.31 补「🧪 灵药满柜 N/8」
+  // 持有线角标——两端口都在锅前面板，唯独酿造成功战报本身始终裸报）：成就「妙手回春」（累计酿造
+  // BREW2_GOAL(5) 瓶高级灵药，计数 hero.brews 由本函数酿造成功唯一产生点写入、snapshotHero 全量快照
+  // 自动持久化、防御式 (hero.brews||0) 旧档零迁移）此前进度只藏在 C 成就页一行 X/5 与锅前面板角标——
+  // 它的计数现场正是每次按 Enter 酿成的这条战报本身（与 v24.17「现场是动作本身」同族）：酿完当场
+  // 查无一眼之数，想确认离妙手回春还差几瓶得走回锅前面板或按 C 翻成就页；现报文末尾补
+  // 「（🍶 妙手回春 N/5）」（分子读 hero.brews——上方 hero.brews = (hero.brews || 0) + 1 先于报文落账，
+  // 进度差分即本次；分母读 data.js BREW2_GOAL 单一数据源，与 C 页/ACH_LIST brew2 的 ok/prog 及
+  // v24.10 面板角标同读一份源，调阈值只改 data.js 一处全端自动跟随），纯显示零结算零存档零数值变化
+  // （hero.brews 计数/applyAchievements 时机/材料扣减/potion2 库存/可酿瓶数报文逐字未动）。
+  bind.boxMsg(`🧪 酿造成功！高级灵药 +1（剩余 ${hero.mushrooms} 蘑菇 / ${hero.gold} 金币${_canBrewMore > 0 ? ` · 还可再酿 ${_canBrewMore} 瓶` : ''}；F/战斗[3]使用）（🍶 妙手回春 ${hero.brews || 0}/${BREW2_GOAL}）`, SYS_MSG_MS);
 }
 
 function doTravel() {
