@@ -140,6 +140,34 @@ function drawTileFx(ty, px, py, x, y) {
         CTX.fillRect(px + lx + 8, py + 19, 2, 2);
       }
     }
+    // v24.58 体验打磨·世界景观·纯显示：潮灯镇水塘「夜泊纸灯」（承 v22.57 水塘灯影同一 water 分支 /
+    // v22.76 放灯童「灯走到哪儿，月亮就跟到哪儿」同一「孩子把灯放到水上」主线——掌灯阿婆守的是塘
+    // 南岸的旧故事，放灯童守的是东岸的新灯，水塘灯影随大灯三档常亮，但「夜里有人放灯」这件事此前
+    // 一像素都没有：现仅潮灯镇（curMap()==='village'）且夜间相位（dayPhase 与 HUD 相位标签/小地图
+    // 倍率/v24.14 战斗相位标/battle.winBattle 提灯夜行计数同读 data.js dayPhase(S.G.time) 一份单一
+    // 数据源）的水塘 6 格水面按坐标哈希 dhw%3===0 泊 2 盏纸灯（(18,6)/(16,7)）：金白光晕 14×9 +
+    // 灯油金灯身三层（6×1/8×3/6×1）+ 金白焰心 2×2 + 水面倒影拖尾 10×1/4×1——全部既有色族零新增
+    // 颜色（rgba(255,233,168,*) 金白族 / rgba(255,210,74,*) 灯油金族），随 ph 轻晃（sin 连续位移、
+    // 灯格存在与否由坐标哈希确定、零时间依赖布尔——纸灯不随时钟生灭）；白天/黄昏/黎明与
+    // dungeon/cave/gallery 零噪音零触发，WATER 仍 SOLID、遇敌/踩踏/传送判定逐字未动。
+    if (S.G && dayPhase((S.G && S.G.time) || 0) === 'night') {
+      const dhw2 = x * 31 + y * 17;
+      if (dhw2 % 3 === 0) {
+        const bob = Math.sin(ph * 1.2 + dhw2) * 1.5;
+        CTX.fillStyle = 'rgba(255,233,168,.22)';
+        CTX.fillRect(px + 9, py + 7 + bob, 14, 9);
+        CTX.fillStyle = 'rgba(255,210,74,.85)';
+        CTX.fillRect(px + 13, py + 9 + bob, 6, 1);
+        CTX.fillRect(px + 12, py + 10 + bob, 8, 3);
+        CTX.fillRect(px + 13, py + 13 + bob, 6, 1);
+        CTX.fillStyle = 'rgba(255,233,168,.95)';
+        CTX.fillRect(px + 15, py + 11 + bob, 2, 2);
+        CTX.fillStyle = 'rgba(255,210,74,.3)';
+        CTX.fillRect(px + 11, py + 22 + bob * 0.6, 10, 1);
+        CTX.fillStyle = 'rgba(255,233,168,.18)';
+        CTX.fillRect(px + 14, py + 24 + bob * 0.6, 4, 1);
+      }
+    }
   }
   if (ty === TY.FOUNTAIN) {
     CTX.fillStyle = 'rgba(223,246,255,' + (0.4 + 0.4 * Math.sin(ph * 2)) + ')';
