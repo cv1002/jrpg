@@ -4,7 +4,7 @@
 // boxMsg / drawBattle / burst* ← bind.js；applyVictoryWorld ← hooks.js
 // ============================================================
 import { S, curMap } from './state.js';
-import { RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, SCHOLAR2_GOAL, ELEM_MULT, RICH2_GOAL, MUSH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
+import { NIGHT_WIN_GOAL, RUSH_BOSSES, SKILL_DATA, WEAPONS, CHARGE_MULT, CHARGE_GOAL, CRIT_GOAL, CAST_GOAL, FLEE_GOAL, POTION_USE_GOAL, LUCKY2_GOAL, HUNT2_GOAL, RUSH_CLEAR_GOAL, DIFF_SCALE, ELITE_GOLEM, EMBER_GOLEM, RUSH_RECOVER, FRAGMENTS, BESTIARY_TARGET, FLEE_SUCCESS, CRIT_RATE, CRIT_MULT, BIG_DMG, SHIELD_MULT, HIT_FB_MS, FX_ENEMY, FX_HERO, POISON_PCT, DOT_MIN, BURN_PCT, DEFEND_MP, TRUE_BONUS_GOLD, SYS_MSG_MS, MILESTONE_MS, NARR_MSG_MS, FINAL_LEAD_MS, STRONG_MSG_MS, WIN_MSG_MS, ACH_MSG_MS, BATTLE_GAP_MS, MEMORY_MSG_MS, WRAP_GAP_MS, HEAVY_MULT, SCHOLAR2_GOAL, ELEM_MULT, RICH2_GOAL, MUSH2_GOAL, LVL10_GOAL, dayPhase, QUESTS } from './data.js';
 import { deep, cmdDmg, elemMult, skillDefUsed, applyStats, canonicalName, isBossFoe, rushReward, rollDrop } from './rules.js';
 import { SFX, startBgm, stopBgm, resumeBgm } from './audio.js';
 import { bind } from './bind.js';
@@ -685,8 +685,13 @@ function winBattle() {
   // 夜间步进 ×1.25 / HUD 🌙 标签 / 小地图相位倍率标同读 S.G.time），无字回廊「被忘掉的地方
   // 没有晨昏」不计数（curMap()!=='gallery'，与 HUD 🌑 恒暗同口径）；防御式 (hero.nightWins||0)
   // 旧档零迁移；随 snapshotHero 全量快照自动持久化；落账当场 applyAchievements（下方既有调用，
-  // 反馈不迟到）；零战报后缀（C 页进度 X/10 承载）。
-  if (curMap() !== 'gallery' && dayPhase(hero.time) === 'night') {
+  // 反馈不迟到）；v23.91 当时口径「零战报后缀（C 页进度 X/10 承载）」，v24.57 起翻转——夜间线
+  // live 窗口此前只有战斗画面右上角相位标（v24.14 战斗场景 chrome），胜利结算行本身裸报，本版按
+  // v24.50「面板是决策现场、战报是结算现场」同族先例收口（见下方胜利战报 v24.57 注释块）。
+  // v24.57 体验打磨·信息透明·计数现场：夜间胜利判定结果存 nightWinNow 常量——胜利战报夜间
+  // 分支直接读本判定结果，一次求值两用（计数 + 报文开关），零二次判定漂移。
+  const nightWinNow = curMap() !== 'gallery' && dayPhase(hero.time) === 'night';
+  if (nightWinNow) {
     hero.nightWins = (hero.nightWins || 0) + 1;
   }
   if (enemy.isElite) {
@@ -765,7 +770,20 @@ function winBattle() {
     // enemy.gold 已先于本行落账，进度差分即本场；同 v24.22 只报中档里程碑先例——小富翁 N/500 与
     // 富甲一方 N/3000 同线另两档由 C 页承载），纯显示零结算零存档零数值变化（金币结算/升级/掉落/
     // 碎片/支线进度战报逐字未动）。
-    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）（⚔️ 驱雾百战 ${hero.totalWins || 0}/${HUNT2_GOAL}）（💰 金玉满堂 ${Math.floor(hero.gold || 0)}/${RICH2_GOAL}）`, WIN_MSG_MS);
+    // v24.57 体验打磨·信息透明·计数现场：🏆 夜间胜利战报补「🌙 提灯夜行 N/10」进度后缀（承
+    // v24.27 胜利「💰 金玉满堂 N/1500」/ v24.22 胜利「⚔️ 驱雾百战 N/100」同一「计数现场报进度」
+    // 主线，翻转 v23.91「零战报后缀」旧口径）：相位线（提灯夜行=夜间战胜 NIGHT_WIN_GOAL(10) 场，
+    // 计数 hero.nightWins 由上方 winBattle 唯一结算点落账、防御式旧档零迁移）的 live 窗口此前只有
+    // 战斗画面右上角相位标（v24.14，战斗场景内 chrome）——胜利结算行（本条 DOM 战报）本身裸报：
+    // 夜里打赢的当场，结算行已带余额/驱雾百战/金玉满堂三口径，唯独「这仗算不算夜胜、离提灯夜行还
+    // 差几场」要抬头看画布角落（与 v24.50「面板是决策现场、战报是结算现场」同族——v24.14 相位标
+    // 是战斗中的决策现场，本条是打赢的结算现场）；现夜间分支末尾补「（🌙 提灯夜行 N/10）」（分子读
+    // 上方已落账 hero.nightWins——nightWins 计数唯一产生点先于报文落账、进度差分即本场；分母读
+    // data.js NIGHT_WIN_GOAL 单一数据源，与 C 页/ACH_LIST nightwins 的 ok/prog 及 v24.14 战斗画面
+    // 相位标同读一份源，调阈值只改 data.js 一处全端自动跟随；仅夜间胜仗报——白天胜仗与无字回廊
+    // （nightWinNow=false 且不计数）零噪音零后缀），纯显示零结算零存档零数值变化（nightWins 计数/
+    // applyAchievements 时机/升级分支/掉落/碎片/支线进度战报逐字未动）。
+    bind.boxMsg(`🏆 胜利！获得 ${enemy.gold} 金币、${enemy.xp} 经验 · 距 Lv.${hero.level + 1} 升级还需 ${hero.xpNext - hero.xp} 经验（剩余 ${hero.gold} 金）（⚔️ 驱雾百战 ${hero.totalWins || 0}/${HUNT2_GOAL}）（💰 金玉满堂 ${Math.floor(hero.gold || 0)}/${RICH2_GOAL}）${nightWinNow ? `（🌙 提灯夜行 ${hero.nightWins || 0}/${NIGHT_WIN_GOAL}）` : ''}`, WIN_MSG_MS);
   }
   // v23.23 首杀记忆图鉴收录反馈（体验打磨·信息透明·纯显示——承 v19.41 已遭遇揭示 / v21.37 已遭遇
   // 计数同一「击败 = 被记起」主线）：击败即写入记忆图鉴（上方 hero.bestiary 累计），但胜利报文（升级/
