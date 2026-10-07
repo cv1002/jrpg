@@ -10,7 +10,7 @@
 // 加/漏任何件套立即红灯（件套口径此后不再只靠「树串尾」局部 pin）。
 // 本冒烟守护：版本锚点、data.js 源级落位（v24.15 注释 / GAME_VERSION v24.15 与旧 v24.14 字面量零
 // 残留 / v24.14 历史注释保留）、运行期 GAME_VERSION 恒等、README/package.json/CHANGELOG 同步
-// （树串 token 序列恒等 239 节点 + 件套口径 239 + v24.15 守护描述 + 入库（282 份）+ package 串尾
+// （树串 token 序列恒等 239 节点 + 件套口径 239 + v24.15 守护描述 + 入库（283 份）+ package 串尾
 // 239 份 + CHANGELOG 顶 pin）、哨兵链（前望 243 且 README 尚无 240 口径）、旧代 v24.14 pin
 // 全库零残留扫描、七件漏录织入的精确邻接（v2202+v2203+v2204 · v2204+v2205..v2209+v2210+v2211 ·
 // v2238+v2239+v2240）。
@@ -43,7 +43,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.14', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.14 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.58';") && !dSrc.includes("const GAME_VERSION = 'v24.14';"));
+  dSrc.includes("const GAME_VERSION = 'v24.59';") && !dSrc.includes("const GAME_VERSION = 'v24.14';"));
 ok('data.js 含 v24.15 注释（README tests 树串漏录补记说明）',
   dSrc.includes('// v24.15 文档整理·README tests 树串漏录补记'));
 ok('data.js 仍保留 v24.14 历史注释（战斗画面相位标签说明，累积注释块）',
@@ -52,8 +52,8 @@ ok('data.js 仍保留 v24.14 历史注释（战斗画面相位标签说明，累
 // —— package.json 实跑链（唯一权威序）——
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 247 份（smoke.mjs + 250 专项）', chain.length === 281 && chainAll.length === 282, String(chain.length));
-ok('package.json 链尾为 smoke_v2439_xpcurve4（第 273 份）', chain[chain.length - 1] === 'smoke_v2458_pondlamp', chain[chain.length - 1]);
+ok('package.json 实跑链共 247 份（smoke.mjs + 250 专项）', chain.length === 282 && chainAll.length === 283, String(chain.length));
+ok('package.json 链尾为 smoke_v2439_xpcurve4（第 273 份）', chain[chain.length - 1] === 'smoke_v2459_xpcurve9', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2415_treepin.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2415_treepin.mjs'));
 
@@ -65,7 +65,7 @@ ok('树串 token 序列与 package 实跑链恒等（241 节点·顺序一致·�
   JSON.stringify(treeTok) === JSON.stringify(chainAll),
   `tree=${treeTok.length} chain=${chainAll.length}`);
 ok('树串 token 数 = 248（漏录 7 件已织入：230→237→+smoke.mjs=238? 实为 248 节点含 smoke.mjs）',
-  treeTok.length === 282, String(treeTok.length));
+  treeTok.length === 283, String(treeTok.length));
 
 // —— 七件漏录织入的精确邻接（防再漏）——
 ok('树串织入 v2203（v2202_fragwin + v2203_fragdead + v2204_brew2 邻接）',
@@ -82,17 +82,17 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 243（239 + smoke_v2416_steps）', files.length === 282, String(files.length));
+ok('tests 目录件套 = 243（239 + smoke_v2416_steps）', files.length === 283, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— README 件套口径 / 守护描述 / 哨兵 ——
-ok('README tests 段口径「冒烟二百八十二件套（二百八十一件套清除）」',
-  readme.includes('冒烟二百八十二件套（二百八十一件套清除）'));
+ok('README tests 段口径「冒烟二百八十三件套（二百八十二件套清除）」',
+  readme.includes('冒烟二百八十三件套（二百八十二件套清除）'));
 ok('README 尚无 252 件套口径（哨兵前望 252 语义：下一版才写 243）',
-  !readme.includes('二百八十三件套') && !readme.includes('冒烟二百八十三件套'));
-ok('README 含 v24.15 守护描述（树串漏录补记·全量恒等）与 smoke_v2415_treepin 入库（282 份）',
-  readme.includes('v24.15 起含 ') && readme.includes('树串全量恒等') && readme.includes('smoke_v2415_treepin 入库（282 份）'));
+  !readme.includes('二百八十四件套') && !readme.includes('冒烟二百八十四件套'));
+ok('README 含 v24.15 守护描述（树串漏录补记·全量恒等）与 smoke_v2415_treepin 入库（283 份）',
+  readme.includes('v24.15 起含 ') && readme.includes('树串全量恒等') && readme.includes('smoke_v2415_treepin 入库（283 份）'));
 ok('README 仍保留 v24.14 守护描述（历史保留）', readme.includes('v24.14 起含 战斗画面相位标签守护'));
 
 // —— 哨兵链（旧代 pin 全库零残留：无任何测试再断言 v24.14 GAME_VERSION 字面量 / 顶 pin）——
@@ -106,7 +106,7 @@ for (const f of fs.readdirSync(testsDir)) {
 ok('全库测试零残留 v24.14 GAME_VERSION/顶 pin（哨兵链）', leftovers.length === 0, leftovers.join(','));
 
 // —— CHANGELOG 顶 pin ——
-ok('CHANGELOG 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.58'));
+ok('CHANGELOG 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.59'));
 ok('CHANGELOG v24.15 条目含「树串」与「恒等」', changelog.includes('树串') && changelog.includes('恒等'));
 ok('CHANGELOG 仍保留 v24.14 条目（历史保留）', changelog.includes('## v24.14'));
 
