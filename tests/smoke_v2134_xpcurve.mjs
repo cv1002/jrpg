@@ -117,7 +117,7 @@ ok('README 升级经验行改为链式口径（含「链式」与「非闭式幂
 ok('README 升级经验行含链式全表关键值（Lv1→2 20 / Lv7→8 163 / Lv11→12 **662**）',
   readme.includes('Lv1→2 20') && readme.includes('Lv7→8 163') && readme.includes('Lv11→12 **662**'));
 ok('README 旧行「Lv11→12 需 667」错误示例已清零（链式行不再以 667 作值）', !readme.includes('需 667'));
-ok('README 升级节奏参考行仍与链式一致（Lv11→12 约 2.0 场 = 662/324.59，v24.67 第十七轮口径）', readme.includes('Lv11→12 约 2.0 场'));
+ok('README 升级节奏参考行仍与链式一致（Lv11→12 约 2.0 场 = 662/338.88，v24.68 第十八轮口径）', readme.includes('Lv11→12 约 2.0 场'));
 ok('README tests 树收录 smoke_v2134_xpcurve', readme.includes('smoke_v2134_xpcurve'));
 ok('README 件套口径存在（v21.35 起按 v21.7 惯例去硬化：件数由最新版冒烟守护，本版只守「冒烟/件套」存在性）',
   readme.includes('冒烟') && readme.includes('件套'));
