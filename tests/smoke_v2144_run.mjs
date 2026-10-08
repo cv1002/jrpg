@@ -192,7 +192,7 @@ ok('H 页操作说明页行数仍为 14（口径行内更新，不增行）', HE
 // —— README 同步 ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 ok('README tests 树收录 smoke_v2144_run', readme.includes('smoke_v2144_run'));
-ok('README 件套口径为存在性断言（v21.45 起件数由本版冒烟守护：二百八十八件套（二百八十七件套清除））',
+ok('README 件套口径为存在性断言（v21.45 起件数由本版冒烟守护：二百八十九件套（二百八十八件套清除））',
   readme.includes('冒烟') && readme.includes('件套') &&
   !readme.includes('二百七十七件套（二百七十七件套清除）'));
 ok('README 含 v21.44 守护描述（按住 Shift 奔跑守护）', readme.includes('按住 Shift 奔跑守护'));
