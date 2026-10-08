@@ -17,7 +17,7 @@
 // ok/prog/d 逐值·无 r 字段）、battle.js 源级（两条报文后缀逐字 + 计数/拦截/applyAchievements 零回归 +
 // doItem 端口零串扰）、运行期真实 playerAction('skill', ...) 路径（治愈分支 1/30 与 2/30 逐字 · 伤害分支
 // 形态断言 · 29→30 当场解锁 · 缺字段防御式 0→1 · MP 不足/尚未领悟拦截零计数）、README/package.json/
-// CHANGELOG 同步（件套口径 272 + v24.48 守护描述 + smoke_v2448_castprog 入库（290 份）+ package 串尾 +
+// CHANGELOG 同步（件套口径 272 + v24.48 守护描述 + smoke_v2448_castprog 入库（291 份）+ package 串尾 +
 // CHANGELOG 顶 pin）、哨兵链（前望 275 且 README 尚无 275 口径）、tests 目录与实跑链一一对应（272 份）、
 // 旧代 v24.47 pin 全库零残留扫描（豁免上一版套件否定式）。
 import fs from 'node:fs';
@@ -104,7 +104,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.47', !!_gv && (_gv[0] > 24 || (_gv
 ok('data.js 含 v24.48 注释（战斗技能战报「🔮 熟能生巧 N/30」进度后缀）',
   dSrc.includes('v24.48 体验打磨·信息透明·计数现场：🔮 战斗技能战报补'));
 ok('data.js GAME_VERSION 字面量已为 v24.48（旧 v24.47 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.66';") && !dSrc.includes("const GAME_VERSION = 'v24.47';"));
+  dSrc.includes("const GAME_VERSION = 'v24.67';") && !dSrc.includes("const GAME_VERSION = 'v24.47';"));
 ok('data.js 仍保留 v24.47 历史注释（后期经验曲线续平滑第七轮·本版保留）',
   dSrc.includes('v24.47 数值平衡·后期经验曲线续平滑'));
 ok('data.js CAST_GOAL 处含 v24.48 后缀分母单一数据源注释',
@@ -231,28 +231,28 @@ function runBattleSkill(skillName, hero) {
 }
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百九十件套（二百八十九件套清除）',
-  readme.includes('冒烟二百九十件套（二百八十九件套清除）'));
-ok('README tests 含 v24.48 守护描述与 smoke_v2448_castprog 入库（290 份）',
-  readme.includes('v24.48 起含 「战斗技能战报「🔮 熟能生巧 N/30」进度后缀」守护') && readme.includes('smoke_v2448_castprog 入库（290 份）'));
+ok('README 件套口径已为二百九十一件套（二百九十件套清除）',
+  readme.includes('冒烟二百九十一件套（二百九十件套清除）'));
+ok('README tests 含 v24.48 守护描述与 smoke_v2448_castprog 入库（291 份）',
+  readme.includes('v24.48 起含 「战斗技能战报「🔮 熟能生巧 N/30」进度后缀」守护') && readme.includes('smoke_v2448_castprog 入库（291 份）'));
 ok('README 战斗 [2] 技能行含 v24.48 战报进度后缀口径（**v24.48 起战斗技能战报带「🔮 熟能生巧 N/30」进度后缀**）',
   readme.includes('**v24.48 起战斗技能战报带「🔮 熟能生巧 N/30」进度后缀**'));
 ok('README 成就 bullet 含 v24.48 战斗技能战报进度后缀口径',
   readme.includes('v24.48 起战斗技能战报带「🔮 熟能生巧 N/30」进度后缀'));
 ok('README 尚无 275 件套口径（哨兵前望 275 语义：下一版才写 275）',
-  !readme.includes('二百九十一件套') && !readme.includes('冒烟二百九十一件套'));
+  !readme.includes('二百九十二件套') && !readme.includes('冒烟二百九十二件套'));
 ok('README 仍保留 v24.47 守护描述与 v24.40 守护描述（历史保留）',
   readme.includes('v24.47 起含 「后期经验曲线续平滑（第七轮）」守护') && readme.includes('v24.40 起含 「战斗用药战报「💊 药到病除 N/15」进度后缀」守护'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 273 份（smoke.mjs + 272 专项）', chain.length === 289 && chainAll.length === 290, String(chain.length));
-ok('package.json 链尾为 smoke_v2448_castprog（第 273 份）', chain[chain.length - 1] === 'smoke_v2466_xpcurve16', chain[chain.length - 1]);
+ok('package.json 实跑链共 273 份（smoke.mjs + 272 专项）', chain.length === 290 && chainAll.length === 291, String(chain.length));
+ok('package.json 链尾为 smoke_v2448_castprog（第 273 份）', chain[chain.length - 1] === 'smoke_v2467_xpcurve17', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2448_castprog.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs'));
 ok('package.json 链锚逐字（…smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs"）',
-  pkgRaw.includes('smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.48（startsWith）', changelog.startsWith('## v24.66'));
+  pkgRaw.includes('smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.48（startsWith）', changelog.startsWith('## v24.67'));
 ok('CHANGELOG v24.48 条目含「熟能生巧」与「进度后缀」与「五指令」',
   changelog.includes('熟能生巧') && changelog.includes('进度后缀') && changelog.includes('五指令'));
 ok('CHANGELOG 仍保留 v24.47 条目（历史保留）', changelog.includes('## v24.47'));
@@ -262,7 +262,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 272（271 + smoke_v2448_castprog）', files.length === 290, String(files.length));
+ok('tests 目录件套 = 272（271 + smoke_v2448_castprog）', files.length === 291, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
