@@ -374,5 +374,9 @@ export function drawNpcMark(px,py,mark){
   // 晶石（v22.94 守晶人专属）：NPC 贴图缺失时程序化绘制的头侧蓝晶两粒——与既有 hat/lamp/pick/fan 等
   // 占位标记同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它 mark 惯例）
   else if(mark==='gem'){ c.fillStyle='#9adcff'; c.fillRect(23,8,6,8); c.fillStyle='#cfeaff'; c.fillRect(25,9,2,3); c.fillStyle='#5a8fc0'; c.fillRect(30,14,4,5); }
+  // 铃（v24.71 听钟人专属）：NPC 贴图缺失时程序化绘制的头侧小铃——与既有 hat/lamp/pick/fan/qin/
+  // hammer/kettle/gem 等占位标记同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它
+  // mark 惯例）
+  else if(mark==='bell'){ c.fillStyle='#c0c8d4'; c.fillRect(24,7,7,8); c.fillStyle='#8a5a2b'; c.fillRect(26,4,3,3); c.fillStyle='#e8d3a8'; c.fillRect(26,15,2,2); }
   c.restore();
 }

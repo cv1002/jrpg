@@ -1,3 +1,18 @@
+## v24.71 新内容·潮灯镇新 NPC「听钟人」（纯风味）：村井正北的听钟人
+
+- 【新内容】村井（v22.47「井底那口钟还在替大家记着」/星蓝低鸣两档）终于有人驻守——潮灯镇村井正北
+  (14,5) 立起「听钟人」：钟声替忘了名字的人记着、名字都回了灯下钟就不必再响了，与说书人《灯下潮声》
+  /掌灯阿婆「雾是从井底爬上来的」/灯长 done「可你听——井还在低鸣。」/trueBoss「井也不鸣了。」同脉；
+  linesByStage 三档（默认/灯芯归来 bossDefeated/回廊开启 galleryOpen）+ trueBoss after 两页彩蛋，
+  潮灯镇至此有第十四位可对话角色。
+- 【零回归面】只改 js/data.js（NPC_SPOTS '14,5'→bellman 键 + NPCS.bellman（mark:'bell'，linesByStage
+  三档 + after 两页）+ village.extras (14,5) NPC + GAME_VERSION v24.70→v24.71 + 版本注释）与
+  js/view/sprites.js（drawNpcMark 补 mark==='bell' 小铃分支，纯显示零结算）；
+  菜单/对话/任务/成就/存档/数值逐字未动，voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随。
+- 【验证】node --check + npm run check 25 模块 + npm test 二百九十五件套端到端全绿；
+  GAME_VERSION v24.70→v24.71，全库 294 件套 pin 级联（哨兵前望 296）+ smoke_v2471_bellman
+  入库（295 份）+ README 守护描述/件套口径/树串尾同步 + CHANGELOG 条目。
+
 ## v24.70 数值平衡·后期经验曲线续平滑（第二十轮）：四强怪每级经验 +1（xp[1] 23→24）
 
 - 【数值】承 v19.58 第一轮/v24.13 第二轮/v24.29 第三轮/v24.39 第四轮/v24.41 第五轮/v24.43
