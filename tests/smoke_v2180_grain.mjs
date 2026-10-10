@@ -141,10 +141,10 @@ ok('ACH_LIST 含 grain「护粮安民」且 id 唯一',
 ok('ACH_LIST 由 28 → 29 项（v21.84 起精确总数由新版冒烟守护，本件存活性口径 >= 29）', ACH_LIST.length >= 29, String(ACH_LIST.length));
 ok('grain 成就判定读 quests.side_grain（未做 false / 已做 true）',
   achGrain.ok({ quests: {} }) === false && achGrain.ok({ quests: { side_grain: 'done' } }) === true);
-// 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（7 → 8 → 9 → 10，v23.42 side_wolf 入列后随新现实更新）
+// 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15，v23.42 side_wolf · v24.72 side_bell 入列后随新现实更新）
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心支线分母自动跟随为 11（v23.57 side_snake 入列，无需改 achievement 本体）',
-  achAll && achAll.prog({ quests: {} }) === '0/14' && achAll.d.includes('14 个支线'), achAll && achAll.prog({ quests: {} }));
+ok('灯火同心支线分母自动跟随为 15（v23.57 side_snake · v24.72 side_bell 入列，无需改 achievement 本体）',
+  achAll && achAll.prog({ quests: {} }) === '0/15' && achAll.d.includes('15 个支线'), achAll && achAll.prog({ quests: {} }));
 ok('allquests 对只做 side_grain 的存档不误判完成',
   achAll.ok({ quests: { side_grain: 'done' } }) === false);
 
@@ -207,7 +207,7 @@ ok("sprites.js NPC_SHEET 已映射 grainman→mwCartman（杂货商贩造型，�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2180_grain', readme.includes('smoke_v2180_grain'));
-ok('README 件套口径为二百九十六件套（二百九十五件套清除）', readme.includes('二百九十六件套（二百九十五件套清除）'));
+ok('README 件套口径为二百九十七件套（二百九十六件套清除）', readme.includes('二百九十七件套（二百九十六件套清除）'));
 ok('README 含 v21.80 守护描述（粮铺掌柜新 NPC 与讨伐支线「护粮的委托」守护）',
   readme.includes('v21.80 起含潮灯镇粮铺掌柜新 NPC 与讨伐支线「护粮的委托」守护'));
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
@@ -215,17 +215,17 @@ ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图
 ok('README 潮灯镇条目含粮铺掌柜/护粮的委托', readme.includes('粮铺掌柜') && readme.includes('护粮的委托'));
 ok('package.json 已收录 smoke_v2180_grain（npm test 串跑第 76 份）', pkg.includes('smoke_v2180_grain.mjs'));
 const s2179 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2179_titlerecap.mjs'), 'utf8');
-ok('smoke_v2179 的 README 件套 pin 已随新现实更新为二百九十六件套（二百九十五件套清除）',
-  s2179.includes("ok('README 件套口径已更新为二百九十六件套（二百九十五件套清除）'"));
+ok('smoke_v2179 的 README 件套 pin 已随新现实更新为二百九十七件套（二百九十六件套清除）',
+  s2179.includes("ok('README 件套口径已更新为二百九十七件套（二百九十六件套清除）'"));
 const s2178 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2178_codexseen.mjs'), 'utf8');
-ok('smoke_v2178 的 README 件套 pin 已随新现实更新为二百九十六件套（二百九十五件套清除）',
-  s2178.includes("ok('README 件套口径为二百九十六件套（二百九十五件套清除）'"));
+ok('smoke_v2178 的 README 件套 pin 已随新现实更新为二百九十七件套（二百九十六件套清除）',
+  s2178.includes("ok('README 件套口径为二百九十七件套（二百九十六件套清除）'"));
 const s2177 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2177_elites.mjs'), 'utf8');
-ok('smoke_v2177 的 README 件套 pin 已随新现实更新为二百九十六件套（二百九十五件套清除）',
-  s2177.includes("ok('README 件套口径为二百九十六件套（二百九十五件套清除）'"));
+ok('smoke_v2177 的 README 件套 pin 已随新现实更新为二百九十七件套（二百九十六件套清除）',
+  s2177.includes("ok('README 件套口径为二百九十七件套（二百九十六件套清除）'"));
 const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs'), 'utf8');
-ok('smoke_v2176 的 README 件套 pin 已随新现实更新为二百九十六件套（二百九十五件套清除）',
-  s2176.includes("ok('README 件套口径为二百九十六件套（二百九十五件套清除）'"));
+ok('smoke_v2176 的 README 件套 pin 已随新现实更新为二百九十七件套（二百九十六件套清除）',
+  s2176.includes("ok('README 件套口径为二百九十七件套（二百九十六件套清除）'"));
 ok('smoke_v2177 的 ACH_LIST 精确计数断言已去硬化（===28 零残留，>=28 存活性口径落位）',
   s2177.includes('ACH_LIST.length >= 28') && !s2177.includes('ACH_LIST.length === 28'));
 ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，31 项双处落位）',
@@ -239,9 +239,9 @@ ok('smoke_v2168 的 README 成就 pin 已随新现实更新（28 项 pin 零残�
 ok('smoke_v2159 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，31 项双处落位）',
   fs.readFileSync(path.join(ROOT, 'tests/smoke_v2159_skillach.mjs'), 'utf8')
     .includes("readme.includes('成就一览（全部 76 项进度'"));
-ok('灯火同心 0/10 pin 已悉数随新现实更新为 0/11（v2152/v2159/v2168/v2173/v2176/v2177 六件源级复查）',
+ok('灯火同心 0/10 pin 已悉数随新现实更新为 0/15（v2152/v2159/v2168/v2173/v2176/v2177 六件源级复查）',
   ['smoke_v2152_bonequest.mjs', 'smoke_v2159_skillach.mjs', 'smoke_v2168_hardtrue.mjs', 'smoke_v2173_aegis.mjs', 'smoke_v2176_allchests.mjs', 'smoke_v2177_elites.mjs']
-    .every((f) => fs.readFileSync(path.join(ROOT, 'tests/' + f), 'utf8').includes("=== '0/14'")));
+    .every((f) => fs.readFileSync(path.join(ROOT, 'tests/' + f), 'utf8').includes("=== '0/15'")));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);

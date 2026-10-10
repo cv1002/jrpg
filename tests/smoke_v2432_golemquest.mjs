@@ -12,7 +12,7 @@
 // 不再单独展示 after，零内容丢失）；奖励 120 金 + 1 高级灵药（与 side_name 同档：精英级随机遭遇高于
 // ember 100 档）。
 // 本冒烟守护：版本锚点、data.js 源级落位（v24.32 注释 / GAME_VERSION v24.32 与旧 v24.31 字面量
-// 零残留 / v24.31-24.19 历史注释保留 / GOLEM_GOAL 常量与 export）、QUESTS 契约（14 side + 4 main、
+// 零残留 / v24.31-24.19 历史注释保留 / GOLEM_GOAL 常量与 export）、QUESTS 契约（15 side + 4 main、
 // side_golem 字段逐值、与十组 *_GOAL 同源、ACH_LIST allquests 同源互证）、quests.js 运行期状态机
 // （offer→active→turnin→done 全链路 + resolveNpcTalk 接取/交付结算 120 金+1 高级灵药 + npcQuestMark/
 // npcQuestPages 四态 + sideQuestDone 0/14·3/14·14/14）、NPCS.smith 升格落位（mark/坐标/NPC_SPOTS
@@ -51,7 +51,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.31', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.32（旧 v24.31 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.73';") && !dSrc.includes("const GAME_VERSION = 'v24.31';"));
+  dSrc.includes("const GAME_VERSION = 'v24.74';") && !dSrc.includes("const GAME_VERSION = 'v24.31';"));
 ok('data.js 含 v24.32 注释（新支线「石心的试炼」说明）',
   dSrc.includes('// v24.32 新内容·新支线（第十三条）'));
 ok('data.js 仍保留 v24.31 历史注释（酿造角标进度说明，累积注释块）',
@@ -73,11 +73,11 @@ ok('十组既有支线目标逐值零回归（蘑菇 3/雾灵 3/石魔像 3/哥�
 ok('ELITE_GOLEM 单一数据源逐值（石心魔像 · Lv≥3 · 7%）',
   ELITE_GOLEM.name === '石心魔像' && ELITE_GATE_LV === 3 && ELITE_CHANCE === 0.07);
 
-// —— QUESTS 契约：14 side + 4 main（数量派生，绝无裸字面量）——
+// —— QUESTS 契约：15 side + 4 main（数量派生，绝无裸字面量）——
 const sideDefs = Object.values(QUESTS).filter((q) => q.kind === 'side');
 const mainDefs = Object.values(QUESTS).filter((q) => q.kind === 'main');
-ok('QUESTS 共 18 条（14 side + 4 main，派生计数）',
-  sideDefs.length === 14 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 18,
+ok('QUESTS 共 19 条（15 side + 4 main，派生计数）',
+  sideDefs.length === 15 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 19,
   `${sideDefs.length}/${mainDefs.length}`);
 ok('side_golem 存在且为第十三条（kind side · store · npc/giver smith · 无 unlockOn）',
   !!QUESTS.side_golem && QUESTS.side_golem.kind === 'side' && QUESTS.side_golem.store === true &&
@@ -98,18 +98,18 @@ ok('side_golem reward 逐值：120 金 + 1 高级灵药（与 side_name 同档·
 
 // —— ACH_LIST allquests 同源互证（与 sideQuestDone 输出一致）——
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('ACH_LIST allquests 名称「灯火同心」且描述派生 14（「14 个支线任务」）',
-  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('14 个支线任务'), achAll && achAll.d);
-ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/14 false · 12/14 false · 14/14 true · prog 14/14）',
+ok('ACH_LIST allquests 名称「灯火同心」且描述派生 15（「15 个支线任务」）',
+  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('15 个支线任务'), achAll && achAll.d);
+ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/15 false · 12/15 false · 15/15 true · prog 15/15）',
   !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 13).map(q => [q.id, 'done'])) }) === false &&
   achAll.ok({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === true &&
-  achAll.prog({ quests: {} }) === '0/14' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '14/14');
+  achAll.prog({ quests: {} }) === '0/15' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '15/15');
 
 // —— quests.js 运行期：sideQuestDone ——
-ok('运行期：sideQuestDone 0/14 · 3/14 · 14/14 · 主线不入列',
-  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 14 &&
+ok('运行期：sideQuestDone 0/15 · 3/15 · 15/15 · 主线不入列',
+  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 15 &&
   sideQuestDone({ quests: { side_mushroom: 'done', side_cart: 'done', side_pond: 'done' } }).done === 3 &&
-  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 14 &&
+  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 15 &&
   sideQuestDone({ quests: { main_demon: 'done' } }).done === 0);
 
 // —— 运行期状态机：offer → active → turnin → done（quests 纯函数，零 DOM）——
@@ -176,31 +176,31 @@ ok('data.js village.extras 含锻灯师 (7,11) 与 NPC_SPOTS 键「7,11」（零
   dSrc.includes('{ x: 7, y: 11, ty: \'NPC\' }') && dSrc.includes("'7,11'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百九十六件套（二百九十五件套清除）',
-  readme.includes('冒烟二百九十六件套（二百九十五件套清除）'));
-ok('README tests 含 v24.32 守护描述与 smoke_v2432_golemquest 入库（296 份）',
+ok('README 件套口径已为二百九十七件套（二百九十六件套清除）',
+  readme.includes('冒烟二百九十七件套（二百九十六件套清除）'));
+ok('README tests 含 v24.32 守护描述与 smoke_v2432_golemquest 入库（297 份）',
   readme.includes('v24.32 起含 新支线「石心的试炼」守护') &&
-  readme.includes('smoke_v2432_golemquest 入库（296 份）'));
+  readme.includes('smoke_v2432_golemquest 入库（297 份）'));
 ok('README 仍有 v24.31 守护描述（历史保留）', readme.includes('v24.31 起含 酿造界面「🧪 灵药满柜 N/8」进度角标守护'));
 ok('README 已有二百五十六件套口径且尚无 275（哨兵前望 275 语义：下一版才写 275）',
-  readme.includes('冒烟二百九十六件套（二百九十五件套清除）') && !readme.includes('二百九十七件套'));
-ok('README tests 树串尾已延伸（…+ smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6 + smoke_v2444_goldcurve8 + smoke_v2445_goldcurve9 + smoke_v2446_mushprog + smoke_v2447_xpcurve7 + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑））',
-  readme.includes('smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6 + smoke_v2444_goldcurve8 + smoke_v2445_goldcurve9 + smoke_v2446_mushprog + smoke_v2447_xpcurve7 + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑）'));
+  readme.includes('冒烟二百九十七件套（二百九十六件套清除）') && !readme.includes('二百九十八件套'));
+ok('README tests 树串尾已延伸（…+ smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6 + smoke_v2444_goldcurve8 + smoke_v2445_goldcurve9 + smoke_v2446_mushprog + smoke_v2447_xpcurve7 + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑））',
+  readme.includes('smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6 + smoke_v2444_goldcurve8 + smoke_v2445_goldcurve9 + smoke_v2446_mushprog + smoke_v2447_xpcurve7 + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十三条 · 石心的试炼 · GOLEM_GOAL）',
-  readme.includes('十四条支线目标/奖励全部由') && readme.includes('石心的试炼（锻灯师 · 1 尊石心魔像 `GOLEM_GOAL`）120 金 + 1 高级灵药') &&
+  readme.includes('十五条支线目标/奖励全部由') && readme.includes('石心的试炼（锻灯师 · 1 尊石心魔像 `GOLEM_GOAL`）120 金 + 1 高级灵药') &&
   readme.includes('`GOLEM_GOAL`') && readme.includes('v24.32 补第十三条'));
 ok('README 地图速览锻灯师行随新现实（v24.32 起讨伐支线委托人）',
   readme.includes('**v24.32 起讨伐支线「石心的试炼」委托人**'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 256 份（smoke.mjs + 260 专项）', chain.length === 295 && chainAll.length === 296, String(chain.length));
+ok('package.json 实跑链共 256 份（smoke.mjs + 260 专项）', chain.length === 296 && chainAll.length === 297, String(chain.length));
 ok('package.json 链尾为 smoke_v2439_xpcurve4（第 273 份）', chain[chain.length - 1] === 'smoke_v2473_xpcurve21', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2432_golemquest.mjs（node tests/ 前缀形态）',
-  pkgRaw.includes('node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
+  pkgRaw.includes('node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
 ok('package.json 链锚逐字（smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs"）',
-  pkgRaw.includes('smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.32（startsWith）', changelog.startsWith('## v24.73'));
+  pkgRaw.includes('smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.32（startsWith）', changelog.startsWith('## v24.74'));
 ok('CHANGELOG v24.32 条目含「石心的试炼」与「GOLEM_GOAL」与「锻灯师」',
   changelog.includes('石心的试炼') && changelog.includes('GOLEM_GOAL') && changelog.includes('锻灯师'));
 ok('CHANGELOG 仍保留 v24.31 条目（历史保留）', changelog.includes('## v24.31'));
@@ -210,7 +210,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 256（255 + smoke_v2432_golemquest）', files.length === 296, String(files.length));
+ok('tests 目录件套 = 256（255 + smoke_v2432_golemquest）', files.length === 297, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 

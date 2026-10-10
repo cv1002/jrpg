@@ -2245,7 +2245,20 @@
 // 本次；分母读下方 SELL_GOAL 单一数据源，与 C 页/ACH_LIST sell 的 ok/prog 及 v24.09 面板角标同读一份
 // 源，调阈值只改一处全端自动跟随），纯显示零结算零存档零数值变化（hero.sold 计数/applyAchievements
 // 时机/售价/剩余株数/余额报文逐字未动）。
-const GAME_VERSION = 'v24.73';
+// v24.72 新内容·新支线（第十五条）「子夜钟声」：v24.71 新 NPC「听钟人」升格为支线委托人（承 v23.32
+// 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师/v24.34 守碑人「风味 NPC
+// 升格为支线委托人」先例）——村井（v22.47「井底那口钟还在替大家记着」）的听众只听过白昼的钟声，
+// 玩家夜里在灯下打赢的每一场战争都该有名字：夜里战胜 BELL_GOAL(3) 场（计数 hero.nightWins 与
+// ACH_LIST nightwins「提灯夜行」/v24.57 胜利战报同读一份源，零新计数零新状态零新存档；无字回廊
+// 「被忘掉的地方没有晨昏」不计数，与 nightWinNow 同判）；npcQuestPages 有任务后优先走任务页
+// （talk.offer/active/turnin/done 四态），听钟人原有 linesByStage 三档叙事与 trueBoss after 两页
+// 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
+// （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
+// 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
+// v24.74 合流版：v24.72 新支线（子夜钟声）+ v24.73 数值平衡（四强怪每级经验 xp[1] 24→25）同一版本
+// 落地（两分支并行产物合流，0 内容丢失），件套 296→297（smoke_v2472_bellquest + smoke_v2473_xpcurve21
+// 双件套入库，链尾 smoke_v2473_xpcurve21）。
+const GAME_VERSION = 'v24.74';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -2988,6 +3001,15 @@ const SLIME_GOAL = 3;       // 掌灯阿婆支线需讨伐的史莱姆只数
 // 成就版图，精英线至此由本版补上支线挂钩。
 const GOLEM_GOAL = 1;       // 锻灯师支线需讨伐的石心魔像只数
 
+// 夜里讨伐目标（单一数据源）：听钟人支线「子夜钟声」需夜间战胜的场数（计数 hero.nightWins——
+// battle.winBattle 全游唯一胜利结算点写入（nightWinNow 同处判定：无字回廊不计数、与 dayPhase 同读
+// 一份源）、防御式 (g.nightWins||0) 旧档零迁移，与 ACH_LIST nightwins「提灯夜行」的 ok/prog/d 及
+// v24.57 胜利战报/战斗画面「🌙 夜晚 · 提灯夜行 N/10」同读一份源）——与 MIST_GOAL / SLIME_GOAL /
+// GOLEM_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/
+// 目标文案（obj）/接取对话（offer）全同步；「夜里」即 dayPhase()==='night' 且 curMap()!=='gallery'
+// （「被忘掉的地方没有晨昏」，与 nightWinNow/nightWins 同一判据零第二套口径）。
+const BELL_GOAL = 3;       // 听钟人支线需夜间战胜的场数
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -3612,6 +3634,11 @@ const NPCS={
   // mark:'bell' 由 view/sprites.js drawNpcMark 程序化绘制（新增小铃分支，纯显示零结算），造型复用镇民
   // 短衫（NPC_SHEET 默认 mwVillager 零视觉新代码）；无任务、无顶标、零结算零存档（voiceList/灯下之声
   // N 由 Object.keys(NPCS) 派生自动跟随）。
+  // v24.72 升格为支线委托人（QUESTS.side_bell「子夜钟声」·夜里战胜 BELL_GOAL(3) 场，承 v23.32 拾菇人/
+  // v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师/v24.34 守碑人「风味 NPC 升格」
+  // 先例）：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），原有
+  // linesByStage 三档叙事与 trueBoss after 彩蛋「不响了……以后由我替它记着」两页已并入 side_bell 的
+  // done 分档（零内容丢失，详见 QUESTS.side_bell 行内注释）。
   bellman:{name:'听钟人', mark:'bell', linesByStage:[
     { gate:null, lines:[
       ['听钟人：井底那口钟，还在响。','低低地，像替谁记着什么。','[Enter] 继续'],
@@ -5595,6 +5622,64 @@ const QUESTS={
       ]],
     },
   },
+  // 子夜钟声（v24.72 新内容·新支线（第十五条））：昼夜相位线收口——v24.57 已让胜利战报报「🌙 提灯
+  // 夜行 N/10」（相位线 live 窗口）、v23.91 已有成就「提灯夜行」，唯独夜间战斗这条「玩家与夜的关系」
+  // 无支线挂钩：听钟人（v24.71 纯风味 NPC·潮灯镇村井正北 (14,5)）升格为委托人——他守着井底那口替
+  // 全镇记名字的钟，白昼的钟声有人听，夜里的名字却没人记（与 v22.47 村井/v24.71 听钟人 trueBoss
+  // 「井也不鸣了」同脉）；量化：BELL_GOAL(3) 单一数据源（判定/进度/目标文案/接取对话四端同读一份
+  // 源，与 ACH_LIST nightwins「提灯夜行」同读 hero.nightWins 一份源）、计数 hero.nightWins
+  // （battle.winBattle 全游唯一胜利结算点写入、防御式 (g.nightWins||0) 旧档零迁移——复用二十几轮前
+  // 打下的既有计数，零新计数零新状态零新存档）；无 unlockOn（承 side_pond/side_golem
+  // 同款从开局即 offer，保留完整接取流程——夜里刷怪从潮灯镇 20 秒一相位即可开始，接取时机天然正确）；
+  // 昼夜判定与计数同判无字回廊不计数（「被忘掉的地方没有晨昏」，与 nightWinNow 同口径）；active 页
+  // 按 hero 实时报进度（与 side_golem/side_trial 同款函数页）；done 页按 hero.trueBoss 分档（听钟人
+  // 原有 trueBoss after 彩蛋「不响了……以后由我替它记着」两页并入真结局分档，零内容丢失；
+  // npcQuestPages 有任务后不再单独展示 after，linesByStage 三档叙事保留在数据层）；奖励 80 金 +
+  // 1 高级灵药（夜里刷怪是全程伴随的节奏——低于 side_golem 120 档、与 side_mist 60 档拉开一档）；
+  // 纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心
+  // 分母全端自动跟随），仅 nightWins/NIGHT_WIN_GOAL 一份既有源复用。
+  side_bell:{
+    id:'side_bell', kind:'side', store:true, npc:'bellman', giver:'bellman',
+    cond:(g)=>((g.nightWins||0) >= BELL_GOAL),
+    condProg:(g)=>`${(g.nightWins||0)}/${BELL_GOAL} 场`,
+    name:'子夜钟声', where:'夜里（无字回廊除外）',
+    obj:`夜里战胜 ${BELL_GOAL} 场战斗——钟声替夜里的名字记着`,
+    offer:'去潮灯镇找听钟人，接下子夜钟声的委托',
+    turnin:'钟声听齐了！回潮灯镇找听钟人',
+    done:'井底那口钟，记下了夜里的名字。灯下又多了三声回响。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '听钟人：井底那口钟，白昼替镇子记着，夜里的名字却总被吹散。',
+        '你提着灯走过夜路——每一场夜里打赢的仗，都是给名字点的一盏灯。',
+        `替我听齐 ${BELL_GOAL} 场子夜钟声，好吗？`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '听钟人：月亮升起来的时候，林子里的钟声最清楚。',
+        '无字回廊不算——被忘掉的地方没有晨昏，钟也不肯替它记。',
+        `（已听 ${(hero&&hero.nightWins)||0}/${BELL_GOAL} 场）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '听钟人：三声子夜钟，一声都没漏。',
+        '夜里的名字，从此也有人记着了。谢礼你收好——',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['听钟人：不响了。',
+         '井底那口钟，替全镇记了那么多年，',
+         '今天终于可以歇了。 [Enter] 继续'],
+        ['听钟人：名字都回了灯下，钟就不必再响了。',
+         '可它响过的每一声，我都还记得。',
+         '以后由我替它记着。 [Enter] 结束'],
+      ] : [[
+        '听钟人：夜里的名字，钟都替你记下了。',
+        '接下来轮到镇上的灯，一盏一盏记回去。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -6722,5 +6807,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL,
 };

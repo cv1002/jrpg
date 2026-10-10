@@ -20,7 +20,7 @@
 // pin 兼容）、运行期真实 winBattle 四档（夜间首胜 1/10 · 白天胜仗零后缀零计数 · 无字回廊夜战
 // 零计数零后缀 · 第 10 场夜胜当场解锁 nightwins 报 10/10——winBattle 先报文后 applyAchievements
 // 解锁报文在结算行之后）、README/package.json/CHANGELOG 同步（件套口径 281 + v24.57 守护描述 +
-// smoke_v2457_nightwin 入库（296 份）+ package 串尾 + CHANGELOG 顶 pin）、哨兵链（前望 282 且
+// smoke_v2457_nightwin 入库（297 份）+ package 串尾 + CHANGELOG 顶 pin）、哨兵链（前望 282 且
 // README 尚无 282 口径 + v2415/v2429 随新现实推进）、tests 目录与实跑链一一对应（281 份）、
 // 旧代 v24.56 pin 全库零残留扫描（豁免本套件与 v2456 套件否定式；扫描码模式串一律拆拼接形态）。
 import fs from 'node:fs';
@@ -111,7 +111,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.56', !!_gv && (_gv[0] > 24 || (_gv
 ok('data.js 含 v24.57 注释（夜间胜利战报「🌙 提灯夜行 N/10」进度后缀）',
   dSrc.includes('v24.57 体验打磨·信息透明·计数现场：🏆 夜间胜利战报补'));
 ok('data.js GAME_VERSION 字面量已为 v24.57（旧 v24.56 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.73';") && !dSrc.includes('const GAME_VERSION = ' + "'v24.56';"));
+  dSrc.includes("const GAME_VERSION = 'v24.74';") && !dSrc.includes('const GAME_VERSION = ' + "'v24.56';"));
 ok('data.js 仍保留 v24.56 历史注释（酿造成功战报进度后缀·本版保留）',
   dSrc.includes('v24.56 体验打磨·信息透明·计数现场：🧪 酿造成功战报补'));
 ok('data.js NIGHT_WIN_GOAL 处含 v24.57 胜利战报分母注释',
@@ -240,27 +240,27 @@ const winMsg = (msgs) => msgs.find((m) => m.includes('🏆 胜利！')) || '';
 }
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为冒烟二百九十六件套（二百九十五件套清除）',
-  readme.includes('冒烟二百九十六件套（二百九十五件套清除）'));
-ok('README tests 含 v24.57 守护描述与 smoke_v2457_nightwin 入库（296 份）',
+ok('README 件套口径已为冒烟二百九十七件套（二百九十六件套清除）',
+  readme.includes('冒烟二百九十七件套（二百九十六件套清除）'));
+ok('README tests 含 v24.57 守护描述与 smoke_v2457_nightwin 入库（297 份）',
   readme.includes('v24.57 起含 「夜间胜利战报「🌙 提灯夜行 N/10」进度后缀」守护') &&
-  readme.includes('smoke_v2457_nightwin 入库（296 份）'));
+  readme.includes('smoke_v2457_nightwin 入库（297 份）'));
 ok('README 尚无 282 件套口径（哨兵前望 282 语义：下一版才写 282）',
-  !readme.includes('二百九十七件套') && !readme.includes('冒烟二百九十七件套'));
+  !readme.includes('二百九十八件套') && !readme.includes('冒烟二百九十八件套'));
 ok('README 仍保留 v24.56 守护描述（历史保留）',
   readme.includes('v24.56 起含 「酿造成功战报「💸 一掷千金 N/1000」进度后缀」守护'));
-ok('README tests 树串尾已延伸至 smoke_v2457_nightwin（... + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑））',
-  readme.includes('smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑）'));
+ok('README tests 树串尾已延伸至 smoke_v2457_nightwin（... + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑））',
+  readme.includes('smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑）'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 293 份（smoke.mjs + 292 专项）', chain.length === 295 && chainAll.length === 296, String(chain.length));
+ok('package.json 实跑链共 293 份（smoke.mjs + 292 专项）', chain.length === 296 && chainAll.length === 297, String(chain.length));
 ok('package.json 链尾为 smoke_v2457_nightwin（第 282 份）', chain[chain.length - 1] === 'smoke_v2473_xpcurve21', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2457_nightwin.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs'));
 ok('package.json 链锚逐字（...smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs"）',
-  pkgRaw.includes('smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.57（startsWith）', changelog.startsWith('## v24.73 '));
+  pkgRaw.includes('smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.57（startsWith）', changelog.startsWith('## v24.74 '));
 ok('CHANGELOG v24.57 条目含「提灯夜行」与「进度后缀」与「夜间」',
   changelog.includes('提灯夜行') && changelog.includes('进度后缀') && changelog.includes('夜间'));
 ok('CHANGELOG 仍保留 v24.56 条目（历史保留）', changelog.includes('## v24.56 '));
@@ -270,7 +270,7 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 281（280 专项 + smoke.mjs）', files.length === 296, String(files.length));
+ok('tests 目录件套 = 281（280 专项 + smoke.mjs）', files.length === 297, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
@@ -278,16 +278,16 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 const t2415 = read('tests/smoke_v2415_treepin.mjs');
 ok('smoke_v2415 链尾已推进至 smoke_v2457_nightwin（第 282 份）',
   t2415.includes("chain[chain.length - 1] === 'smoke_v2473_xpcurve21'"));
-ok('smoke_v2415 树串 token 数已推进至 281', t2415.includes('treeTok.length === 296'));
+ok('smoke_v2415 树串 token 数已推进至 281', t2415.includes('treeTok.length === 297'));
 ok('smoke_v2415 哨兵「尚无 282」口径（二百八十一件套 bare 否定式）',
-  t2415.includes("!readme.includes('二百九十七件套')"));
+  t2415.includes("!readme.includes('二百九十八件套')"));
 const s2429 = read('tests/smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 件盘口句已推进（冒烟二百九十六件套（二百九十五件套清除）正形态）',
-  s2429.includes("readme.includes('冒烟二百九十六件套（二百九十五件套清除）')"));
+ok('smoke_v2429 件盘口句已推进（冒烟二百九十七件套（二百九十六件套清除）正形态）',
+  s2429.includes("readme.includes('冒烟二百九十七件套（二百九十六件套清除）')"));
 ok('smoke_v2429 链尾断言已推进至「=== smoke_v2457_nightwin」',
   s2429.includes("=== 'smoke_v2473_xpcurve21'"));
 ok('smoke_v2429 入库份数断言随新现实推进（入库 281 份）',
-  s2429.includes('入库（296 份）'));
+  s2429.includes('入库（297 份）'));
 
 // —— 旧代 pin 零残留扫描（v24.56 / 280 口径；豁免本套件否定式/历史字面量/v2456 套件）——
 const leftovers = [], _why = {};

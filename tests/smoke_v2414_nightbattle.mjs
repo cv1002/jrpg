@@ -17,7 +17,7 @@
 // battle.js winBattle same-source 互证、运行期 drawBattle 真实渲染 fillText 捕获五档（夜晚村/
 // 夜晚回廊/白天/黄昏或黎明/恒暗回廊 + 进度分子 0·7 档 + 全档渲染不抛错 + 与地图名/回合/困难
 // 角标同屏零位移）、README/package.json/CHANGELOG 同步（件套口径 239 + v24.14 守护描述 +
-// smoke_v2414_nightbattle 入库（296 份）+ package 串尾 + CHANGELOG 顶 pin）、哨兵链
+// smoke_v2414_nightbattle 入库（297 份）+ package 串尾 + CHANGELOG 顶 pin）、哨兵链
 // （前望 243 且 README 尚无 240 口径）、旧代 v24.13 pin 全库零残留扫描、
 // drawBattle 既有行零回归（回合/困难/地图名/敌方特性/招数一览/战斗预判逐字未动）。
 import fs from 'node:fs';
@@ -104,7 +104,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.13', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.13 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.73';") && !dSrc.includes("const GAME_VERSION = 'v24.13';"));
+  dSrc.includes("const GAME_VERSION = 'v24.74';") && !dSrc.includes("const GAME_VERSION = 'v24.13';"));
 ok('data.js 含 v24.14 注释（战斗画面相位标签·相位入画布说明）',
   dSrc.includes('// v24.14 体验打磨·信息透明·相位入画布'));
 ok('data.js 仍保留 v24.13 历史注释（四强怪每级经验 +1 说明，累积注释块）',
@@ -235,10 +235,10 @@ ok('运行期：黎明档亮「🌅 黎明」且零进度（黎明不计数，�
 S.G.map = 'village'; S.G.time = 0; S.G.nightWins = 0;
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为二百九十六件套（二百九十五件套清除）',
-  readme.includes('冒烟二百九十六件套（二百九十五件套清除）'));
-ok('README tests 树含 v24.14 守护描述与 smoke_v2414_nightbattle 入库（296 份）',
-  readme.includes('v24.14 起含 战斗画面相位标签守护') && readme.includes('smoke_v2414_nightbattle 入库（296 份）'));
+ok('README 件套口径已为二百九十七件套（二百九十六件套清除）',
+  readme.includes('冒烟二百九十七件套（二百九十六件套清除）'));
+ok('README tests 树含 v24.14 守护描述与 smoke_v2414_nightbattle 入库（297 份）',
+  readme.includes('v24.14 起含 战斗画面相位标签守护') && readme.includes('smoke_v2414_nightbattle 入库（297 份）'));
 ok('README 战斗段落含 v24.14 相位标签口径（顶部右缘常驻昼夜相位标签 · 提灯夜行 N/10）',
   readme.includes('v24.14 起顶部右缘常驻昼夜相位标签') && readme.includes('🌙 夜晚 · 提灯夜行 N/10'));
 ok('README 成就 bullet 含 v24.14 提灯夜行进度口径（战斗画面顶部常显）',
@@ -246,14 +246,14 @@ ok('README 成就 bullet 含 v24.14 提灯夜行进度口径（战斗画面顶�
 ok('README 视觉 bullet 含 v24.14 战斗画面相位标签口径（BATTLE_PHASE_TAG 与 HUD PERIOD 同词）',
   readme.includes('v24.14 起战斗画面顶部右缘同式常驻相位标签') && readme.includes('BATTLE_PHASE_TAG'));
 ok('README 尚无 240 件套口径（哨兵前望 252 语义：下一版才写 243）',
-  !readme.includes('二百九十七件套') && !readme.includes('冒烟二百九十七件套'));
+  !readme.includes('二百九十八件套') && !readme.includes('冒烟二百九十八件套'));
 const testChain = (JSON.parse(pkg).scripts.test.match(/smoke_v\d+_\w+\.mjs|smoke\.mjs/g) || []).length;
-ok('package.json test 串共 238 件套', testChain === 296, String(testChain));
+ok('package.json test 串共 238 件套', testChain === 297, String(testChain));
 ok('package.json test 串已含 smoke_v2414_nightbattle（第 239 份，紧接 smoke_v2413_xpcurve）',
-  pkg.includes('smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.73'));
+  pkg.includes('smoke_v2413_xpcurve.mjs && node tests/smoke_v2414_nightbattle.mjs && node tests/smoke_v2415_treepin.mjs && node tests/smoke_v2416_steps.mjs && node tests/smoke_v2417_mapdrink.mjs && node tests/smoke_v2418_goldcurve.mjs && node tests/smoke_v2419_luckdrp.mjs && node tests/smoke_v2420_skillprog.mjs && node tests/smoke_v2421_allquest.mjs && node tests/smoke_v2422_huntprog.mjs && node tests/smoke_v2423_eliteprog.mjs && node tests/smoke_v2424_pondslime.mjs && node tests/smoke_v2425_potionprog.mjs && node tests/smoke_v2426_levelprog.mjs && node tests/smoke_v2427_richprog.mjs && node tests/smoke_v2428_outprog.mjs && node tests/smoke_v2429_xpcurve3.mjs && node tests/smoke_v2430_goldcurve3.mjs && node tests/smoke_v2431_elixirprog.mjs && node tests/smoke_v2432_golemquest.mjs && node tests/smoke_v2433_goldcurve4.mjs && node tests/smoke_v2434_trialquest.mjs && node tests/smoke_v2435_goldcurve5.mjs && node tests/smoke_v2436_codexrow.mjs && node tests/smoke_v2437_goldcurve6.mjs && node tests/smoke_v2438_goldcurve7.mjs && node tests/smoke_v2439_xpcurve4.mjs && node tests/smoke_v2440_potionprog.mjs && node tests/smoke_v2441_xpcurve5.mjs && node tests/smoke_v2442_chestprog.mjs && node tests/smoke_v2443_xpcurve6.mjs && node tests/smoke_v2444_goldcurve8.mjs && node tests/smoke_v2445_goldcurve9.mjs && node tests/smoke_v2446_mushprog.mjs && node tests/smoke_v2447_xpcurve7.mjs && node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs && node tests/smoke_v2473_xpcurve21.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.74'));
 ok('CHANGELOG v24.14 条目含「相位标签」与「提灯夜行」',
-  changelog.startsWith('## v24.73') && changelog.includes('相位标签') && changelog.includes('提灯夜行'));
+  changelog.startsWith('## v24.74') && changelog.includes('相位标签') && changelog.includes('提灯夜行'));
 ok('CHANGELOG 仍保留 v24.13 条目（历史保留）', changelog.includes('## v24.13'));
 
 // —— 哨兵链（旧代 v24.13 pin 全库零残留）——

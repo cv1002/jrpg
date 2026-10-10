@@ -32,8 +32,8 @@ const changelog = read('../CHANGELOG.md');
 // —— 源级落位：data.js v24.71 注释 + 三件套 + GAME_VERSION + sprites.js bell 分支 ——
 ok('data.js 含 v24.71 版本注释（听钟人三件套说明，注释按引入版次锚定 v24.71）', dataSrc.includes('v24.71 新 NPC·纯风味'));
 ok('data.js GAME_VERSION 字面量已为 v24.71（旧 v24.70 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.73';") && !dataSrc.includes("const GAME_VERSION = 'v24.70';"));
-ok('data.js 仍保留 v24.70 历史注释（第二十一轮经验平滑注释未动）', dataSrc.includes('v24.70 数值平衡·后期经验曲线续平滑'));
+  dataSrc.includes("const GAME_VERSION = 'v24.74';") && !dataSrc.includes("const GAME_VERSION = 'v24.70';"));
+ok('data.js 仍保留 v24.70 历史注释（第二十轮经验平滑注释未动）', dataSrc.includes('v24.70 数值平衡·后期经验曲线续平滑'));
 ok('data.js NPC_SPOTS 含 14,5 → bellman 键', dataSrc.includes("'14,5': 'bellman'"));
 ok('data.js NPCS 含 bellman 听钟人（name/mark/linesByStage 落位）', dataSrc.includes("bellman:{name:'听钟人', mark:'bell', linesByStage:["));
 ok('data.js village.extras 含 { x: 14, y: 5, ty: \'NPC\' }', dataSrc.includes("{ x: 14, y: 5, ty: 'NPC' }"));
@@ -125,45 +125,54 @@ const { drawTalk } = await import('../js/view/menus.js');
 const { voiceList } = await import('../js/view/menus.js');
 const { drawWorld } = await import('../js/view/drawWorld.js');
 
-// 档一：普通新档——npcQuestPages 直落 linesByStage[0] 两页
+// 档一：普通新档——npcQuestPages 先落 side_bell 任务页（v24.72 升格后任务页优先于 linesByStage）
 let hero = newGame('余烬');
 S.G = hero;
 let pages = npcQuestPages(hero, 'bellman');
-ok('运行期：npcQuestPages 新档直落默认档两页', pages === ent.linesByStage[0].lines && pages.length === 2);
-ok('运行期：默认档首页含「听钟人/井底那口钟/记着」台词', pages[0].join('').includes('听钟人') && pages[0].join('').includes('井底那口钟') && pages[0].join('').includes('记着'));
-// 档二：bossDefeated
+ok('运行期：npcQuestPages 新档先落 offer 任务页（1 页 4 行 · 接下委托）', Array.isArray(pages) && pages.length === 1 && pages[0].join('').includes('听钟人') && pages[0].join('').includes('接下委托'));
+ok('运行期：offer 页含「子夜钟声」与「3 场」同源台词', pages[0].join('').includes('子夜钟声') && pages[0].join('').includes('3 场'));
+ok('运行期：npcQuestMark offer 态「❕ 可接委托」（升格后顶标翻转）', npcQuestMark(hero, 'bellman') === '❕ 可接委托', String(npcQuestMark(hero, 'bellman')));
+ok('运行期：resolveNpcTalk 接取 → {kind:accept} + quests.side_bell=active', (() => { const a = resolveNpcTalk(hero, 'bellman'); return !!a && a.kind === 'accept' && a.id === 'side_bell' && hero.quests.side_bell === 'active'; })());
+ok('运行期：接取后 active 页函数型实时报进度（已听 0/3 场 · 无字回廊不算）', (() => { const p = npcQuestPages(hero, 'bellman'); return p[0].join('').includes('已听 0/3') && p[0].join('').includes('无字回廊不算'); })());
+// 档二/三：bossDefeated/galleryOpen（任务未接仍 offer 页；三档叙事保留在数据层、并入 done 分档）
 hero = newGame('灯见');
 hero.bossDefeated = true;
 S.G = hero;
 pages = npcQuestPages(hero, 'bellman');
-ok('运行期：bossDefeated 后直落第二档两页（灯芯归来）', pages === ent.linesByStage[1].lines && pages.length === 2);
-ok('运行期：第二档首页含「灯芯回来了」', pages[0].join('').includes('灯芯回来了'));
-// 档三：galleryOpen
+ok('运行期：bossDefeated 后未接任务仍 offer 页（升格后任务页优先）', pages.length === 1 && pages[0].join('').includes('接下委托'));
 hero = newGame('潮');
 hero.bossDefeated = true;
 hero.galleryOpen = true;
 S.G = hero;
 pages = npcQuestPages(hero, 'bellman');
-ok('运行期：galleryOpen 后直落第三档两页（回廊开启）', pages === ent.linesByStage[2].lines && pages.length === 2);
-ok('运行期：第三档首页含「回廊开了」', pages[0].join('').includes('回廊开了'));
-// 档四：trueBoss after 彩蛋
+ok('运行期：galleryOpen 后未接任务仍 offer 页（升格后任务页优先）', pages.length === 1 && pages[0].join('').includes('接下委托'));
+ok('运行期：linesByStage 三档仍在数据层（叙事零丢失契约，done 分档承接）', ent.linesByStage.length === 3 && ent.linesByStage[1].lines[0][0].includes('灯芯回来了'));
+// 档四：done + trueBoss → after 两页彩蛋并入 done 分档（npcQuestPages 不再单独展示 after）
 hero = newGame('灯');
 hero.trueBoss = true;
+hero.quests = { side_bell: 'done' };
 S.G = hero;
 pages = npcQuestPages(hero, 'bellman');
-ok('运行期：trueBoss 后 npcQuestPages 直落 after 两页', pages === ent.after && pages.length === 2);
-ok('运行期：after 首页含「不响了/钟」彩蛋台词', pages[0].join('').includes('不响了') && pages[0].join('').includes('井底那口钟'));
-// 零任务契约：无顶标、无任务对话副作用
+ok('运行期：trueBoss 后任务 done 分档直落 after 两页（零内容丢失）', Array.isArray(pages) && pages.length === 2 && pages[0].join('').includes('不响了') && pages[0].join('').includes('井底那口钟') && pages[1].join('').includes('以后由我替它记着'));
+// 档五：done（非 trueBoss）默认分档
 hero = newGame('余烬');
+hero.quests = { side_bell: 'done' };
 S.G = hero;
-ok('运行期：npcQuestMark 对 bellman 回退 null（无任务顶标）', npcQuestMark(hero, 'bellman') === null);
-ok('运行期：resolveNpcTalk 对 bellman 返回 null（零任务结算）', resolveNpcTalk(hero, 'bellman') === null);
+pages = npcQuestPages(hero, 'bellman');
+ok('运行期：done 默认档（夜里的名字 · 钟都替你记下了）', pages.length === 1 && pages[0].join('').includes('夜里的名字'));
+// 升格后任务侧副作用：顶标可接、可交；交付后再谈零副作用
+hero = newGame('余烬');
+hero.quests = { side_bell: 'active' };
+hero.nightWins = 3;
+S.G = hero;
+ok('运行期：turnin 态顶标「❕ 可交任务」', npcQuestMark(hero, 'bellman') === '❕ 可交任务');
+ok('运行期：交付后 resolveNpcTalk 回 null（无待办）', (() => { const r = resolveNpcTalk(hero, 'bellman'); return !!r && r.kind === 'reward' && r.gold === 80 && r.potion2 === 1 && hero.quests.side_bell === 'done' && resolveNpcTalk(hero, 'bellman') === null; })());
 // openTalk → talk 场景；drawTalk 渲染出台词
 hero = newGame('灯');
 S.G = hero;
 S.scene = 'world';
 openTalk('bellman');
-ok("运行期：openTalk('bellman') 进 talk 场景（curNpc/talkPages 落位）", S.scene === 'talk' && S.curNpc === 'bellman' && S.talkPages.length === 2);
+ok("运行期：openTalk('bellman') 进 talk 场景（curNpc/talkPages 落位 · 任务页 1 页）", S.scene === 'talk' && S.curNpc === 'bellman' && S.talkPages.length === 1);
 CAPTURED.length = 0;
 drawTalk();
 const drawnTalk = CAPTURED.join('\n');
@@ -173,13 +182,11 @@ S.G.x = 14; S.G.y = 4; S.dir = 'D';
 S.scene = 'world';
 interact();
 ok("运行期：interact 面南 (14,5) 真实开 bellman 对话", S.scene === 'talk' && S.curNpc === 'bellman');
-// talkNext 翻页 → 第二页 → 再翻回 world
+// talkNext 首 Enter（打字机已补全）→ resolveNpcTalk 接取 → 报文回 world（任务页 1 页无翻页态）
 S.talkLineAt = 0; // 跳过打字机补全（typed 行为由 core.talkNext 自带路径覆盖）
+S.G.quests = {}; // 确保 offer 态
 talkNext();
-ok('运行期：talkNext 翻至第二页（talkPage=1）', S.scene === 'talk' && S.talkPage === 1);
-S.talkLineAt = 0;
-talkNext();
-ok('运行期：talkNext 末页结束对话回 world', S.scene === 'world');
+ok('运行期：talkNext 首 Enter 接取委托并回 world（offer 页 1 页 · boxMsg 接受报文）', S.scene === 'world' && S.G.quests.side_bell === 'active');
 // voiceList 派生：加/删 NPC 自动跟随（38 处）
 const v0 = voiceList({});
 ok('运行期：voiceList 空档 38 条全 met=false（NPCS 38 处派生）', v0.length === 38 && v0.every((x) => !x.met), String(v0.length));
@@ -193,22 +200,22 @@ try { CAPTURED.length = 0; drawWorld(); } catch (e) { worldOk = false; console.l
 ok('运行期：drawWorld 村井旁渲染不抛错', worldOk);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树串尾已延伸至 smoke_v2471_bellman（... + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑））',
-  readme.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑）'));
-ok('README 件套口径为二百九十六件套（二百九十五件套清除）',
-  readme.includes('冒烟二百九十六件套（二百九十五件套清除）'));
+ok('README tests 树串尾已延伸至 smoke_v2471_bellman（... + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑））',
+  readme.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑）'));
+ok('README 件套口径为二百九十七件套（二百九十六件套清除）',
+  readme.includes('冒烟二百九十七件套（二百九十六件套清除）'));
 ok('README 含 v24.71 守护描述（潮灯镇听钟人新 NPC 守护，按引入版次锚定 v24.71）', readme.includes('v24.71 起含潮灯镇「听钟人」新 NPC 守护'));
-ok('README 含 smoke_v2471_bellman 入库（296 份）', readme.includes('smoke_v2471_bellman 入库（296 份）'));
-ok('README 仍保留 smoke_v2470_xpcurve20 入库（296 份）历史口径', readme.includes('smoke_v2470_xpcurve20 入库（296 份）'));
+ok('README 含 smoke_v2471_bellman 入库（297 份）', readme.includes('smoke_v2471_bellman 入库（297 份）'));
+ok('README 仍保留 smoke_v2470_xpcurve20 入库（297 份）历史口径', readme.includes('smoke_v2470_xpcurve20 入库（297 份）'));
 ok('README 潮灯镇行含听钟人描述（第十四位可对话角色）',
   readme.includes('村井旁新增 听钟人') && readme.includes('第十四位可对话角色'));
 ok('README 成就口径「76 项」双处不变（本版非成就版，零回归）',
   readme.includes('成就一览（全部 76 项进度') && readme.includes('**76 项成就**'));
-ok('package.json 已收录 smoke_v2471_bellman（npm test 串跑第 295 份）',
-  pkg.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs'));
+ok('package.json 已收录 smoke_v2471_bellman（npm test 串跑第 295 份 · 链尾已延伸至 v2472）',
+  pkg.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 295 件套', testChain === 296, String(testChain));
-ok('CHANGELOG 含 v24.71 条目（顶 pin）', changelog.startsWith('## v24.73 '));
+ok('package.json test 串共 295 件套', testChain === 297, String(testChain));
+ok('CHANGELOG 含 v24.71 条目（顶 pin）', changelog.startsWith('## v24.74 '));
 ok('CHANGELOG v24.71 条目含「听钟人/第十四位」', changelog.includes('听钟人') && changelog.includes('第十四位可对话角色'));
 ok('CHANGELOG 仍保留 v24.70 条目标题（历史积累）', changelog.includes('## v24.70 数值平衡'));
 
@@ -220,27 +227,27 @@ const chainFiles = ['smoke.mjs', ...[...pkg.matchAll(/node tests\/(smoke_v\d+_\w
 const chainSet = new Set(chainFiles);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 295 与实跑链恒等', files.length === 296, String(files.length));
+ok('tests 目录件套 = 295 与实跑链恒等', files.length === 297, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.70 pin 零残留 ——
 const s2470 = read('smoke_v2470_xpcurve20.mjs');
-ok('smoke_v2470 的 GAME_VERSION 字面量 pin 已更新为 v24.71', s2470.includes("const GAME_VERSION = 'v24.73';"));
-ok('smoke_v2470 的 CHANGELOG 顶 pin 已更新为 ## v24.71', s2470.includes("startsWith('## v24.73 '"));
-ok('smoke_v2470 的件套 pin 已更新为二百九十六件套（二百九十五件套清除）', s2470.includes('二百九十六件套（二百九十五件套清除）'));
-ok('smoke_v2470 的 README 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2473_xpcurve21（npm test 串跑）'));
+ok('smoke_v2470 的 GAME_VERSION 字面量 pin 已更新为 v24.71', s2470.includes("const GAME_VERSION = 'v24.74';"));
+ok('smoke_v2470 的 CHANGELOG 顶 pin 已更新为 ## v24.71', s2470.includes("startsWith('## v24.74 '"));
+ok('smoke_v2470 的件套 pin 已更新为二百九十七件套（二百九十六件套清除）', s2470.includes('二百九十七件套（二百九十六件套清除）'));
+ok('smoke_v2470 的 README 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑）'));
 ok('smoke_v2470 的 package.json 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs'));
-ok('smoke_v2470 的链尾 pin 已推进至 smoke_v2471_bellman（第 295 份）', s2470.includes("=== 'smoke_v2473_xpcurve21'"));
-ok('smoke_v2470 的入库 pin 已推进至 295 份', s2470.includes('入库（296 份）'));
+ok('smoke_v2470 的链尾 pin 已推进至 smoke_v2473_xpcurve21（第 297 份）', s2470.includes("=== 'smoke_v2473_xpcurve21'"));
+ok('smoke_v2470 的入库 pin 已推进至 295 份', s2470.includes('入库（297 份）'));
 const s2436 = read('smoke_v2436_codexrow.mjs');
-ok('smoke_v2436 双计数 pin 已推进（294 专项 / 295 总件套）且尚无 296 口径哨兵',
-  s2436.includes('suiteFiles.length === 295 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 296') &&
-  s2436.includes('!readme.includes(\'冒烟二百九十七件套\')') && s2436.includes('!readme.includes(\'（297 份）\')'));
+ok('smoke_v2436 双计数 pin 已推进（296 专项 / 297 总件套）且尚无 298 口径哨兵',
+  s2436.includes('suiteFiles.length === 296 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 297') &&
+  s2436.includes('!readme.includes(\'冒烟二百九十八件套\')') && s2436.includes('!readme.includes(\'（298 份）\')'));
 const s2415 = read('smoke_v2415_treepin.mjs');
 ok('smoke_v2415 链尾已推进至 smoke_v2471_bellman（第 295 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v2473_xpcurve21'"));
-ok('smoke_v2415 树串 token 数已推进至 295', s2415.includes('treeTok.length === 296'));
-ok('smoke_v2415 哨兵「尚无 296」口径（二百九十七件套 bare 否定式）', s2415.includes("!readme.includes('二百九十七件套')"));
+ok('smoke_v2415 树串 token 数已推进至 295', s2415.includes('treeTok.length === 297'));
+ok('smoke_v2415 哨兵「尚无 296」口径（二百九十七件套 bare 否定式）', s2415.includes("!readme.includes('二百九十八件套')"));
 const s2234 = read('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2234 的 NPC_SPOTS 总数 pin 已推进至 39', s2234.includes('NPC_SPOTS).length === 39'));
 const s2314 = read('smoke_v2314_voices.mjs');

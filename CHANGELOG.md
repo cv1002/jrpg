@@ -1,3 +1,62 @@
+## v24.74 合流·并行双分支归一：v24.72 新支线「子夜钟声」+ v24.73 数值平衡（四强怪每级经验 +1）
+
+- 【背景】v24.71 之后两个并行 ticker 各产一版互不知情：v24.72（听钟人「子夜钟声」新支线，
+  data.js 已落盘但未提交）与 v24.73（后期经验曲线续平滑第二十一轮，已推送 9407ac03）。本次把
+  v24.72 全部内容（数据/测试/文档）并入 v24.73 基线合流归一，0 内容丢失、零回退。
+- 【内容】v24.72 支线完整落地：`js/data.js` 新增 `BELL_GOAL`(3) 单一数据源（export 已加）+
+  `QUESTS.side_bell`「子夜钟声」（第十五条）+ `NPCS.bellman` 升格注释；`tests/smoke_v2472_bellquest`
+  入库；README 第十五条/听钟人升格/树串同步。v24.73 的 xp[1] 24→25 完整保留。
+- 【版本】`GAME_VERSION` v24.73→v24.74（v24.72/v24.73 注释块与条目保留，0 内容丢失）。
+- 【件套】296→297（smoke_v2472_bellquest + smoke_v2473_xpcurve21 双件套并存，链尾
+  smoke_v2473_xpcurve21，全库 pin 级联哨兵前望 298）。
+- 【零回归】游戏逻辑/结算/数值/存档零改动（仅版本号/注释/文档/测试 pin 机械同步；支线为纯
+  QUESTS 数据追加 + 常量，承 v24.72 条目「零新逻辑零结算零数值」契约）。
+- 【验证】`node --check` 25 模块全过；`npm test` 二百九十七件套端到端全绿 EXIT=0。
+
+## v24.72 新内容·新支线（第十五条）：听钟人「子夜钟声」——夜里战胜 3 场换 80 金 + 1 高级灵药
+（承 v23.32 拾菇人「树精的菌库」/ v23.42 客栈老板娘「夜路的狼嚎」/ v23.57 酿药师「蛇影的药引」/
+v24.24 掌灯阿婆「塘底的灯影」/ v24.32 锻灯师「石心的试炼」/ v24.34 守碑人「百炼的刻印」同一
+「风味 NPC 升格为支线委托人」先例：v24.71 新 NPC「听钟人」（潮灯镇村井正北 (14,5)·「井底那口钟
+还在替大家记着」）升格为委托人——白昼的钟声有人听，夜里的名字却没人记；玩家夜里在灯下打赢的每一场
+战争都是给名字点的一盏灯；量化：BELL_GOAL(3) 单一数据源（判定 cond/进度 condProg/目标文案 obj/
+接取对话 offer 四端同读一份源，调阈值只改 data.js 一处自动跟随）、计数 hero.nightWins（battle.
+winBattle 全游唯一胜利结算点写入、防御式 (g.nightWins||0) 旧档零迁移——与 ACH_LIST nightwins
+「提灯夜行」/v24.57 胜利战报「🌙 提灯夜行 N/10」/v24.14 战斗相位标同读一份源，复用既有计数
+零新计数零新状态零新存档）、无 unlockOn（承 side_pond/side_golem 同款从开局即 offer）、昼夜判定与
+计数同判无字回廊不计数（「被忘掉的地方没有晨昏」，与 nightWinNow 同口径）、active 页函数型实时报
+进度、done 页按 hero.trueBoss 分档（听钟人原有 linesByStage 三档叙事与 trueBoss after 两页彩蛋
+「不响了……以后由我替它记着」并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示
+after）、奖励 80 金 + 1 高级灵药（夜里刷怪全程伴随的节奏——低于 side_golem 120 档、与 side_mist
+60 档拉开一档）；纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付
+结算/灯火同心分母全端自动跟随）。
+- 【新增：`js/data.js` QUESTS.side_bell「子夜钟声」（第十五条）】——`kind:'side'` + `store:true` +
+  npc/giver bellman + 无 unlockOn；cond/condProg 读 hero.nightWins 与 `BELL_GOAL`；reward
+  `{gold:80, potion2:1}`；talk 四档（offer / active 函数型实时报进度 / turnin / done trueBoss
+  分档——after 彩蛋并入）；`BELL_GOAL`(3) 常量（GOLEM_GOAL 之后、与十组 *_GOAL 同族）入 export；
+  `GAME_VERSION` v24.71→v24.72 + v24.72 注释块（v24.71 及更早历史注释保留）+ 听钟人升格注释；
+  NPCS.bellman 数据层逐字未动（linesByStage/after 保留，零内容丢失契约）。
+- 【零回归面】未动任何结算/数值/存档结构（纯 QUESTS 数据追加 + 常量 + 版本号）；未动 NPCS.bellman
+  linesByStage/after 逐字；未动 NIGHT_WIN_GOAL/nightWins 计数/applyAchievements/成就/胜利战报/
+  战斗相位标（计数/判定/解锁时机逐字未动）；未动 quests.js/core.js/battle.js/world.js（表驱动
+  零新逻辑）；只改 1 个运行源码文件（`js/data.js`：BELL_GOAL + side_bell + GAME_VERSION + 注释，
+  其余 js/ 逐字未动）+ `README.md`（支线/奖励行 十四条→十五条 + 子夜钟声 + 常量源列 BELL_GOAL +
+  听钟人行升格标注 + tests 树串尾 + 件套口径 295→296 + v24.72 守护描述 + 入库（295 份）→（296 份））
+  + `package.json`（test 串第 296 份）+ 全库 295 件套 pin 级联（哨兵前望 297 + 当前串 295→296 +
+  testChain 295→296 + 串尾/树尾/件套口径/GAME_VERSION 字面量/恒等/顶 pin）+ 既有 allquests 分母
+  14→15 家族手工推进（v2152/v2159/v2168/v2173/v2176/v2177/v2180/v2421/v2424/v2432/v2434/v2309）
+  + 既有 smoke_v2471_bellman 升格断言更新（运行期 npcQuestPages 优先任务页 offer/active/turnin/done
+  四态 + after 并入 done 分档 + 顶标/接取副作用翻转，断言随新现实推进）。
+- 【记录】`CHANGELOG.md`（本条）+ smoke_v2472_bellquest 入库（296 份·断言见文件头）。
+- 【验证】`node --check` js/data.js · tests/smoke_v2472_bellquest.mjs 过；`npm run check`（25 模块）
+  全部通过；`npm test` 二百九十六件套端到端全绿 EXIT=0。
+- 【件套收尾（本次补录）】296 件套级联补推进：smoke_v2472 版本字面量断言笔误（!includes
+  'v24.72' 应为旧 v24.71 零残留）修正；smoke_v2449/v2458 链锚逐字断言推进至链尾
+  smoke_v2472_bellquest；smoke_v2459..v2470 十二件 smoke_v2436 双计数 pin 哨兵推进至
+  （295 专项 / 296 总件套）尚无 297 口径；修正后 `npm test` 296 件套复跑全绿 EXIT=0（只改
+  tests/ 断言，零游戏代码、零结算、零数值、零存档变化）。
+- 【前置】真实项目先 `git fetch origin main` 快进到 v24.71（acd7db06，上轮 /tmp 完稿已推送）再动工；
+  本轮 TCC 无封锁（~/Downloads 读写全通），真实项目直写完成。
+
 ## v24.73 数值平衡·后期经验曲线续平滑（第二十一轮）：四强怪每级经验 +1（xp[1] 24→25）
 
 - 【数值】承 v19.58 第一轮/v24.13 第二轮/v24.29 第三轮/v24.39 第四轮/v24.41 第五轮/v24.43 第六轮/

@@ -151,10 +151,10 @@ const achEmber = ACH_LIST.find((a) => a.id === 'ember');
 ok('残焰已熄（ember 支线成就）零回归（仍判定 side_ember done，不受本成就影响）',
   !!achEmber && achEmber.name === '残焰已熄' && achEmber.ok({ quests: { side_ember: 'done' } }) === true && achEmber.ok({ bestiary: { '残焰魔像': 1 } }) === false);
 const achAllQuests = ACH_LIST.find((a) => a.id === 'allquests');
-ok('灯火同心（allquests）支线分母 v24.34 随新现实更新为 0/14（side_grain/side_tree/side_wolf/side_snake 是支线，elites 不是）',
-  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/14', achAllQuests && achAllQuests.prog({ quests: {} }));
-ok('QUESTS side 支线 14 条（v21.80 side_grain 入列、v23.32 side_tree 入列、v23.42 side_wolf 入列、v23.57 side_snake 入列、v24.34 side_trial 入列，随新现实更新）',
-  Object.values(QUESTS).filter((q) => q.kind === 'side').length === 14);
+ok('灯火同心（allquests）支线分母 v24.72 随新现实更新为 0/15（side_grain/side_tree/side_wolf/side_snake 是支线，elites 不是）',
+  achAllQuests && achAllQuests.prog({ quests: {} }) === '0/15', achAllQuests && achAllQuests.prog({ quests: {} }));
+ok('QUESTS side 支线 15 条（v21.80 side_grain 入列、v23.32 side_tree 入列、v23.42 side_wolf 入列、v23.57 side_snake 入列、v24.34 side_trial 入列、v24.72 side_bell 入列，随新现实更新）',
+  Object.values(QUESTS).filter((q) => q.kind === 'side').length === 15);
 
 // —— unlockedAchievements 集成（真实判定通路，rules.js）——
 ok('unlockedAchievements：双精英档新解锁含 elites；单档/空档不含',
@@ -217,7 +217,7 @@ S.G = null;
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2177_elites', readme.includes('smoke_v2177_elites'));
-ok('README 件套口径为二百九十六件套（二百九十五件套清除）', readme.includes('二百九十六件套（二百九十五件套清除）'));
+ok('README 件套口径为二百九十七件套（二百九十六件套清除）', readme.includes('二百九十七件套（二百九十六件套清除）'));
 ok('README 含 v21.77 守护描述（新成就「精英猎手」（双精英讨伐里程碑）守护）',
   readme.includes('v21.77 起含新成就「精英猎手」（双精英讨伐里程碑'));
 ok('README 成就口径「31 项」双处同步（快速上手表 C 键行 + 图鉴&成就行）',
@@ -227,7 +227,7 @@ const s2176 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2176_allchests.mjs')
 ok('smoke_v2176 的 ACH_LIST 精确计数断言已去硬化（===27 零残留，>=27 存活性口径落位）',
   s2176.includes('ACH_LIST.length >= 27') && !s2176.includes('ACH_LIST.length === 27'));
 ok('smoke_v2176 的 README 件套口径断言已随新现实更新（七十五件套 pin 零残留，七十六件套落位）',
-  s2176.includes('二百九十六件套（二百九十五件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
+  s2176.includes('二百九十七件套（二百九十六件套清除）') && !s2176.includes('七十五件套（七十四件套清除）'));
 ok('smoke_v2176 的 README 成就 pin 已随新现实更新（28 项 pin 零残留，31 项双处落位）',
   s2176.includes("readme.includes('成就一览（全部 76 项进度'") && !s2176.includes('全部 28 项进度'));
 const s2168 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2168_hardtrue.mjs'), 'utf8');
