@@ -93,7 +93,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.42（本版守 v22.43）', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 43)), GAME_VERSION);
 ok('data.js 含 v22.43 注释（机制行说明）', dSrc.includes('v22.43 体验打磨'));
 ok('GAME_VERSION 字面量已为 v22.43（旧 v22.42 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.74';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
+  dSrc.includes("const GAME_VERSION = 'v24.75';") && !dSrc.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('data.js 仍保留 v22.42/v22.40 世代注释链（菌盖灯油/高草显形累积注释未动）',
   dSrc.includes('v22.42 新内容·世界景观·纯显示') && dSrc.includes('v22.40 高草显形'));
 
@@ -218,7 +218,7 @@ ok('NPC 总数保持 30（零 NPC 变更）', Object.keys(NPC_SPOTS).length === 
 ok('本版零新增文件之外：仅 data.js 文案 + README/package.json/CHANGELOG/测试（纯文字零逻辑）', true);
 
 // —— v23.31 遇敌槽昼夜修正（机制·数值平衡·单一数据源）守护 ——
-ok('GAME_VERSION 已至 v23.31', GAME_VERSION === 'v24.74', GAME_VERSION);
+ok('GAME_VERSION 已至 v23.31', GAME_VERSION === 'v24.75', GAME_VERSION);
 ok('ENCOUNTER.phaseGauge 四相位逐值（day/dusk/night/dawn = 1/1/1.25/0.85）',
   ENCOUNTER.phaseGauge && ENCOUNTER.phaseGauge.day === 1 && ENCOUNTER.phaseGauge.dusk === 1 &&
   ENCOUNTER.phaseGauge.night === 1.25 && ENCOUNTER.phaseGauge.dawn === 0.85, JSON.stringify(ENCOUNTER.phaseGauge));
@@ -242,18 +242,18 @@ ok('运行期：机制行次行实际渲染含昼夜修正段（y=382 12px 次�
 
 // —— README / package.json / CHANGELOG 同步 ——
 const testChain = (pkgSrc.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 139 件套（含 smoke_v2243_encguide）', testChain === 297, String(testChain));
+ok('package.json test 串共 139 件套（含 smoke_v2243_encguide）', testChain === 298, String(testChain));
 ok('package.json 串尾已收录 smoke_v2243_encguide', pkgSrc.includes('smoke_v2242_mushfield.mjs && node tests/smoke_v2243_encguide.mjs'));
 ok('README tests 树尾已收录 smoke_v2243_encguide（串跑链）',
-  readmeSrc.includes('smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6 + smoke_v2444_goldcurve8 + smoke_v2445_goldcurve9 + smoke_v2446_mushprog + smoke_v2447_xpcurve7 + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21（npm test 串跑）'));
-ok('README 件套口径为二百九十七件套（二百九十六件套清除）',
-  readmeSrc.includes('冒烟二百九十七件套（二百九十六件套清除）') &&
+  readmeSrc.includes('smoke_v2242_mushfield + smoke_v2243_encguide + smoke_v2244_fulldanger + smoke_v2245_watcher + smoke_v2246_fountgauge + smoke_v2247_villagewell + smoke_v2248_mapguide + smoke_v2249_shopkeep + smoke_v2250_brewer + smoke_v2251_oathkeep + smoke_v2252_rail + smoke_v2253_supplypoint + smoke_v2254_grainfield + smoke_v2255_steleglow + smoke_v2256_campfire + smoke_v2257_pondglow + smoke_v2258_potionhelp + smoke_v2259_sandpile + smoke_v2260_fountripple + smoke_v2261_rich3 + smoke_v2262_crystal + smoke_v2263_ptime3 + smoke_v2264_hunt3 + smoke_v2265_lucky3 + smoke_v2266_stock3 + smoke_v2267_elixir3 + smoke_v2268_brew3 + smoke_v2269_mush3 + smoke_v2270_outstep + smoke_v2271_outstep2 + smoke_v2272_scholar2 + smoke_v2273_seen5 + smoke_v2274_seen2 + smoke_v2275_codexempty + smoke_v2276_lampkid + smoke_v2277_pondhint + smoke_v2278_mushguide + smoke_v2279_lampwell + smoke_v2280_grainfield + smoke_v2281_starwell + smoke_v2282_archgate + smoke_v2283_menuekey + smoke_v2284_skillekey + smoke_v2285_winekey + smoke_v2286_titleekey + smoke_v2287_trueroute + smoke_v2288_scrollhint + smoke_v2289_winprog + smoke_v2290_statlink + smoke_v2291_lampguide + smoke_v2292_cavewatch + smoke_v2293_deadsave + smoke_v2294_crystalwatch + smoke_v2295_deadprog + smoke_v2296_endingprog + smoke_v2297_chestmid + smoke_v2298_encnum + smoke_v2299_crosslink + smoke_v2300_sidemore + smoke_v2301_eco + smoke_v2302_cmdprev + smoke_v2303_rushnum + smoke_v2304_achgoal + smoke_v2305_monnum + smoke_v2306_skillnum + smoke_v2307_bossnum + smoke_v2308_diffnum + smoke_v2309_questnum + smoke_v2310_diffsum + smoke_v2311_fragprev + smoke_v2312_voltitle + smoke_v2313_talkall + smoke_v2314_voices + smoke_v2315_talkfoot + smoke_v2316_voiceshead + smoke_v2317_pausemap + smoke_v2318_battlemap + smoke_v2319_deadloc + smoke_v2392_stariron + smoke_v2393_deadkey + smoke_v2394_fightback + smoke_v2395_shopscroll + smoke_v2396_steelarmor + smoke_v2397_baserow + smoke_v2398_econrow + smoke_v2399_dmgformula + smoke_v2400_trialwarn + smoke_v2401_winbgm + smoke_v2402_firstwin + smoke_v2403_diffbattle + smoke_v2404_chestrow + smoke_v2405_trialgoal + smoke_v2406_restrow + smoke_v2407_innrest + smoke_v2408_travelgoal + smoke_v2409_sellgoal + smoke_v2410_brewgoal + smoke_v2411_deathprog + smoke_v2412_battlegoal + smoke_v2413_xpcurve + smoke_v2414_nightbattle + smoke_v2415_treepin + smoke_v2416_steps + smoke_v2417_mapdrink + smoke_v2418_goldcurve + smoke_v2419_luckdrp + smoke_v2420_skillprog + smoke_v2421_allquest + smoke_v2422_huntprog + smoke_v2423_eliteprog + smoke_v2424_pondslime + smoke_v2425_potionprog + smoke_v2426_levelprog + smoke_v2427_richprog + smoke_v2428_outprog + smoke_v2429_xpcurve3 + smoke_v2430_goldcurve3 + smoke_v2431_elixirprog + smoke_v2432_golemquest + smoke_v2433_goldcurve4 + smoke_v2434_trialquest + smoke_v2435_goldcurve5 + smoke_v2436_codexrow + smoke_v2437_goldcurve6 + smoke_v2438_goldcurve7 + smoke_v2439_xpcurve4 + smoke_v2440_potionprog + smoke_v2441_xpcurve5 + smoke_v2442_chestprog + smoke_v2443_xpcurve6 + smoke_v2444_goldcurve8 + smoke_v2445_goldcurve9 + smoke_v2446_mushprog + smoke_v2447_xpcurve7 + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22（npm test 串跑）'));
+ok('README 件套口径为二百九十八件套（二百九十七件套清除）',
+  readmeSrc.includes('冒烟二百九十八件套（二百九十七件套清除）') &&
   !readmeSrc.includes('冒烟一百三十八件套（一百三十七件套清' + '除）'));
 ok('README 含 v22.43 守护描述（帮助页遇敌槽/危险格机制行守护）',
   readmeSrc.includes('v22.43 起含帮助页「地图指南」遇敌槽/危险格机制行守护'));
 ok('README 视觉 bullet 含机制行指针（H 帮助页·地图指南）',
   readmeSrc.includes('遇敌槽 / 危险格机制行') && readmeSrc.includes('H 帮助页·地图指南新增'));
-ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v24.74'));
+ok('CHANGELOG 顶部已追加 v22.44 条目', changelogSrc.startsWith('## v24.75'));
 
 // —— 姊妹件套 pin（v2242..v2237 随新现实更新）复查 + 旧代零残留 ——
 const readTest = (name) => fs.readFileSync(path.join(ROOT, 'tests', name), 'utf8');
@@ -262,14 +262,14 @@ const s2237 = readTest('smoke_v2237_minimaplegend.mjs');
 const s2238 = readTest('smoke_v2238_starwell.mjs');
 const s2234 = readTest('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2242 的 GAME_VERSION 字面量 pin 已更新为 v22.43（旧 v22.42 零残留）',
-  s2242.includes("const GAME_VERSION = 'v24.74';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
+  s2242.includes("const GAME_VERSION = 'v24.75';") && !s2242.includes("const GAME_VERSION = 'v22." + "42';"));
 ok('smoke_v2237 的地图指南行数 pin 已更新为 === 8', s2237.includes('page.length === 8'));
 ok('smoke_v2237 的机制行/通关之路下标 pin 已更新（labels[6]=机制行 labels[7]=通关之路）',
   s2237.includes("labels[6] === '遇敌槽 / 危险格'") && s2237.includes("labels[7] === '通关之路'"));
 ok('smoke_v2238 的地图指南行数 pin 已更新为 === 8', s2238.includes('page.length === 8'));
-ok('smoke_v2234 的 README 件套 pin 已随新现实更新为二百九十七件套（二百九十六件套清除）',
-  s2234.includes('二百九十七件套（二百九十六件套清除）'));
-ok('smoke_v2234 的 package.json 件套计数 pin 已更新为 === 139', s2234.includes('testChain === 297'));
+ok('smoke_v2234 的 README 件套 pin 已随新现实更新为二百九十八件套（二百九十七件套清除）',
+  s2234.includes('二百九十八件套（二百九十七件套清除）'));
+ok('smoke_v2234 的 package.json 件套计数 pin 已更新为 === 139', s2234.includes('testChain === 298'));
 // 旧代串尾 pin 全库零残留：不应再有任何测试检验「smoke_v2242_mushfield（npm test 串跑）」旧尾形态（本文件自身除外）
 const testsDir = fs.readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.mjs') && f !== 'smoke_v2243_encguide.mjs');
 let legacyTail = [];
