@@ -92,7 +92,7 @@ const hSrc = fs.readFileSync(path.join(ROOT, 'js/hero.js'), 'utf8');
 
 // —— data.js 版本与注释 ——
 ok('data.js GAME_VERSION 字面量已为 v24.76（旧 v24.75 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.76';") && !dSrc.includes("const GAME_VERSION = 'v24.75';"));
+  dSrc.includes("const GAME_VERSION = 'v24.77';") && !dSrc.includes("const GAME_VERSION = 'v24.75';"));
 ok('data.js 含 v24.76 注释（成就解锁横幅「（成就 N/76）」进度后缀说明）',
   dSrc.includes('// v24.76 体验打磨·信息透明·计数现场') && dSrc.includes('成就解锁横幅补「（成就 N/76）」进度后缀'));
 ok('data.js 保留 v24.73/v24.75 历史注释（经验曲线方法论零丢失）',
@@ -205,33 +205,33 @@ function runAch(hero) {
 
 // —— README ——
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
-ok('README 件套口径已为二百九十九件套（二百九十八件套清除）',
-  readme.includes('冒烟二百九十九件套（二百九十八件套清除）'));
-ok('README tests 树含 v24.76 守护描述（「成就解锁横幅「（成就 N/76）」进度后缀」+「（成就 N/76）」+「计数现场」）与 smoke_v2476_achprog 入库（299 份）',
+ok('README 件套口径已为三百件套（二百九十九件套清除）',
+  readme.includes('冒烟三百件套（二百九十九件套清除）'));
+ok('README tests 树含 v24.76 守护描述（「成就解锁横幅「（成就 N/76）」进度后缀」+「（成就 N/76）」+「计数现场」）与 smoke_v2476_achprog 入库（300 份）',
   readme.includes('v24.76 起含 「成就解锁横幅「（成就 N/76）」进度后缀」守护') &&
   readme.includes('（成就 N/76）') && readme.includes('计数现场') &&
-  readme.includes('smoke_v2476_achprog 入库（299 份）'));
+  readme.includes('smoke_v2476_achprog 入库（300 份）'));
 ok('README 仍保留 v24.75 早期 xp 守护描述且其入库口径已推进至 299 份（历史零丢失）',
-  readme.includes('v24.75 起含 「后期经验曲线续平滑（第二十二轮）」守护') && readme.includes('smoke_v2475_xpcurve22 入库（299 份）'));
+  readme.includes('v24.75 起含 「后期经验曲线续平滑（第二十二轮）」守护') && readme.includes('smoke_v2475_xpcurve22 入库（300 份）'));
 ok('README tests 树串尾已延伸至 smoke_v2476_achprog（npm test 串跑）',
-  readme.includes('smoke_v2475_xpcurve22 + smoke_v2476_achprog（npm test 串跑）'));
-ok('README 尚无三百件套口径（哨兵前望 300 语义：下一版才写 300）',
-  !readme.includes('三百件套') && !readme.includes('冒烟三百件套') && !readme.includes('（300 份）'));
+  readme.includes('smoke_v2475_xpcurve22 + smoke_v2476_achprog + smoke_v2477_fisher（npm test 串跑）'));
+ok('README 尚无三百零一件套口径（哨兵前望 300 语义：下一版才写 300）',
+  !readme.includes('三百零一件套') && !readme.includes('冒烟三百零一件套') && !readme.includes('（301 份）'));
 
 // —— package.json 链 ——
 const pkgRaw = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
 ok('package.json 实跑链共 298 专项（smoke.mjs + 298 专项 = 299 总件套），链长计数精确匹配',
-  chain.length === 298 && chainAll.length === 299,
+  chain.length === 299 && chainAll.length === 300,
   `chain=${chain.length} chainAll=${chainAll.length}`);
-ok('package.json 链尾为 smoke_v2476_achprog', chain[chain.length - 1] === 'smoke_v2476_achprog', chain[chain.length - 1]);
+ok('package.json 链尾为 smoke_v2476_achprog', chain[chain.length - 1] === 'smoke_v2477_fisher', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2476_achprog.mjs（node tests/ 前缀形态，紧随 smoke_v2475_xpcurve22 之后）',
-  pkgRaw.includes('node tests/smoke_v2475_xpcurve22.mjs && node tests/smoke_v2476_achprog.mjs"'));
+  pkgRaw.includes('node tests/smoke_v2475_xpcurve22.mjs && node tests/smoke_v2476_achprog.mjs && node tests/smoke_v2477_fisher.mjs"'));
 
 // —— CHANGELOG ——
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('CHANGELOG 顶部条目已为 v24.76（startsWith）', changelog.startsWith('## v24.76 '));
+ok('CHANGELOG 顶部条目已为 v24.76（startsWith）', changelog.startsWith('## v24.77 '));
 ok('CHANGELOG v24.76 条目含「计数现场」「成就 N/76」「hero.ach」「ACH_LIST.length」',
   changelog.includes('计数现场') && changelog.includes('成就 N/76') && changelog.includes('hero.ach') && changelog.includes('ACH_LIST.length'));
 ok('CHANGELOG 仍保留 v24.75/v24.72 经验曲线条目标题（历史零丢失）',
@@ -240,28 +240,28 @@ ok('CHANGELOG 仍保留 v24.75/v24.72 经验曲线条目标题（历史零丢失
 // —— 套件/目录级 ——
 const testsDir = path.join(ROOT, 'tests');
 const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs'));
-ok('tests 目录套件数 = 299（smoke.mjs + 298 专项）', files.length === 299, `files=${files.length}`);
+ok('tests 目录套件数 = 299（smoke.mjs + 298 专项）', files.length === 300, `files=${files.length}`);
 ok('tests 目录无孤儿套件（目录数与 package.json 链恒等）', files.length === chainAll.length);
 ok('smoke_v2476_achprog.mjs 已在目录中且链尾无遗漏',
-  files.includes('smoke_v2476_achprog.mjs') && chain[chain.length - 1] === 'smoke_v2476_achprog');
+  files.includes('smoke_v2476_achprog.mjs') && chain[chain.length - 1] === 'smoke_v2477_fisher');
 
 // —— 套件内遗留哨兵（零残留） ——
 const s2415 = fs.readFileSync(path.join(testsDir, 'smoke_v2415_treepin.mjs'), 'utf8');
-ok('smoke_v2415 套件内 treeTok 口径已推进为 299', s2415.includes('treeTok.length === 299'));
-ok('smoke_v2415 套件内树尾 pin 已推进为 smoke_v2476_achprog', s2415.includes("=== 'smoke_v2476_achprog'"));
-ok('smoke_v2415 套件内件数口哨兵（尚无 300 口径）', s2415.includes("!readme.includes('三百件套')"));
+ok('smoke_v2415 套件内 treeTok 口径已推进为 299', s2415.includes('treeTok.length === 300'));
+ok('smoke_v2415 套件内树尾 pin 已推进为 smoke_v2476_achprog', s2415.includes("=== 'smoke_v2477_fisher'"));
+ok('smoke_v2415 套件内件数口哨兵（尚无 300 口径）', s2415.includes("!readme.includes('三百零一件套')"));
 
 const s2429 = fs.readFileSync(path.join(testsDir, 'smoke_v2429_xpcurve3.mjs'), 'utf8');
-ok('smoke_v2429 套件内 README 件数口径已推进为二百九十九件套（二百九十八件套清除）',
-  s2429.includes('二百九十九件套（二百九十八件套清除）'));
-ok('smoke_v2429 套件内入库 pin 已推进至 299 份', s2429.includes('入库（299 份）'));
-ok('smoke_v2429 套件内件套计数已推进 299（files.length === 299）且树尾 pin 已推进为 smoke_v2476_achprog',
-  s2429.includes('files.length === 299') && s2429.includes("chain[chain.length - 1] === 'smoke_v2476_achprog'"));
+ok('smoke_v2429 套件内 README 件数口径已推进为三百件套（二百九十九件套清除）',
+  s2429.includes('三百件套（二百九十九件套清除）'));
+ok('smoke_v2429 套件内入库 pin 已推进至 299 份', s2429.includes('入库（300 份）'));
+ok('smoke_v2429 套件内件套计数已推进 299（files.length === 300）且树尾 pin 已推进为 smoke_v2476_achprog',
+  s2429.includes('files.length === 300') && s2429.includes("chain[chain.length - 1] === 'smoke_v2477_fisher'"));
 
 const s2436 = fs.readFileSync(path.join(testsDir, 'smoke_v2436_codexrow.mjs'), 'utf8');
-ok('smoke_v2436 双计数 pin 已推进（298 专项 / 299 总件套）且尚无 300 口径哨兵',
-  s2436.includes("suiteFiles.length === 298 && fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).length === 299")
-  && s2436.includes("!readme.includes('冒烟三百件套')") && s2436.includes("!readme.includes('（300 份）')"));
+ok('smoke_v2436 双计数 pin 已推进（298 专项 / 300）且尚无 300 口径哨兵',
+  s2436.includes("suiteFiles.length === 299 && fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).length === 300")
+  && s2436.includes("!readme.includes('冒烟三百零一件套')") && s2436.includes("!readme.includes('（301 份）')"));
 
 // —— 全库零残留哨兵链（v24.75 口径 → v24.76；豁免本套件与上一版套件） ——
 const hits = [];
@@ -274,13 +274,13 @@ for (const f of files) {
   if (s.includes('二百九十八件套（二百九十七件套清除）')) hits.push(`${f}:cnt`);
   if (s.includes('入库（298 份）')) hits.push(`${f}:ruku`);
   if (s.includes("=== 'smoke_v2475_xpcurve22'")) hits.push(`${f}:tail`);
-  if (s.includes('chain.length === 297')) hits.push(`${f}:chainLen`);
-  if (s.includes('chainAll.length === 298')) hits.push(`${f}:chainAll`);
-  if (s.includes('files.length === 298')) hits.push(`${f}:filesCnt`);
-  if (s.includes('treeTok.length === 298')) hits.push(`${f}:treeTok`);
-  if (s.includes('testChain === 298')) hits.push(`${f}:testChain`);
-  if (s.includes('suiteFiles.length === 297')) hits.push(`${f}:suiteFiles`);
-  if (s.includes('（第 298 份）')) hits.push(`${f}:ord`);
+  if (s.includes('chain.length === 298')) hits.push(`${f}:chainLen`);
+  if (s.includes('chainAll.length === 299')) hits.push(`${f}:chainAll`);
+  if (s.includes('files.length === 299')) hits.push(`${f}:filesCnt`);
+  if (s.includes('treeTok.length === 299')) hits.push(`${f}:treeTok`);
+  if (s.includes('testChain === 299')) hits.push(`${f}:testChain`);
+  if (s.includes('suiteFiles.length === 298')) hits.push(`${f}:suiteFiles`);
+  if (s.includes('（第 299 份）')) hits.push(`${f}:ord`);
 }
 ok('全库测试零残留 v24.75 GAME_VERSION/顶 pin/298 口径（哨兵链，豁免本套件与上一版）', hits.length === 0, hits.slice(0, 12).join(' | '));
 

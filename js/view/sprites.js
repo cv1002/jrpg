@@ -378,5 +378,9 @@ export function drawNpcMark(px,py,mark){
   // hammer/kettle/gem 等占位标记同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它
   // mark 惯例）
   else if(mark==='bell'){ c.fillStyle='#c0c8d4'; c.fillRect(24,7,7,8); c.fillStyle='#8a5a2b'; c.fillRect(26,4,3,3); c.fillStyle='#e8d3a8'; c.fillRect(26,15,2,2); }
+  // 鱼（v24.77 渔翁专属）：NPC 贴图缺失时程序化绘制的头侧小鱼——与既有 bell/hat/lamp/pick/fan/qin/
+  // hammer/kettle/gem 等占位标记同一纯显示分支，零结算影响；贴图齐备时走 sprite 路径不绘制（同其它
+  // mark 惯例）
+  else if(mark==='fish'){ c.fillStyle='#7fb8d8'; c.fillRect(19,14,11,4); c.fillStyle='#5a94b8'; c.fillRect(30,14,3,4); c.fillStyle='#cfeaff'; c.fillRect(21,15,2,2); }
   c.restore();
 }
