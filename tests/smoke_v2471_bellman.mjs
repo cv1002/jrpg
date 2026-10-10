@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 // —— 源级落位：data.js v24.71 注释 + 三件套 + GAME_VERSION + sprites.js bell 分支 ——
 ok('data.js 含 v24.71 版本注释（听钟人三件套说明，注释按引入版次锚定 v24.71）', dataSrc.includes('v24.71 新 NPC·纯风味'));
 ok('data.js GAME_VERSION 字面量已为 v24.71（旧 v24.70 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.75';") && !dataSrc.includes("const GAME_VERSION = 'v24.70';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.76';") && !dataSrc.includes("const GAME_VERSION = 'v24.70';"));
 ok('data.js 仍保留 v24.70 历史注释（第二十轮经验平滑注释未动）', dataSrc.includes('v24.70 数值平衡·后期经验曲线续平滑'));
 ok('data.js NPC_SPOTS 含 14,5 → bellman 键', dataSrc.includes("'14,5': 'bellman'"));
 ok('data.js NPCS 含 bellman 听钟人（name/mark/linesByStage 落位）', dataSrc.includes("bellman:{name:'听钟人', mark:'bell', linesByStage:["));
@@ -200,13 +200,13 @@ try { CAPTURED.length = 0; drawWorld(); } catch (e) { worldOk = false; console.l
 ok('运行期：drawWorld 村井旁渲染不抛错', worldOk);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树串尾已延伸至 smoke_v2471_bellman（... + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22（npm test 串跑））',
-  readme.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22（npm test 串跑）'));
-ok('README 件套口径为二百九十八件套（二百九十七件套清除）',
-  readme.includes('冒烟二百九十八件套（二百九十七件套清除）'));
+ok('README tests 树串尾已延伸至 smoke_v2471_bellman（... + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22 + smoke_v2476_achprog（npm test 串跑））',
+  readme.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22 + smoke_v2476_achprog（npm test 串跑）'));
+ok('README 件套口径为二百九十九件套（二百九十八件套清除）',
+  readme.includes('冒烟二百九十九件套（二百九十八件套清除）'));
 ok('README 含 v24.71 守护描述（潮灯镇听钟人新 NPC 守护，按引入版次锚定 v24.71）', readme.includes('v24.71 起含潮灯镇「听钟人」新 NPC 守护'));
-ok('README 含 smoke_v2471_bellman 入库（298 份）', readme.includes('smoke_v2471_bellman 入库（298 份）'));
-ok('README 仍保留 smoke_v2470_xpcurve20 入库（298 份）历史口径', readme.includes('smoke_v2470_xpcurve20 入库（298 份）'));
+ok('README 含 smoke_v2471_bellman 入库（299 份）', readme.includes('smoke_v2471_bellman 入库（299 份）'));
+ok('README 仍保留 smoke_v2470_xpcurve20 入库（299 份）历史口径', readme.includes('smoke_v2470_xpcurve20 入库（299 份）'));
 ok('README 潮灯镇行含听钟人描述（第十四位可对话角色）',
   readme.includes('村井旁新增 听钟人') && readme.includes('第十四位可对话角色'));
 ok('README 成就口径「76 项」双处不变（本版非成就版，零回归）',
@@ -214,8 +214,8 @@ ok('README 成就口径「76 项」双处不变（本版非成就版，零回归
 ok('package.json 已收录 smoke_v2471_bellman（npm test 串跑第 295 份 · 链尾已延伸至 v2472）',
   pkg.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 295 件套', testChain === 298, String(testChain));
-ok('CHANGELOG 含 v24.71 条目（顶 pin）', changelog.startsWith('## v24.75 '));
+ok('package.json test 串共 295 件套', testChain === 299, String(testChain));
+ok('CHANGELOG 含 v24.71 条目（顶 pin）', changelog.startsWith('## v24.76 '));
 ok('CHANGELOG v24.71 条目含「听钟人/第十四位」', changelog.includes('听钟人') && changelog.includes('第十四位可对话角色'));
 ok('CHANGELOG 仍保留 v24.70 条目标题（历史积累）', changelog.includes('## v24.70 数值平衡'));
 
@@ -227,27 +227,27 @@ const chainFiles = ['smoke.mjs', ...[...pkg.matchAll(/node tests\/(smoke_v\d+_\w
 const chainSet = new Set(chainFiles);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 295 与实跑链恒等', files.length === 298, String(files.length));
+ok('tests 目录件套 = 295 与实跑链恒等', files.length === 299, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.70 pin 零残留 ——
 const s2470 = read('smoke_v2470_xpcurve20.mjs');
-ok('smoke_v2470 的 GAME_VERSION 字面量 pin 已更新为 v24.71', s2470.includes("const GAME_VERSION = 'v24.75';"));
-ok('smoke_v2470 的 CHANGELOG 顶 pin 已更新为 ## v24.71', s2470.includes("startsWith('## v24.75 '"));
-ok('smoke_v2470 的件套 pin 已更新为二百九十八件套（二百九十七件套清除）', s2470.includes('二百九十八件套（二百九十七件套清除）'));
-ok('smoke_v2470 的 README 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22（npm test 串跑）'));
+ok('smoke_v2470 的 GAME_VERSION 字面量 pin 已更新为 v24.71', s2470.includes("const GAME_VERSION = 'v24.76';"));
+ok('smoke_v2470 的 CHANGELOG 顶 pin 已更新为 ## v24.71', s2470.includes("startsWith('## v24.76 '"));
+ok('smoke_v2470 的件套 pin 已更新为二百九十九件套（二百九十八件套清除）', s2470.includes('二百九十九件套（二百九十八件套清除）'));
+ok('smoke_v2470 的 README 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22 + smoke_v2476_achprog（npm test 串跑）'));
 ok('smoke_v2470 的 package.json 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs'));
-ok('smoke_v2470 的链尾 pin 已推进至 smoke_v2473_xpcurve21（第 298 份）', s2470.includes("=== 'smoke_v2475_xpcurve22'"));
-ok('smoke_v2470 的入库 pin 已推进至 295 份', s2470.includes('入库（298 份）'));
+ok('smoke_v2470 的链尾 pin 已推进至 smoke_v2473_xpcurve21（第 299 份）', s2470.includes("=== 'smoke_v2476_achprog'"));
+ok('smoke_v2470 的入库 pin 已推进至 295 份', s2470.includes('入库（299 份）'));
 const s2436 = read('smoke_v2436_codexrow.mjs');
-ok('smoke_v2436 双计数 pin 已推进（297 专项 / 298 总件套）且尚无 298 口径哨兵',
-  s2436.includes('suiteFiles.length === 297 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 298') &&
-  s2436.includes('!readme.includes(\'冒烟二百九十九件套\')') && s2436.includes('!readme.includes(\'（299 份）\')'));
+ok('smoke_v2436 双计数 pin 已推进（298 专项 / 299 总件套）且尚无 298 口径哨兵',
+  s2436.includes('suiteFiles.length === 298 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 299') &&
+  s2436.includes('!readme.includes(\'冒烟三百件套\')') && s2436.includes('!readme.includes(\'（300 份）\')'));
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v2471_bellman（第 296 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v2475_xpcurve22'"));
-ok('smoke_v2415 树串 token 数已推进至 295', s2415.includes('treeTok.length === 298'));
-ok('smoke_v2415 哨兵「尚无 296」口径（二百九十七件套 bare 否定式）', s2415.includes("!readme.includes('二百九十九件套')"));
+ok('smoke_v2415 链尾已推进至 smoke_v2471_bellman（第 297 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v2476_achprog'"));
+ok('smoke_v2415 树串 token 数已推进至 295', s2415.includes('treeTok.length === 299'));
+ok('smoke_v2415 哨兵「尚无 296」口径（二百九十七件套 bare 否定式）', s2415.includes("!readme.includes('三百件套')"));
 const s2234 = read('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2234 的 NPC_SPOTS 总数 pin 已推进至 39', s2234.includes('NPC_SPOTS).length === 39'));
 const s2314 = read('smoke_v2314_voices.mjs');

@@ -145,7 +145,17 @@ export function applyAchievements() {
       // 更长档保留，加奖结算（hero.gold += PERFECTION_GOLD）逐字未动，零结算零数值零存档变化。
       bind.boxMsg(`🏆 成就解锁：【${def ? def.name : id}】图鉴收集完成！额外奖励 ${PERFECTION_GOLD} 金币！（剩余 ${hero.gold} 金）`, CODEX_MSG_MS);
     } else {
-      bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : ''}`, ACH_MSG_MS);
+      // v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/76）」进度后缀（承 v24.55 住店
+      // 战报/v24.57 夜间胜利战报同一「计数现场报进度」主线——解锁瞬间正是成就收集线的计数现场：此前
+      // 通用分支只报「【名】+ 描述」，整条收集线进度只藏在 C 成就页「已解锁 N/M」与 I 状态页
+      // 「🏆:N/M」两处静态页（v22.9/v21.96-v22.3 五端同源），玩家在解锁瞬间看不到自己离全收集还差
+      // 几枚；现按 v24.26 升级横幅「（🌙 守灯者 N/10）」同款在句末补「（成就 N/M）」，分子读本函数
+      // 唯一产生点上方已 push 的 hero.ach（解锁即含本次）、分母读 data.js ACH_LIST 单一数据源（与
+      // C 页/胜利/阵亡/尾声/状态页同读一份源，增删成就只改 data.js 一处自动跟随），防御式
+      // (hero.ach||[]).length 旧档零迁移；perfection 特别庆贺分支（🏆 图鉴收集完成 + 999 金 + 剩余金币）
+      // 信息已过载保持逐字零回归；纯显示零结算零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励
+      // 结算逐字未动）。
+      bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : ''}（成就 ${(hero.ach || []).length}/${ACH_LIST.length}）`, ACH_MSG_MS);
     }
   }
 }

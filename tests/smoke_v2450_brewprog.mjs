@@ -107,7 +107,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.49', !!_gv && (_gv[0] > 24 || (_gv
 ok('data.js 含 v24.50 注释（酿造成功战报「🍶 妙手回春 N/5」进度后缀）',
   dSrc.includes('v24.50 体验打磨·信息透明·计数现场：🧪 酿造成功战报补'));
 ok('data.js GAME_VERSION 字面量已为 v24.50（旧 v24.49 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.75';") && !dSrc.includes("const GAME_VERSION = 'v24.49';"));
+  dSrc.includes("const GAME_VERSION = 'v24.76';") && !dSrc.includes("const GAME_VERSION = 'v24.49';"));
 ok('data.js 仍保留 v24.49 历史注释（后期经验曲线续平滑第八轮·本版保留）',
   dSrc.includes('v24.49 数值平衡·后期经验曲线续平滑'));
 ok('data.js 仍保留 v24.48 历史注释（熟能生巧战报进度后缀·本版保留）',
@@ -238,28 +238,28 @@ function runBrew(hero) {
 }
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为冒烟二百九十八件套（二百九十七件套清除）',
-  readme.includes('冒烟二百九十八件套（二百九十七件套清除）'));
-ok('README tests 含 v24.50 守护描述与 smoke_v2450_brewprog 入库（298 份）',
+ok('README 件套口径已为冒烟二百九十九件套（二百九十八件套清除）',
+  readme.includes('冒烟二百九十九件套（二百九十八件套清除）'));
+ok('README tests 含 v24.50 守护描述与 smoke_v2450_brewprog 入库（299 份）',
   readme.includes('v24.50 起含 「酿造成功战报「🍶 妙手回春 N/5」进度后缀」守护') &&
-  readme.includes('smoke_v2450_brewprog 入库（298 份）'));
+  readme.includes('smoke_v2450_brewprog 入库（299 份）'));
 ok('README 尚无 275 件套口径（哨兵前望 275 语义：下一版才写 275）',
-  !readme.includes('二百九十九件套') && !readme.includes('冒烟二百九十九件套'));
+  !readme.includes('三百件套') && !readme.includes('冒烟三百件套'));
 ok('README 仍保留 v24.49 守护描述与 v24.48 守护描述（历史保留）',
   readme.includes('v24.49 起含 「后期经验曲线续平滑（第八轮）」守护') &&
   readme.includes('v24.48 起含 「战斗技能战报「🔮 熟能生巧 N/30」进度后缀」守护'));
-ok('README tests 树串尾已延伸至 smoke_v2450_brewprog（... + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22（npm test 串跑））',
-  readme.includes('smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22（npm test 串跑）'));
+ok('README tests 树串尾已延伸至 smoke_v2450_brewprog（... + smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22 + smoke_v2476_achprog（npm test 串跑））',
+  readme.includes('smoke_v2448_castprog + smoke_v2449_xpcurve8 + smoke_v2450_brewprog + smoke_v2451_sellprog + smoke_v2452_scholarprog + smoke_v2453_innrestprog + smoke_v2454_spendprog + smoke_v2455_innspend + smoke_v2456_brewspend + smoke_v2457_nightwin + smoke_v2458_pondlamp + smoke_v2459_xpcurve9 + smoke_v2460_xpcurve10 + smoke_v2461_xpcurve11 + smoke_v2462_xpcurve12 + smoke_v2463_xpcurve13 + smoke_v2464_xpcurve14 + smoke_v2465_xpcurve15 + smoke_v2466_xpcurve16 + smoke_v2467_xpcurve17 + smoke_v2468_xpcurve18 + smoke_v2469_xpcurve19 + smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22 + smoke_v2476_achprog（npm test 串跑）'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 274 份（smoke.mjs + 273 专项）', chain.length === 297 && chainAll.length === 298, String(chain.length));
-ok('package.json 链尾为 smoke_v2450_brewprog（第 273 份）', chain[chain.length - 1] === 'smoke_v2475_xpcurve22', chain[chain.length - 1]);
+ok('package.json 实跑链共 274 份（smoke.mjs + 273 专项）', chain.length === 298 && chainAll.length === 299, String(chain.length));
+ok('package.json 链尾为 smoke_v2450_brewprog（第 273 份）', chain[chain.length - 1] === 'smoke_v2476_achprog', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2450_brewprog.mjs（node tests/ 前缀形态）',
   pkgRaw.includes('node tests/smoke_v2448_castprog.mjs && node tests/smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs'));
 ok('package.json 链锚逐字（...smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs"）',
-  pkgRaw.includes('smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs && node tests/smoke_v2473_xpcurve21.mjs && node tests/smoke_v2475_xpcurve22.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.50（startsWith）', changelog.startsWith('## v24.75 '));
+  pkgRaw.includes('smoke_v2449_xpcurve8.mjs && node tests/smoke_v2450_brewprog.mjs && node tests/smoke_v2451_sellprog.mjs && node tests/smoke_v2452_scholarprog.mjs && node tests/smoke_v2453_innrestprog.mjs && node tests/smoke_v2454_spendprog.mjs && node tests/smoke_v2455_innspend.mjs && node tests/smoke_v2456_brewspend.mjs && node tests/smoke_v2457_nightwin.mjs && node tests/smoke_v2458_pondlamp.mjs && node tests/smoke_v2459_xpcurve9.mjs && node tests/smoke_v2460_xpcurve10.mjs && node tests/smoke_v2461_xpcurve11.mjs && node tests/smoke_v2462_xpcurve12.mjs && node tests/smoke_v2463_xpcurve13.mjs && node tests/smoke_v2464_xpcurve14.mjs && node tests/smoke_v2465_xpcurve15.mjs && node tests/smoke_v2466_xpcurve16.mjs && node tests/smoke_v2467_xpcurve17.mjs && node tests/smoke_v2468_xpcurve18.mjs && node tests/smoke_v2469_xpcurve19.mjs && node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs && node tests/smoke_v2473_xpcurve21.mjs && node tests/smoke_v2475_xpcurve22.mjs && node tests/smoke_v2476_achprog.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.50（startsWith）', changelog.startsWith('## v24.76 '));
 ok('CHANGELOG v24.50 条目含「妙手回春」与「进度后缀」与「酿造」',
   changelog.includes('妙手回春') && changelog.includes('进度后缀') && changelog.includes('酿造'));
 ok('CHANGELOG 仍保留 v24.49 与 v24.48 条目（历史保留）',
@@ -270,24 +270,24 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 274（273 专项 + smoke.mjs）', files.length === 298, String(files.length));
+ok('tests 目录件套 = 274（273 专项 + smoke.mjs）', files.length === 299, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 275 ——
 const t2415 = read('tests/smoke_v2415_treepin.mjs');
 ok('smoke_v2415 链尾已推进至 smoke_v2450_brewprog（第 273 份）',
-  t2415.includes("chain[chain.length - 1] === 'smoke_v2475_xpcurve22'"));
-ok('smoke_v2415 树串 token 数已推进至 274', t2415.includes('treeTok.length === 298'));
+  t2415.includes("chain[chain.length - 1] === 'smoke_v2476_achprog'"));
+ok('smoke_v2415 树串 token 数已推进至 274', t2415.includes('treeTok.length === 299'));
 ok('smoke_v2415 哨兵「尚无 275」口径（二百七十四件套 bare 否定式）',
-  t2415.includes("!readme.includes('二百九十九件套')"));
+  t2415.includes("!readme.includes('三百件套')"));
 const s2429 = read('tests/smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 件盘口句已推进（冒烟二百九十八件套（二百九十七件套清除）正形态）',
-  s2429.includes("readme.includes('冒烟二百九十八件套（二百九十七件套清除）')"));
+ok('smoke_v2429 件盘口句已推进（冒烟二百九十九件套（二百九十八件套清除）正形态）',
+  s2429.includes("readme.includes('冒烟二百九十九件套（二百九十八件套清除）')"));
 ok('smoke_v2429 链尾断言已推进至「=== smoke_v2450_brewprog」',
-  s2429.includes("=== 'smoke_v2475_xpcurve22'"));
+  s2429.includes("=== 'smoke_v2476_achprog'"));
 ok('smoke_v2429 入库份数断言随新现实推进（入库 274 份）',
-  s2429.includes('入库（298 份）'));
+  s2429.includes('入库（299 份）'));
 
 // —— 旧代 pin 零残留扫描（v24.49 / 273 口径；豁免本套件与上一版套件否定式）——
 const leftovers = [];

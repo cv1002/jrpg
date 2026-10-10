@@ -98,7 +98,7 @@ ok('hero.js 旧裸文案零残留（无成就名的旧句已清除）',
 ok('hero.js 加奖结算逐字零回归（hero.gold += PERFECTION_GOLD 在 boxMsg 之前）',
   hSrc.includes('hero.gold += PERFECTION_GOLD;'));
 ok('hero.js 通用分支逐字零回归（其余 23 项「🔓 成就解锁：【名】+ 描述」）',
-  hSrc.includes('bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : \'\'}`, ACH_MSG_MS);'));
+  hSrc.includes('bind.boxMsg(`🔓 成就解锁：【${def ? def.name : id}】 ${def ? def.d : \'\'}（成就 ${(hero.ach || []).length}/${ACH_LIST.length}）`, ACH_MSG_MS);'));
 ok('hero.js 防御式回落与通用分支逐字同式（模板串内两处 ${def ? def.name : id}）',
   (hSrc.match(/\$\{def \? def\.name : id\}/g) || []).length === 2);
 
@@ -151,7 +151,7 @@ function runAch(hero) {
   const m = runAch(h);
   ok('运行期：perfection 档报文逐字「🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）」且连带 scholar2「见多识广」中档横幅（v22.72 全图鉴 13 种也越过 10 种门槛）',
     m.length === 2 && m[0] === '🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）' &&
-    m[1] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物', m.join(' | '));
+    m[1] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 5/76）', m.join(' | '));
   ok('运行期：perfection 档加奖结算一致（gold 100→1099，ach 落 perfection）',
     h.gold === 100 + PERFECTION_GOLD && (h.ach || []).includes('perfection'));
 }
@@ -161,7 +161,7 @@ function runAch(hero) {
   const h = mkHero({ gold: 100, level: 5 });
   const m = runAch(h);
   ok('运行期：lvl5 档报文逐字零回归「🔓 成就解锁：【独当一面】 等级达到 5 级」',
-    m.length === 1 && m[0] === '🔓 成就解锁：【独当一面】 等级达到 5 级', m.join(' | '));
+    m.length === 1 && m[0] === '🔓 成就解锁：【独当一面】 等级达到 5 级（成就 1/76）', m.join(' | '));
   ok('运行期：lvl5 档零加奖（gold 100 不变，ach 落 lvl5）',
     h.gold === 100 && (h.ach || []).includes('lvl5'));
 }
@@ -173,9 +173,9 @@ function runAch(hero) {
   const m = runAch(h);
   ok('运行期：双解锁档三条横幅（lvl5 通用口径 + perfection 带名 + scholar2 中档）',
     m.length === 3 &&
-    m.includes('🔓 成就解锁：【独当一面】 等级达到 5 级') &&
+    m.includes('🔓 成就解锁：【独当一面】 等级达到 5 级（成就 3/76）') &&
     m.includes('🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 999 金）') &&
-    m.includes('🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物'),
+    m.includes('🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 5/76）'),
     m.join(' | '));
   ok('运行期：双解锁档结算一致（gold 0→999，两成就均落）',
     h.gold === PERFECTION_GOLD && h.ach.includes('lvl5') && h.ach.includes('perfection'));
@@ -202,7 +202,7 @@ function runAch(hero) {
   const h = mkHero({ gold: 100, bestiary: b, ach: ['scholar', 'elites'] });
   const m = runAch(h);
   ok('运行期：图鉴缺一种档 scholar2 中档横幅且 perfection 不解锁零加奖',
-    m.length === 1 && m[0] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物' &&
+    m.length === 1 && m[0] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 3/76）' &&
     h.gold === 100 && !(h.ach || []).includes('perfection'), m.join(' | '));
 }
 
