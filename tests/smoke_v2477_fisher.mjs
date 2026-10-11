@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 // —— 源级落位：data.js v24.77 注释 + 三件套 + GAME_VERSION + sprites.js fish 分支 ——
 ok('data.js 含 v24.77 版本注释（渔翁三件套说明，注释按引入版次锚定 v24.77）', dataSrc.includes('v24.77 新 NPC·纯风味'));
 ok('data.js GAME_VERSION 字面量已为 v24.77（旧 v24.76 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.79';") && !dataSrc.includes("const GAME_VERSION = 'v24.76';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.80';") && !dataSrc.includes("const GAME_VERSION = 'v24.76';"));
 ok('data.js 仍保留 v24.76 历史注释（成就解锁横幅计数现场注释未动）', dataSrc.includes('v24.76 体验打磨·信息透明·计数现场'));
 ok('data.js NPC_SPOTS 含 17,7 → fisher 键', dataSrc.includes("'17,7': 'fisher'"));
 ok('data.js NPCS 含 fisher 渔翁（name/mark/linesByStage 落位）', dataSrc.includes("fisher:{name:'渔翁', mark:'fish', linesByStage:["));
@@ -126,36 +126,41 @@ const { drawTalk } = await import('../js/view/menus.js');
 const { voiceList } = await import('../js/view/menus.js');
 const { drawWorld } = await import('../js/view/drawWorld.js');
 
-// 档一：普通新档——零任务 NPC：npcQuestPages 回退到 linesByStage 默认档两页
+// 档一：普通新档——渔翁 v24.80 升格后任务页优先于 linesByStage：offer 单页（5 行）
 let hero = newGame('余烬');
 S.G = hero;
-ok('运行期：npcQuestPages 零任务回退到 linesByStage 默认档（两页）',
-  (() => { const p = npcQuestPages(hero, 'fisher'); return Array.isArray(p) && p.length === 2; })());
-ok('运行期：默认档台词含「旧灯」与「塘」同源叙事', (() => { const p = npcQuestPages(hero, 'fisher'); return p && p[0].join('').includes('渔翁') && p[0].join('').includes('旧灯'); })());
-ok('运行期：resolveNpcTalk 零任务返回 null（无待办）', resolveNpcTalk(hero, 'fisher') === null);
-ok('运行期：npcQuestMark 零任务无顶标（null）', npcQuestMark(hero, 'fisher') === null);
-// 档二：bossDefeated/galleryOpen 分档在数据层
+ok('运行期：npcQuestPages 升格后落 offer 任务页（1 页 · 优先于 linesByStage）',
+  (() => { const p = npcQuestPages(hero, 'fisher'); return Array.isArray(p) && p.length === 1; })());
+ok('运行期：offer 页台词含「渔翁」与「旧灯」同源叙事', (() => { const p = npcQuestPages(hero, 'fisher'); return p && p[0].join('').includes('渔翁') && p[0].join('').includes('旧灯'); })());
+ok('运行期：npcQuestMark offer 态「❕ 可接委托」（升格后顶标翻转）', npcQuestMark(hero, 'fisher') === '❕ 可接委托', String(npcQuestMark(hero, 'fisher')));
+ok('运行期：resolveNpcTalk 接取 → {kind:accept} + quests.side_fish=active（v24.80 升格后零任务契约翻转）',
+  (() => { const a = resolveNpcTalk(hero, 'fisher'); return !!a && a.kind === 'accept' && a.id === 'side_fish' && hero.quests.side_fish === 'active'; })());
+ok('运行期：接取后 npcQuestMark 归零（active 无顶标）', npcQuestMark(hero, 'fisher') === null, String(npcQuestMark(hero, 'fisher')));
+// 档二：bossDefeated/galleryOpen 分档随任务 done 页（承 v24.72 听钟人同款——原 linesByStage 三档保留在数据层）
 hero = newGame('灯见');
+hero.quests = { side_fish: 'done' };
 hero.bossDefeated = true;
 S.G = hero;
-ok('运行期：bossDefeated 后默认档台词切换（灯芯回来了段）', (() => { const p = npcQuestPages(hero, 'fisher'); return p && p[0].join('').includes('灯芯回来了'); })());
+ok('运行期：bossDefeated 后 done 页分档（灯芯回来了段）', (() => { const p = npcQuestPages(hero, 'fisher'); return p && p[0].join('').includes('灯芯回来了'); })());
 hero = newGame('潮');
+hero.quests = { side_fish: 'done' };
 hero.bossDefeated = true;
 hero.galleryOpen = true;
 S.G = hero;
-ok('运行期：galleryOpen 后默认档台词切换（回廊一开段）', (() => { const p = npcQuestPages(hero, 'fisher'); return p && p[0].join('').includes('回廊一开'); })());
-// 档三：trueBoss → after 两页彩蛋
+ok('运行期：galleryOpen 后 done 页分档（回廊一开段）', (() => { const p = npcQuestPages(hero, 'fisher'); return p && p[0].join('').includes('回廊一开'); })());
+// 档三：trueBoss → done 真结局档并入 after 两页彩蛋（零内容丢失）
 hero = newGame('灯');
+hero.quests = { side_fish: 'done' };
 hero.trueBoss = true;
 S.G = hero;
-ok('运行期：trueBoss 后 npcQuestPages 落 after 两页彩蛋（塘水清了·月亮回来了）',
+ok('运行期：trueBoss 后 npcQuestPages 落 done 真结局档两页彩蛋（塘水清了·月亮回来了——after 并入零内容丢失）',
   (() => { const p = npcQuestPages(hero, 'fisher'); return Array.isArray(p) && p.length === 2 && p[0].join('').includes('清喽') && p[1].join('').includes('只捞鱼'); })());
-// openTalk → talk 场景；drawTalk 渲染出台词
+// openTalk → talk 场景；drawTalk 渲染出台词（offer 单页）
 hero = newGame('灯');
 S.G = hero;
 S.scene = 'world';
 openTalk('fisher');
-ok("运行期：openTalk('fisher') 进 talk 场景（curNpc/talkPages 落位 · linesByStage 默认为 2 页）", S.scene === 'talk' && S.curNpc === 'fisher' && S.talkPages.length === 2);
+ok("运行期：openTalk('fisher') 进 talk 场景（curNpc/talkPages 落位 · offer 页 1 页）", S.scene === 'talk' && S.curNpc === 'fisher' && S.talkPages.length === 1);
 ok('运行期：openTalk 已记入 hero.talked（社交成就计数跟随）', Array.isArray(hero.talked) && hero.talked.includes('fisher'));
 CAPTURED.length = 0;
 drawTalk();
@@ -166,13 +171,11 @@ S.G.x = 17; S.G.y = 8; S.dir = 'U';
 S.scene = 'world';
 interact();
 ok("运行期：interact 面北 (17,7) 真实开 fisher 对话", S.scene === 'talk' && S.curNpc === 'fisher');
-// talkNext 首 Enter（打字机已补全）→ 第二页；再 Enter → 回 world（零任务两页走完）
+// talkNext 首 Enter（打字机已补全）→ offer 页接取委托回 world（升格后 offer 单页即接取，承 v24.72 听钟人同款）
 S.talkLineAt = 0;
 talkNext();
-ok('运行期：talkNext 首 Enter 翻到第二页（仍在 talk）', S.scene === 'talk' && S.talkPage === 1);
-S.talkLineAt = 0;
-talkNext();
-ok('运行期：talkNext 再 Enter 走完两页回 world（零任务无结算）', S.scene === 'world' && Object.keys(S.G.quests || {}).length === 0);
+ok('运行期：talkNext 首 Enter 接取 side_fish 委托并回 world（offer 页即接取 · 零结算零数值）',
+  S.scene === 'world' && S.G.quests.side_fish === 'active');
 // voiceList 派生：加/删 NPC 自动跟随（39 处）
 const v0 = voiceList({});
 ok('运行期：voiceList 空档 39 条全 met=false（NPCS 39 处派生）', v0.length === 39 && v0.every((x) => !x.met), String(v0.length));
@@ -186,13 +189,13 @@ try { CAPTURED.length = 0; drawWorld(); } catch (e) { worldOk = false; console.l
 ok('运行期：drawWorld 水塘东岸渲染不抛错', worldOk);
 
 // —— README / package.json / CHANGELOG 同步守护 ——
-ok('README tests 树串尾已延伸至 smoke_v2477_fisher（... + smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24（npm test 串跑））',
-  readme.includes('smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24（npm test 串跑）'));
-ok('README 件套口径为三百零二件套（三百零一件套清除）',
-  readme.includes('冒烟三百零二件套（三百零一件套清除）'));
+ok('README tests 树串尾已延伸至 smoke_v2477_fisher（... + smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24 + smoke_v2480_fisherquest（npm test 串跑））',
+  readme.includes('smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24 + smoke_v2480_fisherquest（npm test 串跑）'));
+ok('README 件套口径为三百零三件套（三百零二件套清除）',
+  readme.includes('冒烟三百零三件套（三百零二件套清除）'));
 ok('README 含 v24.77 守护描述（潮灯镇渔翁新 NPC 守护，按引入版次锚定 v24.77）', readme.includes('v24.77 起含潮灯镇「渔翁」新 NPC 守护'));
-ok('README 含 smoke_v2477_fisher 入库（302 份）', readme.includes('smoke_v2477_fisher 入库（302 份）'));
-ok('README 仍保留 smoke_v2476_achprog 入库（302 份）历史口径', readme.includes('smoke_v2476_achprog 入库（302 份）'));
+ok('README 含 smoke_v2477_fisher 入库（303 份）', readme.includes('smoke_v2477_fisher 入库（303 份）'));
+ok('README 仍保留 smoke_v2476_achprog 入库（303 份）历史口径', readme.includes('smoke_v2476_achprog 入库（303 份）'));
 ok('README 潮灯镇行含渔翁描述（第十五位可对话角色）',
   readme.includes('水塘东岸新增 渔翁') && readme.includes('第十五位可对话角色'));
 ok('README 成就口径「76 项」双处不变（本版非成就版，零回归）',
@@ -200,8 +203,8 @@ ok('README 成就口径「76 项」双处不变（本版非成就版，零回归
 ok('package.json 已收录 smoke_v2477_fisher（npm test 串跑第 300 份）',
   pkg.includes('node tests/smoke_v2476_achprog.mjs && node tests/smoke_v2477_fisher.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 300 件套', testChain === 302, String(testChain));
-ok('CHANGELOG 含 v24.77 条目（顶 pin）', changelog.startsWith('## v24.79 '));
+ok('package.json test 串共 300 件套', testChain === 303, String(testChain));
+ok('CHANGELOG 含 v24.77 条目（顶 pin）', changelog.startsWith('## v24.80 '));
 ok('CHANGELOG v24.77 条目含「渔翁/第十五位」', changelog.includes('渔翁') && changelog.includes('第十五位可对话角色'));
 ok('CHANGELOG 仍保留 v24.76 条目标题（历史积累）', changelog.includes('## v24.76 体验打磨'));
 
@@ -213,27 +216,27 @@ const chainFiles = ['smoke.mjs', ...[...pkg.matchAll(/node tests\/(smoke_v\d+_\w
 const chainSet = new Set(chainFiles);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 300 与实跑链恒等', files.length === 302, String(files.length));
+ok('tests 目录件套 = 300 与实跑链恒等', files.length === 303, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹件套 pin 随新现实更新 + 旧代 v24.76 pin 零残留 ——
 const s2476 = read('smoke_v2476_achprog.mjs');
-ok('smoke_v2476 的 GAME_VERSION 字面量 pin 已更新为 v24.77', s2476.includes("const GAME_VERSION = 'v24.79';"));
-ok('smoke_v2476 的 CHANGELOG 顶 pin 已更新为 ## v24.77', s2476.includes("startsWith('## v24.79 "));
-ok('smoke_v2476 的件套 pin 已更新为三百零二件套（三百零一件套清除）', s2476.includes('三百零二件套（三百零一件套清除）'));
-ok('smoke_v2476 的 README 串尾 pin 已延伸至 smoke_v2477_fisher', s2476.includes('smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24（npm test 串跑）'));
+ok('smoke_v2476 的 GAME_VERSION 字面量 pin 已更新为 v24.77', s2476.includes("const GAME_VERSION = 'v24.80';"));
+ok('smoke_v2476 的 CHANGELOG 顶 pin 已更新为 ## v24.77', s2476.includes("startsWith('## v24.80 "));
+ok('smoke_v2476 的件套 pin 已更新为三百零三件套（三百零二件套清除）', s2476.includes('三百零三件套（三百零二件套清除）'));
+ok('smoke_v2476 的 README 串尾 pin 已延伸至 smoke_v2477_fisher', s2476.includes('smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24 + smoke_v2480_fisherquest（npm test 串跑）'));
 ok('smoke_v2476 的 package.json 串尾 pin 已延伸至 smoke_v2477_fisher', s2476.includes('node tests/smoke_v2476_achprog.mjs && node tests/smoke_v2477_fisher.mjs'));
-ok('smoke_v2476 的链尾 pin 已推进至 smoke_v2477_fisher（第 301 份）', s2476.includes("=== 'smoke_v2479_xpcurve24'"));
-ok('smoke_v2476 的入库 pin 已推进至 300 份', s2476.includes('入库（302 份）'));
+ok('smoke_v2476 的链尾 pin 已推进至 smoke_v2477_fisher（第 301 份）', s2476.includes("=== 'smoke_v2480_fisherquest'"));
+ok('smoke_v2476 的入库 pin 已推进至 300 份', s2476.includes('入库（303 份）'));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（299 专项 / 301）且尚无 301 口径哨兵',
-  s2436.includes("suiteFiles.length === 301 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 302") &&
-  s2436.includes("!readme.includes(\'冒烟三百零三件套\')") && s2436.includes("!readme.includes(\'（303 份）\')"));
+  s2436.includes("suiteFiles.length === 302 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 303") &&
+  s2436.includes("!readme.includes(\'冒烟三百零四件套\')") && s2436.includes("!readme.includes(\'（304 份）\')"));
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v2477_fisher（第 301 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v2479_xpcurve24'"));
-ok('smoke_v2415 树串 token 数已推进至 300', s2415.includes('treeTok.length === 302'));
-ok('smoke_v2415 哨兵「尚无 301」口径（三百零三件套 bare 否定式）', s2415.includes("!readme.includes('三百零三件套')"));
+ok('smoke_v2415 链尾已推进至 smoke_v2477_fisher（第 301 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v2480_fisherquest'"));
+ok('smoke_v2415 树串 token 数已推进至 300', s2415.includes('treeTok.length === 303'));
+ok('smoke_v2415 哨兵「尚无 301」口径（三百零四件套 bare 否定式）', s2415.includes("!readme.includes('三百零四件套')"));
 const s2234 = read('smoke_v2234_innkeeper.mjs');
 ok('smoke_v2234 的 NPC_SPOTS 总数 pin 已推进至 40', s2234.includes('NPC_SPOTS).length === 40'));
 const s2314 = read('smoke_v2314_voices.mjs');

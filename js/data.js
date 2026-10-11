@@ -2312,7 +2312,7 @@
 // v24.74 合流版：v24.72 新支线（子夜钟声）+ v24.73 数值平衡（四强怪每级经验 xp[1] 24→25）同一版本
 // 落地（两分支并行产物合流，0 内容丢失），件套 296→297（smoke_v2472_bellquest + smoke_v2473_xpcurve21
 // 双件套入库，链尾 smoke_v2473_xpcurve21）。
-const GAME_VERSION = 'v24.79';
+const GAME_VERSION = 'v24.80';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3068,6 +3068,15 @@ const GOLEM_GOAL = 1;       // 锻灯师支线需讨伐的石心魔像只数
 // （「被忘掉的地方没有晨昏」，与 nightWinNow/nightWins 同一判据零第二套口径）。
 const BELL_GOAL = 3;       // 听钟人支线需夜间战胜的场数
 
+// 捞灯目标（单一数据源）：渔翁支线「一网灯影」需捞起的旧灯盏数（计数 hero.drops——rules.rollDrop
+// 五档唯一写入点累加（防御式 (g.drops||0) 旧档零迁移）、与 ACH_LIST lucky/lucky2/lucky3「鸿运当头」
+// 系列及 v24.19 掉落战报「🍀 鸿运当头 N/30」同读一份源；「旧灯」= 战斗胜利后约 38% 触发的额外
+// 掉落——胜利结算时水花一翻、旧灯随泛而上，一次至多一盏）——与 MIST_GOAL / SLIME_GOAL / GOLEM_GOAL /
+// BELL_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/
+// 目标文案（obj）/接取对话（offer）全同步。「捞灯」从开局即 offer（承 side_bell/side_pond 同款无
+// unlockOn，保留完整接取流程——额外掉落自初战即可能触发，接取时机天然正确）。
+const FISH_GOAL = 10;      // 渔翁支线需捞起的旧灯盏数
+
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
 // 得 10 金'、'卖出魔法蘑菇 ×1 → 10金'）：想调卖菇价（如涨到 15）要改三处，还极易只改结账漏改价签/文案，
@@ -3720,6 +3729,11 @@ const NPCS={
     ['听钟人：不响了。','井底那口钟，替全镇记了那么多年，','今天终于可以歇了。 [Enter] 继续'],
     ['听钟人：名字都回了灯下，钟就不必再响了。','可它响过的每一声，我都还记得。','以后由我替它记着。 [Enter] 结束'],
   ]},
+  // v24.80 升格为支线委托人（QUESTS.side_fish「一网灯影」·捞起 FISH_GOAL(10) 盏旧灯，承 v23.32 拾菇人/
+  // v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师/v24.34 守碑人/v24.72 听钟人
+  // 「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），
+  // 原有 linesByStage 三档叙事与 trueBoss after 彩蛋「塘水清了·月亮回来了」两页已并入 side_fish 的
+  // done 分档（零内容丢失，详见 QUESTS.side_fish 行内注释）。
   // v24.77 渔翁（新内容·纯风味 NPC）：潮灯镇水塘东岸 (17,7)——水塘补脸后（v22.57 水塘灯影「灯灭那晚，
   // 塘里的月亮也熄了」/ v24.58 夜泊纸灯「灯走到哪儿，月亮就跟到哪儿」/ v22.76 放灯童），塘边一直无人
   // 驻守（掌灯阿婆 v21.36 是南岸讲旧故事的、放灯童 v22.76 是东岸放灯的，唯「塘里到底沉了什么」无人说）；
@@ -5771,6 +5785,71 @@ const QUESTS={
       ]],
     },
   },
+  // 一网灯影（v24.80 新内容·新支线（第十六条））：渔翁升格为委托人——v24.77 补充的纯风味台词「这塘里啊，
+  // 鱼没几条，灯倒是不少——一网下去，捞上来的多半是旧灯，不是鱼」点破「塘底的灯比鱼多」；旧灯沉在塘底、
+  // 名字还亮着（与掌灯阿婆「灯灭那晚，塘里的月亮也熄了」/放灯童「灯走到哪儿，月亮就跟到哪儿」/守名者
+  // 「把名字念给灯听」同脉），而玩家每次打赢时约 38% 触发的额外掉落（rules.rollDrop 五档）正是「水花一翻、
+  // 旧灯随泛而上」——额外掉落的计数现场与渔翁的网合拍：替他捞齐 FISH_GOAL(10) 盏旧灯；量化：FISH_GOAL(10)
+  // 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.drops（rules.rollDrop 全游唯一
+  // 写入点、防御式 (g.drops||0) 旧档零迁移——复用既有计数，与 ACH_LIST lucky/lucky2/lucky3「鸿运当头」
+  // 系列及 v24.19 掉落战报同读一份源，零新计数零新状态零新存档）；无 unlockOn（承 side_bell/side_pond
+  // 同款从开局即 offer，保留完整接取流程——额外掉落自初战即可能触发，接取时机天然正确）；active 页按
+  // hero 实时报进度（与 side_bell/side_golem 同款函数页）；done 页按 hero 主线旗标分档（渔翁原有
+  // linesByStage 三档与 trueBoss after 彩蛋「塘水清了·月亮回来了」两页并入分档，零内容丢失；
+  // npcQuestPages 有任务后不再单独展示 after，linesByStage 三档叙事保留在数据层）；奖励 90 金 +
+  // 2 生命药水（承 side_bell 80 档之上、side_golem 120 档之下——掉落线全程伴随、低于精英档）。
+  // 纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心
+  // 分母全端自动跟随），仅 drops/LUCKY2_GOAL 一份既有源复用。
+  side_fish:{
+    id:'side_fish', kind:'side', store:true, npc:'fisher', giver:'fisher',
+    cond:(g)=>((g.drops||0) >= FISH_GOAL),
+    condProg:(g)=>`${(g.drops||0)}/${FISH_GOAL} 盏`,
+    name:'一网灯影', where:'全图战场',
+    obj:`捞起 ${FISH_GOAL} 盏旧灯——每场额外掉落，都算一盏灯影`,
+    offer:'去潮灯镇水塘东岸找渔翁，接下捞灯的委托',
+    turnin:'旧灯捞齐了！回水塘找渔翁',
+    done:'十盏旧灯上了岸，塘底透亮多了。渔翁说，名字会自己记路。',
+    reward:{ gold:90, item:2 },
+    talk:{
+      offer:[[
+        '渔翁：这塘里啊，鱼没几条，灯倒是不少——',
+        '一网下去，捞上来的多半是旧灯，不是鱼。',
+        '它们在塘底泡太久了，名字都快化了。',
+        `打仗打赢的时候，旧灯会随水花泛上来——替我捞齐 ${FISH_GOAL} 盏，灯归你留个念想，网也归我用。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '渔翁：旧灯泛上来是个运气活儿——打赢的时候，水花一翻就有一盏。',
+        `（已捞 ${(hero&&hero.drops)||0}/${FISH_GOAL} 盏）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '渔翁：十盏旧灯，灯芯还亮着。',
+        '塘底这下清亮了些——你的谢礼，收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['渔翁：清喽。',
+         '这塘水好久没这么清了，',
+         '月亮沉在塘底，看得真真切切。 [Enter] 继续'],
+        ['渔翁：名字都回了灯下，灯也回了镇上。',
+         '我这网啊，往后只捞鱼，不捞灯。',
+         '[Enter] 结束'],
+      ] : (hero && hero.galleryOpen ? [[
+        '渔翁：回廊一开，塘底的灯就少了。',
+        '你捞上来的那十盏，算是最早回家的。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '渔翁：灯芯回来了，你捞上来的旧灯也跟着亮了。',
+        '夜里塘面更好看了——就是鱼更不敢咬钩。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]] : [[
+        '渔翁：十盏旧灯，灯芯还亮着——名字没泡坏。',
+        '往后塘底就剩鱼了。也好。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -6898,5 +6977,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL,
 };
