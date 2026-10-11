@@ -25,25 +25,25 @@ const pkgRaw = fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8');
 
 // —— data.js 版本与注释 ——
 ok('data.js GAME_VERSION 字面量已为 v24.81（旧 v24.80 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.82';") && !dSrc.includes("const GAME_VERSION = 'v24.80';"));
+  dSrc.includes("const GAME_VERSION = 'v24.83';") && !dSrc.includes("const GAME_VERSION = 'v24.80';"));
 ok('data.js 含 v24.81 注释（后期经验曲线续平滑第二十五轮说明）',
   dSrc.includes('// v24.81 数值平衡·后期经验曲线续平滑'));
 ok('data.js 保留 v24.79/v24.78/v24.75 历史注释（第二十四轮/第二十三轮/第二十二轮方法论零丢失）',
   dSrc.includes('// v24.79 数值平衡·后期经验曲线续平滑') && dSrc.includes('// v24.78 数值平衡·后期经验曲线续平滑') && dSrc.includes('// v24.75 数值平衡·后期经验曲线续平滑'));
-// 源级锚：本轮 xp[1] 28→29 逐字落位（v24.79 第二十四轮已为 28 口径）
-ok('data.js 源级四强怪 xp 每级 29 逐字落位（xp:[16,29]/xp:[17,29]/xp:[18,29]/xp:[22,29]）',
-  dSrc.includes('xp:[16,29]') && dSrc.includes('xp:[17,29]') && dSrc.includes('xp:[18,29]') && dSrc.includes('xp:[22,29]'));
+// 源级锚：当前 xp[1]=30（v24.83 第二十六轮已为 30 口径；v24.79 第二十四轮曾为 28）
+ok('data.js 源级四强怪 xp 每级 30 逐字落位（xp:[16,30]/xp:[17,30]/xp:[18,30]/xp:[22,30]）',
+  dSrc.includes('xp:[16,30]') && dSrc.includes('xp:[17,30]') && dSrc.includes('xp:[18,30]') && dSrc.includes('xp:[22,30]'));
 
 // —— MON_BASE 结构 ——
 const FOUR = ['骷髅兵', '雾灵', '树精', '石魔像'];
 const BASE4 = ['史莱姆', '野狼', '哥布林', '毒蛇'];
 const byName = Object.fromEntries(MON_BASE.map((m) => [m.name, m]));
-ok('四强怪每级经验均为 29（xp[1] 28→29 第二十五轮）', FOUR.every((nm) => byName[nm] && byName[nm].xp[1] === 29));
+ok('四强怪每级经验均为 30（xp[1] 29→30 第二十六轮）', FOUR.every((nm) => byName[nm] && byName[nm].xp[1] === 30));
 ok('四基础怪 xp 逐字未动（史莱姆/野狼/哥布林/毒蛇 xp 仍为 [8,3]/[12,3]/[10,3]/[15,3]）',
   BASE4.every((nm) => byName[nm]) && byName['史莱姆'].xp.join() === '8,3' && byName['野狼'].xp.join() === '12,3'
   && byName['哥布林'].xp.join() === '10,3' && byName['毒蛇'].xp.join() === '15,3');
 
-// —— 升级曲线（与 smoke_v2479 同法；perOverride 29=改后 28=改前） ——
+// —— 升级曲线（与 smoke_v2479 同法；perOverride 30=改后 29=改前） ——
 const W = (nm, lv) => {
   switch (nm) {
     case '史莱姆': case '哥布林': return Math.max(1, 4 - Math.floor(lv / 2));
@@ -72,68 +72,68 @@ function avgXp(mapKey, lv, perOverride) {
   return xs / tw;
 }
 const need = (lv) => (xpNeededFor(lv + 1) - xpNeededFor(lv));
-const bNew = (lv) => need(lv) / avgXp('gallery', lv, 29);
-const bOld = (lv) => need(lv) / avgXp('gallery', lv, 28);
+const bNew = (lv) => need(lv) / avgXp('gallery', lv, 30);
+const bOld = (lv) => need(lv) / avgXp('gallery', lv, 29);
 
 ok('XP 阈值链逐值未动（Lv11 466 · Lv12 662 · Lv13 940 · Lv14 1335 · Lv15 1896 · Lv16 2692）',
   need(10) === 466 && need(11) === 662 && need(12) === 940 && need(13) === 1335 && need(14) === 1896 && need(15) === 2692,
   [need(10), need(11), need(12), need(13), need(14), need(15)].join('/'));
-ok('经验曲线仍单调递增（Lv10-15 每场所需场数 1.16<1.51<1.97<2.59<3.43<4.56）',
+ok('经验曲线仍单调递增（Lv10-15 每场所需场数 1.12<1.46<1.91<2.51<3.32<4.42）',
   bNew(10) < bNew(11) && bNew(11) < bNew(12) && bNew(12) < bNew(13) && bNew(13) < bNew(14) && bNew(14) < bNew(15));
-ok('xp[1] 28→29 后每场升级场数缓速（Lv10-15 窗口 1.10-1.22/1.45-1.57/1.91-2.03/2.53-2.65/3.37-3.49/4.50-4.62）',
-  bNew(10) > 1.10 && bNew(10) < 1.22 && bNew(11) > 1.45 && bNew(11) < 1.57 && bNew(12) > 1.91 && bNew(12) < 2.03
-  && bNew(13) > 2.53 && bNew(13) < 2.65 && bNew(14) > 3.37 && bNew(14) < 3.49 && bNew(15) > 4.50 && bNew(15) < 4.62,
+ok('xp[1] 29→30 后每场升级场数缓速（Lv10-15 窗口 1.06-1.18/1.40-1.52/1.85-1.97/2.45-2.57/3.26-3.38/4.36-4.48）',
+  bNew(10) > 1.06 && bNew(10) < 1.18 && bNew(11) > 1.40 && bNew(11) < 1.52 && bNew(12) > 1.85 && bNew(12) < 1.97
+  && bNew(13) > 2.45 && bNew(13) < 2.57 && bNew(14) > 3.26 && bNew(14) < 3.38 && bNew(15) > 4.36 && bNew(15) < 4.48,
   [bNew(10), bNew(11), bNew(12), bNew(13), bNew(14), bNew(15)].map((x) => x.toFixed(2)).join('/'));
-ok('改前口径 28 仍在预期窗（Lv14 3.49-3.61 · Lv15 4.66-4.78）',
-  bOld(14) > 3.49 && bOld(14) < 3.61 && bOld(15) > 4.66 && bOld(15) < 4.78);
-ok('avgXp gallery Lv10/11/12（xp[1]=29 口径）≈401.59/439.18/476.80',
-  avgXp('gallery', 10, 29) > 401.3 && avgXp('gallery', 10, 29) < 401.9
-  && avgXp('gallery', 11, 29) > 438.9 && avgXp('gallery', 11, 29) < 439.5
-  && avgXp('gallery', 12, 29) > 476.5 && avgXp('gallery', 12, 29) < 477.1);
+ok('改前口径 29 仍在预期窗（Lv14 3.37-3.49 · Lv15 4.50-4.62）',
+  bOld(14) > 3.37 && bOld(14) < 3.49 && bOld(15) > 4.50 && bOld(15) < 4.62);
+ok('avgXp gallery Lv10/11/12（xp[1]=30 口径）≈414.59/453.59/492.50',
+  avgXp('gallery', 10, 30) > 414.3 && avgXp('gallery', 10, 30) < 414.9
+  && avgXp('gallery', 11, 30) > 453.3 && avgXp('gallery', 11, 30) < 453.9
+  && avgXp('gallery', 12, 30) > 492.2 && avgXp('gallery', 12, 30) < 492.8);
 ok('village Lv1/Lv2 每场经验 13.25/16.91 恒等（四基础怪未动 → 镇内节奏零变化）',
   Math.abs(avgXp('village', 1) - 13.25) < 0.01 && Math.abs(avgXp('village', 2) - 16.91) < 0.01);
-ok('dungeon Lv3-4 单场经验较改前上浮且仅来自四强怪（62.75/91.13 口径）',
-  Math.abs(avgXp('dungeon', 3, 29) - 62.75) < 0.01 && Math.abs(avgXp('dungeon', 4, 29) - 91.13) < 0.01);
+ok('dungeon Lv3-4 单场经验较改前上浮且仅来自四强怪（64.25/93.57 口径）',
+  Math.abs(avgXp('dungeon', 3, 30) - 64.25) < 0.01 && Math.abs(avgXp('dungeon', 4, 30) - 93.57) < 0.01);
 ok('XP_GROW 1.42 / XP_INIT 20 逐字未动（节奏公式单一数据源）', XP_GROW === 1.42 && XP_INIT === 20);
 
 // —— README ——
-ok('README 件套口径已为三百零五件套（三百零四件套清除）',
-  readme.includes('冒烟三百零五件套（三百零四件套清除）'));
-ok('README 魔物数值行（骷髅兵）已为 16+29（金币 15+12 未动）', readme.includes('骷髅兵 26+6/8+2/5+1/16+29/15+12'));
-ok('README 魔物数值行（雾灵）已为 17+29（金币 14+12 未动）', readme.includes('雾灵 24+5/9+2/4+1/17+29/14+12'));
-ok('README 魔物数值行（树精）已为 18+29（金币 16+12 未动）', readme.includes('树精 30+6/7+2/6+1/18+29/16+12'));
-ok('README 魔物数值行（石魔像）已为 22+29（金币 20+12 未动）', readme.includes('石魔像 36+7/8+2/10+1/22+29/20+12'));
+ok('README 件套口径已为三百零六件套（三百零五件套清除）',
+  readme.includes('冒烟三百零六件套（三百零五件套清除）'));
+ok('README 魔物数值行（骷髅兵）已为 16+30（金币 15+12 未动）', readme.includes('骷髅兵 26+6/8+2/5+1/16+30/15+12'));
+ok('README 魔物数值行（雾灵）已为 17+30（金币 14+12 未动）', readme.includes('雾灵 24+5/9+2/4+1/17+30/14+12'));
+ok('README 魔物数值行（树精）已为 18+30（金币 16+12 未动）', readme.includes('树精 30+6/7+2/6+1/18+30/16+12'));
+ok('README 魔物数值行（石魔像）已为 22+30（金币 20+12 未动）', readme.includes('石魔像 36+7/8+2/10+1/22+30/20+12'));
 ok('README 四基础怪逐字未动',
   readme.includes('史莱姆 16+5/5+2/2+1/8+3/8+2') && readme.includes('野狼 22+5/7+2/3+1/12+3/12+2')
   && readme.includes('哥布林 20+5/6+2/3+1/10+3/10+2') && readme.includes('毒蛇 20+5/8+2/3+1/15+3/13+2'));
-ok('README 升级节奏参考段落已按 v24.81 刷新口径（Lv5→6 约 0.7 场 / Lv9→10 约 1.3 场 / Lv11→12 约 1.5 场，Lv13+ 每级 2.6-4.6 场）',
+ok('README 升级节奏参考段落已按 v24.83 刷新口径（Lv5→6 约 0.7 场 / Lv9→10 约 1.3 场 / Lv11→12 约 1.5 场，Lv13+ 每级 2.5-4.5 场）',
   readme.includes('Lv5→6 约 0.7 场（雾语林）') && readme.includes('Lv9→10 约 1.3 场（星井矿脉）')
-  && readme.includes('Lv11→12 约 1.5 场（无字回廊）') && readme.includes('Lv13+ 每级 2.6-4.6 场'));
+  && readme.includes('Lv11→12 约 1.5 场（无字回廊）') && readme.includes('Lv13+ 每级 2.5-4.5 场'));
 ok('README 金币口径未动（约 1052 金 + Lv5→6 ≈2.1 + Lv11→12 ≈7.0）',
   readme.includes('金币自然收入到 Lv10 约 1052 金') && readme.includes('Lv5→6 ≈2.1') && readme.includes('Lv11→12 ≈7.0'));
-ok('README 历史叙述含二十五轮经验再平滑 + v24.81 复核', readme.includes('二十五轮经验再平滑') && readme.includes('v24.81 复核'));
-ok('README tests 树含 v24.81 守护描述（「后期经验曲线续平滑（第二十五轮）」+「xp[1] 28→29」+「Lv10→11 1.20→1.16」+「Lv5→6 0.76→0.74」）与 smoke_v2481_xpcurve25 入库（305 份）',
+ok('README 历史叙述含二十六轮经验再平滑 + v24.83 复核', readme.includes('二十六轮经验再平滑') && readme.includes('v24.83 复核'));
+ok('README tests 树含 v24.81 守护描述（「后期经验曲线续平滑（第二十五轮）」+「xp[1] 28→29」+「Lv10→11 1.20→1.16」+「Lv5→6 0.76→0.74」）与 smoke_v2481_xpcurve25 入库（306 份）',
   readme.includes('v24.81 起含 「后期经验曲线续平滑（第二十五轮）」守护') && readme.includes('xp[1] 28→29')
-  && readme.includes('Lv10→11 1.20→1.16') && readme.includes('Lv5→6 0.76→0.74') && readme.includes('smoke_v2481_xpcurve25 入库（305 份）'));
+  && readme.includes('Lv10→11 1.20→1.16') && readme.includes('Lv5→6 0.76→0.74') && readme.includes('smoke_v2481_xpcurve25 入库（306 份）'));
 ok('README 仍保留 v24.79/v24.78/v24.75/v24.70 早期 xp 守护描述（历史零丢失）',
   readme.includes('v24.79 起含 「后期经验曲线续平滑（第二十四轮）」守护') && readme.includes('v24.78 起含 「后期经验曲线续平滑（第二十三轮）」守护') && readme.includes('v24.75 起含 「后期经验曲线续平滑（第二十二轮）」守护') && readme.includes('v24.70 起含 「后期经验曲线续平滑（第二十轮）」守护'));
-ok('README tests 树串尾已延伸至 smoke_v2479_xpcurve24 + smoke_v2480_fisherquest + smoke_v2481_xpcurve25 + smoke_v2482_watchquest（npm test 串跑）',
-  readme.includes('smoke_v2479_xpcurve24 + smoke_v2480_fisherquest + smoke_v2481_xpcurve25 + smoke_v2482_watchquest（npm test 串跑）'));
-ok('README 尚无三百零六件套口径（哨兵前望 305 语义：下一版才写 305）',
-  !readme.includes('三百零六件套') && !readme.includes('冒烟三百零六件套'));
+ok('README tests 树串尾已延伸至 smoke_v2479_xpcurve24 + smoke_v2480_fisherquest + smoke_v2481_xpcurve25 + smoke_v2482_watchquest + smoke_v2483_xpcurve26（npm test 串跑）',
+  readme.includes('smoke_v2479_xpcurve24 + smoke_v2480_fisherquest + smoke_v2481_xpcurve25 + smoke_v2482_watchquest + smoke_v2483_xpcurve26（npm test 串跑）'));
+ok('README 尚无三百零七件套口径（哨兵前望 305 语义：下一版才写 305）',
+  !readme.includes('三百零七件套') && !readme.includes('冒烟三百零七件套'));
 
 // —— package.json 链 ——
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
 ok('package.json 实跑链共 302 专项（smoke.mjs + 302 专项 = 303 总件套），链长计数精确匹配',
-  chain.length === 304 && chainAll.length === 305,
+  chain.length === 305 && chainAll.length === 306,
   `chain=${chain.length} chainAll=${chainAll.length}`);
-ok('package.json 链尾为 smoke_v2481_xpcurve25', chain[chain.length - 1] === 'smoke_v2482_watchquest', chain[chain.length - 1]);
+ok('package.json 链尾为 smoke_v2481_xpcurve25', chain[chain.length - 1] === 'smoke_v2483_xpcurve26', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2481_xpcurve25.mjs（node tests/ 前缀形态，紧随 smoke_v2480_fisherquest 之后）',
-  pkgRaw.includes('node tests/smoke_v2480_fisherquest.mjs && node tests/smoke_v2481_xpcurve25.mjs && node tests/smoke_v2482_watchquest.mjs"'));
+  pkgRaw.includes('node tests/smoke_v2480_fisherquest.mjs && node tests/smoke_v2481_xpcurve25.mjs && node tests/smoke_v2482_watchquest.mjs && node tests/smoke_v2483_xpcurve26.mjs"'));
 
 // —— CHANGELOG ——
-ok('CHANGELOG 顶部条目已为 v24.81（startsWith）', changelog.startsWith('## v24.82 '));
+ok('CHANGELOG 顶部条目已为 v24.81（startsWith）', changelog.startsWith('## v24.83 '));
 ok('CHANGELOG v24.81 条目含「数值平衡」「续平滑」「xp[1]」「28→29」',
   changelog.includes('数值平衡') && changelog.includes('续平滑') && changelog.includes('xp[1]') && changelog.includes('28→29'));
 ok('CHANGELOG 仍保留 v24.80/v24.76 条目标题（历史零丢失）',
@@ -142,29 +142,29 @@ ok('CHANGELOG 仍保留 v24.80/v24.76 条目标题（历史零丢失）',
 // —— 套件/目录级 ——
 const testsDir = __dirname;
 const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs'));
-ok('tests 目录套件数 = 303（smoke.mjs + 303 专项）', files.length === 305, `files=${files.length}`);
+ok('tests 目录套件数 = 303（smoke.mjs + 303 专项）', files.length === 306, `files=${files.length}`);
 ok('tests 目录无孤儿套件（目录数与 package.json 链恒等）', files.length === chainAll.length);
 ok('smoke_v2481_xpcurve25.mjs 已在目录中且链尾无遗漏',
-  files.includes('smoke_v2481_xpcurve25.mjs') && chain[chain.length - 1] === 'smoke_v2482_watchquest');
+  files.includes('smoke_v2481_xpcurve25.mjs') && chain[chain.length - 1] === 'smoke_v2483_xpcurve26');
 
 // —— 套件内遗留哨兵（零残留） ——
 const s2415 = fs.readFileSync(path.join(__dirname, 'smoke_v2415_treepin.mjs'), 'utf8');
-ok('smoke_v2415 套件内 treeTok 口径已推进为 304', s2415.includes('treeTok.length === 305'));
-ok('smoke_v2415 套件内树尾 pin 已推进为 smoke_v2481_xpcurve25', s2415.includes("=== 'smoke_v2482_watchquest'"));
-ok('smoke_v2415 套件内件数口哨兵（尚无 305 口径）', s2415.includes("!readme.includes('三百零六件套')"));
+ok('smoke_v2415 套件内 treeTok 口径已推进为 304', s2415.includes('treeTok.length === 306'));
+ok('smoke_v2415 套件内树尾 pin 已推进为 smoke_v2481_xpcurve25', s2415.includes("=== 'smoke_v2483_xpcurve26'"));
+ok('smoke_v2415 套件内件数口哨兵（尚无 305 口径）', s2415.includes("!readme.includes('三百零七件套')"));
 
 const s2429 = fs.readFileSync(path.join(__dirname, 'smoke_v2429_xpcurve3.mjs'), 'utf8');
-ok('smoke_v2429 套件内 README 件数口径已推进为三百零五件套（三百零四件套清除）',
-  s2429.includes('三百零五件套（三百零四件套清除）'));
-ok('smoke_v2429 套件内 xp[1] 推进至 29（xp[1] 28→29 第二十五轮）', s2429.includes('xp[1] 28→29 第二十五轮'));
-ok('smoke_v2429 套件内链尾 pin 已推进为 smoke_v2481_xpcurve25', s2429.includes("=== 'smoke_v2482_watchquest'"));
-ok('smoke_v2429 套件内入库 pin 已推进至 304 份', s2429.includes('入库（305 份）'));
-ok('smoke_v2429 套件内尚无 305 口径哨兵', s2429.includes("!readme.includes('冒烟三百零六件套')"));
+ok('smoke_v2429 套件内 README 件数口径已推进为三百零六件套（三百零五件套清除）',
+  s2429.includes('三百零六件套（三百零五件套清除）'));
+ok('smoke_v2429 套件内 xp[1] 推进至 29（xp[1] 29→30 第二十六轮）', s2429.includes('xp[1] 29→30 第二十六轮'));
+ok('smoke_v2429 套件内链尾 pin 已推进为 smoke_v2481_xpcurve25', s2429.includes("=== 'smoke_v2483_xpcurve26'"));
+ok('smoke_v2429 套件内入库 pin 已推进至 304 份', s2429.includes('入库（306 份）'));
+ok('smoke_v2429 套件内尚无 305 口径哨兵', s2429.includes("!readme.includes('冒烟三百零七件套')"));
 
 const s2436 = fs.readFileSync(path.join(__dirname, 'smoke_v2436_codexrow.mjs'), 'utf8');
 ok('smoke_v2436 双计数 pin 已推进（303 专项 / 304）且尚无 305 口径哨兵',
-  s2436.includes('suiteFiles.length === 304 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 305')
-  && s2436.includes('!readme.includes(\'冒烟三百零六件套\')') && s2436.includes('!readme.includes(\'（306 份）\')'));
+  s2436.includes('suiteFiles.length === 305 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 306')
+  && s2436.includes('!readme.includes(\'冒烟三百零七件套\')') && s2436.includes('!readme.includes(\'（307 份）\')'));
 
 // —— 全库零残留哨兵链（v24.80 口径 → v24.81；豁免本套件与上一版套件） ——
 const hits = [];
