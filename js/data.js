@@ -2271,6 +2271,20 @@
 // Lv11→12 1.73→1.67 场（显示「约 1.7」→「约 1.7」不变）；Lv1-2 镇内零变化（village Lv1/Lv2 13.25/16.91
 // 恒等），hp/atk/def/gold/权重/门槛/区域倍率全程未动，遇敌/掉落/战斗/成就/存档零影响（see GAME_VERSION
 // 上方 v24.73/v24.70 注释）。
+// v24.82 新内容·新支线（第十七条·承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/
+// v24.32 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁「风味 NPC 升格为支线委托人」先例）：雾语林幽冥
+// 魔王祭坛正北 (20,12) 守夜人升格为委托人——祭坛（20,13-14）里的旧灯卫「怕的不是剑，是有人还记得它」，
+// 守夜人守的是同一条旧约：战斗指令 [5] 防御「被命中 50% 趁隙反击」正是「站住不退」的动作；量化：
+// WATCH_GOAL(10) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.deflects
+// （js/enemyAI.js 反击唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式 (g.deflects||0)
+// 旧档零迁移——与 ACH_LIST deflect「以守为攻」同读一份源（支线门槛 10 低于成就门槛 15），零新计数
+// 零新状态零新存档）；无 unlockOn（承 side_bell/side_pond 同款从开局即 offer——防御反击自首战即可
+// 累积，接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页
+// 按 hero.trueBoss 分档（守夜人原有 trueBoss after 两页彩蛋「袍子落下来·林子可以睡了」并入真结局
+// 分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after，原 lines 两页叙事保留在数据层）；
+// 奖励 100 金 + 1 高级灵药（承 side_ember 100 档——守夜在雾语林深处全程伴随、与精英讨伐线同档）；
+// 纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母
+// 全端自动跟随），仅 deflects 一份既有源复用。
 // v24.81 数值平衡·后期经验曲线续平滑（第二十五轮·承 v19.58 第一轮/v24.13 第二轮/v24.29 第三轮/v24.39
 // 第四轮/v24.41 第五轮/v24.43 第六轮/v24.47 第七轮/v24.49 第八轮/v24.59 第九轮/v24.60 第十轮/v24.61
 // 第十一轮/v24.62 第十二轮/v24.63 第十三轮/v24.64 第十四轮/v24.65 第十五轮/v24.66 第十六轮/v24.67
@@ -2325,7 +2339,7 @@
 // v24.74 合流版：v24.72 新支线（子夜钟声）+ v24.73 数值平衡（四强怪每级经验 xp[1] 24→25）同一版本
 // 落地（两分支并行产物合流，0 内容丢失），件套 296→297（smoke_v2472_bellquest + smoke_v2473_xpcurve21
 // 双件套入库，链尾 smoke_v2473_xpcurve21）。
-const GAME_VERSION = 'v24.81';
+const GAME_VERSION = 'v24.82';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3089,6 +3103,12 @@ const BELL_GOAL = 3;       // 听钟人支线需夜间战胜的场数
 // 目标文案（obj）/接取对话（offer）全同步。「捞灯」从开局即 offer（承 side_bell/side_pond 同款无
 // unlockOn，保留完整接取流程——额外掉落自初战即可能触发，接取时机天然正确）。
 const FISH_GOAL = 10;      // 渔翁支线需捞起的旧灯盏数
+// v24.82 守夜的旧约（守夜人支线）：战斗指令 [5] 防御「被命中 50% 趁隙反击」累计 WATCH_GOAL(10) 次——
+// 计数 hero.deflects 由 js/enemyAI.js 反击唯一产生点写入（随 snapshotHero 全量快照自动持久化、防御式
+// (g.deflects||0) 旧档零迁移，与 ACH_LIST deflect「以守为攻」同读一份源），支线门槛 10 低于成就门槛
+// DEFLECT_GOAL(15)——顺路先完成支线再解锁成就；与 BELL_GOAL/FISH_GOAL 同一「支线目标单一数据源」
+// 家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步。
+const WATCH_GOAL = 10;     // 守夜人支线需守满的防御反击次数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3590,6 +3610,11 @@ const NPCS={
     ['客栈老板娘：灯全亮回来的那晚，','整条街都来我这儿喝汤。','我数人头，一个都没少。 [Enter] 继续'],
     ['客栈老板娘：名字都回来了，这锅汤才没白煮。','往后夜路再黑，','也有个地方是亮的、是热的。 [Enter] 结束'],
   ]},
+  // v24.82 升格为支线委托人（QUESTS.side_watch「守夜的旧约」·防御反击 WATCH_GOAL(10) 次换 100 金 +
+  // 1 高级灵药，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师/
+  // v24.34 守碑人/v24.72 听钟人/v24.80 渔翁「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走
+  // 任务页（talk.offer/active/turnin/done 四态），原有两页台词与 trueBoss after 彩蛋「袍子落下/
+  // 林子可以睡了」已并入 side_watch 的 done 分档（零内容丢失，详见 QUESTS.side_watch 行内注释）。
   // v22.45 守夜人（新内容·纯风味 NPC）：雾语林幽冥魔王祭坛正北（20,12）——幽冥魔王祭坛（20,13-14）
   // 此前是全游唯一「无人驻守」的强敌地标（boss 战前演出只弹提示框），现由守夜人补上在场者：台词
   // 讲「那夜是我在林子里当值——影子爬上祭坛时袍子还是旧灯卫的袍子、里头的光已经不在了」「它怕的
@@ -5863,6 +5888,61 @@ const QUESTS={
       ]])),
     },
   },
+  // 守夜的旧约（v24.82 新内容·新支线（第十七条））：守夜人升格为委托人——v22.45 补充的纯风味台词
+  // 「它怕的不是剑，是有人还记得它」点破旧灯卫的旧约；守夜人守了这么多年的夜，等的就是有人把这条
+  // 旧约接下去——战斗指令 [5] 防御「被命中 50% 趁隙反击」正是「站住不退」：替他守满 WATCH_GOAL(10)
+  // 次防御反击；量化：WATCH_GOAL(10) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数
+  // hero.deflects（js/enemyAI.js 反击唯一产生点写入、防御式 (g.deflects||0) 旧档零迁移——复用既有
+  // 计数，与 ACH_LIST deflect「以守为攻」同读一份源，零新计数零新状态零新存档）；无 unlockOn（承
+  // side_bell/side_pond 同款从开局即 offer，保留完整接取流程——防御反击自首战即可开始累积，接取时机
+  // 天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero 主线
+  // 旗标分档（守夜人原有 trueBoss after 彩蛋「袍子落下来·林子可以睡了」两页并入真结局分档，零内容
+  // 丢失；npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；奖励 100 金 +
+  // 1 高级灵药（承 side_ember 100 档——守夜在雾语林深处全程伴随、与精英讨伐线同档、高于 side_bell
+  // 80 档）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/
+  // 灯火同心分母全端自动跟随），仅 deflects 一份既有源复用。
+  side_watch:{
+    id:'side_watch', kind:'side', store:true, npc:'watcher', giver:'watcher',
+    cond:(g)=>((g.deflects||0) >= WATCH_GOAL),
+    condProg:(g)=>`${(g.deflects||0)}/${WATCH_GOAL} 次`,
+    name:'守夜的旧约', where:'任意战斗（[5] 防御被命中反击）',
+    obj:`防御反击累计 ${WATCH_GOAL} 次——战斗指令 [5] 防御，被命中 50% 趁隙反击`,
+    offer:'去雾语林幽冥魔王祭坛北侧找守夜人，接下守夜的旧约',
+    turnin:'守满了十次反击！回雾语林祭坛找守夜人',
+    done:'十次反击，一次都没退。守夜人说，旧约有人续上了。',
+    reward:{ gold:100, potion2:1 },
+    talk:{
+      offer:[[
+        '守夜人：那年林子失火，我守的第一夜，就是学着把刀放下来。',
+        '旧灯卫教我的：守夜不是杀，是站住不退。',
+        '你在战斗里按住 [5] 防御，被命中还能趁隙反击——',
+        `那就是在替灯卫续旧约。替我守满 ${WATCH_GOAL} 次反击，好吗？`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守夜人：被命中时稳住，别退——反击就成了。',
+        `（已守 ${(hero&&hero.deflects)||0}/${WATCH_GOAL} 次）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '守夜人：十次反击，一次都没退。',
+        '旧约，你替灯卫续上了。谢礼你收好——',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守夜人：袍子落下来了，里头没有影子。',
+         '我守了这么多年的夜，',
+         '总算守到它落地。 [Enter] 继续'],
+        ['守夜人：名字都回了灯下。',
+         '我一直没放下的那盏，',
+         '也有人替我点了。这林子，可以睡了。 [Enter] 结束'],
+      ] : [[
+        '守夜人：往后守夜，不必一个人数星子了。',
+        '旧约有人接着，灯卫的路就没断。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -6990,5 +7070,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL,
 };
