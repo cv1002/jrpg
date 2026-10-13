@@ -2,7 +2,7 @@
 // 数值口径与 tests/smoke_v2492_goldcurve18.mjs 完全一致（同 W/avgGold 公式）：
 //   gold[1] 22→23 后无字回廊池（gallery）Lv10-12 每场金币 236.76/258.76/280.70（改前 21 口径
 //   226.76/247.76/268.70，每场 +10/+11/+12）；自然路径到 Lv10 累计金币按 xp[1]=30 现实重算
-//   约 830→859 金（v24.45 的 1052 金是 xp[1]=10 时代旧口径，见 README/CHANGELOG）；四基础怪逐字
+//   约 859→888 金（v24.45 的 1052 金是 xp[1]=10 时代旧口径，见 README/CHANGELOG）；四基础怪逐字
 //   未动，village Lv1/Lv2 12.08/14.55 恒等。
 //   README/CHANGELOG/package.json 同步；件套 315→316（链尾 smoke_v2495_goldcurve21）。
 import { MON_BASE, GAME_VERSION, MAPS } from '../js/data.js';
@@ -34,7 +34,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.92', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.93（旧 v24.92 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.95';") && !dSrc.includes("const GAME_VERSION = 'v24.92';"));
+  dSrc.includes("const GAME_VERSION = 'v24.96';") && !dSrc.includes("const GAME_VERSION = 'v24.92';"));
 ok('data.js 含 v24.93 注释（后期金币曲线续平滑第十九轮说明）',
   dSrc.includes('// v24.93 数值平衡·后期金币曲线续平滑'));
 ok('data.js 仍保留 v24.92/v24.91/.../v24.45/v24.44/v24.43/v24.38/v24.37/v24.33/v24.30/v24.29/v24.18/v19.66 历史注释（金币/经验平滑先例行）',
@@ -42,8 +42,8 @@ ok('data.js 仍保留 v24.92/v24.91/.../v24.45/v24.44/v24.43/v24.38/v24.37/v24.3
   dSrc.includes('// v24.38 数值平衡·后期金币曲线续平滑') && dSrc.includes('// v24.37 数值平衡·后期金币曲线续平滑') && dSrc.includes('// v24.33 数值平衡·后期金币曲线续平滑') &&
   dSrc.includes('// v24.30 数值平衡·后期金币曲线续平滑') && dSrc.includes('// v24.29 数值平衡·后期经验曲线续平滑') &&
   dSrc.includes('v24.18 数值平衡') && dSrc.includes('v19.66 数值平衡'));
-ok('data.js 源级四强怪 gold 每级 22 逐字落位（gold:[15,24]/[14,22]/[16,22]/[20,22]）',
-  dSrc.includes('gold:[15,24]') && dSrc.includes('gold:[14,24]') && dSrc.includes('gold:[16,24]') && dSrc.includes('gold:[20,24]'));
+ok('data.js 源级四强怪 gold 每级 22 逐字落位（gold:[15,25]/[14,22]/[16,22]/[20,22]）',
+  dSrc.includes('gold:[15,25]') && dSrc.includes('gold:[14,25]') && dSrc.includes('gold:[16,25]') && dSrc.includes('gold:[20,25]'));
 ok('data.js 源级四基础怪 gold 每级 2 逐字未动（gold:[8,2]/[12,2]/[10,2]/[13,2]）',
   dSrc.includes('gold:[8,2]') && dSrc.includes('gold:[12,2]') && dSrc.includes('gold:[10,2]') && dSrc.includes('gold:[13,2]'));
 
@@ -53,8 +53,8 @@ for (const m of MON_BASE) byName[m.name] = m;
 ok('MON_BASE 八怪齐全', MON_BASE.length === 8, String(MON_BASE.length));
 const FOUR = ['骷髅兵', '雾灵', '树精', '石魔像'];
 const BASE = ['史莱姆', '野狼', '哥布林', '毒蛇'];
-ok('四强怪每级金币均为 24（gold[1] 23→24）',
-  FOUR.every((nm) => byName[nm] && byName[nm].gold[1] === 24),
+ok('四强怪每级金币均为 25（gold[1] 23→24）',
+  FOUR.every((nm) => byName[nm] && byName[nm].gold[1] === 25),
   FOUR.map((nm) => nm + '=' + (byName[nm] && byName[nm].gold[1])).join(','));
 ok('四基础怪每级金币逐字未动（2·2·2·2）',
   BASE.every((nm) => byName[nm] && byName[nm].gold[1] === 2),
@@ -69,12 +69,12 @@ ok('四基础怪 gold 基准逐字未动（8/12/10/13）',
 const EXPECT = {
   '史莱姆': { hp: [16, 5], atk: [5, 2], def: [2, 1], xp: [8, 3], gold: [8, 2] },
   '野狼':   { hp: [22, 5], atk: [7, 2], def: [3, 1], xp: [12, 3], gold: [12, 2] },
-  '骷髅兵': { hp: [26, 6], atk: [8, 2], def: [5, 1], xp: [16, 30], gold: [15, 24] },
+  '骷髅兵': { hp: [26, 6], atk: [8, 2], def: [5, 1], xp: [16, 30], gold: [15, 25] },
   '哥布林': { hp: [20, 5], atk: [6, 2], def: [3, 1], xp: [10, 3], gold: [10, 2] },
   '毒蛇':   { hp: [20, 5], atk: [8, 2], def: [3, 1], xp: [15, 3], gold: [13, 2] },
-  '雾灵':   { hp: [24, 5], atk: [9, 2], def: [4, 1], xp: [17, 30], gold: [14, 24] },
-  '树精':   { hp: [30, 6], atk: [7, 2], def: [6, 1], xp: [18, 30], gold: [16, 24] },
-  '石魔像': { hp: [36, 7], atk: [8, 2], def: [10, 1], xp: [22, 30], gold: [20, 24] },
+  '雾灵':   { hp: [24, 5], atk: [9, 2], def: [4, 1], xp: [17, 30], gold: [14, 25] },
+  '树精':   { hp: [30, 6], atk: [7, 2], def: [6, 1], xp: [18, 30], gold: [16, 25] },
+  '石魔像': { hp: [36, 7], atk: [8, 2], def: [10, 1], xp: [22, 30], gold: [20, 25] },
 };
 ok('八怪 hp/atk/def 逐字未动 + xp 四强怪已 30（v24.83 落位）+ gold 四强怪 22/四基础怪 2（全表逐值）',
   MON_BASE.every((m) => {
@@ -109,18 +109,18 @@ function avgGold(mapKey, lv, mode) {
   }
   return gs / tw;
 }
-ok('Gallery 池 Lv10-12 每场金币较改前逐级 +lv 金（+10/+11/+12 口径：246.76/269.76/292.70 → 256.76/280.76/304.70）',
+ok('Gallery 池 Lv10-12 每场金币较改前逐级 +lv 金（+10/+11/+12 口径：256.76/280.76/304.70 → 266.76/291.76/316.70）',
   [10, 11, 12].every((lv) => Math.abs((avgGold('gallery', lv, 'cur') - avgGold('gallery', lv, 'prev')) - lv) < 0.01),
   [10, 11, 12].map((lv) => lv + ':' + avgGold('gallery', lv, 'cur').toFixed(2) + '/' + avgGold('gallery', lv, 'prev').toFixed(2)).join(' '));
-ok('Gallery 池 Lv10-12 每场金币改后落在实测窗口（256.5-256.9 / 280.5-280.9 / 304.5-304.9）',
-  avgGold('gallery', 10, 'cur') > 256.5 && avgGold('gallery', 10, 'cur') < 256.9 &&
-  avgGold('gallery', 11, 'cur') > 280.5 && avgGold('gallery', 11, 'cur') < 280.9 &&
-  avgGold('gallery', 12, 'cur') > 304.5 && avgGold('gallery', 12, 'cur') < 304.9,
+ok('Gallery 池 Lv10-12 每场金币改后落在实测窗口（266.5-266.9 / 291.5-291.9 / 316.5-316.9）',
+  avgGold('gallery', 10, 'cur') > 266.5 && avgGold('gallery', 10, 'cur') < 266.9 &&
+  avgGold('gallery', 11, 'cur') > 291.5 && avgGold('gallery', 11, 'cur') < 291.9 &&
+  avgGold('gallery', 12, 'cur') > 316.5 && avgGold('gallery', 12, 'cur') < 316.9,
   [10, 11, 12].map((lv) => avgGold('gallery', lv, 'cur').toFixed(2)).join('/'));
-ok('Gallery 池 Lv10-12 每场金币改前基线窗口（246.5-246.9 / 269.5-269.9 / 292.5-292.9）',
-  avgGold('gallery', 10, 'prev') > 246.5 && avgGold('gallery', 10, 'prev') < 246.9 &&
-  avgGold('gallery', 11, 'prev') > 269.5 && avgGold('gallery', 11, 'prev') < 269.9 &&
-  avgGold('gallery', 12, 'prev') > 292.5 && avgGold('gallery', 12, 'prev') < 292.9,
+ok('Gallery 池 Lv10-12 每场金币改前基线窗口（256.5-256.9 / 280.5-280.9 / 304.5-304.9）',
+  avgGold('gallery', 10, 'prev') > 256.5 && avgGold('gallery', 10, 'prev') < 256.9 &&
+  avgGold('gallery', 11, 'prev') > 280.5 && avgGold('gallery', 11, 'prev') < 280.9 &&
+  avgGold('gallery', 12, 'prev') > 304.5 && avgGold('gallery', 12, 'prev') < 304.9,
   [10, 11, 12].map((lv) => avgGold('gallery', lv, 'prev').toFixed(2)).join('/'));
 ok('Village 池 Lv1-2 单场金币零变化（四基础怪未动，12.08/14.55 口径）',
   avgGold('village', 1, 'cur') === avgGold('village', 1, 'prev') && avgGold('village', 2, 'cur') === avgGold('village', 2, 'prev'),
@@ -128,32 +128,32 @@ ok('Village 池 Lv1-2 单场金币零变化（四基础怪未动，12.08/14.55 �
 ok('Village 池 Lv1/Lv2 实测窗口（12.0-12.2 / 14.4-14.7，与 v19.66 口径同量级）',
   avgGold('village', 1, 'cur') > 12.0 && avgGold('village', 1, 'cur') < 12.2 &&
   avgGold('village', 2, 'cur') > 14.4 && avgGold('village', 2, 'cur') < 14.7);
-ok('升级节奏参考金币行已按 v24.92 重算（自然收入到 Lv10 约 830→859 金 + 差约 221 金口径）',
-  readme.includes('自然收入到 Lv10 约 830→859 金') && readme.includes('差约 221 金'));
+ok('升级节奏参考金币行已按 v24.92 重算（自然收入到 Lv10 约 859→888 金 + 差约 192 金口径）',
+  readme.includes('自然收入到 Lv10 约 859→888 金') && readme.includes('差约 192 金'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为三百一十八件套（三百一十七件套清除）',
-  readme.includes('冒烟三百一十八件套（三百一十七件套清除）'));
-ok('README 魔物数值行已为 15+24/14+24/16+24/20+24（四强怪每级金币 +1；xp 段仍 16+30/17+30/18+30/22+30）',
-  readme.includes('骷髅兵 26+6/8+2/5+1/16+30/15+24') && readme.includes('雾灵 24+5/9+2/4+1/17+30/14+24') &&
-  readme.includes('树精 30+6/7+2/6+1/18+30/16+24') && readme.includes('石魔像 36+7/8+2/10+1/22+30/20+24'));
+ok('README 件套口径已为三百一十九件套（三百一十八件套清除）',
+  readme.includes('冒烟三百一十九件套（三百一十八件套清除）'));
+ok('README 魔物数值行已为 15+25/14+25/16+25/20+25（四强怪每级金币 +1；xp 段仍 16+30/17+30/18+30/22+30）',
+  readme.includes('骷髅兵 26+6/8+2/5+1/16+30/15+25') && readme.includes('雾灵 24+5/9+2/4+1/17+30/14+25') &&
+  readme.includes('树精 30+6/7+2/6+1/18+30/16+25') && readme.includes('石魔像 36+7/8+2/10+1/22+30/20+25'));
 ok('README 魔物数值行四基础怪逐字未动（8+2/12+2/10+2/13+2）',
   readme.includes('史莱姆 16+5/5+2/2+1/8+3/8+2') && readme.includes('野狼 22+5/7+2/3+1/12+3/12+2') &&
   readme.includes('哥布林 20+5/6+2/3+1/10+3/10+2') && readme.includes('毒蛇 20+5/8+2/3+1/15+3/13+2'));
-ok('README tests 树含 v24.92 守护描述（「后期金币曲线续平滑（第十八轮）」+「gold[1] 22→23」+「246.76/269.76/292.70 → 256.76/280.76/304.70」）与 smoke_v2495_goldcurve21 入库（318 份）',
-  readme.includes('v24.95 起含 「后期金币曲线续平滑（第二十一轮）」守护') && readme.includes('gold[1] 22→23') &&
-  readme.includes('246.76/269.76/292.70 → 256.76/280.76/304.70') && readme.includes('smoke_v2495_goldcurve21 入库（318 份）'));
+ok('README tests 树含 v24.92 守护描述（「后期金币曲线续平滑（第十八轮）」+「gold[1] 22→23」+「256.76/280.76/304.70 → 266.76/291.76/316.70」）与 smoke_v2495_goldcurve21 入库（319 份）',
+  readme.includes('v24.96 起含 「后期金币曲线续平滑（第二十二轮）」守护') && readme.includes('gold[1] 22→23') &&
+  readme.includes('256.76/280.76/304.70 → 266.76/291.76/316.70') && readme.includes('smoke_v2495_goldcurve21 入库（319 份）'));
 ok('README 仍有 v24.45/v24.44/v24.43 守护描述（历史保留）', readme.includes('v24.45 起含 「后期金币曲线续平滑（第九轮）」守护') && readme.includes('v24.44 起含 「后期金币曲线续平滑（第八轮）」守护') && readme.includes('v24.43 起含 「后期经验曲线续平滑（第六轮）」守护'));
 ok('README 尚无 316 件套口径（哨兵前望 317 语义：下一版才写 317）',
-  !readme.includes('三百一十九件套') && !readme.includes('冒烟三百一十九件套'));
+  !readme.includes('三百二十件套') && !readme.includes('冒烟三百二十件套'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
 const chainAll = ['smoke.mjs', ...chain];
-ok('package.json 实跑链共 312 份（smoke.mjs + 311 专项）', chain.length === 317 && chainAll.length === 318, String(chain.length));
-ok('package.json 链尾为 smoke_v2495_goldcurve21（第 316 份）', chain[chain.length - 1] === 'smoke_v2495_goldcurve21', chain[chain.length - 1]);
+ok('package.json 实跑链共 313 份（smoke.mjs + 312 专项）', chain.length === 318 && chainAll.length === 319, String(chain.length));
+ok('package.json 链尾为 smoke_v2495_goldcurve21（第 318 份）', chain[chain.length - 1] === 'smoke_v2496_goldcurve22', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v2495_goldcurve21.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v2490_goldcurve16.mjs && node tests/smoke_v2491_goldcurve17.mjs && node tests/smoke_v2492_goldcurve18.mjs && node tests/smoke_v2493_goldcurve19.mjs && node tests/smoke_v2494_goldcurve20.mjs && node tests/smoke_v2495_goldcurve21.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.93（startsWith）', changelog.startsWith('## v24.95 '));
+  pkgRaw.includes('node tests/smoke_v2490_goldcurve16.mjs && node tests/smoke_v2491_goldcurve17.mjs && node tests/smoke_v2492_goldcurve18.mjs && node tests/smoke_v2493_goldcurve19.mjs && node tests/smoke_v2494_goldcurve20.mjs && node tests/smoke_v2495_goldcurve21.mjs && node tests/smoke_v2496_goldcurve22.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.93（startsWith）', changelog.startsWith('## v24.96 '));
 ok('CHANGELOG v24.93 条目含「金币」与「续平滑」与「数值平衡」与「21→22」',
   changelog.includes('金币') && changelog.includes('续平滑') && changelog.includes('数值平衡') && changelog.includes('22→23'));
 ok('CHANGELOG 仍保留 v24.92/v24.91/v24.90 与 v24.45 条目标题（历史积累）',
@@ -164,23 +164,23 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(chainAll.map((f) => f.replace(/\.mjs$/, '')));
 const orphans = files.filter((f) => !chainSet.has(f.replace(/\.mjs$/, '')));
 const missed = [...chainSet].filter((f) => !files.includes(f + '.mjs'));
-ok('tests 目录件套 = 316 与实跑链恒等', files.length === 318, String(files.length));
+ok('tests 目录件套 = 316 与实跑链恒等', files.length === 319, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：v2415 树串守护已推进至新链尾 + 前望 317 ——
 const t2415 = read('tests/smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v2495_goldcurve21（第 316 份）',
-  t2415.includes("chain[chain.length - 1] === 'smoke_v2495_goldcurve21'"));
-ok('smoke_v2415 树串 token 数已推进至 316', t2415.includes('treeTok.length === 318'));
-ok('smoke_v2415 哨兵「尚无 317」口径（三百一十九件套 bare 否定式）',
-  t2415.includes("!readme.includes('三百一十九件套')"));
+ok('smoke_v2415 链尾已推进至 smoke_v2495_goldcurve21（第 318 份）',
+  t2415.includes("chain[chain.length - 1] === 'smoke_v2496_goldcurve22'"));
+ok('smoke_v2415 树串 token 数已推进至 316', t2415.includes('treeTok.length === 319'));
+ok('smoke_v2415 哨兵「尚无 317」口径（三百二十件套 bare 否定式）',
+  t2415.includes("!readme.includes('三百二十件套')"));
 const s2429 = read('tests/smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 哨兵链已推进至「前望 317」口径（三百一十九件套 括号/冒烟 bare 否定式）',
-  s2429.includes("!readme.includes('冒烟三百一十九件套')"));
+ok('smoke_v2429 哨兵链已推进至「前望 317」口径（三百二十件套 括号/冒烟 bare 否定式）',
+  s2429.includes("!readme.includes('冒烟三百二十件套')"));
 ok('smoke_v2429 既有断言随新现实推进（件套口径 316 + 链尾 v2493 + 入库 316）',
-  s2429.includes('三百一十八件套（三百一十七件套清除') && s2429.includes("=== 'smoke_v2495_goldcurve21'") &&
-  s2429.includes('入库（318 份）'));
+  s2429.includes('三百一十九件套（三百一十八件套清除') && s2429.includes("=== 'smoke_v2496_goldcurve22'") &&
+  s2429.includes('入库（319 份）'));
 
 // —— 旧代 pin 零残留扫描（v24.92 / 315 口径；豁免本套件与上一版套件）——
 const leftovers = [];
