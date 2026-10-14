@@ -154,7 +154,7 @@ const dmgOf = (line) => { const m = /造成 (\d+) 伤害/.exec(line || ''); retu
 const plainV = Math.round(Math.max(1, 100 * 2 - 10) * (0.9 + 0.99 * 0.2));
 const shieldDmgV = Math.max(1, Math.round(plainV * SHIELD_MULT));          // 209×0.6=125.4 → 125
 const blockedV = plainV - shieldDmgV;                                       // 84
-// 蓄力档：round(209×1.5)=round(313.5)=314 → 314×0.6=188.4 → 188
+// 蓄力档：round(209×1.5)=round(324.5)=314 → 314×0.6=188.4 → 188
 const chargeV = Math.round(plainV * CHARGE_MULT);
 const chargeDmgV = Math.max(1, Math.round(chargeV * SHIELD_MULT));
 const chargeBlockedV = chargeV - chargeDmgV;                                // 126
