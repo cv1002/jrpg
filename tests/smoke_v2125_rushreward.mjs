@@ -76,7 +76,7 @@ ok('data.js 含 v21.25 注释（赏金派生说明）', dSrc.includes('v21.25 �
 const wR1 = estW('试炼三连战   ', 14) + estW(rushRow[1], 14);
 const wR2 = estW(rushRow[2], 12);
 ok(`r[1] 估算宽 ≤470（≈${wR1.toFixed(1)}）`, wR1 <= LINE_MAX);
-ok(`r[2] 估算宽 ≤470（追加赏金后 ≈${wR2.toFixed(1)}，原 ≈142.8 → 现 ≈276.5）`, wR2 <= LINE_MAX, `≈${wR2.toFixed(1)}`);
+ok(`r[2] 估算宽 ≤470（追加赏金后 ≈${wR2.toFixed(1)}，原 ≈142.8 → 现 ≈286.5）`, wR2 <= LINE_MAX, `≈${wR2.toFixed(1)}`);
 
 // —— 全页行宽巡检（试炼进阶 9 行 + 地图指南 5 行，承 v21.20 常驻巡检）——
 let allOk3 = true;
