@@ -2588,6 +2588,13 @@
 // （village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/战斗/成就/
 // 存档零影响（see GAME_VERSION 上方 v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/v24.94/v24.93/
 // v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 325→326（smoke_v24103_goldcurve28 入库，链尾 smoke_v24103_goldcurve28）。
+// v24.106 新内容·新支线（第二十条）：放灯童「月亮的路」——任意地图快速旅行累计 MOON_GOAL(8) 条灯路
+// 换 60 金 + 2 生命药水；计数 g.travels 由 js/core.js doTravel 成功旅行唯一产生点写入（未探索/已在
+// 原地早退零计数、随 snapshotHero 全量快照自动持久化、防御式 (g.travels||0) 旧档零迁移，与
+// ACH_LIST travels「行者无疆」同读一份源），QUESTS 表驱动全端自动跟随（弹窗对话/任务日志/顶标/
+// 交付结算/灯火同心分母），零新逻辑零新计数零新存档；放灯童为 v22.76 纯风味 NPC 升格委托人
+// （承 v22.13 说书人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师同款
+// 「风味 NPC 升格」先例）；件套 328→329（smoke_v24106_moonquest 入库，链尾 smoke_v24106_moonquest）。
 // v24.105 新内容·新支线（第十九条）：琴师「战歌的谱」——战斗指令 [2] 技能累计释放 SONG_GOAL(12) 次换
 // 60 金 + 1 高级灵药；计数 hero.casts 由 js/battle.js doSkill 释放成功唯一产生点写入（防御式
 // (g.casts||0) 旧档零迁移，与 ACH_LIST cast「熟能生巧」同读一份源），QUESTS 表驱动全端自动跟随
@@ -2607,7 +2614,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.105';
+const GAME_VERSION = 'v24.106';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3389,6 +3396,14 @@ const TALE_GOAL = 6;       // 说书人支线需遇到（记下名字）的魔�
 // 单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取
 // 对话（offer）全同步；琴师在雾语林南坡 (14,15)，全程伴随型（自 Lv1 火焰斩起每次战斗皆可累计）。
 const SONG_GOAL = 12;      // 琴师支线需记下的战歌音符（技能释放次数）
+// v24.106 月亮的路（放灯童支线）：任意地图快速旅行累计 MOON_GOAL(8) 条灯路——计数 g.travels 由
+// js/core.js doTravel 成功旅行唯一产生点写入（未探索/已在原地早退零计数、随 snapshotHero 全量快照
+// 自动持久化、防御式 (g.travels||0) 旧档零迁移，与 ACH_LIST travels「行者无疆」同读一份源），支线
+// 门槛 8 低于成就门槛 TRAVEL_GOAL(15)——顺路先完成支线再解锁成就；与 BELL_GOAL/FISH_GOAL/
+// WATCH_GOAL/TALE_GOAL/SONG_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定
+// （cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；放灯童在潮灯镇水塘东岸
+// (19,7)，陪伴型（快速旅行 T 菜单四图任选，累计自然发生）。
+const MOON_GOAL = 8;       // 放灯童支线需跟着纸灯走过的灯路（快速旅行次数）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3961,7 +3976,9 @@ const NPCS={
   // 月亮就跟到哪儿」；台词走既有 NPCS.lines 兜底 + trueBoss 后 after 彩蛋（villager/lampkid 同款机制、
   // npcQuestPages 无待办任务回退直落，零新逻辑、零裸字面量）；mark:'lamp' 由 view/sprites.js drawNpcMark
   // 程序化绘制（与掌灯阿婆/星砂车夫同款灯形），造型复用镇民短衫（孩童身形，与长者袍/商贩区分，
-  // NPC_SHEET 默认 mwVillager 零视觉新代码）；无任务、无顶标、零结算零存档。
+  // NPC_SHEET 默认 mwVillager 零视觉新代码）；v24.106 起升格为支线委托人（QUESTS.side_moon「月亮的路」，
+  // 见 QUESTS.side_moon 行内注释——有任务后 npcQuestPages 走四档任务页、trueBoss after 彩蛋并入 done
+  // 真结局分档、无任务时 lines 兜底照旧）。
   lampboat:{name:'放灯童', mark:'lamp', lines:[
     ['放灯童：阿婆说，灯灭那晚，塘里的月亮也熄了。','我不信——你看，我把纸灯放到水上，','灯走到哪儿，月亮就跟到哪儿。 [Enter] 继续'],
     ['放灯童：一盏灯，放一个忘记的名字。','放走的灯多了，镇上的灯就一盏盏亮回来。','你要出镇吗？替我看看雾里的灯还在不在。 [Enter] 结束'],
@@ -6325,6 +6342,50 @@ const QUESTS={
       ]],
     },
   },
+  // v24.106 新内容·新支线（第二十条）：放灯童「月亮的路」——任意地图快速旅行 MOON_GOAL(8) 条灯路
+  // 换 60 金 + 2 生命药水（承 side_grain 50 档、高于 side_pond 30 档、低于 side_tale 70 档——「快速
+  // 旅行」自开局菜单即可用、全程伴随，低于 side_golem 120 档）。纯内容扩充零新逻辑零新计数零新存档
+  // （QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 g.travels 一份
+  // 既有源复用（与「行者无疆」成就同读一份源）。无 unlockOn 从开局即 offer（承 side_bell/side_pond
+  // 同款——放灯童在潮灯镇水塘东岸，开局即可接，接取时机天然正确）；active 页按 hero 实时报进度
+  // （与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档（放灯童原有 trueBoss after
+  // 彩蛋「月亮跟着灯回镇口/名字想家纸灯照路」两页并入真结局分档，零内容丢失；npcQuestPages 有任务后
+  // 不再单独展示 after，lines 两页叙事保留在数据层）。
+  side_moon:{
+    id:'side_moon', kind:'side', store:true, npc:'lampboat', giver:'lampboat',
+    cond:(g)=>((g.travels||0) >= MOON_GOAL),
+    condProg:(g)=>`${g.travels||0}/${MOON_GOAL} 条灯路`,
+    name:'月亮的路', where:'任意地图（快速旅行 · T 菜单）',
+    obj:`用快速旅行走过 ${MOON_GOAL} 条灯路，让月亮跟着纸灯回到镇口`,
+    offer:'去潮灯镇水塘东岸找放灯童，接下「替灯看路」的委托',
+    turnin:`纸灯走过 ${MOON_GOAL} 条灯路了！回水塘东岸找放灯童`,
+    done:'月亮跟着纸灯回到了镇口。放灯童说，以后每条路都亮着。',
+    reward:{ gold:60, item:2 },
+    talk:{
+      offer:[[
+        '放灯童：出镇的路太黑，灯不够亮。',
+        '你带一盏纸灯上路——灯走到哪儿，月亮就跟到哪儿。',
+        `替你走满 ${MOON_GOAL} 条灯路（快速旅行一次 = 一条灯路），月亮就跟上来了。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '放灯童：月亮还在路上呢。',
+        `（已走 ${(hero&&hero.travels)||0}/${MOON_GOAL} 条灯路）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '放灯童：看！月亮跟着你的灯回来了！',
+        '这盏灯我再放回水里——它替全镇看过路啦。谢礼收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['放灯童：昨晚我把灯放到塘心，灯没有灭！','月亮跟着灯，一路走回镇口了。','阿婆说，这回是镇子把月亮唤回来的。 [Enter] 继续'],
+        ['放灯童：灯都亮了，我还是天天来放灯。','万一有哪个名字想家，纸灯能替他们照照回家的路。','[Enter] 结束'],
+      ] : [[
+        '放灯童：灯路都记下了。','以后谁出镇，我就把纸灯借给他——','月亮会一直跟着的。（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7452,5 +7513,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL,
 };
