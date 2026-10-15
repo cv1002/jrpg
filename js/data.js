@@ -2588,6 +2588,12 @@
 // （village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/战斗/成就/
 // 存档零影响（see GAME_VERSION 上方 v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/v24.94/v24.93/
 // v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 325→326（smoke_v24103_goldcurve28 入库，链尾 smoke_v24103_goldcurve28）。
+// v24.105 新内容·新支线（第十九条）：琴师「战歌的谱」——战斗指令 [2] 技能累计释放 SONG_GOAL(12) 次换
+// 60 金 + 1 高级灵药；计数 hero.casts 由 js/battle.js doSkill 释放成功唯一产生点写入（防御式
+// (g.casts||0) 旧档零迁移，与 ACH_LIST cast「熟能生巧」同读一份源），QUESTS 表驱动全端自动跟随
+// （弹窗对话/任务日志/顶标/交付结算/灯火同心分母），零新逻辑零新计数零新存档；琴师为 v22.27 纯风味
+// NPC 升格委托人（承 v22.13 说书人/v24.72 听钟人/v24.80 渔翁同款「风味 NPC 升格」先例）；件套 327→328
+// （smoke_v24105_songquest 入库，链尾 smoke_v24105_songquest）。
 // v24.104 数值平衡·后期金币曲线续平滑（第二十九轮·承 v19.66 第一轮/v24.18 第二轮/v24.30 第三轮/v24.33
 // 第四轮/v24.35 第五轮/v24.37 第六轮/v24.38 第七轮/v24.44 第八轮/v24.45 第九轮/v24.84 第十轮/v24.85
 // 第十一轮/v24.86 第十二轮/v24.87 第十三轮/v24.88 第十四轮/v24.89 第十五轮/v24.90 第十六轮/v24.91
@@ -2601,7 +2607,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.104';
+const GAME_VERSION = 'v24.105';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3376,6 +3382,13 @@ const WATCH_GOAL = 10;     // 守夜人支线需守满的防御反击次数
 // 即算替《灯下潮声》记下六个名字，顺路先完成支线再解锁 SEEN_GOAL(5)→SEEN2_GOAL(10)→metall 成就链；
 // 阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步。
 const TALE_GOAL = 6;       // 说书人支线需遇到（记下名字）的魔物种数
+// v24.105 战歌的谱（琴师支线）：战斗指令 [2] 技能累计释放 SONG_GOAL(12) 次——计数 hero.casts 由
+// js/battle.js doSkill 释放成功唯一产生点写入（随 snapshotHero 全量快照自动持久化、防御式
+// (g.casts||0) 旧档零迁移，与 ACH_LIST cast「熟能生巧」同读一份源），支线门槛 12 低于成就门槛
+// CAST_GOAL(30)——顺路先完成支线再解锁成就；与 BELL_GOAL/FISH_GOAL/WATCH_GOAL 同一「支线目标
+// 单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取
+// 对话（offer）全同步；琴师在雾语林南坡 (14,15)，全程伴随型（自 Lv1 火焰斩起每次战斗皆可累计）。
+const SONG_GOAL = 12;      // 琴师支线需记下的战歌音符（技能释放次数）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3819,7 +3832,9 @@ const NPCS={
   // 拾菇人/听矿人/失名的旅人/货郎/拾灯人/筛砂人/刻碑人同款机制、npcQuestPages 无待办任务回退直落，
   // 零新逻辑、零裸字面量）；mark:'qin' 新增一档程序化绘制分支（view/sprites.js drawNpcMark，承
   // v22.13 折扇 fan 专属先例），造型复用 mwAdventurer 行脚身形（同图雾语林内与雾径猎手斗篷/拾菇人
-  // 镇民短衫/失名的旅人长者袍/货郎商贩均区分）；无任务、无顶标、零结算零存档。
+  // 镇民短衫/失名的旅人长者袍/货郎商贩均区分）；v24.105 起升格为支线委托人（QUESTS.side_song「战歌的谱」，
+  // 见 QUESTS.side_song 行内注释——有任务后 npcQuestPages 走四档任务页、trueBoss after 彩蛋并入 done
+  // 真结局分档、无任务时 lines 兜底照旧）。
   minstrel:{name:'琴师', mark:'qin', lines:[
     ['琴师：这支调子，是我娘教的。','雾一起，我就弹它——','调子还在，名字就还在。 [Enter] 继续'],
     ['琴师：往东边祭坛的路，别一个人走。','魔物从雾里来，先把名字在舌头上','念三遍，雾就认不出你。 [Enter] 结束'],
@@ -6267,6 +6282,49 @@ const QUESTS={
       ]],
     },
   },
+  // v24.105 新内容·新支线（第十九条）：琴师「战歌的谱」——战斗指令 [2] 技能累计释放 SONG_GOAL(12) 次
+  // 换 60 金 + 1 高级灵药（承 side_stone 60 档、高于 side_pond 30 档——「释放技能」自 Lv1 火焰斩起
+  // 全程伴随、低于 side_golem 120 档）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/
+  // 任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.casts 一份既有源复用（与「熟能生巧」
+  // 成就同读一份源）。无 unlockOn 从开局即 offer（承 side_bell/side_pond 同款——琴师在雾语林南坡，
+  // 首次进雾语林即可接，接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款
+  // 函数页）；done 页按 hero.trueBoss 分档（琴师原有 trueBoss after 彩蛋「雾散了/记着才算数」两页并入
+  // 真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）。
+  side_song:{
+    id:'side_song', kind:'side', store:true, npc:'minstrel', giver:'minstrel',
+    cond:(g)=>((g.casts||0) >= SONG_GOAL),
+    condProg:(g)=>`${g.casts||0}/${SONG_GOAL} 次`,
+    name:'战歌的谱', where:'任意战斗（[2] 技能）',
+    obj:`在战斗中释放 ${SONG_GOAL} 次技能，替琴师记下战歌的谱`,
+    offer:'去雾语林南坡找琴师，接下记谱的委托',
+    turnin:`${SONG_GOAL} 个音符凑齐了！回雾语林南坡找琴师`,
+    done:'《战歌的谱》成了。琴师说，有了谱，雾里的名字也能唱。',
+    reward:{ gold:60, potion2:1 },
+    talk:{
+      offer:[[
+        '琴师：我娘教的调子，只记得住名字，记不住打仗。',
+        '你手里那五式，每一式都是一段谱——火的、冰的、雷的，都算。',
+        `替我记满 ${SONG_GOAL} 个音符（战斗里放一次技能 = 一个音符），谱就成了。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '琴师：不急，曲子是攒出来的。',
+        `（已记 ${(hero&&hero.casts)||0}/${SONG_GOAL} 个音符）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '琴师：……听，这就是战歌的谱。',
+        '雾里念三遍名字，再哼一声这调子——雾就认不出你了。谢礼收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['琴师：雾散了，这调子反倒不用弹了。','灯都亮了，认得路的人自己会哼。','[Enter] 继续'],
+        ['琴师：往后雾再起那天，替我多哼两声。','名字这东西，总要有人记着才算数。','[Enter] 结束'],
+      ] : [[
+        '琴师：谱已收好——我娘教的调子旁边，','多了一首你写的。','（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7394,5 +7452,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL,
 };
