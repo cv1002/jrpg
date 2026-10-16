@@ -2588,6 +2588,18 @@
 // （village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/战斗/成就/
 // 存档零影响（see GAME_VERSION 上方 v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/v24.94/v24.93/
 // v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 325→326（smoke_v24103_goldcurve28 入库，链尾 smoke_v24103_goldcurve28）。
+// v24.108 新内容·新支线（第二十二条）：货栈掌柜「开张的生意」——镇上累计消费 SHOP_GOAL(300) 金换
+// 80 金 + 2 生命药水（承 side_bell 80 金档、高于 side_tale 70 档、低于 side_fish 90 档——「消费」
+// 自首次买药水/装备即可累计、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
+// 弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.spent 一份既有源复用
+// （shop.buyPotion/buyWeapon/buyArmor/stayInn 扣款处 + core.brewNow 酿造成本五处唯一产生点，与
+// ACH_LIST spend「一掷千金」同读一份源，支线门槛 300 低于成就门槛 SPEND_GOAL(1000)——顺路先
+// 完成支线再解锁成就，且消费本身就是「开张」、货栈掌柜要的是「货走起来」不是钱）。无 unlockOn
+// 从开局即可 offer（承 side_bell/side_pond 同款——货栈掌柜在潮灯镇商店门前 (8,10)，开局即可接，
+// 接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按
+// hero.trueBoss 分档（货栈掌柜原有 trueBoss after 彩蛋「灯亮了旧货卖不动/名字回了灯下账本能合上」
+// 两页并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留
+// 在数据层）；件套 330→331（smoke_v24108_shopquest 入库，链尾 smoke_v24108_shopquest）。
 // v24.107 新内容·新支线（第二十一条）：货郎「路远灯长」——杂货铺卖菇累计 PEDDLE_GOAL(10) 株
 // 换 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档——「卖菇」自首枚蘑菇到手即可
 // 进行、全程伴随，低于 side_fish 90 档）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
@@ -2625,7 +2637,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.107';
+const GAME_VERSION = 'v24.108';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3416,6 +3428,14 @@ const SONG_GOAL = 12;      // 琴师支线需记下的战歌音符（技能释�
 // (19,7)，陪伴型（快速旅行 T 菜单四图任选，累计自然发生）。
 const MOON_GOAL = 8;       // 放灯童支线需跟着纸灯走过的灯路（快速旅行次数）
 const PEDDLE_GOAL = 10;    // 货郎支线需替货郎卖出的魔法蘑菇株数（卖菇唯一产生点 hero.sold）
+// v24.108 开张的生意（货栈掌柜支线）：镇上累计消费 SHOP_GOAL(300) 金——计数 hero.spent 由五处扣款
+// 唯一产生点写入（shop.buyPotion/buyWeapon/buyArmor/stayInn + core.brewNow、金币不足/背包满早退
+// 零计数、随 snapshotHero 全量快照自动持久化、防御式 (g.spent||0) 旧档零迁移，与 ACH_LIST spend
+// 「一掷千金」同读一份源），支线门槛 300 低于成就门槛 SPEND_GOAL(1000)——顺路先完成支线再解锁
+// 成就；与 BELL_GOAL/FISH_GOAL/WATCH_GOAL/TALE_GOAL/SONG_GOAL/MOON_GOAL/PEDDLE_GOAL 同一
+// 「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
+// 接取对话（offer）全同步；货栈掌柜在潮灯镇商店门前 (8,10)，陪伴型（消费五端口自开局即可累计）。
+const SHOP_GOAL = 300;     // 货栈掌柜支线需在镇上花掉的金币数（累计消费端口 hero.spent）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3946,6 +3966,13 @@ const NPCS={
     ['守夜人：袍子落下来了，里头没有影子。','我守了这么多年的夜，','总算守到它落地。 [Enter] 继续'],
     ['守夜人：那些名字都回了灯下。','我一直没放下的那盏，','也有人替我点了。这林子，可以睡了。 [Enter] 结束'],
   ]},
+  // v24.108 升格为支线委托人（QUESTS.side_shop「开张的生意」·镇上累计消费 SHOP_GOAL(300) 金换
+  // 80 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32
+  // 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/
+  // v24.106 放灯童/v24.107 货郎「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走任务页
+  // （talk.offer/active/turnin/done 四态），原有两页台词与 trueBoss after 彩蛋「灯亮了旧货卖不动/
+  // 名字都回了灯下账本能合上」已并入 side_shop 的 done 分档（零内容丢失，详见 QUESTS.side_shop
+  // 行内注释）。
   // v22.49 货栈掌柜（新内容·纯风味 NPC）：潮灯镇商店（'S' 瓦片，全游唯一买装备/药水/卖蘑菇的铺子）
   // 门前 (8,10)——v22.31 锻灯师补了铺子南侧草角、v22.34 老板娘补了旅馆门口，唯独铺子自己门口
   // 没人（商店是全镇最热闹的「门面」之前一直只有一块 S 瓦片）；台词讲「雾语林的灯油断供以后货栈的
@@ -6447,6 +6474,60 @@ const QUESTS={
       ]],
     },
   },
+  // 开张的生意（v24.108 新内容·新支线（第二十二条））：货栈掌柜升格为委托人——v22.49 补充的
+  // 纯风味台词「雾语林的灯油断供以后货栈的空架子比货还多」点破货栈缺的正是「钱在市场里转起来」：
+  // 玩家每次在镇上消费（shop.buyPotion/buyWeapon/buyArmor/stayInn 扣款处 + core.brewNow 酿造成本
+  // 五处唯一产生点 hero.spent）都算替货栈走出单生意——替他花满 SHOP_GOAL(300) 金；量化：
+  // SHOP_GOAL(300) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.spent
+  // 复用既有端口（金币不足/背包满早退零计数、随 snapshotHero 全量快照自动持久化、防御式
+  // (g.spent||0) 旧档零迁移——与 ACH_LIST spend「一掷千金」同读一份源，支线门槛 300 低于成就门槛
+  // SPEND_GOAL(1000)——顺路先完成支线再解锁成就，且消费本身就是「开张」、货栈掌柜要的是
+  // 「货走起来」不是钱），零新计数零新状态零新存档；无 unlockOn 从开局即 offer（承 side_bell/
+  // side_pond 同款——货栈掌柜在潮灯镇商店门前 (8,10)，开局即可接，接取时机天然正确）；active 页
+  // 按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档
+  // （货栈掌柜原有 trueBoss after 彩蛋「灯亮了旧货卖不动/名字回了灯下账本能合上」两页并入真结局
+  // 分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；
+  // 奖励 80 金 + 2 生命药水（承 side_bell 80 金档、高于 side_tale 70 档、低于 side_fish 90 档
+  // ——「消费」自首次买药水/装备即可累计、全程伴随）。
+  side_shop:{
+    id:'side_shop', kind:'side', store:true, npc:'shopkeep', giver:'shopkeep',
+    cond:(g)=>((g.spent||0) >= SHOP_GOAL),
+    condProg:(g)=>`${g.spent||0}/${SHOP_GOAL} 金`,
+    name:'开张的生意', where:'潮灯镇（商店/旅馆/酿造累计消费）',
+    obj:`在镇上花掉 ${SHOP_GOAL} 金——买剑甲药水、住店、酿造都算`,
+    offer:'去潮灯镇商店门口找货栈掌柜，接下开张的委托',
+    turnin:`${SHOP_GOAL} 金花出去了！回潮灯镇商店找货栈掌柜`,
+    done:'灰掸净了，货也走起来了。掌柜说，灯亮了生意才好做。',
+    reward:{ gold:80, item:2 },
+    talk:{
+      offer:[[
+        '货栈掌柜：这排架子上的灰，比货还多。',
+        '灯油断供以后，镇上没人花钱，货就压着不动。',
+        `你在镇上花掉 ${SHOP_GOAL} 金——买剑甲药水、住店、酿造都算，货就走了起来。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '货栈掌柜：生意嘛，钱得在市场里转起来才算数。',
+        `（你已在镇上花掉 ${(hero&&hero.spent)||0}/${SHOP_GOAL} 金）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '货栈掌柜：三百金！架子上的灰，总算掸干净了。',
+        '货走起来了，镇上的灯也跟着亮堂。谢礼你收好——',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['货栈掌柜：灯亮了，旧货反倒卖不动了。',
+         '也好，镇上有灯，就不缺笑话听。 [Enter] 继续'],
+        ['货栈掌柜：名字都回了灯下。',
+         '这账本，总算能合上了。 [Enter] 结束'],
+      ] : [[
+        '货栈掌柜：货走起来了，账本上就有了新行。',
+        '往后你路过，架子上的灰都替你掸着。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7574,5 +7655,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL,
 };
