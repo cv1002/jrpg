@@ -2600,6 +2600,18 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
+// v24.110 新内容·新支线（第二十四条）：记誓人「蓄石为誓」——[6]蓄力累计 VOW_GOAL(12) 次换
+// 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档、低于 side_fish 90 档——「蓄力」
+// 自首战起每场皆可蓄、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
+// 弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.charges 一份既有源复用
+// （js/battle.js doCharge 蓄力唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式
+// (g.charges||0) 旧档零迁移，与 ACH_LIST charge「蓄势待发」同读一份源，支线门槛 12 低于成就门槛
+// CHARGE_GOAL(15)——顺路先完成支线再解锁成就；蓄的是攻击/技能威力，也是那句誓的分量）。
+// 无 unlockOn 从开局即可 offer（承 side_bell/side_pond 同款——记誓人在无字回廊中段 (10,3)，
+// 接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按
+// hero.trueBoss 分档（记誓人原有 trueBoss after 彩蛋「誓还了/碑上亮起一粒一粒微光」两页并入真结局
+// 分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套
+// 332→333（smoke_v24110_vowquest 入库，链尾 smoke_v24110_vowquest）。
 // v24.108 新内容·新支线（第二十二条）：货栈掌柜「开张的生意」——镇上累计消费 SHOP_GOAL(300) 金换
 // 80 金 + 2 生命药水（承 side_bell 80 金档、高于 side_tale 70 档、低于 side_fish 90 档——「消费」
 // 自首次买药水/装备即可累计、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
@@ -2649,7 +2661,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.109';
+const GAME_VERSION = 'v24.110';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3456,6 +3468,14 @@ const SHOP_GOAL = 300;     // 货栈掌柜支线需在镇上花掉的金币数�
 // 「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
 // 接取对话（offer）全同步；刻碑人在无字回廊东段 (19,3)，陪伴型（每场战斗普攻皆可累计）。
 const CARVE_GOAL = 10;     // 刻碑人支线需凿进石头的暴击次数
+// v24.110 蓄石为誓（记誓人支线）：战斗指令 [6] 蓄力累计 VOW_GOAL(12) 次——计数 hero.charges 由
+// js/battle.js doCharge 蓄力唯一产生点写入（随 snapshotHero 全量快照自动持久化、防御式
+// (g.charges||0) 旧档零迁移，与 ACH_LIST charge「蓄势待发」同读一份源），支线门槛 12 低于成就门槛
+// CHARGE_GOAL(15)——顺路先完成支线再解锁成就；与 BELL_GOAL/FISH_GOAL/WATCH_GOAL/TALE_GOAL/
+// SONG_GOAL/MOON_GOAL/PEDDLE_GOAL/SHOP_GOAL/CARVE_GOAL 同一「支线目标单一数据源」家族，想调阈值
+// 只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；记誓人在
+// 无字回廊中段 (10,3)，陪伴型（[6]蓄力自开局每场战斗皆可蓄，小事攒大了就是誓的分量）。
+const VOW_GOAL = 12;       // 记誓人支线需攒进石碑的蓄力次数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4031,6 +4051,13 @@ const NPCS={
     ['酿药师：灯亮了，我这儿也不必整夜守着锅了。','剩下的蘑菇，','熬给晚归的人暖身子。 [Enter] 继续'],
     ['酿药师：名字都回了灯下。','这锅汤，总算不用当药喝了。 [Enter] 结束'],
   ]},
+  // v24.110 升格为支线委托人（QUESTS.side_vow「蓄石为誓」·[6]蓄力累计 VOW_GOAL(12) 次换 70 金 +
+  // 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师/
+  // v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/v24.106
+  // 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人「风味 NPC 升格」先例）：npcQuestPages
+  // 有任务后优先走任务页（talk.offer/active/turnin/done 四态），原有两页台词与 trueBoss after
+  // 彩蛋「誓还了/碑上亮起一粒一粒微光」已并入 side_vow 的 done 分档（零内容丢失，详见
+  // QUESTS.side_vow 行内注释）。
   oathkeep:{name:'记誓人', mark:'staff', lines:[
     ['记誓人：第二块碑，记的是灯卫的誓。','他吞下灯芯那晚说：镇子若忘了他，','他就替镇子记着镇子。 [Enter] 继续'],
     ['记誓人：碑上没有名字，摸上去是温的。','一句话撑到今天，还在石头发烫。','你若懂这句誓，就别让镇子忘了他。 [Enter] 结束'],
@@ -6593,6 +6620,59 @@ const QUESTS={
       ]],
     },
   },
+  // 蓄石为誓（v24.110 新内容·新支线（第二十四条））：记誓人升格为委托人——v22.51 补充的
+  // 纯风味台词「碑上没有名字，摸上去是温的——一句话撑到今天，还在石头发烫」点破灯卫的誓
+  // 不是一句空话、是攒了不知多少年的分量：玩家每次 [6] 凝神蓄力（battle.js doCharge 蓄力唯一
+  // 产生点写入 hero.charges）都算替那句誓添一笔分量——替他蓄满 VOW_GOAL(12) 次；量化：
+  // VOW_GOAL(12) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.charges
+  // 复用既有端口（随 snapshotHero 全量快照自动持久化、防御式 (g.charges||0) 旧档零迁移——
+  // 与 ACH_LIST charge「蓄势待发」同读一份源，支线门槛 12 低于成就门槛 CHARGE_GOAL(15)——
+  // 顺路先完成支线再解锁成就，且「蓄力」正是那句誓本身：蓄的不是力，是分量），零新计数
+  // 零新状态零新存档；无 unlockOn 从开局即 offer（承 side_bell/side_pond 同款——记誓人在无字
+  // 回廊中段 (10,3)，接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish
+  // 同款函数页）；done 页按 hero.trueBoss 分档（记誓人原有 trueBoss after 彩蛋「誓还了/碑上
+  // 亮起一粒一粒微光」两页并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示
+  // after，lines 两页叙事保留在数据层）；奖励 70 金 + 2 生命药水（承 side_tale 70 档、高于
+  // side_moon 60 档、低于 side_fish 90 档——「蓄力」自首战起每场可蓄、全程伴随）。
+  side_vow:{
+    id:'side_vow', kind:'side', store:true, npc:'oathkeep', giver:'oathkeep',
+    cond:(g)=>((g.charges||0) >= VOW_GOAL),
+    condProg:(g)=>`${g.charges||0}/${VOW_GOAL} 次`,
+    name:'蓄石为誓', where:'无字回廊（[6]蓄力累计）',
+    obj:`凝神蓄力 ${VOW_GOAL} 次——誓是一口气一口气攒出来的`,
+    offer:'去无字回廊中段找记誓人，接下「蓄石为誓」的委托',
+    turnin:`${VOW_GOAL} 次蓄力攒够了！回无字回廊中段找记誓人`,
+    done:'分量蓄进去了，碑还是温的。往后你蓄的每一下力，都算替镇子记着一句。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '记誓人：第二块碑，记的是灯卫的誓。',
+        '他吞下灯芯那晚说：镇子若忘了他，他就替镇子记着镇子。',
+        `一句话撑到今天，还在石头发烫——你凝神蓄力 ${VOW_GOAL} 次，就算替那口气添上分量。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '记誓人：不急，分量是一口气一口气攒出来的。',
+        `（你已凝神蓄力 ${(hero&&hero.charges)||0}/${VOW_GOAL} 次）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '记誓人：十二次！石头都替你发烫了……',
+        '不对，是那句誓——你把分量蓄进石头了。谢礼你收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['记誓人：誓还了。他走的时候，',
+         '碑上亮起一粒一粒微光——不是字，是他替镇子记着的分量。 [Enter] 继续'],
+        ['记誓人：如今没人再需要替镇子记着了。',
+         '名字都回了灯下，第二块碑还是温的——这回，是镇子在焐它。 [Enter] 结束'],
+      ] : [[
+        '记誓人：分量蓄进去了，碑还是温的。',
+        '往后你蓄力，我都在碑旁数着。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7720,5 +7800,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL,
 };
