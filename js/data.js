@@ -2588,6 +2588,18 @@
 // （village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/战斗/成就/
 // 存档零影响（see GAME_VERSION 上方 v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/v24.94/v24.93/
 // v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 325→326（smoke_v24103_goldcurve28 入库，链尾 smoke_v24103_goldcurve28）。
+// v24.109 新内容·新支线（第二十三条）：刻碑人「一凿入石」——[1]普攻暴击累计 CARVE_GOAL(10) 次换
+// 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档、低于 side_fish 90 档——「暴击」自
+// 首战起每次普攻 12% 概率触发、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
+// 弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.crits 一份既有源复用
+// （js/battle.js doAttack 暴击唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式
+// (g.crits||0) 旧档零迁移，与 ACH_LIST crit「暴击如雨」同读一份源，支线门槛 10 低于成就门槛
+// CRIT_GOAL(20)——顺路先完成支线再解锁成就；技能永不暴击、只 [1] 普攻计）。无 unlockOn 从开局
+// 即可 offer（承 side_bell/side_pond 同款——刻碑人在无字回廊东段 (19,3)，接取时机天然正确）；
+// active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档
+// （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
+// npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
+// （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
 // v24.108 新内容·新支线（第二十二条）：货栈掌柜「开张的生意」——镇上累计消费 SHOP_GOAL(300) 金换
 // 80 金 + 2 生命药水（承 side_bell 80 金档、高于 side_tale 70 档、低于 side_fish 90 档——「消费」
 // 自首次买药水/装备即可累计、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
@@ -2637,7 +2649,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.108';
+const GAME_VERSION = 'v24.109';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3436,6 +3448,14 @@ const PEDDLE_GOAL = 10;    // 货郎支线需替货郎卖出的魔法蘑菇株�
 // 「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
 // 接取对话（offer）全同步；货栈掌柜在潮灯镇商店门前 (8,10)，陪伴型（消费五端口自开局即可累计）。
 const SHOP_GOAL = 300;     // 货栈掌柜支线需在镇上花掉的金币数（累计消费端口 hero.spent）
+// v24.109 一凿入石（刻碑人支线）：战斗指令 [1] 普攻暴击累计 CARVE_GOAL(10) 次——计数 hero.crits
+// 由 js/battle.js doAttack 暴击唯一产生点写入（crit 判定同处一处防漏记、随 snapshotHero 全量快照
+// 自动持久化、防御式 (g.crits||0) 旧档零迁移，技能 crit 恒 false 不计数，与 ACH_LIST crit「暴击
+// 如雨」同读一份源），支线门槛 10 低于成就门槛 CRIT_GOAL(20)——顺路先完成支线再解锁成就；与
+// BELL_GOAL/FISH_GOAL/WATCH_GOAL/TALE_GOAL/SONG_GOAL/MOON_GOAL/PEDDLE_GOAL/SHOP_GOAL 同一
+// 「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
+// 接取对话（offer）全同步；刻碑人在无字回廊东段 (19,3)，陪伴型（每场战斗普攻皆可累计）。
+const CARVE_GOAL = 10;     // 刻碑人支线需凿进石头的暴击次数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3867,6 +3887,12 @@ const NPCS={
   // 与矿脉老矿工同款 pick、跨图不重；同图无字回廊内与守名者 staff/掌灯童 lamp/拾灯人 hood 均区分），
   // 造型复用 mwChief 魁梧身形（与潮灯镇灯长/矿脉筛砂人同款身形、跨图不重名；同图无字回廊内与守名者
   // 长者袍、掌灯童镇民短衫、拾灯人斗篷均区分）；无任务、无顶标、零结算零存档。
+  // v24.109 升格为支线委托人（QUESTS.side_carve「一凿入石」·[1]普攻暴击累计 CARVE_GOAL(10) 次换
+  // 70 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32
+  // 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/
+  // v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜「风味 NPC 升格」先例）：npcQuestPages 有任务后
+  // 优先走任务页（talk.offer/active/turnin/done 四态），原有两页台词与 trueBoss after 彩蛋
+  // 「手艺是暖的」已并入 side_carve 的 done 分档（零内容丢失，详见 QUESTS.side_carve 行内注释）。
   stonecarver:{name:'刻碑人', mark:'pick', lines:[
     ['刻碑人：这四块碑，是我一凿一凿凿出来的。','碑上没刻名字——名字不是刻上去的，','是有人记得，它才留在石头上。 [Enter] 继续'],
     ['刻碑人：碑立在这儿，不是记着谁的仇，','是给走丢的人留个把名字放下的地方。','你读完碑，记得把名字带回去。 [Enter] 结束'],
@@ -6528,6 +6554,45 @@ const QUESTS={
       ]],
     },
   },
+  side_carve:{
+    id:'side_carve', kind:'side', store:true, npc:'stonecarver', giver:'stonecarver',
+    cond:(g)=>((g.crits||0) >= CARVE_GOAL),
+    condProg:(g)=>`${g.crits||0}/${CARVE_GOAL} 次`,
+    name:'一凿入石', where:'无字回廊（[1]普攻暴击累计）',
+    obj:`普攻打出 ${CARVE_GOAL} 次暴击（×1.8）——技能永不暴击，只算普攻的利落`,
+    offer:'去无字回廊东段找刻碑人，接下凿碑的委托',
+    turnin:`${CARVE_GOAL} 次暴击打出来了！回无字回廊东段找刻碑人`,
+    done:'名字凿上了，就有地方歇脚。往后的路，总有人记得往亮处走。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '刻碑人：这四块碑，是我一凿一凿凿出来的。',
+        '最见功力的那一凿，不是最重的，是最快的——快到石头都来不及喊疼。',
+        `听说你出手也有那么一下。你在战斗里打出 ${CARVE_GOAL} 次暴击，就算替我凿下十个名字。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '刻碑人：利的那一凿，从来不挑石头。你只管出手。',
+        `（你已打出 ${(hero&&hero.crits)||0}/${CARVE_GOAL} 次暴击）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '刻碑人：十凿！碑上都亮着口子……',
+        '不对，是名字——你把名字凿进石头了。谢礼你收好。',
+        '[Enter] 领取谢礼',
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['刻碑人：碑上的字，今天全亮了。',
+         '我凿了半辈子石头，头一回觉得我的手艺是暖的。 [Enter] 继续'],
+        ['刻碑人：名字都回灯下了，碑还立着。',
+         '立着就好——往后的路，总有人记得往亮处走。 [Enter] 结束'],
+      ] : [[
+        '刻碑人：名字刻上了，就有地方歇脚。',
+        '往后你出手，我都在碑旁听着。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7655,5 +7720,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL,
 };
