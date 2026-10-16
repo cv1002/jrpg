@@ -2588,6 +2588,17 @@
 // （village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/战斗/成就/
 // 存档零影响（see GAME_VERSION 上方 v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/v24.94/v24.93/
 // v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 325→326（smoke_v24103_goldcurve28 入库，链尾 smoke_v24103_goldcurve28）。
+// v24.107 新内容·新支线（第二十一条）：货郎「路远灯长」——杂货铺卖菇累计 PEDDLE_GOAL(10) 株
+// 换 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档——「卖菇」自首枚蘑菇到手即可
+// 进行、全程伴随，低于 side_fish 90 档）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
+// 弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.sold 一份既有源复用
+// （与 ACH_LIST sell「蘑菇商路」同读一份源，支线门槛 10 低于成就门槛 SELL_GOAL(30)——顺路先
+// 完成支线再解锁成就，且卖菇本身 10 金/株、货郎要的是「灯油钱」不是菇）。无 unlockOn 从首次
+// 进雾语林即可 offer（承 side_song 同款——货郎在雾语林西入口 (4,2)，首次进林即可接，接取时机
+// 天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按
+// hero.trueBoss 分档（货郎原有 trueBoss after 彩蛋「雾散了/灯亮着路就值钱」两页并入真结局分档，
+// 零内容丢失；npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套
+// 329→330（smoke_v24107_peddlequest 入库，链尾 smoke_v24107_peddlequest）。
 // v24.106 新内容·新支线（第二十条）：放灯童「月亮的路」——任意地图快速旅行累计 MOON_GOAL(8) 条灯路
 // 换 60 金 + 2 生命药水；计数 g.travels 由 js/core.js doTravel 成功旅行唯一产生点写入（未探索/已在
 // 原地早退零计数、随 snapshotHero 全量快照自动持久化、防御式 (g.travels||0) 旧档零迁移，与
@@ -2614,7 +2625,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.106';
+const GAME_VERSION = 'v24.107';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3404,6 +3415,7 @@ const SONG_GOAL = 12;      // 琴师支线需记下的战歌音符（技能释�
 // （cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；放灯童在潮灯镇水塘东岸
 // (19,7)，陪伴型（快速旅行 T 菜单四图任选，累计自然发生）。
 const MOON_GOAL = 8;       // 放灯童支线需跟着纸灯走过的灯路（快速旅行次数）
+const PEDDLE_GOAL = 10;    // 货郎支线需替货郎卖出的魔法蘑菇株数（卖菇唯一产生点 hero.sold）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3777,7 +3789,9 @@ const NPCS={
   // trueBoss 后 after 彩蛋（villager/掌灯童/说书人/拾菇人/听矿人/失名的旅人同款机制、npcQuestPages
   // 无待办任务回退直落，零新逻辑、零裸字面量）；mark:'lamp' 复用既有程序化绘制分支（掌灯童/掌灯阿婆/
   // 星砂车夫同款灯形），造型复用 mwCartman 商贩身形（雾语林内与雾径猎手斗篷/拾菇人镇民短衫/
-  // 失名的旅人长者袍均区分）；无任务、无顶标、零结算零存档。
+  // 失名的旅人长者袍均区分）；无任务、无顶标、零结算零存档 + v24.107 起升格为支线委托人
+  // （QUESTS.side_peddle「路远灯长」，见 QUESTS.side_peddle 行内注释——有任务后 npcQuestPages
+  // 走四档任务页、trueBoss after 彩蛋「雾散了/灯亮着路就值钱」并入 done 分档零内容丢失）。
   peddler:{name:'货郎', mark:'lamp', lines:[
     ['货郎：进林子前，先把药水补足——','这林子里可没有铺子。','中段营地的泉水，可以白喝。 [Enter] 继续'],
     ['货郎：北环路蘑菇田的菌盖，夜里会发光——那是灯油。','两株能熬一瓶高级灵药；不想熬，','镇上杂货铺十金一株也收。 [Enter] 结束'],
@@ -6386,6 +6400,53 @@ const QUESTS={
       ]],
     },
   },
+  // v24.107 新内容·新支线（第二十一条）：货郎「路远灯长」——杂货铺卖菇累计 PEDDLE_GOAL(10) 株
+  // 换 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档、低于 side_fish 90 档——「卖菇」
+  // 自首枚蘑菇到手即可进行、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗
+  // 对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.sold 一份既有源复用（与
+  // ACH_LIST sell「蘑菇商路」同读一份源，支线门槛 10 低于成就门槛 SELL_GOAL(30)——顺路先完成支线
+  // 再解锁成就，且卖菇本身 10 金/株、货郎要的是「灯油钱」不是菇）。无 unlockOn 从首次进雾语林即可
+  // offer（承 side_song 同款——货郎在雾语林西入口 (4,2)，首次进林即可接，接取时机天然正确）；
+  // active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档
+  // （货郎原有 trueBoss after 彩蛋「雾散了/灯亮着路就值钱」两页并入真结局分档，零内容丢失；
+  // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）。
+  side_peddle:{
+    id:'side_peddle', kind:'side', store:true, npc:'peddler', giver:'peddler',
+    cond:(g)=>((g.sold||0) >= PEDDLE_GOAL),
+    condProg:(g)=>`${g.sold||0}/${PEDDLE_GOAL} 株`,
+    name:'路远灯长', where:'潮灯镇（杂货铺 · 卖魔法蘑菇）',
+    obj:`替货郎卖出 ${PEDDLE_GOAL} 株魔法蘑菇，换回灯油钱`,
+    offer:'去雾语林西入口找货郎，接下「亮灯路」的委托',
+    turnin:`替货郎卖出 ${PEDDLE_GOAL} 株蘑菇了！回雾语林西入口找货郎`,
+    done:'灯油钱换回来了。货郎说，路远不要紧，灯亮着就敢走。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '货郎：我挑着货走南闯北，最怕的就是灯灭。',
+        '菌盖是灯油，镇上杂货铺十金一株也收——可我这趟货走不开。',
+        `替我卖出 ${PEDDLE_GOAL} 株蘑菇（卖菇一次 = 一株），换回灯油钱，路就亮堂了。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '货郎：不急，货是挑出来的，路是一步步走的。',
+        `（已替他卖出 ${(hero&&hero.sold)||0}/${PEDDLE_GOAL} 株）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '货郎：灯油钱到手，我这趟货就敢挑进雾里去了。',
+        '路远灯长，心里有底。谢礼你收好——',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['货郎：雾散了，菌盖上的光还亮着。','我这趟货，总算能挑到镇上啦。','[Enter] 继续'],
+        ['货郎：灯亮着，路就值钱。','走南闯北，最怕的就是灯灭——如今不怕了。','[Enter] 结束'],
+      ] : [[
+        '货郎：灯油钱齐了。',
+        '往后你走哪条路，灯都替你亮着。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7513,5 +7574,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL,
 };

@@ -1,0 +1,250 @@
+// smoke_v24107_peddlequest.mjs —— v24.107 专项冒烟：第二十一条支线「路远灯长」（货郎·卖菇 PEDDLE_GOAL(10) 株）
+// （新内容·新支线——承 v24.106 放灯童「月亮的路」/ v24.105 琴师「战歌的谱」/ v24.100 说书人「灯下新章」/
+// v24.82 守夜人「守夜的旧约」同一「风味 NPC 升格为支线委托人」先例：v22.22 纯风味 NPC「货郎」
+// （雾语林西入口 (4,2)，「镇上杂货铺十金一株也收」）升格为委托人——杂货铺卖菇每成功卖出一株都算替
+// 货郎换回一份灯油钱，替他卖满 PEDDLE_GOAL(10) 株（计数 hero.sold 与 ACH_LIST sell「蘑菇商路」
+// 同读一份源，支线门槛 10 低于成就门槛 SELL_GOAL(30)，零新计数零新状态零新存档）。
+// 本冒烟守护：版本锚点、data.js 源级落位（v24.107 注释 / GAME_VERSION v24.107 与旧 v24.106 字面量
+// 零残留 / v22.22 及更早历史注释保留 / PEDDLE_GOAL 常量与 export）、QUESTS 契约（21 side + 4 main、
+// side_peddle 字段逐值、与 *_GOAL 同源、ACH_LIST allquests 同源互证）、quests.js 运行期状态机
+// （offer→active→turnin→done 全链路 + resolveNpcTalk 接取/交付结算 70 金+2 生命药水 + npcQuestMark/
+// npcQuestPages 四态 + sideQuestDone 0/21·3/21·21/21）、NPCS.peddler 升格落位（lines 两页与
+// after 两页保留零内容丢失契约 + v2222 姊妹套件已随升格更新）、README/package.json/CHANGELOG 同步
+// （件套口径 330 + v24.107 守护描述 + 入库 330 + package 串尾 + CHANGELOG 顶 pin）、tests 目录与
+// 实跑链恒等（330）、哨兵链（前望 331 且 README 尚无 331 口径）、旧代 v24.105 pin 全库零残留扫描
+// （字面量/顶 pin/329 口径 · 豁免本套件与上一代套件）。
+import { GAME_VERSION, QUESTS, PEDDLE_GOAL, SELL_GOAL, ACH_LIST, NPCS } from '../js/data.js';
+import { questStatus, questJournal, sideQuestDone, npcQuestMark, npcQuestPages, resolveNpcTalk, questRewardPreview } from '../js/quests.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+let n = 0, failed = 0;
+function ok(name, cond, extra) {
+  n++;
+  if (cond) console.log('  ✓', name);
+  else { failed++; console.log('  ✗', name, extra || ''); }
+}
+const __dir = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dir, '..');
+const read = (f) => fs.readFileSync(path.join(ROOT, 'tests/' + f), 'utf8');
+
+console.log('— v24.107 货郎「路远灯长」新支线 冒烟 —');
+
+const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
+const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+const pkgRaw = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
+const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
+
+// —— 版本锚点（格式合法 + 已越过 v24.106 + 精确值由本版守护）——
+const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
+const _gv = _vm(GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.106', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 106)), GAME_VERSION);
+ok('data.js GAME_VERSION 字面量已为 v24.107（旧 v24.106 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.107';") && !dSrc.includes("const GAME_VERSION = 'v24.106';"));
+ok('data.js 含 v24.107 注释（路远灯长新支线说明）',
+  dSrc.includes('v24.107 新内容·新支线（第二十一条）'));
+ok('data.js 仍保留 v22.22 历史注释（货郎三件套说明，零内容丢失）',
+  dSrc.includes('v22.22 新 NPC·纯风味') && dSrc.includes('十金一株也收'));
+
+// —— 源级落位：PEDDLE_GOAL 常量 + export ——
+ok('data.js PEDDLE_GOAL 常量 = 10（与十组 *_GOAL 比邻声明，同一家族）',
+  dSrc.includes('const PEDDLE_GOAL = 10;') && dSrc.indexOf('const PEDDLE_GOAL') > dSrc.indexOf('const MOON_GOAL'));
+ok('data.js export 块含 PEDDLE_GOAL（MOON_GOAL 之后用例）',
+  dSrc.includes('SONG_GOAL, MOON_GOAL, PEDDLE_GOAL,'));
+ok('PEDDLE_GOAL 与 SELL_GOAL 同族逐值（10 < 30，支线门槛低于成就门槛——顺路先完成支线再解锁成就）',
+  PEDDLE_GOAL === 10 && SELL_GOAL === 30 && PEDDLE_GOAL < SELL_GOAL);
+
+// —— QUESTS 契约：21 side + 4 main（数量派生，绝无裸字面量）——
+const sideDefs = Object.values(QUESTS).filter((q) => q.kind === 'side');
+const mainDefs = Object.values(QUESTS).filter((q) => q.kind === 'main');
+ok('QUESTS 共 25 条（21 side + 4 main，派生计数）',
+  sideDefs.length === 21 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 25,
+  `${sideDefs.length}/${mainDefs.length}`);
+ok('side_peddle 存在且为第二十一条（kind side · store · npc/giver peddler · 无 unlockOn）',
+  !!QUESTS.side_peddle && QUESTS.side_peddle.kind === 'side' && QUESTS.side_peddle.store === true &&
+  QUESTS.side_peddle.npc === 'peddler' && QUESTS.side_peddle.giver === 'peddler' &&
+  QUESTS.side_peddle.unlockOn == null);
+ok('side_peddle 名称「路远灯长」/where/obj/offer/turnin/done 落位',
+  QUESTS.side_peddle.name === '路远灯长' && QUESTS.side_peddle.where.includes('卖魔法蘑菇') &&
+  QUESTS.side_peddle.obj.includes('卖出 ' + String(PEDDLE_GOAL) + ' 株魔法蘑菇') &&
+  QUESTS.side_peddle.obj.includes('灯油钱') &&
+  QUESTS.side_peddle.offer.includes('货郎') && QUESTS.side_peddle.turnin.includes('货郎') &&
+  QUESTS.side_peddle.done.includes('灯油钱'));
+ok('side_peddle cond/condProg 与 PEDDLE_GOAL 同源（sold 计数，判/进/文/话一处调全端跟随）',
+  QUESTS.side_peddle.cond({ sold: PEDDLE_GOAL - 1 }) === false &&
+  QUESTS.side_peddle.cond({ sold: PEDDLE_GOAL }) === true &&
+  QUESTS.side_peddle.cond({}) === false && QUESTS.side_peddle.cond({ sold: 0 }) === false &&
+  QUESTS.side_peddle.condProg({}) === `0/${PEDDLE_GOAL} 株` && QUESTS.side_peddle.condProg({ sold: 5 }) === `5/${PEDDLE_GOAL} 株`);
+ok('side_peddle reward 逐值：70 金 + 2 生命药水（承 side_tale 70 档、低于 side_fish 90 档）',
+  QUESTS.side_peddle.reward.gold === 70 && QUESTS.side_peddle.reward.item === 2 && !QUESTS.side_peddle.reward.potion2);
+
+// —— ACH_LIST allquests 同源互证（与 sideQuestDone 输出一致）——
+const achAll = ACH_LIST.find((a) => a.id === 'allquests');
+ok('ACH_LIST allquests 名称「灯火同心」且描述派生 21（「21 个支线任务」）',
+  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('21 个支线任务'), achAll && achAll.d);
+ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/21 false · 20/21 false · 21/21 true · prog 21/21）',
+  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 20).map(q => [q.id, 'done'])) }) === false &&
+  achAll.ok({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === true &&
+  achAll.prog({ quests: {} }) === '0/21' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '21/21');
+
+// —— quests.js 运行期：sideQuestDone ——
+ok('运行期：sideQuestDone 0/21 · 3/21 · 21/21 · 主线不入列',
+  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 21 &&
+  sideQuestDone({ quests: { side_mushroom: 'done', side_cart: 'done', side_pond: 'done' } }).done === 3 &&
+  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 21 &&
+  sideQuestDone({ quests: { main_demon: 'done' } }).done === 0);
+
+// —— 运行期状态机：offer → active → turnin → done（quests 纯函数，零 DOM）——
+function mkHero(extra) {
+  return Object.assign({ name: '测试者', level: 3, hp: 60, hpMax: 60, mp: 20, mpMax: 20, atkMax: 13, defMax: 9,
+    gold: 0, xp: 0, xpNext: 100, item: 1, potion2: 0, weapon: '铁剑', armor: '皮甲',
+    skills: [], ach: [], seen: {}, bestiary: {}, chests: [], fragments: [], quests: {}, totalWins: 0,
+    drops: 0, deflects: 0, casts: 0, travels: 0, sold: 0, x: 4, y: 3, map: 'dungeon' }, extra || {});
+}
+const h1 = mkHero({});
+ok('状态机：无存档 → questStatus offer（无 unlockOn 首次进林即可接，承 side_song 同款）',
+  questStatus(h1, 'side_peddle') === 'offer', questStatus(h1, 'side_peddle'));
+ok('状态机：npcQuestMark offer 态「❕ 可接委托」',
+  npcQuestMark(h1, 'peddler') === '❕ 可接委托', npcQuestMark(h1, 'peddler'));
+ok('状态机：npcQuestPages offer 页（货郎 · 路远灯长 · PEDDLE_GOAL 同源）',
+  JSON.stringify(npcQuestPages(h1, 'peddler')).includes('货郎') &&
+  JSON.stringify(npcQuestPages(h1, 'peddler')).includes('走南闯北') &&
+  JSON.stringify(npcQuestPages(h1, 'peddler')).includes(String(PEDDLE_GOAL)) &&
+  JSON.stringify(npcQuestPages(h1, 'peddler')).includes('接下委托'));
+const rAcc = resolveNpcTalk(h1, 'peddler');
+ok('状态机：resolveNpcTalk 接取 → {kind:accept, id:side_peddle} + quests.side_peddle=active',
+  !!rAcc && rAcc.kind === 'accept' && rAcc.id === 'side_peddle' && h1.quests.side_peddle === 'active', JSON.stringify(rAcc));
+ok('状态机：active 未达标 → questStatus active（cond 未满足）',
+  questStatus(h1, 'side_peddle') === 'active', questStatus(h1, 'side_peddle'));
+ok('状态机：active 页函数型实时报进度（已替卖 0/10 株）',
+  JSON.stringify(npcQuestPages(h1, 'peddler')).includes('0/' + PEDDLE_GOAL + ' 株') &&
+  JSON.stringify(npcQuestPages(h1, 'peddler')).includes('已替他卖出'));
+ok('状态机：任务日志 objective 同源（替货郎卖出 10 株魔法蘑菇 0/10 株）',
+  questJournal(h1).find((e) => e.id === 'side_peddle').objective.includes('卖出 ' + PEDDLE_GOAL + ' 株魔法蘑菇') &&
+  questJournal(h1).find((e) => e.id === 'side_peddle').objective.includes(`0/${PEDDLE_GOAL} 株`));
+const h2 = mkHero({ quests: { side_peddle: 'active' }, sold: PEDDLE_GOAL });
+ok('状态机：达标（sold=PEDDLE_GOAL）→ questStatus turnin',
+  questStatus(h2, 'side_peddle') === 'turnin', questStatus(h2, 'side_peddle'));
+ok('状态机：npcQuestMark turnin 态「❕ 可交任务」',
+  npcQuestMark(h2, 'peddler') === '❕ 可交任务', npcQuestMark(h2, 'peddler'));
+const rRew = resolveNpcTalk(h2, 'peddler');
+ok('状态机：resolveNpcTalk 交付 → {kind:reward, gold:70, item:2} + done + 结算 70 金/2 生命药水',
+  !!rRew && rRew.kind === 'reward' && rRew.gold === 70 && rRew.item === 2 &&
+  h2.quests.side_peddle === 'done' && h2.gold === 70 && h2.item === 3, JSON.stringify(rRew));
+ok('状态机：交付后再谈 → resolveNpcTalk null（无待办）',
+  resolveNpcTalk(h2, 'peddler') === null);
+ok('状态机：done 默认档（灯油钱齐了）',
+  JSON.stringify(npcQuestPages(h2, 'peddler')).includes('灯油钱齐了'));
+ok('状态机：done trueBoss 档（after 彩蛋「雾散了/灯亮着路就值钱」两页并入任务页，零内容丢失）',
+  JSON.stringify(npcQuestPages(mkHero({ quests: { side_peddle: 'done' }, trueBoss: true }), 'peddler')).includes('总算能挑到镇上') &&
+  JSON.stringify(npcQuestPages(mkHero({ quests: { side_peddle: 'done' }, trueBoss: true }), 'peddler')).includes('路就值钱'));
+ok('状态机：done 态 npcQuestMark 零顶标（peddler 无其它待办）',
+  npcQuestMark(mkHero({ quests: { side_peddle: 'done' } }), 'peddler') === null);
+ok('questRewardPreview 与 reward 同源（70 金 + 2 生命药水）',
+  JSON.stringify(questRewardPreview(mkHero({}), 'side_peddle')) === '{"gold":70,"item":2,"potion2":0}');
+
+// —— 既有支线零回归（挑七条既有契约逐值钉死）——
+ok('既有支线零回归：side_tale/side_fish/side_bell/side_golem/side_watch/side_song/side_moon 契约逐字未动',
+  QUESTS.side_tale.reward.gold === 70 && QUESTS.side_tale.reward.item === 2 &&
+  QUESTS.side_fish.reward.gold === 90 && QUESTS.side_fish.reward.item === 2 &&
+  QUESTS.side_bell.reward.gold === 80 && QUESTS.side_bell.reward.potion2 === 1 &&
+  QUESTS.side_golem.reward.gold === 120 && QUESTS.side_watch.reward.gold === 100 &&
+  QUESTS.side_watch.reward.potion2 === 1 &&
+  QUESTS.side_song.reward.gold === 60 && QUESTS.side_song.reward.potion2 === 1 &&
+  QUESTS.side_moon.reward.gold === 60 && QUESTS.side_moon.reward.item === 2);
+
+// —— NPCS.peddler 升格落位（零新 NPC/坐标/数据层三件套之外零改动）——
+ok('NPCS.peddler 存在（货郎 · mark lamp · 含 v24.107 升格注释）',
+  !!NPCS.peddler && NPCS.peddler.name === '货郎' && NPCS.peddler.mark === 'lamp' &&
+  dSrc.includes('v24.107 起升格为支线委托人'));
+ok('NPCS.peddler 原有 lines 两页 / trueBoss after 两页彩蛋保留（零内容丢失契约）',
+  Array.isArray(NPCS.peddler.lines) && NPCS.peddler.lines.length === 2 &&
+  Array.isArray(NPCS.peddler.after) && NPCS.peddler.after.length === 2 &&
+  NPCS.peddler.after[0][1].includes('总算能挑到镇上') && NPCS.peddler.after[1][0].includes('灯亮着'));
+ok('data.js dungeon.extras 含货郎 (4,2) 与 NPC_SPOTS 键「4,2」（零新坐标）',
+  dSrc.includes("{ x: 4, y: 2, ty: 'NPC' }") && dSrc.includes("'4,2'"));
+ok('姊妹件 smoke_v2222_peddler 已随升格更新（无任务契约翻转为任务页契约）',
+  read('smoke_v2222_peddler.mjs').includes('路远灯长') && read('smoke_v2222_peddler.mjs').includes('可接委托'));
+
+// —— README / package.json / CHANGELOG 同步 ——
+ok('README 件套口径已为三百三十件套（三百二十九件套清除）',
+  readme.includes('冒烟三百三十件套（三百二十九件套清除）'));
+ok('README tests 含 v24.107 守护描述与 smoke_v24107_peddlequest 入库（330 份）',
+  readme.includes('v24.107 起含「货郎「路远灯长」新支线」守护') &&
+  readme.includes('smoke_v24107_peddlequest 入库（330 份）'));
+ok('README 仍有 v24.106 守护描述（历史保留）', readme.includes('v24.106 起含「放灯童「月亮的路」新支线」守护'));
+ok('README 已有三百三十件套口径且尚无 331（哨兵前望 331 语义：下一版才写 331）',
+  readme.includes('冒烟三百三十件套（三百二十九件套清除）') && !readme.includes('冒烟三百三十一件套') && !readme.includes('（331 份）'));
+ok('README tests 树串尾已延伸（…+ smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest（npm test 串跑））',
+  readme.includes('smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest（npm test 串跑）'));
+ok('README 支线/奖励行随新现实（二十一条 · 路远灯长 · PEDDLE_GOAL）',
+  readme.includes('二十一条支线目标/奖励全部由') &&
+  readme.includes('路远灯长（货郎 · 替货郎卖出 `PEDDLE_GOAL`(10) 株魔法蘑菇，杂货铺卖菇口）70 金 + 2 药水') &&
+  readme.includes('v24.107 补第二十一条'));
+const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
+ok('package.json 实跑链共 329 份（smoke.mjs + 329 专项）', chain.length === 329 && ['smoke.mjs', ...chain].length === 330, String(chain.length));
+ok('package.json 链尾为 smoke_v24107_peddlequest（第 330 份）', chain[chain.length - 1] === 'smoke_v24107_peddlequest', chain[chain.length - 1]);
+ok('package.json test 串收录 smoke_v24107_peddlequest.mjs（node tests/ 链尾形态）',
+  pkgRaw.includes('node tests/smoke_v24106_moonquest.mjs && node tests/smoke_v24107_peddlequest.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.107（startsWith）', changelog.startsWith('## v24.107'));
+ok('CHANGELOG v24.107 条目含「路远灯长」与「PEDDLE_GOAL」与「货郎」',
+  changelog.includes('路远灯长') && changelog.includes('PEDDLE_GOAL') && changelog.includes('货郎'));
+ok('CHANGELOG 仍保留 v24.106 条目（历史保留）', changelog.includes('## v24.106'));
+
+// —— tests 目录与实跑链一一对应（无孤儿件套、无漏跑件套）——
+const testsDir = new URL('../tests/', import.meta.url);
+const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a, b) => a.localeCompare(b));
+const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
+const orphans = files.filter((f) => !chainSet.has(f));
+const missed = [...chainSet].filter((f) => !files.includes(f));
+ok('tests 目录件套 = 330（329 + smoke_v24107_peddlequest）', files.length === 330, String(files.length));
+ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
+ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
+
+// —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.105 pin 零残留 ——
+const s24106 = read('smoke_v24106_moonquest.mjs');
+ok('smoke_v24106 的 GAME_VERSION 字面量 pin 已更新为 v24.107', s24106.includes("const GAME_VERSION = 'v24.107';"));
+ok('smoke_v24106 的 CHANGELOG 顶 pin 已更新为 ## v24.107 ', s24106.includes("startsWith('## v24.107 '"));
+ok('smoke_v24106 的件套 pin 已更新为三百三十件套（三百二十九件套清除）', s24106.includes('三百三十件套（三百二十九件套清除）'));
+ok('smoke_v24106 的 README/链 tail pin 已随新现实延伸（含 smoke_v24107_peddlequest）',
+  s24106.includes('smoke_v24107_peddlequest'));
+ok('smoke_v24106 的 package.json 串尾 pin 已延伸至 smoke_v24107_peddlequest', s24106.includes('node tests/smoke_v24106_moonquest.mjs && node tests/smoke_v24107_peddlequest.mjs'));
+ok('smoke_v24106 的链尾 pin 已推进至 smoke_v24107_peddlequest（第 330 份）', s24106.includes("=== 'smoke_v24107_peddlequest'"));
+ok('smoke_v24106 的入库 pin 已推进至 330 份', s24106.includes('入库（330 份）'));
+const s2436 = read('smoke_v2436_codexrow.mjs');
+ok('smoke_v2436 双计数 pin 已推进（329 专项 / 330）且尚无 331 口径哨兵',
+  s2436.includes('suiteFiles.length === 329 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 330') &&
+  s2436.includes('!readme.includes(\'冒烟三百三十一件套\')') && s2436.includes('!readme.includes(\'（331 份）\')'));
+const s2415 = read('smoke_v2415_treepin.mjs');
+ok('smoke_v2415 链尾已推进至 smoke_v24107_peddlequest（第 330 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24107_peddlequest'"));
+ok('smoke_v2415 树串 token 数已推进至 330', s2415.includes('treeTok.length === 330'));
+// 旧代 v24.105 pin 零残留扫描（豁免本套件与上一代套件）
+const leftovers = [], _why = {};
+for (const f of files) {
+  if (!f.endsWith('.mjs') || f === 'smoke_v24107_peddlequest.mjs') continue;
+  if (f === 'smoke_v24106_moonquest.mjs') continue;
+  if (f === 'smoke_v24100_talequest.mjs') continue;
+  if (f === 'smoke_v24101_goldcurve26.mjs') continue;
+  if (f === 'smoke_v24102_goldcurve27.mjs') continue;
+  if (f === 'smoke_v24103_goldcurve28.mjs') continue;
+  if (f === 'smoke_v24104_goldcurve29.mjs') continue;
+  const s2 = fs.readFileSync(new URL(f, testsDir), 'utf8').split('\n').filter((l) => !l.trimStart().startsWith('//')).join('\n');
+  const hits = [];
+  if (s2.includes('const GAME_VERSION = ' + "'v24.105';")) hits.push('gv');
+  if (s2.includes('GAME_VERSION === ' + "'v24.105'")) hits.push('gveq');
+  if (s2.includes("startsWith('## v24.105")) hits.push('cw');
+  if (s2.includes('入库（32' + '9 份）')) hits.push('ruku');
+  if (s2.includes('三百二十九件套（三百二十八' + '件套清除）')) hits.push('jiakan');
+  if (s2.includes('files.length === 32' + '9')) hits.push('fl');
+  if (s2.includes('chainAll.length === 32' + '9')) hits.push('cal');
+  if (s2.includes('chain.length === 32' + '8')) hits.push('cl');
+  if (s2.includes('treeTok.length === 32' + '9')) hits.push('tt');
+  if (s2.includes("chain[chain.length - 1] === 'smoke_v24106_" + "moonquest'")) hits.push('tail');
+  if (hits.length) { leftovers.push(f); _why[f] = hits; }
+}
+ok('全库测试零残留 v24.106 GAME_VERSION/顶 pin/329 口径（哨兵链，豁免本套件与上一代）',
+  leftovers.length === 0, leftovers.slice(0, 3).map((f) => f + '=' + (_why[f] || []).join('+')).join(' ') + (leftovers.length > 3 ? ` 等${leftovers.length}件` : ''));
+
+console.log(`— v24.107 冒烟完成：${n} 项断言，失败 ${failed} —`);
+process.exit(failed ? 1 : 0);
