@@ -2600,6 +2600,19 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
+// v24.111 新内容·新支线（第二十五条）：听矿人「岩缝里的名字」——记忆图鉴讨伐收录累计
+// BESTIARY_GOAL(4) 种换 60 金 + 1 高级灵药（承 side_song 60+1 灵药档、与 side_stone 同档——「收录」随
+// 讨伐全程伴随，进矿脉时已收录若干种、顺路继续即可）。纯内容扩充零新逻辑零新计数零新存档（QUESTS
+// 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.bestiary 一份既有源复用
+// （battle.winBattle 讨伐收录唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式
+// Object.keys(g.bestiary||{}) 旧档零迁移，与 ACH_LIST scholar「记忆收藏家」/scholar2「见多识广」同读一份源，
+// 支线门槛 4 低于成就门槛 SCHOLAR_GOAL(5)——顺路先完成支线再解锁成就；只有讨伐过才落图鉴，遇见过不算，
+// 与说书人 side_tale 的 seen 遭遇端口区分开）。无 unlockOn 从首次进星井矿脉即可 offer（承 side_bell/
+// side_pond 同款——听矿人在星井矿脉北廊 (13,2)，接取时机天然正确）；active 页按 hero 实时报进度
+// （与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档（听矿人原有 trueBoss after 彩蛋
+// 「响了这么多年，今天终于不响了/替我谢谢那盏灯」两页并入真结局分档，零内容丢失；npcQuestPages 有任务
+// 后不再单独展示 after，lines 两页叙事保留在数据层）；件套 333→334（smoke_v24111_hearerquest 入库，
+// 链尾 smoke_v24111_hearerquest）。
 // v24.110 新内容·新支线（第二十四条）：记誓人「蓄石为誓」——[6]蓄力累计 VOW_GOAL(12) 次换
 // 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档、低于 side_fish 90 档——「蓄力」
 // 自首战起每场皆可蓄、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：
@@ -2661,7 +2674,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.110';
+const GAME_VERSION = 'v24.111';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3476,6 +3489,15 @@ const CARVE_GOAL = 10;     // 刻碑人支线需凿进石头的暴击次数
 // 只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；记誓人在
 // 无字回廊中段 (10,3)，陪伴型（[6]蓄力自开局每场战斗皆可蓄，小事攒大了就是誓的分量）。
 const VOW_GOAL = 12;       // 记誓人支线需攒进石碑的蓄力次数
+// v24.111 岩缝里的名字（听矿人支线）：记忆图鉴讨伐收录累计 BESTIARY_GOAL(4) 种——计数 hero.bestiary
+// 由 js/battle.js winBattle 讨伐收录唯一产生点写入（每讨伐一种新魔物落一条、随 snapshotHero 全量快照
+// 自动持久化、防御式 Object.keys(g.bestiary||{}) 旧档零迁移，遇见过不算只有讨伐过才落图鉴，与
+// ACH_LIST scholar「记忆收藏家」同读一份源），支线门槛 4 低于成就门槛 SCHOLAR_GOAL(5)——顺路先完成
+// 支线再解锁成就；与 BELL_GOAL/FISH_GOAL/WATCH_GOAL/TALE_GOAL/SONG_GOAL/MOON_GOAL/PEDDLE_GOAL/
+// SHOP_GOAL/CARVE_GOAL/VOW_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/
+// 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；听矿人在星井矿脉北廊 (13,2)，陪伴型
+// （每讨伐一种新魔物皆可累计）。
+const BESTIARY_GOAL = 4;   // 听矿人支线需落进记忆图鉴的魔物名字种数（讨伐收录）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3943,6 +3965,13 @@ const NPCS={
   // 掌灯童/说书人/拾菇人同款机制、npcQuestPages 无待办任务回退直落，零新逻辑、零裸字面量）；
   // mark:'hat' 复用既有程序化绘制分支（矿工头巾，与雾径猎手同款 hat 分支、跨图不重），造型复用
   // mwHunter 工人身形（矿脉内与老矿工/星砂车夫商贩/守碑人长者袍均区分）；无任务、无顶标、零结算零存档。
+  // v24.111 升格为支线委托人（QUESTS.side_hearer「岩缝里的名字」·记忆图鉴讨伐收录累计
+  // BESTIARY_GOAL(4) 种换 60 金 + 1 高级灵药，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/
+  // v24.24 掌灯阿婆/v24.32 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100
+  // 说书人/v24.105 琴师/v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人
+  // 「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），原有
+  // 两页台词与 trueBoss after 彩蛋「响了这么多年今天终于不响了/替我谢谢那盏灯」已并入 side_hearer
+  // 的 done 分档（零内容丢失，详见 QUESTS.side_hearer 行内注释）。
   hearer:{name:'听矿人', mark:'hat', lines:[
     ['听矿人：把耳朵贴上岩壁，这条矿脉会嗡嗡响——','像井底那口钟的余音。有人说，','那是先人的名字在石缝里翻身。 [Enter] 继续'],
     ['听矿人：名字没回灯下以前，响声不会停。','你要下到更深，先让灯说话——','过了水晶门就是无字回廊，把名字记牢了再去。 [Enter] 结束'],
@@ -6673,6 +6702,45 @@ const QUESTS={
       ]],
     },
   },
+  side_hearer:{
+    id:'side_hearer', kind:'side', store:true, npc:'hearer', giver:'hearer',
+    cond:(g)=>Object.keys(g.bestiary||{}).length >= BESTIARY_GOAL,
+    condProg:(g)=>`${Object.keys(g.bestiary||{}).length}/${BESTIARY_GOAL} 种`,
+    name:'岩缝里的名字', where:'星井矿脉（记忆图鉴讨伐收录累计）',
+    obj:`记忆图鉴收录 ${BESTIARY_GOAL} 种魔物的名字（讨伐过才落图鉴——遇见过不算）`,
+    offer:'去星井矿脉北廊找听矿人，接下记名的委托',
+    turnin:`${BESTIARY_GOAL} 个名字记下了！回星井矿脉北廊找听矿人`,
+    done:'岩缝里不响了，名字都有地方歇脚了。星井矿脉北廊的响动，等你回去听。',
+    reward:{ gold:60, potion2:1 },
+    talk:{
+      offer:[[
+        '听矿人：把耳朵贴上岩壁，这条矿脉会嗡嗡响——',
+        '那是先人的名字，在石缝里翻身。名字没回灯下以前，响声不会停。',
+        `你把魔物讨伐干净，名字就落进记忆图鉴一处。替我记满 ${BESTIARY_GOAL} 个名字，`,
+        `这响动就能歇一歇。 [Enter] 接下委托   [Esc] 离开`,
+      ]],
+      active:(hero)=>[[
+        '听矿人：岩壁还在响。你每记下一个名字，它就安静一分。',
+        `（你已收录 ${Object.keys((hero&&hero.bestiary)||{}).length}/${BESTIARY_GOAL} 种）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '听矿人：……不响了。响了这么多年，头一回只剩风声。',
+        '名字都有地方躺下了。谢礼你收好——是最后一把星砂换来的。',
+        '[Enter] 领取谢礼',
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['听矿人：响了这么多年，今天终于不响了。',
+         '名字都回去了，岩缝里只剩风声。 [Enter] 继续'],
+        ['听矿人：替我谢谢那盏灯，',
+         '它把大家的名字都领回来了。 [Enter] 结束'],
+      ] : [[
+        '听矿人：名字落进了图鉴，就落进了灯下。',
+        '这条矿脉，总算有人替它记着了。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7800,5 +7868,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL,
 };
