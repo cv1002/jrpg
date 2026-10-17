@@ -43,7 +43,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.112', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 112)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.113（旧 v24.112 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.114';") && !dSrc.includes("const GAME_VERSION = 'v24.112';"));
+  dSrc.includes("const GAME_VERSION = 'v24.115';") && !dSrc.includes("const GAME_VERSION = 'v24.112';"));
 ok('data.js 含 v24.113 注释（一步一灯新支线说明）',
   dSrc.includes('v24.113 新内容·新支线（第二十七条）'));
 ok('data.js 仍保留 v24.112 历史注释（灯下之声说明，零内容丢失）',
@@ -171,26 +171,26 @@ ok('基线套件 smoke.mjs 已随升格更新（lampkid 顶标契约翻转）',
   read('smoke.mjs').includes("npcQuestMark(fresh,'lampkid')==='❕ 可接委托'"));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为三百三十七件套（三百三十六件套清除）',
-  readme.includes('冒烟三百三十七件套（三百三十六件套清除）'));
+ok('README 件套口径已为三百三十八件套（三百三十七件套清除）',
+  readme.includes('冒烟三百三十八件套（三百三十七件套清除）'));
 ok('README tests 含 v24.113 守护描述与 smoke_v24113_walkquest 入库（336 份）',
   readme.includes('v24.113 起含「掌灯童「一步一灯」新支线」守护') &&
   readme.includes('smoke_v24113_walkquest 入库（336 份）'));
 ok('README 仍有 v24.112 守护描述（历史保留）', readme.includes('v24.112 起含「镇民「灯下之声」新支线」守护'));
 ok('README 已有三百三十六件套口径且尚无 337（哨兵前望 337 语义：下一版才写 337）',
-  readme.includes('冒烟三百三十七件套（三百三十六件套清除）') && !readme.includes('冒烟三百三十八件套') && !readme.includes('（338 份）'));
-ok('README tests 树串尾已延伸（…+ smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest（npm test 串跑））',
-  readme.includes('smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest（npm test 串跑）'));
+  readme.includes('冒烟三百三十八件套（三百三十七件套清除）') && !readme.includes('冒烟三百三十九件套') && !readme.includes('（339 份）'));
+ok('README tests 树串尾已延伸（…+ smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud（npm test 串跑））',
+  readme.includes('smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（二十七条 · 一步一灯 · WALK_GOAL）',
   readme.includes('二十八条支线目标/奖励全部由') &&
   readme.includes('一步一灯（掌灯童 · 步行累计 `WALK_GOAL`(500) 步，`world.move` 唯一写入点）70 金 + 2 生命药水') &&
   readme.includes('v24.113 补第二十七条') && readme.includes('v24.112 补第二十六条'));
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
-ok('package.json 实跑链共 335 份（smoke.mjs + 335 专项）', chain.length === 336 && ['smoke.mjs', ...chain].length === 337, String(chain.length));
-ok('package.json 链尾为 smoke_v24113_walkquest（第 336 份）', chain[chain.length - 1] === 'smoke_v24114_fleequest', chain[chain.length - 1]);
+ok('package.json 实跑链共 335 份（smoke.mjs + 335 专项）', chain.length === 337 && ['smoke.mjs', ...chain].length === 338, String(chain.length));
+ok('package.json 链尾为 smoke_v24113_walkquest（第 336 份）', chain[chain.length - 1] === 'smoke_v24115_achhud', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24112_talkquest.mjs && smoke_v24113_walkquest.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs && node tests/smoke_v24114_fleequest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.113（startsWith）', changelog.startsWith('## v24.114'));
+  pkgRaw.includes('node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs && node tests/smoke_v24114_fleequest.mjs && node tests/smoke_v24115_achhud.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.113（startsWith）', changelog.startsWith('## v24.115'));
 ok('CHANGELOG v24.113 条目含「一步一灯」与「WALK_GOAL」与「掌灯童」',
   changelog.includes('一步一灯') && changelog.includes('WALK_GOAL') && changelog.includes('掌灯童'));
 ok('CHANGELOG 仍保留 v24.112 条目（历史保留）', changelog.includes('## v24.112'));
@@ -201,31 +201,31 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 336（335 + smoke_v24113_walkquest）', files.length === 337, String(files.length));
+ok('tests 目录件套 = 336（335 + smoke_v24113_walkquest）', files.length === 338, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.112 pin 零残留 ——
 const s24112 = read('smoke_v24112_talkquest.mjs');
-ok('smoke_v24112 的 GAME_VERSION 字面量 pin 已更新为 v24.113', s24112.includes("const GAME_VERSION = 'v24.114';"));
-ok('smoke_v24112 的 CHANGELOG 顶 pin 已更新为 ## v24.113 ', s24112.includes("startsWith('## v24.114'"));
-ok('smoke_v24112 的件套 pin 已更新为三百三十七件套（三百三十六件套清除）', s24112.includes('三百三十七件套（三百三十六件套清除）'));
+ok('smoke_v24112 的 GAME_VERSION 字面量 pin 已更新为 v24.113', s24112.includes("const GAME_VERSION = 'v24.115';"));
+ok('smoke_v24112 的 CHANGELOG 顶 pin 已更新为 ## v24.113 ', s24112.includes("startsWith('## v24.115'"));
+ok('smoke_v24112 的件套 pin 已更新为三百三十八件套（三百三十七件套清除）', s24112.includes('三百三十八件套（三百三十七件套清除）'));
 ok('smoke_v24112 的 README/链 tail pin 已随新现实延伸（含 smoke_v24113_walkquest）',
   s24112.includes('smoke_v24113_walkquest'));
 ok('smoke_v24112 的 package.json 串尾 pin 已延伸至 smoke_v24113_walkquest', s24112.includes('node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs'));
-ok('smoke_v24112 的链尾 pin 已推进至 smoke_v24113_walkquest（第 336 份）', s24112.includes("=== 'smoke_v24114_fleequest'"));
+ok('smoke_v24112 的链尾 pin 已推进至 smoke_v24113_walkquest（第 336 份）', s24112.includes("=== 'smoke_v24115_achhud'"));
 ok('smoke_v24112 的 README 历史块入库 pin 保留（335 份口径，历史块原样保留）',
   s24112.includes('入库（335 份）') && !s24112.includes('入库（33' + '4 份）'));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（335 专项 / 336）且尚无 337 口径哨兵',
-  s2436.includes('suiteFiles.length === 336 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 337') &&
-  s2436.includes('!readme.includes(\'冒烟三百三十八件套\')') && s2436.includes('!readme.includes(\'（338 份）\')'));
+  s2436.includes('suiteFiles.length === 337 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 338') &&
+  s2436.includes('!readme.includes(\'冒烟三百三十九件套\')') && s2436.includes('!readme.includes(\'（339 份）\')'));
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v24113_walkquest（第 336 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24114_fleequest'"));
-ok('smoke_v2415 树串 token 数已推进至 336', s2415.includes('treeTok.length === 337'));
+ok('smoke_v2415 链尾已推进至 smoke_v24113_walkquest（第 336 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24115_achhud'"));
+ok('smoke_v2415 树串 token 数已推进至 336', s2415.includes('treeTok.length === 338'));
 const s2429 = read('smoke_v2429_xpcurve3.mjs');
 ok('smoke_v2429 哨兵链前望 337（三百三十六件套否定式）',
-  s2429.includes("!readme.includes('冒烟三百三十八件套')"));
+  s2429.includes("!readme.includes('冒烟三百三十九件套')"));
 // 旧代 v24.112 pin 零残留扫描（豁免本套件）
 const leftovers = [], _why = {};
 for (const f of files) {
