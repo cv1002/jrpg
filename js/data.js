@@ -2600,6 +2600,19 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
+// v24.113 新内容·新支线（第二十七条）：掌灯童「一步一灯」——步行累计 WALK_GOAL(500) 步换
+// 70 金 + 2 生命药水（承 side_tale 70 金档、高于 side_moon 60 档、低于 side_fish 90 档——「走路」
+// 自开局第一步起全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗
+// 对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.steps 一份既有源复用
+// （js/world.js move 成功落地一格唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式
+// (g.steps||0) 旧档零迁移，与 ACH_LIST steps「千里之行」同读一份源，支线门槛 500 低于成就门槛
+// STEP_GOAL(1000)——顺路先完成支线再解锁成就；快速旅行/传送门/出口走 transition 不在此列零计数）。
+// 无 unlockOn 从首次进无字回廊即可 offer（承 side_hearer 同款——掌灯童在无字回廊中段北侧 (14,3)，
+// 接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按
+// hero.trueBoss 分档（掌灯童原有 trueBoss after 彩蛋「最旧那块碑，亮了！/名字都回家啦——万一有谁
+// 想家，灯得在呀」两页并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示 after，
+// lines 两页叙事保留在数据层）；件套 335→336（smoke_v24113_walkquest 入库，链尾
+// smoke_v24113_walkquest）。
 // v24.112 新内容·新支线（第二十六条）：镇民「灯下之声」——与 TALK_GOAL(10) 处灯下之声交谈
 // 换 70 金 + 2 生命药水（承 side_tale 70 金档、高于 side_moon 60 档、低于 side_fish 90 档——「交谈」
 // 自开局首个 NPC 即可进行、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗
@@ -2686,7 +2699,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.112';
+const GAME_VERSION = 'v24.113';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3519,6 +3532,14 @@ const BESTIARY_GOAL = 4;   // 听矿人支线需落进记忆图鉴的魔物名�
 // 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；镇民在潮灯镇 (10,13)，陪伴型
 // （自开局首个 NPC 即可累计）。
 const TALK_GOAL = 10;   // 镇民支线需交谈过的灯下之声处数
+// v24.113 一步一灯（掌灯童支线）：步行累计 WALK_GOAL(500) 步——计数 hero.steps
+// 由 js/world.js move 成功落地一格唯一产生点写入（快速旅行/传送门/出口走 transition 不在此列
+// 零计数、随 snapshotHero 全量快照自动持久化、防御式 (g.steps||0) 旧档零迁移，与 ACH_LIST steps
+// 「千里之行」同读一份源），支线门槛 500 低于成就门槛 STEP_GOAL(1000)——顺路先完成支线再解锁
+// 成就；与 TALK_GOAL/BESTIARY_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定
+// （cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；掌灯童在无字回廊中段北侧
+// (14,3)，陪伴型（自开局第一步起即可累计）。
+const WALK_GOAL = 500;  // 掌灯童支线需替灯走完的步数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3822,7 +3843,13 @@ const NPCS={
   // 她每天提着灯走一趟，说是「名字在等灯」；台词走既有 NPCS.lines 兜底 + trueBoss 后 after 彩蛋
   // （villager 同款机制、npcQuestPages 无待办任务回退直落，零新逻辑、零裸字面量）；mark:'lamp'
   // 由 view/sprites.js drawNpcMark 程序化绘制（与掌灯阿婆同款灯形），造型复用镇民短衫（孩童身形，
-  // 与长者袍/商贩区分）；无任务、无顶标、零结算零存档。
+  // 与长者袍/商贩区分）；v24.113 升格为支线委托人（QUESTS.side_walk「一步一灯」·步行累计
+  // WALK_GOAL(500) 步换 70 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24
+  // 掌灯阿婆/v24.32 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/
+  // v24.105 琴师/v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人/v24.111
+  // 听矿人/v24.112 镇民「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走任务页（talk.offer/
+  // active/turnin/done 四态），原有两页台词与 trueBoss after 彩蛋「最旧那块碑，亮了/名字都回家啦
+  // ——万一有谁想家，灯得在呀」已并入 side_walk 的 done 分档（零内容丢失，详见 QUESTS.side_walk 行内注释）。
   lampkid:{name:'掌灯童', mark:'lamp', lines:[
     ['掌灯童：这条回廊好黑呀，碑上也没有字。','可守名者爷爷说，名字都在这儿躺着呢。','[Enter] 继续'],
     ['掌灯童：我不认字，但我会提灯呀。','灯亮着，名字就找得到回家的路。','[Enter] 结束'],
@@ -6823,6 +6850,59 @@ const QUESTS={
       ]],
     },
   },
+  // v24.113 一步一灯（新内容·新支线（第二十七条））：掌灯童升格为委托人——v22.11 起掌灯童就是
+  // 无字回廊中段北侧 (14,3) 的提灯小孩（「这条回廊好黑呀，碑上也没有字」/「我不认字，但我会提灯呀
+  // ——灯亮着，名字就找得到回家的路」），她每天提灯从头走到尾、替名字照路；玩家每走一步（js/world.js
+  // move 成功落地一格即 hero.steps+1 唯一产生点，四图步行皆算、快速旅行/传送门/出口走 transition
+  // 零计数）都算替她把路走亮一寸——替她走满 WALK_GOAL(500) 步灯路；量化：WALK_GOAL(500) 单一数据源
+  // （判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.steps 复用既有端口（世界移动唯一产生点、
+  // 随 snapshotHero 全量快照自动持久化、防御式 (g.steps||0) 旧档零迁移，与 ACH_LIST steps「千里之行」
+  // 同读一份源，支线门槛 500 低于成就门槛 STEP_GOAL(1000)——顺路先完成支线再解锁成就），零新计数
+  // 零新状态零新存档；无 unlockOn 从首次进无字回廊即可 offer（承 side_hearer 同款——掌灯童在无字回廊
+  // 中段北侧，接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；
+  // done 页按 hero.trueBoss 分档（掌灯童原有 trueBoss after 彩蛋「最旧那块碑，亮了！/名字都回家啦
+  // ——万一有谁想家，灯得在呀」两页并入真结局分档，零内容丢失）；奖励 70 金 + 2 生命药水（承 side_tale
+  // 70 档、高于 side_moon 60 档、低于 side_fish 90 档——「走路」自开局第一步即可累计、全程伴随）。
+  side_walk:{
+    id:'side_walk', kind:'side', store:true, npc:'lampkid', giver:'lampkid',
+    cond:(g)=>((g.steps||0) >= WALK_GOAL),
+    condProg:(g)=>`${(g.steps||0)}/${WALK_GOAL} 步`,
+    name:'一步一灯', where:'任意地图（步行累计）',
+    obj:`替灯走亮 ${WALK_GOAL} 步路（每走一步，路就亮一寸）`,
+    offer:'去无字回廊找掌灯童，接下「照亮的路」的委托',
+    turnin:`走满 ${WALK_GOAL} 步了！回无字回廊找掌灯童`,
+    done:'路上的灯都亮了。掌灯童说，往后夜里赶路，也有灯替人照着了。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '掌灯童：这条回廊好黑呀，碑上也没有字。',
+        '可守名者爷爷说，名字都在这儿躺着呢。',
+        `我不认字，但我会提灯呀——你每走一步，灯就把路照亮一寸。替灯走满 ${WALK_GOAL} 步吧，`,
+        '灯亮着，名字就找得到回家的路。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '掌灯童：不急不急，一步一步来。',
+        `（你已经替灯走了 ${(hero&&hero.steps)||0}/${WALK_GOAL} 步）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '掌灯童：走了这么多步，路都亮了吧？',
+        '谢谢你呀——灯亮着，名字就找得到回家的路。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['掌灯童：昨天晚上，我提灯从头走到尾，',
+         '最旧那块碑，亮了！ [Enter] 继续'],
+        ['掌灯童：名字都回家啦。',
+         '可我还是天天来——万一有谁想家，灯得在呀。',
+         '谢谢你，守灯人。 [Enter] 结束'],
+      ] : [[
+        '掌灯童：路亮了，名字就找得到家。',
+        '下次走夜路，也替我看一眼灯呀。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7950,5 +8030,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL,
 };

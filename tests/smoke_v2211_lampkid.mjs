@@ -1,19 +1,22 @@
-// v22.11 专项冒烟：无字回廊新风味 NPC「掌灯童」——纯内容扩充（无任务、零结算、零新逻辑）：
-// 数据层三件套（gallery.extras (14,3) + NPC_SPOTS '14,3' + NPCS.lampkid），台词走既有 lines + trueBoss
-// after 彩蛋机制（villager 同款：npcQuestPages 无待办任务回退时 trueBoss 优先 after、否则 lines），
-// 造型复用 mwVillager（镇民短衫孩童身形），mark:'lamp'。
-// 本冒烟守护：版本锚点、全局坐标防撞（NPC_SPOTS 跨地图共用键、唯一映射、既有 18 键未动、全图 extras 扫描）、
-// NPCS 契约（name/mark/lines 2 页/after 2 页/每页结构/[Enter] 收尾）、运行期（loadMap 落位 + 守名者/石碑
-// 零回归 + Enter/E 真实交互开对话 + default 与 trueBoss 两档选段）、npcQuestMark 无任务顶标、sprites 造型映射、
-// README/package.json 同步 + README 件套/版本 pin 随新现实更新。
+// v22.11 专项冒烟：无字回廊新风味 NPC「掌灯童」——v24.113（本套件所守护主线的姊妹件）起升格为
+// 第二十七条支线「一步一灯」委托人（任务页优先于原静态台词；详见 smoke_v24113_walkquest）：
+// 数据层三件套（gallery.extras (14,3) + NPC_SPOTS '14,3' + NPCS.lampkid），台词走既有 lines +
+// trueBoss after 彩蛋机制（villager 同款：npcQuestPages 无待办任务回退时 trueBoss 优先 after、
+// 否则 lines），mark:'lamp' 由 sprites.js drawNpcMark 程序化绘制，造型复用镇民短衫（mwVillager）。
+// 本冒烟守护：版本锚点、全局坐标防撞（NPC_SPOTS 跨地图共用键、唯一映射、既有 19 键未动、
+// 全图 extras 扫描 (14,3) 仅 gallery 一处）、NPCS 契约（name/mark/lines 2 页/after 2 页/
+// 每页结构/[Enter] 收尾）、运行期（loadMap 落位 + 四邻可行走 + 守名者/名字石碑零回归 +
+// Enter/E 真实交互开对话 + trueBoss done 分档）、v24.113 升格契约（npcQuestMark
+// 「❕ 可接委托」/resolveNpcTalk 接取「一步一灯」accept）、sprites 造型映射、README/package.json
+// 同步 + 姊妹件套 pin（v22.10 随新现实更新）复查。
 import { S } from '../js/state.js';
-import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY } from '../js/data.js';
-import { npcQuestPages, npcQuestMark } from '../js/quests.js';
+import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY, SOLID } from '../js/data.js';
+import { npcQuestPages, npcQuestMark, resolveNpcTalk } from '../js/quests.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// —— DOM 桩（承 v21.30-v21.36 冒烟先例：先装桩再 import main.js）——
+// —— DOM 桩（承 v21.30-v22.12 冒烟先例：先装桩再 import main.js）——
 const noop = () => {};
 function makeCtx() {
   const grad = { addColorStop: noop };
@@ -49,7 +52,7 @@ function FakeAudio() { return { currentTime: 0, destination: {},
   createOscillator: () => ({ connect: noop, start: noop, stop: noop, type: '',
     frequency: { setValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
   createGain: () => ({ connect: noop,
-    gain: { setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
+    gain: { value: 1, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
   createBuffer: () => ({}), createBufferSource: () => ({ connect: noop, start: noop }),
   createPeriodicWave: () => ({}), resume: noop }; }
 globalThis.window = { addEventListener: noop, AudioContext: FakeAudio, webkitAudioContext: FakeAudio };
@@ -83,8 +86,8 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.10', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 11)), GAME_VERSION);
 ok('data.js 含 v22.11 注释（掌灯童说明）', dSrc.includes('v22.11'));
-ok('GAME_VERSION 字面量已更新为 v22.11（旧 v22.10 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.112';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
+ok('GAME_VERSION 字面量已更新为 v24.113（旧 v22.10 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.113';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[14,3]===lampkid', NPC_SPOTS['14,3'] === 'lampkid', NPC_SPOTS['14,3']);
@@ -117,16 +120,17 @@ ok('全部 4 页：每页为字符串数组且末元素以 [Enter] 收尾（既�
 ok('lines 首页含「守名者爷爷」提及（与既有 NPC 守名者同脉，无自造 NPC 名）',
   lk.lines[0].some((ln) => ln.includes('守名者爷爷')));
 
-// —— 选段（npcQuestPages 运行期求值，无任务 → 直落 NPCS 数据）——
+// —— 选段（npcQuestPages 运行期求值；v24.113 起掌灯童已是「一步一灯」委托人，任务页优先）——
 const p0 = npcQuestPages({}, 'lampkid');
-ok('无旗标选段落到 lines（回廊好黑）', p0 && p0[0].some((ln) => ln.includes('回廊好黑')), p0 && p0[0][0]);
-const pT = npcQuestPages({ trueBoss: true }, 'lampkid');
-ok('trueBoss 走 after 彩蛋（最旧那块碑亮了 + 灯得在呀）',
+ok('v24.113 升格后无存档走 offer 任务页（照亮一寸 + 接下委托）',
+  p0 && p0[0].some((ln) => ln.includes('照亮一寸')) && p0[0].some((ln) => ln.includes('接下委托')),
+  p0 && JSON.stringify(p0[0]).slice(0, 200));
+const pT = npcQuestPages({ quests: { side_walk: 'done' }, trueBoss: true }, 'lampkid');
+ok('trueBoss 已交付走 done 分档（最旧那块碑亮了 + 灯得在呀，after 彩蛋零内容丢失）',
   pT && pT.some((pg) => pg.some((ln) => ln.includes('最旧那块碑'))) &&
   pT.some((pg) => pg.some((ln) => ln.includes('灯得在呀'))));
-ok('无任务：npcQuestMark===null（无 ❕ 顶标）', npcQuestMark(S.G, 'lampkid') === null);
-ok('无支线绑定灯童：resolveNpcTalk 不推进任何任务（纯风味零任务）',
-  (await import('../js/quests.js')).resolveNpcTalk(S.G, 'lampkid') === null);
+ok('v24.113 起有可接支线：npcQuestMark===「❕ 可接委托」（一步一灯·掌灯童为委托人）',
+  npcQuestMark(S.G, 'lampkid') === '❕ 可接委托', npcQuestMark(S.G, 'lampkid'));
 
 // —— 运行期：loadMap 落位 + Enter/E 真实交互开对话 ——
 loadMap('gallery');
@@ -138,12 +142,20 @@ S.G.x = 14; S.G.y = 4; S.dir = 'U'; S.scene = 'world';
 await screens.world.onKey({ key: 'Enter' });
 ok('面向掌灯童按 Enter：进入对话（S.scene==talk）且 curNpc===lampkid',
   S.scene === 'talk' && S.curNpc === 'lampkid', S.scene + '/' + S.curNpc);
-ok('对话第 1 页为 lines 默认台词（回廊好黑）——S.G 无旗标',
-  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('回廊好黑')));
-ok('对话共 2 页（第 1 页 [Enter] 继续 → 第 2 页 [Enter] 结束）', S.talkPages && S.talkPages.length === 2);
+ok('v24.113 起对话第 1 页为「一步一灯」offer 任务页（照亮一寸 + 接下委托）',
+  Array.isArray(S.talkPages) && S.talkPages[0] && S.talkPages[0].some((ln) => ln.includes('照亮一寸')) &&
+  S.talkPages[0].some((ln) => ln.includes('接下委托')),
+  JSON.stringify((S.talkPages || []).map((pg) => pg.map((l) => String(l).slice(0, 26)))));
+ok('对话共 1 页（offer 单页：接下委托 / [Esc] 离开，任务页优先于原 lines 两页）',
+  S.talkPages && S.talkPages.length === 1,
+  JSON.stringify((S.talkPages || []).map((pg) => pg.map((l) => String(l).slice(0, 26)))));
 S.scene = 'world';
 await screens.world.onKey({ key: 'E' });
 ok('E 键同效（v21.29 交互别名对 NPC 零回归）', S.scene === 'talk' && S.curNpc === 'lampkid', S.scene + '/' + S.curNpc);
+S.scene = 'world';
+ok('v24.113 升格为委托人：resolveNpcTalk 接取「一步一灯」→ accept/side_walk（任务页优先于 lines）',
+  (() => { const r = resolveNpcTalk(S.G, 'lampkid');
+    return !!r && r.kind === 'accept' && r.id === 'side_walk' && S.G.quests.side_walk === 'active'; })());
 
 // —— 造型映射（sprites.js 源级）——
 const spSrc = fs.readFileSync(path.join(ROOT, 'js/view/sprites.js'), 'utf8');
@@ -154,11 +166,17 @@ ok('sprites.js NPC_SHEET 已映射 lampkid→mwVillager（镇民短衫孩童身�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2211_lampkid', readme.includes('smoke_v2211_lampkid'));
-ok('README 件套口径为三百三十五件套（三百三十四件套清除）', readme.includes('三百三十五件套（三百三十四件套清除）'));
+ok('README 件套口径为三百三十六件套（三百三十五件套清除）', readme.includes('三百三十六件套（三百三十五件套清除）'));
 ok('README 含 v22.11 守护描述（无字回廊掌灯童）', readme.includes('v22.11 起含无字回廊掌灯童'));
 ok('README 快速上手/系统清单含「掌灯童」', readme.includes('掌灯童'));
 ok('package.json 已收录 smoke_v2211_lampkid（npm test 串跑第 107 份）',
   pkg.includes('smoke_v2211_lampkid.mjs'));
+// 姊妹 pin 复查（v22.10 随新现实更新）
+const s2210 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2210_unsaved.mjs'), 'utf8');
+ok('s2210 GAME_VERSION 字面量 pin 已随新现实更新为 v24.113',
+  s2210.includes("const GAME_VERSION = 'v24.113';"));
+ok('s2210 件套 pin 已随新现实更新为三百三十六件套',
+  s2210.includes('三百三十六件套（三百三十五件套清除）'));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);
