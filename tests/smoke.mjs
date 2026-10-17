@@ -47,6 +47,7 @@ ok('村长奖励公式 40+Lv×10', pay.gold===50 && pay.item===2);
 ok('开局灯长头顶可接委托', npcQuestMark(fresh,'chief')==='❕ 可接委托');
 ok('镇民升格后开局带可接委托顶标', npcQuestMark(fresh,'villager')==='❕ 可接委托');
 ok('掌灯童升格后带可接委托顶标', npcQuestMark(fresh,'lampkid')==='❕ 可接委托');
+ok('老矿工升格后带可接委托顶标', npcQuestMark(fresh,'miner')==='❕ 可接委托');
 ok('闲聊 NPC 无顶标', npcQuestMark(fresh,'sifter')==null);
 const acc=resolveNpcTalk({quests:{},gold:0,item:0,level:1},'chief');
 ok('对话接委托写回 active', acc&&acc.kind==='accept'&&acc.name==='灯长的委托');

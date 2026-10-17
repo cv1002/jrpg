@@ -2600,6 +2600,18 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
+// v24.114 新内容·新支线（第二十八条）：老矿工「先撤为敬」——[4]逃跑成功累计 RETREAT_GOAL(6)
+// 次换 60 金 + 2 生命药水（承 side_moon 60 金档、低于 side_fish 90 档——「撤退」自首战起每场
+// 皆可用、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/
+// 顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.flees 一份既有源复用（js/battle.js doFlee
+// 逃跑成功唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式 (g.flees||0) 旧档零迁移，
+// 与 ACH_LIST flee「走为上计」同读一份源，支线门槛 6 低于成就门槛 FLEE_GOAL(10)——顺路先完成
+// 支线再解锁成就；只有逃跑成功才落账，失败不计）。无 unlockOn 从首次进星井矿脉即可 offer
+// （承 side_hearer 同款——老矿工在星井矿脉入口 (2,3)，接取时机天然正确）；active 页按 hero
+// 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档（老矿工原有
+// trueBoss after 彩蛋「矿洞里亮堂了/雾散了……喝口井水再走」两页并入真结局分档，零内容丢失；
+// npcQuestPages 有任务后不再单独展示 after，linesByStage 三段叙事保留在数据层）；件套 336→337
+// （smoke_v24114_fleequest 入库，链尾 smoke_v24114_fleequest）。
 // v24.113 新内容·新支线（第二十七条）：掌灯童「一步一灯」——步行累计 WALK_GOAL(500) 步换
 // 70 金 + 2 生命药水（承 side_tale 70 金档、高于 side_moon 60 档、低于 side_fish 90 档——「走路」
 // 自开局第一步起全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗
@@ -2699,7 +2711,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.113';
+const GAME_VERSION = 'v24.114';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3540,6 +3552,14 @@ const TALK_GOAL = 10;   // 镇民支线需交谈过的灯下之声处数
 // （cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；掌灯童在无字回廊中段北侧
 // (14,3)，陪伴型（自开局第一步起即可累计）。
 const WALK_GOAL = 500;  // 掌灯童支线需替灯走完的步数
+// v24.114 先撤为敬（老矿工支线）：战斗指令 [4] 逃跑成功累计 RETREAT_GOAL(6) 次——计数 hero.flees
+// 由 js/battle.js doFlee 逃跑成功唯一产生点写入（失败不计、随 snapshotHero 全量快照自动持久化、
+// 防御式 (g.flees||0) 旧档零迁移，与 ACH_LIST flee「走为上计」同读一份源），支线门槛 6 低于成就
+// 门槛 FLEE_GOAL(10)——顺路先完成支线再解锁成就；与 TALK_GOAL/WALK_GOAL 同一「支线目标单一
+// 数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话
+// （offer）全同步；老矿工在星井矿脉入口 (2,3)，陪伴型（[4]撤退自首战起每场皆可用，留得下命
+// 才挖得到砂——他刨了一辈子矿，最懂这个理）。
+const RETREAT_GOAL = 6;   // 老矿工支线需替自己练手的逃跑成功次数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3780,6 +3800,13 @@ const NPCS={
     ['守名者：初灯的名字……你带回来了。','我守着无字回廊守了一辈子，头一回看见','碑上有人能念出声。 [Enter] 继续'],
     ['守名者：去吧。名字被记住了的人，','雾就进不了他的梦。 [Enter] 结束'],
   ]},
+  // v24.114 升格为支线委托人（QUESTS.side_flee「先撤为敬」·[4]逃跑成功累计 RETREAT_GOAL(6) 次换
+  // 60 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32
+  // 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.77 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/
+  // v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人/v24.111 听矿人/
+  // v24.112 镇民/v24.113 掌灯童「风味 NPC 升格为支线委托人」先例）；有任务后 npcQuestPages 走四档
+  // 任务页、trueBoss after 彩蛋「矿洞里亮堂了/雾散了……喝口井水再走」并入 side_flee 的 done 分档
+  // （零内容丢失，详见 QUESTS.side_flee 行内注释）。
   // 老矿工（v21.17 新 NPC·纯闲聊）：星井矿脉入口的「矿脉生存指南」——矿脉没有泉水/旅店（全图唯一无补给区），
   // 提示与地图事实逐字相符（dungeon FOUNTAIN 12,9 是最近免费恢复点；水晶 SB 需双徽记；CAVE_TREASURE 只在
   // 击败洞窟领主后显形）；linesByStage 按主线旗标分段揭示（承 sage/guard 同款无任务 NPC 模式），
@@ -6903,6 +6930,59 @@ const QUESTS={
       ]],
     },
   },
+  // v24.114 先撤为敬（新内容·新支线（第二十八条））：老矿工升格为委托人——v21.17 起老矿工就是
+  // 星井矿脉入口矿道旁 (2,3) 的「矿脉生存指南」（「头回来矿里？记住——这儿没有泉水，也没有旅店」/
+  // 「进矿前先回镇上把药水补满；雾语林营地那口泉，是这附近最后一处免费的水」/「两枚徽记没凑齐之前，
+  // 碰都不要碰」），他在这条矿脉里刨了一辈子，最懂「留得下命才挖得到砂」；玩家每次 [4]逃跑成功
+  // （js/battle.js doFlee 逃跑成功唯一产生点写入 hero.flees，随 snapshotHero 全量快照自动持久化、
+  // 防御式 (g.flees||0) 旧档零迁移——与 ACH_LIST flee「走为上计」同读一份源，支线门槛 6 低于成就
+  // 门槛 FLEE_GOAL(10)——顺路先完成支线再解锁成就；只有逃跑成功才落账，失败不计）都算替他练一手
+  // 保命章法——替他撤满 RETREAT_GOAL(6) 次；量化：RETREAT_GOAL(6) 单一数据源（判定/进度/目标文案/
+  // 接取对话四端同读一份源），零新计数零新状态零新存档；无 unlockOn 从首次进星井矿脉即可 offer
+  // （承 side_hearer 同款——老矿工在星井矿脉入口，接取时机天然正确）；active 页按 hero 实时报进度
+  // （与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档（老矿工原有 trueBoss after
+  // 彩蛋「矿洞里亮堂了/雾散了……喝口井水再走」两页并入真结局分档，零内容丢失；npcQuestPages 有任务
+  // 后不再单独展示 after，linesByStage 三段叙事保留在数据层）；奖励 60 金 + 2 生命药水（承 side_moon
+  // 60 金档、低于 side_fish 90 档——「撤退」自首战起每场皆可用、全程伴随）。
+  side_flee:{
+    id:'side_flee', kind:'side', store:true, npc:'miner', giver:'miner',
+    cond:(g)=>((g.flees||0) >= RETREAT_GOAL),
+    condProg:(g)=>`${g.flees||0}/${RETREAT_GOAL} 次`,
+    name:'先撤为敬', where:'星井矿脉（[4]逃跑成功累计）',
+    obj:`[4]逃跑成功 ${RETREAT_GOAL} 次——留得下命，才挖得到砂`,
+    offer:'去星井矿脉入口找老矿工，接下「先撤为敬」的委托',
+    turnin:`撤满 ${RETREAT_GOAL} 次了！回星井矿脉入口找老矿工`,
+    done:'保命的章法练成了。老矿工说，往后矿道里再响，也知道先撤为敬。',
+    reward:{ gold:60, item:2 },
+    talk:{
+      offer:[[
+        '老矿工：头回来矿里？记住——这儿没有泉水，也没有旅店。',
+        '我刨了一辈子星砂，最懂一个理：留得下命，才挖得到砂。',
+        `你替我把这手保命章法练熟——[4]逃跑成功 ${RETREAT_GOAL} 次，`,
+        '往后再深的矿道，也知道先撤为敬。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '老矿工：不急，命是自己的，练熟才算数。',
+        `（你已经逃跑成功了 ${(hero&&hero.flees)||0}/${RETREAT_GOAL} 次）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '老矿工：六次！撤得干净利落——',
+        '这手章法，够你在雾里跑个来回。谢礼你收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['老矿工：矿洞里亮堂了。我挖了一辈子星砂，',
+         '头一回觉得，这灯是给所有记得路的人点的。 [Enter] 继续'],
+        ['老矿工：雾散了，矿车还能跑十年。',
+         '下来歇歇脚，喝口井水再走。 [Enter] 结束'],
+      ] : [[
+        '老矿工：命留住了，砂就总有得挖。',
+        '往后进矿，药水带足，路走稳当。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8030,5 +8110,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL,
 };

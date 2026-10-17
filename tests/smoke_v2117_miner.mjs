@@ -1,10 +1,12 @@
-// v21.17 专项冒烟：星井矿脉新 NPC「老矿工」——数据层（NPCS/NPC_SPOTS/MAPS.extras）+ 阶段台词选段
-// + 世界落位（loadMap 后 at(2,3)===TY.NPC）+ 矿脉无泉水事实守护（老矿工的「补给提示」必须与地图事实
-// 逐字相符，否则成为误导性文案）+ 纯闲聊 NPC 不干扰任务系统。数据只进 data.js（零逻辑改动、
-// 零新状态/新计数/新依赖），mark:'pick' 为 sprites.js drawNpcMark 新增纯显示分支。
+// v21.17 专项冒烟：星井矿脉新 NPC「老矿工」——v24.114（本套件所守护主线的姊妹件）起升格为
+// 第二十八条支线「先撤为敬」委托人（任务页优先于原静态台词；详见 smoke_v24114_fleequest）：
+// 数据层（NPCS/NPC_SPOTS/MAPS.extras）+ 阶段台词选段 + 世界落位（loadMap 后 at(2,3)===TY.NPC）
+// + 矿脉无泉水事实守护（老矿工的「补给提示」必须与地图事实逐字相符，否则成为误导性文案）+
+// 升格后任务契约（npcQuestMark「❕ 可接委托」/resolveNpcTalk 接取「先撤为敬」accept/trueBoss done 分档）。
+// 数据只进 data.js（零逻辑改动、零新状态/新计数/新依赖），mark:'pick' 为 sprites.js drawNpcMark 新增纯显示分支。
 import { GAME_VERSION, NPCS, NPC_SPOTS, MAPS, TY } from '../js/data.js';
 import { S } from '../js/state.js';
-import { npcQuestPages, npcQuestMark } from '../js/quests.js';
+import { npcQuestPages, npcQuestMark, resolveNpcTalk } from '../js/quests.js';
 import { initGame } from '../js/core.js';
 import { loadMap, at } from '../js/world.js';
 
@@ -35,7 +37,7 @@ const miner = NPCS['miner'];
 ok('NPCS.miner 存在', !!miner);
 ok('NPCS.miner 名称「老矿工」', !!miner && miner.name === '老矿工', miner && miner.name);
 ok('NPCS.miner 标记为 pick（矿镐）', !!miner && miner.mark === 'pick', miner && miner.mark);
-ok('NPCS.miner 为纯闲聊（无 quest 依赖：linesByStage + after）', !!miner && !!miner.linesByStage && !!miner.after);
+ok('NPCS.miner 升格后仍保留 linesByStage 三段 + after 两页（零内容丢失契约）', !!miner && !!miner.linesByStage && !!miner.after && miner.linesByStage.length === 3 && miner.after.length === 2);
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[2,3]===miner', NPC_SPOTS['2,3'] === 'miner', NPC_SPOTS['2,3']);
@@ -56,7 +58,7 @@ ok('MAPS.cave 既有 extras 未被误动（井巫/车夫/终焉水晶/试炼碑�
     return caveExtras.some((e) => e.x === x && e.y === y);
   }));
 
-// —— 阶段台词：linesByStage 三段 + after，npcQuestPages 按旗标选段（与 sage/guard 同款无任务 NPC 契约）——
+// —— 阶段台词：linesByStage 三段 + after（数据层全量保留，升格后 npcQuestPages 优先走任务页）——
 const st = miner.linesByStage;
 ok('linesByStage 共 3 段', Array.isArray(st) && st.length === 3, String(st && st.length));
 ok('三段 gate 依次为 null / bossDefeated / caveBoss',
@@ -67,28 +69,33 @@ ok('每段均为 2 页且含 [Enter] 继续/结束 收尾', st.every((s) =>
   s.lines[1].some((l) => l.includes('[Enter] 结束'))));
 ok('after 彩蛋 2 页（trueBoss 后台词，npcQuestPages 同源读取）',
   Array.isArray(miner.after) && miner.after.length === 2);
+ok('数据层保留「没有泉水/旅店」补给提示（与地图事实相符）与药水补给地点',
+  st[0].lines.flat().join('').includes('没有泉水') && st[0].lines.flat().join('').includes('雾语林营地那口泉'));
+ok('数据层保留水晶双徽记提示',
+  st[0].lines.flat().join('').includes('两枚徽记'));
 
 function flat(pages) { return pages.flat().join(''); }
-ok('开局段提示「没有泉水/旅店」（与地图事实相符）与药水补给地点',
-  flat(npcQuestPages({}, 'miner')).includes('没有泉水') && flat(npcQuestPages({}, 'miner')).includes('雾语林营地那口泉'));
-ok('开局段提水晶需双徽记',
-  flat(npcQuestPages({}, 'miner')).includes('两枚徽记'));
-ok('魔王后段（gate bossDefeated）讲星砂被扣与宝箱显形',
-  flat(npcQuestPages({ bossDefeated: true }, 'miner')).includes('星砂扣下') &&
-  flat(npcQuestPages({ bossDefeated: true }, 'miner')).includes('矿道'));
-ok('领主后段（gate caveBoss）提无字回廊开门与守名者',
-  flat(npcQuestPages({ bossDefeated: true, caveBoss: true }, 'miner')).includes('无字回廊的门开') &&
-  flat(npcQuestPages({ bossDefeated: true, caveBoss: true }, 'miner')).includes('守名人'));
-ok('trueBoss 后走 after 彩蛋',
-  flat(npcQuestPages({ bossDefeated: true, caveBoss: true, trueBoss: true }, 'miner')).includes('矿车还能跑十年'));
+// v24.114 升格契约：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态）
+ok('v24.114 升格后无存档走 offer 任务页（先撤为敬 + 接下委托）',
+  !!npcQuestPages({}, 'miner') && flat(npcQuestPages({}, 'miner')).includes('先撤为敬') &&
+  flat(npcQuestPages({}, 'miner')).includes('接下委托'),
+  JSON.stringify(npcQuestPages({}, 'miner')).slice(0, 160));
+ok('v24.114 起有可接支线：npcQuestMark===「❕ 可接委托」（先撤为敬·老矿工为委托人）',
+  npcQuestMark({}, 'miner') === '❕ 可接委托', npcQuestMark({}, 'miner'));
+ok('trueBoss 已交付走 done 分档（矿洞里亮堂了 + 喝口井水再走，after 彩蛋零内容丢失）',
+  (() => { const p = npcQuestPages({ quests: { side_flee: 'done' }, trueBoss: true }, 'miner');
+    const t = flat(p); return t.includes('矿洞里亮堂了') && t.includes('喝口井水再走'); })());
 ok('台词不含 emoji（与既有 NPC 文案同风格）',
   ![...flat(npcQuestPages({}, 'miner'))].some((ch) => {
     const cp = ch.codePointAt(0);
     return (cp >= 0x1f000 && cp <= 0x1faff);
   }));
 
-// —— 纯闲聊 NPC 不干扰任务系统 ——
-ok('npcQuestMark 对老矿工恒为 null（无可接委托/可交任务）', npcQuestMark({}, 'miner') === null && npcQuestMark({ quests: {} }, 'miner') === null);
+// —— 升格后 resolveNpcTalk 接取契约（任务页优先于 linesByStage）——
+ok('结算契约：resolveNpcTalk 接取「先撤为敬」→ accept/side_flee', (() => {
+  const r = resolveNpcTalk({ quests: {}, gold: 0, item: 0, level: 1, flees: 0 }, 'miner');
+  return !!r && r.kind === 'accept' && r.id === 'side_flee';
+})());
 
 // —— 世界落位：loadMap('cave') 后 (2,3) 真为 NPC，邻近关键点未受影响 ——
 initGame('冒烟');
