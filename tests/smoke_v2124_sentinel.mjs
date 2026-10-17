@@ -92,7 +92,10 @@ ok('trueBoss 后任务 done 档并入 after 彩蛋 2 页（碑光熄灭/刻痕�
 
 // —— 零回归：静态 NPC / linesByStage / 未知 NPC 契约逐字不变 ——
 const vil = npcQuestPages({}, 'villager');
-ok('villager 仍为静态数组 2 页（非函数路径）', Array.isArray(vil) && vil.length === 2 && typeof vil !== 'function' && flat(vil).includes('雾语林深处那口泉水'));
+ok('villager 已升格为任务页契约（v24.112 起 offer 页 = 灯下之声委托，非静态数组）', Array.isArray(vil) && vil.length === 1 && Array.isArray(vil[0]) && flat(vil).includes('接下委托'));
+ok('NPCS.villager 原有 lines 两页仍保留（零内容丢失契约，npcQuestPages 有任务后不再单独展示）',
+  (() => { return Array.isArray(NPCS.villager.lines) && NPCS.villager.lines.length === 2 && flat(NPCS.villager.lines).includes('雾语林深处那口泉水'); })());
+ok('villager done 档（支线完成后回退任务·已完成页，含「坐坐」）', flat(npcQuestPages({ quests: { side_talk: 'done' } }, 'villager')).includes('坐坐'));
 ok('miner linesByStage 仍按旗标选段', flat(npcQuestPages({ bossDefeated: true }, 'miner')).includes('星砂扣下'));
 ok('未知 NPC 仍回退 [……]', Array.isArray(npcQuestPages({}, 'nobody')) && flat(npcQuestPages({}, 'nobody')) === '……');
 

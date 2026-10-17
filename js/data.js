@@ -2600,6 +2600,18 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
+// v24.112 新内容·新支线（第二十六条）：镇民「灯下之声」——与 TALK_GOAL(10) 处灯下之声交谈
+// 换 70 金 + 2 生命药水（承 side_tale 70 金档、高于 side_moon 60 档、低于 side_fish 90 档——「交谈」
+// 自开局首个 NPC 即可进行、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗
+// 对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随），仅 hero.talked 一份既有源复用
+// （js/core.js openTalk 唯一写入点、随 snapshotHero 全量快照自动持久化、防御式 (g.talked||[]) 旧档
+// 零迁移，与 ACH_LIST talkall「有口皆碑」同读一份源，支线门槛 10 低于成就门槛
+// Object.keys(NPCS).length(39)——顺路先完成支线再解锁成就）。无 unlockOn 从开局即可 offer（承
+// side_bell/side_pond 同款——镇民在潮灯镇 (10,13)，开局即可接，接取时机天然正确）；active 页按
+// hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档（镇民原有
+// trueBoss after 彩蛋「雾散了/魔物回雾里去了」两页并入真结局分档，零内容丢失；npcQuestPages 有任务
+// 后不再单独展示 after，lines 两页叙事保留在数据层）；件套 334→335（smoke_v24112_talkquest 入库，
+// 链尾 smoke_v24112_talkquest）。
 // v24.111 新内容·新支线（第二十五条）：听矿人「岩缝里的名字」——记忆图鉴讨伐收录累计
 // BESTIARY_GOAL(4) 种换 60 金 + 1 高级灵药（承 side_song 60+1 灵药档、与 side_stone 同档——「收录」随
 // 讨伐全程伴随，进矿脉时已收录若干种、顺路继续即可）。纯内容扩充零新逻辑零新计数零新存档（QUESTS
@@ -2674,7 +2686,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.111';
+const GAME_VERSION = 'v24.112';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3498,6 +3510,15 @@ const VOW_GOAL = 12;       // 记誓人支线需攒进石碑的蓄力次数
 // 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；听矿人在星井矿脉北廊 (13,2)，陪伴型
 // （每讨伐一种新魔物皆可累计）。
 const BESTIARY_GOAL = 4;   // 听矿人支线需落进记忆图鉴的魔物名字种数（讨伐收录）
+// v24.112 灯下之声（镇民支线）：与 TALK_GOAL(10) 处灯下之声交谈——计数 hero.talked
+// 由 js/core.js openTalk 入场唯一产生点写入（每处灯下之声记一次、随 snapshotHero 全量快照
+// 自动持久化、防御式 (g.talked||[]) 旧档零迁移，与 ACH_LIST talkall「有口皆碑」同读一份源），
+// 支线门槛 10 低于成就门槛 Object.keys(NPCS).length(39)——顺路先完成支线再解锁成就；与
+// BELL_GOAL/FISH_GOAL/WATCH_GOAL/TALE_GOAL/SONG_GOAL/MOON_GOAL/PEDDLE_GOAL/SHOP_GOAL/CARVE_GOAL/
+// VOW_GOAL/BESTIARY_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/
+// 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；镇民在潮灯镇 (10,13)，陪伴型
+// （自开局首个 NPC 即可累计）。
+const TALK_GOAL = 10;   // 镇民支线需交谈过的灯下之声处数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3657,6 +3678,13 @@ const NPC_SPOTS = {
 
 const NPCS={
   chief:{name:'灯长', mark:'staff'},
+  // v24.112 升格为支线委托人（QUESTS.side_talk「灯下之声」·交谈累计 TALK_GOAL(10) 处灯下之声换
+  // 70 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32 锻灯师/
+  // v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/v24.106 放灯童/
+  // v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人/v24.111 听矿人「风味 NPC 升格」先例）：
+  // npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），原有两页台词与 trueBoss
+  // after 彩蛋「雾散了/魔物回雾里去了」已并入 side_talk 的 done 分档（零内容丢失，详见 QUESTS.side_talk
+  // 行内注释）。
   villager:{name:'镇民', mark:'basket', lines:[
     ['镇民：雾语林深处那口泉水，能把忘了的名字烫回来。','灯灭之后，大家连回家的路都要数着走。','[Enter] 继续'],
     ['镇民：魔物是从雾里长出来的——像被丢掉的记忆。','出门前去杂货铺补药水。别在雾里睡着。','[Enter] 结束'],
@@ -6741,6 +6769,60 @@ const QUESTS={
       ]],
     },
   },
+  // v24.112 灯下之声（新内容·新支线（第二十六条））：镇民升格为委托人——v2.x 起镇民就是潮灯镇
+  // 镇口 (10,13) 的泛用镇民（「雾语林深处那口泉水，能把忘了的名字烫回来」/「魔物是从雾里长出来的」），
+  // 灯灭后全镇人只顾赶路、灯下无声；玩家每次与 NPC 交谈（js/core.js openTalk 入场的 hero.talked
+  // 唯一产生点，NPCS 全表都走这里）都算替镇子把一句话接回灯下——替他聊满 TALK_GOAL(10) 处灯下之声；
+  // 量化：TALK_GOAL(10) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.talked
+  // 复用既有端口（去重记一次、随 snapshotHero 全量快照自动持久化、防御式 (g.talked||[]) 旧档零迁移
+  // ——与 ACH_LIST talkall「有口皆碑」同读一份源，支线门槛 10 低于成就门槛 Object.keys(NPCS).length(39)
+  // ——顺路先完成支线再解锁成就），零新计数零新状态零新存档；无 unlockOn 从开局即 offer（承 side_bell/
+  // side_pond 同款——镇民在潮灯镇 (10,13)，开局即可接，接取时机天然正确）；active 页按 hero 实时报
+  // 进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss 分档（镇民原有 trueBoss after
+  // 彩蛋「雾散了/魔物回雾里去了」两页并入真结局分档，零内容丢失；npcQuestPages 有任务后不再单独展示
+  // after，lines 两页叙事保留在数据层）；奖励 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon
+  // 60 档、低于 side_fish 90 档——「交谈」自开局首个 NPC 即可进行、全程伴随）。
+  side_talk:{
+    id:'side_talk', kind:'side', store:true, npc:'villager', giver:'villager',
+    cond:(g)=>((g.talked||[]).length >= TALK_GOAL),
+    condProg:(g)=>`${(g.talked||[]).length}/${TALK_GOAL} 处`,
+    name:'灯下之声', where:'潮灯镇（与全镇灯下之声交谈累计）',
+    obj:`与镇里镇外 ${TALK_GOAL} 处灯下之声交谈过`,
+    offer:'去潮灯镇找镇民，接下「常来坐坐」的委托',
+    turnin:`跟 ${TALK_GOAL} 处都聊过了！回潮灯镇找镇民`,
+    done:'灯下又热闹起来了。镇民说，话和灯一样，说开了才亮。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '镇民：灯灭那阵子，大家只顾赶路，谁都不吭声。',
+        '有些话不说出口，就跟着名字一起沉进雾里了。',
+        `替我去跟镇里镇外 ${TALK_GOAL} 处灯下之声聊聊天吧——话头一开，灯就亮。`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '镇民：不急。人跟人说话，跟点灯一样，一盏一盏来。',
+        `（你已同 ${((hero&&hero.talked)||[]).length}/${TALK_GOAL} 处灯下之声交谈过）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '镇民：灯下的声音又连成一片了……',
+        '谢谢你，守灯人。这点谢礼你收好，是大家的心意。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['镇民：雾散了。镇里的灯一盏盏亮回来，',
+         '连最旧的路灯都在认路。灯灭那阵子的事，',
+         '大家居然全都记得了。 [Enter] 继续'],
+        ['镇民：魔物回雾里去了——像被丢掉的记忆',
+         '被人捡了回来。谢谢你，守灯人。',
+         '天还是半亮，可够把路看清了。 [Enter] 结束'],
+      ] : [[
+        '镇民：话都说开了，夜路也有人搭伴了。',
+        '往后路过，进镇坐坐就行。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -7868,5 +7950,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL,
 };

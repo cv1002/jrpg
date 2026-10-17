@@ -45,7 +45,8 @@ ok('开局日志含村长可接', questJournal(fresh).some(e=>e.id==='side_mushr
 const pay=applyQuestReward({level:1,gold:0,item:0},'side_mushroom');
 ok('村长奖励公式 40+Lv×10', pay.gold===50 && pay.item===2);
 ok('开局灯长头顶可接委托', npcQuestMark(fresh,'chief')==='❕ 可接委托');
-ok('闲聊 NPC 无顶标', npcQuestMark(fresh,'villager')==null);
+ok('镇民升格后开局带可接委托顶标', npcQuestMark(fresh,'villager')==='❕ 可接委托');
+ok('闲聊 NPC 无顶标', npcQuestMark(fresh,'lampkid')==null);
 const acc=resolveNpcTalk({quests:{},gold:0,item:0,level:1},'chief');
 ok('对话接委托写回 active', acc&&acc.kind==='accept'&&acc.name==='灯长的委托');
 const prev=questRewardPreview({level:1},'side_mushroom');
@@ -226,7 +227,7 @@ ok('日志「记忆碎片」节绘制不抛错', jourOk);
 
 // v13.x 对话框打字机：Enter 先补全本页，补全后才翻页
 initGame('对话测试');
-openTalk('villager');
+openTalk('sage');
 ok('对话打开在第 0 页', S.scene==='talk' && S.talkPage===0);
 talkNext();
 ok('打字中 Enter 只补全不翻页', S.talkPage===0 && S.scene==='talk');
