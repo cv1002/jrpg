@@ -2611,6 +2611,23 @@
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
+// v24.119 新内容·新支线（第三十一条）：守洞人「数到灯亮」——累计讨伐 HUNT_TALLY_GOAL(6) 只魔物换
+// 60 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100 说书人 /
+// v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 / v24.110 记誓人 /
+// v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工 / v24.116 引灯人 / v24.118 井巫「风味
+// NPC 升格为支线委托人」先例）：v22.92 纯风味 NPC「守洞人」（星井矿脉洞窟领主祭坛正北 (20,7)，「它霸着
+// 矿脉，也霸着那车没运走的星砂——镇上的灯，就缺这一车」）升格为委托人——他守着洞口守了一辈子、只守
+// 不战，魔物从雾里来，他就替镇子的灯一笔一笔记着缺的那笔账；玩家每讨伐一只魔物都算替他清一笔，清到
+// HUNT_TALLY_GOAL(6) 只（计数 hero.totalWins 与 ACH_LIST hunt10「驱雾十战」同读一份源，支线门槛 6 低于
+// 成就门槛 HUNT_GOAL(10)——顺路先完成支线再解锁成就；battle.winBattle 胜利结算唯一写入点、随
+// snapshotHero 全量快照自动持久化、防御式 (g.totalWins||0) 旧档零迁移），零新计数零新状态零新存档；
+// 无 unlockOn 从首次进星井矿脉即可 offer（承 side_flee/side_hearer 同款——守洞人在岩缝名字石碑与
+// 洞窟领主祭坛之间，接取时机天然正确；cave.extras/NPC_SPOTS 零新坐标）；active 页按 hero 实时报进度
+// （与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档
+// （守洞人原有 trueBoss after 彩蛋「它散了，祭坛也空了/矿难那年的名字，都回来了」两页并入 done 分档，
+// 零内容丢失——npcQuestPages 有任务后不再单独展示 after）；奖励 60 金 + 2 生命药水（承 side_flee
+// 60 档——「累计讨伐」自首战起即持续累计、全程伴随）；件套 341→342（smoke_v24119_huntquest 入库，
+// 链尾 smoke_v24119_huntquest）。
 // v24.118 新内容·新支线（第三十条）：井巫「渴不忘井」——大地图按 F 喝药累计 WELL_GOAL(8) 次换
 // 70 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100 说书人 /
 // v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 / v24.110 记誓人 /
@@ -2761,7 +2778,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.118';
+const GAME_VERSION = 'v24.119';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3628,6 +3645,14 @@ const GUIDE_GOAL = 8;    // 引灯人支线需替灯带足的战斗用药次数
 // 全同步；井巫在潮灯镇村井 (2,4) 与星井矿脉入口 (3,1) 双据点，开局即可接取，陪伴型
 // （「记得渴的人，才记得回家的路」——井水记得所有喝过它的人，药水也一样）。
 const WELL_GOAL = 8;     // 井巫支线需替井喝够的大地图药水次数
+// v24.119 数到灯亮（守洞人支线）：累计讨伐 HUNT_TALLY_GOAL(6) 只魔物——计数 hero.totalWins
+// 由 js/battle.js winBattle 胜利结算唯一产生点累加（随 snapshotHero 全量快照自动持久化、
+// 防御式 (g.totalWins||0) 旧档零迁移，与 ACH_LIST hunt10「驱雾十战」同读一份源），支线门槛 6 低于
+// 成就门槛 HUNT_GOAL(10)——顺路先完成支线再解锁成就；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL/
+// WELL_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标
+// 文案（obj）/接取对话（offer）全同步；守洞人在星井矿脉洞窟领主祭坛正北 (20,7)（cave.extras/NPC_SPOTS
+// 零新坐标），自首战起持续累计、全程伴随（「镇上的灯，就缺这一车——你讨平一笔，灯就亮一分」）。
+const HUNT_TALLY_GOAL = 6; // 守洞人支线需替灯清掉的魔物讨伐数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4303,7 +4328,14 @@ const NPCS={
   // 石甲/变身/回血，雷鸣克制此前只有图鉴 codexTag 一处，战斗前最后一块预习拼图）；trueBoss after 两页
   // 彩蛋（那车星砂露出来亮得晃眼/矿难那年的名字都回来了——与 ENDING_TRUE「想起了冬日、矿难、以及
   // 彼此的名字」/守碑人 after「记得把名字带回来」同口径）；mark:'pick' 复用既有矿镐标（view/sprites.js
-  // drawNpcMark 既有 pick 分支、NPC_SHEET 默认 mwVillager 造型，零视觉新代码）；无任务、无顶标、零结算零存档。
+  // drawNpcMark 既有 pick 分支、NPC_SHEET 默认 mwVillager 造型，零视觉新代码）。v24.119 升格为
+  // 支线委托人（QUESTS.side_hunt「数到灯亮」·累计讨伐 HUNT_TALLY_GOAL(6) 只魔物换 60 金 + 2 生命药水，
+  // 承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100 说书人 / v24.105 琴师 /
+  // v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 / v24.110 记誓人 / v24.111 听矿人 /
+  // v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工 / v24.116 引灯人 / v24.118 井巫「风味 NPC 升格为
+  // 支线委托人」先例）：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），
+  // 原有两页台词与 trueBoss after 彩蛋「它散了，祭坛也空了/矿难那年的名字，都回来了」已并入 side_hunt
+  // 的 done 分档（零内容丢失，详见 QUESTS.side_hunt 行内注释）。
   cavewatch:{name:'守洞人', mark:'pick', lines:[
     ['守洞人：再往里两步，就是领主的祭坛了。','它霸着矿脉，也霸着那车没运走的星砂——','镇上的灯，就缺这一车。 [Enter] 继续'],
     ['守洞人：它血过半会现出真身，还会回一口气。','雷鸣劈它，比别的招都疼。','躲开它抡圆了的那一下。 [Enter] 结束'],
@@ -7186,6 +7218,66 @@ const QUESTS={
       ]])),
     },
   },
+  // v24.119 数到灯亮（守洞人支线·第三十一条）——承 v24.118 井巫 / v24.116 引灯人 / v24.114 老矿工
+  // 「风味 NPC 升格为支线委托人」先例：v22.92 纯风味 NPC「守洞人」（星井矿脉洞窟领主祭坛正北 (20,7)，
+  // 「它霸着矿脉，也霸着那车没运走的星砂——镇上的灯，就缺这一车」）升格为委托人——他守着洞口守了
+  // 一辈子、只守不战，魔物从雾里来，他就替镇子的灯一笔一笔记着缺的那笔账；玩家每讨伐一只魔物都算替
+  // 他清一笔，清到 HUNT_TALLY_GOAL(6) 只（计数 hero.totalWins 与 ACH_LIST hunt10「驱雾十战」同读一份源，
+  // 支线门槛 6 低于成就门槛 HUNT_GOAL(10)——顺路先完成支线再解锁成就；battle.winBattle 胜利结算唯一
+  // 写入点、随 snapshotHero 全量快照自动持久化、防御式 (g.totalWins||0) 旧档零迁移；精英/Boss/试炼
+  // 所有赢得战斗都算，只有胜利才落账），零新计数零新状态零新存档；
+  // 无 unlockOn 从首次进星井矿脉即可 offer（承 side_flee/side_hearer 同款——守洞人在星井矿脉，
+  // 接取时机天然正确；cave.extras/NPC_SPOTS 零新坐标）；active 页按 hero 实时报进度（与
+  // side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档
+  // （守洞人原有 trueBoss after 彩蛋「它散了，祭坛也空了/矿难那年的名字，都回来了」两页并入 done
+  // 分档——npcQuestPages 有任务后不再单独展示 after，零内容丢失）。
+  side_hunt:{
+    id:'side_hunt', kind:'side', store:true, npc:'cavewatch', giver:'cavewatch',
+    cond:(g)=>((g.totalWins||0) >= HUNT_TALLY_GOAL),
+    condProg:(g)=>`${(g&&g.totalWins)||0}/${HUNT_TALLY_GOAL} 只`,
+    name:'数到灯亮', where:'星井矿脉·洞窟领主祭坛（累计讨伐魔物）',
+    obj:`累计讨伐 ${HUNT_TALLY_GOAL} 只魔物——每讨平一只，镇上的灯就近一分`,
+    offer:'去星井矿脉洞窟领主祭坛找守洞人，接下「数到灯亮」的委托',
+    turnin:`替灯记了 ${HUNT_TALLY_GOAL} 笔！回星井矿脉找守洞人`,
+    done:'守洞人数清了——雾里的账，你替镇子讨平了。灯，数到灯亮。',
+    reward:{ gold:60, item:2 },
+    talk:{
+      offer:[[
+        '守洞人：我守这洞口，一步也挪不得。',
+        '雾里的魔物，来一只，镇上的灯就暗一分。',
+        '你替我讨平一笔——一笔，就是一颗灯芯的分量。',
+        `你记着这回事：累计讨伐 ${HUNT_TALLY_GOAL} 只魔物，`,
+        '我在这儿数着灯等你。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守洞人：洞口的风里，有矿灯的煤灰味，也有雾。',
+        '你讨平一只，我就替灯记上一笔。',
+        `（你已累计讨伐 ${(hero&&hero.totalWins)||0}/${HUNT_TALLY_GOAL} 只魔物）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '守洞人：够了——我数着呢，一笔不差。',
+        '那车星砂运不回镇上了，可灯，不缺这一车了。',
+        `你讨平 ${HUNT_TALLY_GOAL} 只魔物，镇子的灯，数到灯亮。`,
+        '这份谢礼拿去，矿洞里接着走。 [Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守洞人：它散了，祭坛也空了。','那车星砂露出来，亮得晃眼——','原来年年有人在擦它，用的是自己的影子。 [Enter] 继续'],
+        ['守洞人：矿难那年的名字，都回来了。','我这盏矿灯，总算能熄了。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '守洞人：领主散了，矿脉也敞亮了。',
+        '你讨平的账，我在洞口一笔一笔数着——',
+        '镇上的灯，从此一盏不少。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '守洞人：灯芯回来了，这洞里的风都轻了。',
+        '往后魔物再来，我照旧替你记着数。 [Enter] 结束',
+      ]] : [[
+        '守洞人：雾里的账，你讨一笔，灯亮一分。',
+        '洞口有我守着，你只管往前走。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8313,5 +8405,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL,
 };

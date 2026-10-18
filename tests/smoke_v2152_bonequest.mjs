@@ -148,7 +148,7 @@ ok('bone 成就判定读 quests.side_bone（未做 false / 已做 true）',
 // 灯火同心（allquests）自动跟随：支线总数由 QUESTS 派生（6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15，v23.57 side_snake · v24.32 side_golem · v24.34 side_trial · v24.72 side_bell 入列后随新现实更新）
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
 ok('灯火同心支线分母自动跟随为 24（v24.110 side_vow 入列，无需改 achievement 本体）',
-  achAll && achAll.prog({ quests: {} }) === '0/30' && achAll.d.includes('30 个支线'), achAll && achAll.prog({ quests: {} }));
+  achAll && achAll.prog({ quests: {} }) === '0/31' && achAll.d.includes('31 个支线'), achAll && achAll.prog({ quests: {} }));
 ok('allquests 对只做 side_bone 的存档不误判完成',
   achAll.ok({ quests: { side_bone: 'done' } }) === false);
 
