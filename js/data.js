@@ -2611,6 +2611,19 @@
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
+// v24.116 新内容·新支线（第二十九条）：引灯人「药要带足」——[3]战斗用药累计 GUIDE_GOAL(8) 次换
+// 70 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100 说书人 /
+// v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 / v24.110 记誓人 /
+// v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工「风味 NPC 升格为支线委托人」先例）：
+// v22.91 纯风味 NPC「引灯人」（无字回廊终焉之神祭坛北侧 (21,3)）升格为委托人——他引了一辈子灯，
+// 最懂「别把命押在回血上，药要带足」（祸乱形态治愈被封印、喝药不受影响，enemyAI 变身 forbid 同
+// 口径——[3]战斗用药正是回廊尽头那场仗的续命方式）；计数 hero.potionUses 复用既有端口（battle.doItem
+// 战斗用药成功唯一产生点、随 snapshotHero 全量快照自动持久化、防御式 (g.potionUses||0) 旧档零迁移，
+// 与 ACH_LIST potionuses「药到病除」同读一份源，支线门槛 8 低于成就门槛 POTION_USE_GOAL(15)——顺路
+// 先完成支线再解锁成就），零新计数零新状态零新存档（QUESTS 表驱动：弹窗对话/J 日志/顶标/交付结算/
+// 灯火同心分母全端自动跟随）；只改 js/data.js（GUIDE_GOAL 常量+export、QUESTS.side_guide 条目+注释、
+// NPCS.lampguide 升格注释、GAME_VERSION v24.115→v24.116、v24.116 注释块）；件套 338→339
+// （smoke_v24116_guidequest 入库，链尾 smoke_v24116_guidequest）。
 // v24.114 新内容·新支线（第二十八条）：老矿工「先撤为敬」——[4]逃跑成功累计 RETREAT_GOAL(6)
 // 次换 60 金 + 2 生命药水（承 side_moon 60 金档、低于 side_fish 90 档——「撤退」自首战起每场
 // 皆可用、全程伴随）。纯内容扩充零新逻辑零新计数零新存档（QUESTS 表驱动：弹窗对话/任务日志/
@@ -2722,7 +2735,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.115';
+const GAME_VERSION = 'v24.116';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3571,6 +3584,15 @@ const WALK_GOAL = 500;  // 掌灯童支线需替灯走完的步数
 // （offer）全同步；老矿工在星井矿脉入口 (2,3)，陪伴型（[4]撤退自首战起每场皆可用，留得下命
 // 才挖得到砂——他刨了一辈子矿，最懂这个理）。
 const RETREAT_GOAL = 6;   // 老矿工支线需替自己练手的逃跑成功次数
+// v24.116 药要带足（引灯人支线）：战斗指令 [3] 用药累计 GUIDE_GOAL(8) 次——计数 hero.potionUses
+// 由 js/battle.js doItem 战斗用药成功唯一产生点写入（气满神足/无药早退零计数、大地图 F 走
+// core.usePotion 另一端口零串扰、随 snapshotHero 全量快照自动持久化、防御式 (g.potionUses||0)
+// 旧档零迁移，与 ACH_LIST potionuses「药到病除」同读一份源），支线门槛 8 低于成就门槛
+// POTION_USE_GOAL(15)——顺路先完成支线再解锁成就；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL 同一
+// 「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
+// 接取对话（offer）全同步；引灯人在无字回廊东端祭坛门前 (21,3)，终局陪伴型（[3]战斗用药自首战
+// 起每场可用，引灯人「治治愈会被封印，可喝药不受影响——别把命押在回血上，药要带足」）。
+const GUIDE_GOAL = 8;    // 引灯人支线需替灯带足的战斗用药次数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4213,6 +4235,13 @@ const NPCS={
   // 两页彩蛋（火熄了/空着手走出回廊也不怕黑，与 v21.69 灯长/v22.51 记誓人「名字回灯下」同口径）；
   // mark:'lamp' 复用既有灯标（view/sprites.js drawNpcMark 既有 lamp 分支、NPC_SHEET 默认 mwVillager
   // 造型，零视觉新代码）；无任务、无顶标、零结算零存档。
+  // v24.116 升格为支线委托人（QUESTS.side_guide「药要带足」·[3]战斗用药累计 GUIDE_GOAL(8) 次换
+  // 70 金 + 2 生命药水，承 v22.13 说书人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/
+  // v24.105 琴师/v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人/
+  // v24.111 听矿人/v24.112 镇民/v24.113 掌灯童/v24.114 老矿工「风味 NPC 升格为支线委托人」先例）：
+  // npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），原有两页台词与
+  // trueBoss after 彩蛋「火熄了……这间屋子终于不用再守着什么了」已并入 side_guide 的 done 分档
+  // （零内容丢失，详见 QUESTS.side_guide 行内注释）。
   lampguide:{name:'引灯人', mark:'lamp', lines:[
     ['引灯人：灯引到这儿，就再没有前路了。','里头那位，守着最后一点没烧完的灯。','你来，是替镇子把这点火送回家的吗？ [Enter] 继续'],
     ['引灯人：它血过半会入祸乱形态——','治愈会被封印，可喝药不受影响。','别把命押在回血上，药要带足。 [Enter] 结束'],
@@ -6994,6 +7023,63 @@ const QUESTS={
       ]],
     },
   },
+  // 引灯人·药要带足（v24.116 第二十九条支线，承 v22.13 说书人 / v24.72 听钟人 / v24.82 守夜人 /
+  // v24.100 说书人 / v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 /
+  // v24.110 记誓人 / v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工「风味 NPC 升格为
+  // 支线委托人」先例）：v22.91 纯风味 NPC「引灯人」（无字回廊终焉之神祭坛北侧 (21,3)，「灯引到这儿，
+  // 就再没有前路了」）升格为委托人——他引了一辈子灯、把每个走夜路的人送到火面前，也最懂「别把命押
+  // 在回血上，药要带足」〔祸乱形态治愈被封印、喝药不受影响（enemyAI 变身 forbid 同口径）——[3]战斗
+  // 用药正是回廊尽头那场仗的续命方式〕，玩家每次 [3]战斗用药都算替他把药带足，替他喝满 GUIDE_GOAL(8)
+  // 次；量化：GUIDE_GOAL(8) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数
+  // hero.potionUses 复用既有端口（battle.doItem 战斗用药成功唯一产生点、随 snapshotHero 全量快照
+  // 自动持久化、防御式 (g.potionUses||0) 旧档零迁移，与 ACH_LIST potionuses「药到病除」同读一份源，
+  // 支线门槛 8 低于成就门槛 POTION_USE_GOAL(15)——顺路先完成支线再解锁成就；只有成功喝下才落账，
+  // 气满神足/无药早退/大地图 F（core.usePotion 另一端口）零计数），零新计数零新状态零新存档；
+  // 无 unlockOn 从首次进无字回廊即可 offer（承 side_hearer 同款——引灯人在回廊东端祭坛门前，
+  // 接取时机天然正确）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按
+  // hero.trueBoss 分档（引灯人原有 trueBoss after 彩蛋「火熄了……这间屋子终于不用再守着什么了」两页
+  // 并入真结局分档，零内容丢失）；奖励 70 金 + 2 生命药水（承 side_tale 70 档、高于 side_moon 60 档、
+  // 低于 side_fish 90 档——「用药」自首战起每场皆可、全程伴随）。
+  side_guide:{
+    id:'side_guide', kind:'side', store:true, npc:'lampguide', giver:'lampguide',
+    cond:(g)=>((g.potionUses||0) >= GUIDE_GOAL),
+    condProg:(g)=>`${(g&&g.potionUses)||0}/${GUIDE_GOAL} 次`,
+    name:'药要带足', where:'无字回廊（[3]战斗用药累计）',
+    obj:`[3]战斗用药 ${GUIDE_GOAL} 次——别把命押在回血上，药要带足`,
+    offer:'去无字回廊东端找引灯人，接下「药要带足」的委托',
+    turnin:`药带足 ${GUIDE_GOAL} 次了！回无字回廊东端找引灯人`,
+    done:'引灯人的话应验了——回廊尽头那场仗，靠的就是随身带足的药。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '引灯人：灯引到这儿，就再没有前路了。',
+        '我引了一辈子灯，最懂一件事：灯有油，路才走得远；',
+        '人有药，仗才打得完。',
+        `你替我在回廊尽头带足药——[3]战斗用药 ${GUIDE_GOAL} 次，`,
+        '它血过半会入祸乱形态，治愈被封印，可喝药不受影响。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '引灯人：药一瓶一瓶喝下去，就是一口气一口气续上。',
+        `（你在战斗中已经用了 ${(hero&&hero.potionUses)||0}/${GUIDE_GOAL} 次药）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '引灯人：八次！回廊尽头的火，够给你这句话了。',
+        '灯油管够，药也管够——谢礼你收好。',
+        '[Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['引灯人：火熄了。不是灭——',
+         '是它自己把火送回灯下了。 [Enter] 继续'],
+        ['引灯人：我引了一辈子的灯，走到头才发现，',
+         '回廊不需要灯了。名字都亮了，路就亮着。 [Enter] 结束'],
+      ] : [[
+        '引灯人：药带足的人，回廊尽头也走得出去。',
+        '往后进无字回廊，仍要记得这句话。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]],
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8121,5 +8207,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL,
 };
