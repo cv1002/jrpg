@@ -2,7 +2,7 @@
 // view/hud.js
 // ============================================================
 import { S, curMap } from '../state.js';
-import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST } from '../data.js';
+import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -69,6 +69,16 @@ export function renderHUD() {
   // 解锁横幅/标题槽预览/drawDead 同读一份源，调成就集合只改 data.js 一处四端自动跟随；纯显示
   // 零结算零存档零数值变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。
   set('s-ach', (hero.ach || []).length + '/' + ACH_LIST.length);
+  // v24.117 体验打磨·信息透明·计数现场：HUD 常驻「📕 记忆图鉴 N/13」收集进度（承 v24.115 成就进度同一
+  // 「计数现场报进度」主线/ v22.9 状态页资源行「📕:N/M」/ v22.76 图鉴页「记忆收录：N/13」/ 标题槽预览·
+  // drawWin/drawEnding 收集行同一收集口径）：记忆图鉴（B 键）是「该去打哪只」的刷怪中枢与全游最大收藏面，
+  // 总进度此前只藏在 I 状态页资源行/图鉴页汇总/标题槽预览，HUD 第二行一眼可见的计数（🍄/🚶/🏆…）唯独缺
+  // 「图鉴」这枚——想冲记忆收藏家/见多识广这类讨伐系成就、或数全图鉴还差几种没打过，要开 B 页数 X/13；
+  // 分子读 BESTIARY_TARGET.filter((n)=>((hero.bestiary||{})[n]|0)>=1).length 防御式旧档零迁移（布尔旧档
+  // 经 |0 归一）、分母读 data.js BESTIARY_TARGET 单一数据源（与 I 页/标题槽预览/drawWin 收集行同式同源，
+  // 调图鉴集合只改 data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化（hero.bestiary 写入/讨伐收录
+  // 判定/图鉴行绘制逐字未动）。
+  set('s-codex', BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length + '/' + BESTIARY_TARGET.length);
   // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
   // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
   set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');
