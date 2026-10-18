@@ -49,6 +49,7 @@ ok('镇民升格后开局带可接委托顶标', npcQuestMark(fresh,'villager')=
 ok('掌灯童升格后带可接委托顶标', npcQuestMark(fresh,'lampkid')==='❕ 可接委托');
 ok('老矿工升格后带可接委托顶标', npcQuestMark(fresh,'miner')==='❕ 可接委托');
 ok('引灯人升格后带可接委托顶标', npcQuestMark(fresh,'lampguide')==='❕ 可接委托');
+ok('井巫升格后带可接委托顶标', npcQuestMark(fresh,'sage')==='❕ 可接委托');
 ok('闲聊 NPC 无顶标', npcQuestMark(fresh,'sifter')==null);
 const acc=resolveNpcTalk({quests:{},gold:0,item:0,level:1},'chief');
 ok('对话接委托写回 active', acc&&acc.kind==='accept'&&acc.name==='灯长的委托');
@@ -206,12 +207,12 @@ holdStep();
 ok('按住方向键节拍连走', S.G.x===9);
 setHeldDir('R', false);
 
-// v13.x 剧情重构：记忆碎片掉落 / 井巫分段揭示 / 真结局差分
+// v13.x 剧情重构：记忆碎片掉落 / 井巫分段揭示（v24.118 升格后走任务页、原文案并入 done 分档）/ 真结局差分
 const gOld=migrateQuests({quest:0,chests:[]});
 ok('旧档迁移补 fragments', Array.isArray(gOld.fragments));
-ok('井巫默认段只点到「锁」', npcQuestPages({bossDefeated:false,caveBoss:false},'sage').flat().join('').includes('锁着更深的东西'));
-ok('井巫二段（魔王后）讲星砂矿史', npcQuestPages({bossDefeated:true,caveBoss:false},'sage').flat().join('').includes('星砂'));
-ok('井巫三段（领主后）才揭终焉之神', npcQuestPages({bossDefeated:true,caveBoss:true},'sage').flat().join('').includes('终焉之神'));
+ok('井巫默认段点到 offer 页（记得渴，升格后任务页优先）', npcQuestPages({bossDefeated:false,caveBoss:false},'sage').flat().join('').includes('记得渴'));
+ok('井巫 done+魔王后段讲星砂矿史（原文案并入 done 分档，零内容丢失）', npcQuestPages({quests:{side_well:'done'},bossDefeated:true,caveBoss:false},'sage').flat().join('').includes('星砂'));
+ok('井巫 done+领主后段才揭终焉之神（原文案并入 done 分档，零内容丢失）', npcQuestPages({quests:{side_well:'done'},bossDefeated:true,caveBoss:true},'sage').flat().join('').includes('终焉之神'));
 
 initGame('碎片测试');
 startBattle(deep(BOSS)); winBattle();
@@ -228,14 +229,14 @@ let jourOk=true;
 try { S.scene='journal'; drawJournal(); } catch(e){ jourOk=false; }
 ok('日志「记忆碎片」节绘制不抛错', jourOk);
 
-// v13.x 对话框打字机：Enter 先补全本页，补全后才翻页
+// v13.x 对话框打字机：Enter 先补全本页；井巫升格为委托人后 offer 页补全即接取回世界（承其余任务 NPC 先例）
 initGame('对话测试');
 openTalk('sage');
 ok('对话打开在第 0 页', S.scene==='talk' && S.talkPage===0);
 talkNext();
 ok('打字中 Enter 只补全不翻页', S.talkPage===0 && S.scene==='talk');
 talkNext();
-ok('补全后 Enter 翻到下一页', S.talkPage===1);
+ok('补全后 Enter 接下井巫委托并回世界（v24.118 升格 offer 承接）', S.scene==='world' && S.G.quests.side_well==='active');
 
 // v13.8 对话框增强：标点停顿 / 逐字音效游标 / 富文本 / 肖像
 ok('标点停 4 拍', pageTotalMs(['灯，灯。'])===pageTotalMs(['灯灯灯灯'])+2*3*28);

@@ -2611,6 +2611,20 @@
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
+// v24.118 新内容·新支线（第三十条）：井巫「渴不忘井」——大地图按 F 喝药累计 WELL_GOAL(8) 次换
+// 70 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100 说书人 /
+// v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 / v24.110 记誓人 /
+// v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工 / v24.116 引灯人「风味 NPC 升格为
+// 支线委托人」先例）：v22.47 纯风味「村井」名字物「井巫」（潮灯镇村井 (2,4) + 星井矿脉入口 (3,1)
+// 双据点）升格为委托人——她守着井守了一辈子，最懂「记得渴的人，才记得回家的路」，玩家每次大地图
+// 按 F 喝药都算替井记着渴，替她喝满 WELL_GOAL(8) 次（计数 hero.mapPotions 与 ACH_LIST mapdrink
+// 「渴饮甘露」同读一份源，支线门槛 8 低于成就门槛 MAP_POTION_GOAL(10)——顺路先完成支线再解锁成就；
+// core.usePotion 大地图喝药成功唯一写入点、战斗 [3] 用药（battle.doItem 另一端口）零计数；零新计数
+// 零新状态零新存档）；无 unlockOn 开局即 offer（承 side_bell/side_pond 同款——井巫在潮灯镇村井，
+// 接取时机天然正确；village/cave 双据点零新坐标）；active 页按 hero 实时报进度（与 side_bell/side_fish
+// 同款函数页）；done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档（井巫原有 linesByStage 四段
+// 叙事与 trueBoss after 彩蛋「记得的灯，从此由你掌着」两页并入，零内容丢失）；件套 340→341
+// （smoke_v24118_wellquest 入库，链尾 smoke_v24118_wellquest）。
 // v24.117 体验打磨·信息透明·计数现场：HUD 常驻「📕 记忆图鉴 N/13」收集进度（承 v24.115 HUD 成就进度
 // 「🏆 成就 N/76」/ v24.16 步数进度「🚶 千里之行 N/1000」同一「计数现场报进度」主线，收集口径的
 // HUD 侧第二枚兑现——图鉴/成就/宝箱/碎片进度在 I 状态页资源行一眼可见（v21.94/v22.1 收集三件套+碎片），
@@ -2747,7 +2761,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.117';
+const GAME_VERSION = 'v24.118';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3605,6 +3619,15 @@ const RETREAT_GOAL = 6;   // 老矿工支线需替自己练手的逃跑成功次
 // 接取对话（offer）全同步；引灯人在无字回廊东端祭坛门前 (21,3)，终局陪伴型（[3]战斗用药自首战
 // 起每场可用，引灯人「治治愈会被封印，可喝药不受影响——别把命押在回血上，药要带足」）。
 const GUIDE_GOAL = 8;    // 引灯人支线需替灯带足的战斗用药次数
+// v24.118 渴不忘井（井巫支线）：大地图按 F 喝药累计 WELL_GOAL(8) 次——计数 hero.mapPotions
+// 由 js/core.js usePotion 大地图喝药成功唯一产生点写入（战斗 [3] 用药走 battle.doItem 另一端口
+// 零串扰、随 snapshotHero 全量快照自动持久化、防御式 (g.mapPotions||0) 旧档零迁移，与 ACH_LIST
+// mapdrink「渴饮甘露」同读一份源），支线门槛 8 低于成就门槛 MAP_POTION_GOAL(10)——顺路先完成
+// 支线再解锁成就；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL 同一「支线目标单一数据源」
+// 家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）
+// 全同步；井巫在潮灯镇村井 (2,4) 与星井矿脉入口 (3,1) 双据点，开局即可接取，陪伴型
+// （「记得渴的人，才记得回家的路」——井水记得所有喝过它的人，药水也一样）。
+const WELL_GOAL = 8;     // 井巫支线需替井喝够的大地图药水次数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -3795,6 +3818,14 @@ const NPCS={
     ['巡灯人：剑还立在祭坛上，可里头的黎明放出来了。','他确是旧灯卫——把黎明封进剑里，','才保着这盏灯一路走到今天。 [Enter] 继续'],
     ['巡灯人：没人记得他的名字了。那名字，','如今归你替他记着。走夜路的时候，','灯提亮些。 [Enter] 结束'],
   ]},
+  // v24.118 升格为支线委托人（QUESTS.side_well「渴不忘井」·大地图按 F 喝药累计 WELL_GOAL(8) 次，承
+  // v24.116 引灯人「药要带足」同一「风味 NPC 升格为支线委托人」先例）：npcQuestPages 有任务后优先走
+  // 任务页（talk.offer/active/turnin/done 四态），原有 linesByStage 四段叙事「锁开了/星砂喂灯/水晶醒了」
+  // 与 trueBoss after 彩蛋「水晶空了/记得的灯，从此由你掌着」两页已并入 side_well 的 done 分档
+  // （零内容丢失，详见 QUESTS.side_well 行内注释）；linesByStage 数据层保留。井巫为「村井」名字物：
+  // 潮灯镇村井 (2,4) 民宅区南 + 星井矿脉入口 (3,1)（井底那口钟同水脉两端），village.extras /
+  // cave.extras 双据点、NPC_SPOTS '2,4'/'3,1' 双键均已在册（v22.47 立村井脸、v22.xx 矿脉入口点破），
+  // 零新坐标。
   sage:{name:'井巫', mark:'hood', linesByStage:[
     // 揭示节奏（v13.x 剧情重构）：真相按主线进度分段，不再一次性剧透
     { gate:null, lines:[
@@ -7092,6 +7123,69 @@ const QUESTS={
       ]],
     },
   },
+  // v24.118 新支线（第三十条）「渴不忘井」（井巫委托人）：承 v24.116 引灯人「药要带足」先例——
+  // 井巫（v22.47 纯风味·村井名字物，潮灯镇村井 (2,4) + 星井矿脉入口 (3,1) 双据点）升格为委托人：
+  // 她守着井守了一辈子，最懂「记得渴的人，才记得回家的路」——玩家每次大地图按 F 喝药都算替井
+  // 记着渴，替她喝满 WELL_GOAL(8) 次；计数 hero.mapPotions 复用既有端口（core.usePotion 大地图
+  // 喝药成功唯一写入点、随 snapshotHero 全量快照自动持久化、防御式 (g.mapPotions||0) 旧档零迁移，
+  // 与 ACH_LIST mapdrink「渴饮甘露」同读一份源，支线门槛 8 低于成就门槛 MAP_POTION_GOAL(10)
+  // ——顺路先完成支线再解锁成就；战斗 [3] 用药走 battle.doItem 另一端口零串扰），零新计数零新状态
+  // 零新存档；无 unlockOn 从开局即可 offer（承 side_bell/side_pond 同款——井巫在潮灯镇村井，接取
+  // 时机天然正确；village.extras/NPC_SPOTS 双据点零新坐标）；active 页按 hero 实时报进度（与
+  // side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档
+  // （井巫原有 linesByStage 四段叙事「锁开了/星砂喂灯/水晶醒了/水晶空了」与 trueBoss after 彩蛋
+  // 「记得的灯，从此由你掌着」两页并入 done 分档——npcQuestPages 有任务后不再单独展示 after，
+  // 零内容丢失）；奖励 70 金 + 2 生命药水（承 side_guide 70 档——「大地图喝药」自开局第一瓶即可
+  // 累计、全程伴随）。
+  side_well:{
+    id:'side_well', kind:'side', store:true, npc:'sage', giver:'sage',
+    cond:(g)=>((g.mapPotions||0) >= WELL_GOAL),
+    condProg:(g)=>`${(g&&g.mapPotions)||0}/${WELL_GOAL} 次`,
+    name:'渴不忘井', where:'潮灯镇·村井（大地图按 F 喝药累计）',
+    obj:`大地图按 F 喝药 ${WELL_GOAL} 次——路上记得渴，也别忘井`,
+    offer:'去潮灯镇村井找井巫，接下「渴不忘井」的委托',
+    turnin:`喝药记了 ${WELL_GOAL} 次！回村井找井巫`,
+    done:'井巫的话应验了——记得渴的人，才记得回家。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '井巫：孩子，出门在外，泉不在手边，路也不总挨着井。',
+        '渴了，就喝一瓶药水——别硬撑，硬撑的人走着走着就忘了路。',
+        '我守这口井守了一辈子，最懂了：记得渴的人，才记得回家。',
+        `你替我记着这回事：大地图按 F 喝药 ${WELL_GOAL} 次，`,
+        '我瞧着你把水喝够了，才算放心。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '井巫：药水喝下去，路就走得稳。井水记得所有喝过它的人，',
+        '药水也一样——你喝进肚里的每一口，都替这镇子记着。',
+        `（你在路上已经喝了 ${(hero&&hero.mapPotions)||0}/${WELL_GOAL} 次药）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[[
+        '井巫：我都听见了——你渴了就喝，没硬撑。',
+        '这就对了。井水不枯，是因为记得；你不渴，是因为记得喝。',
+        '这份谢礼拿去，路上接着喝。 [Enter] 领取谢礼',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['井巫：水晶空了。星砂落回矿脉深处，像什么都没发生过。',
+         '可那粒亮着的芯子，是你从雾里一路带回来的。 [Enter] 继续'],
+        ['井巫：你不知道自己守住了什么，这就对了。',
+         '记得的灯，从此由你掌着。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '井巫：水晶里睡着的，才是灯自己——终焉之神。',
+        '它不是在考你的剑，是在问：还愿不愿意记得。',
+        '你一直记得渴，就也记得住回家的路。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '井巫：矿脉曾往镇上运星砂，喂那些记忆之灯。',
+        '灯芯回来了，井底的声音更近了——记得渴的人，',
+        '井也替他把水留在那里。 [Enter] 结束',
+      ]] : [[
+        '井巫：孩子，井水不枯，是因为记得。',
+        '你不渴，是因为记得喝——往后也这样。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8219,5 +8313,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL,
 };
