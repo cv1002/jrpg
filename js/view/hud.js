@@ -2,7 +2,7 @@
 // view/hud.js
 // ============================================================
 import { S, curMap } from '../state.js';
-import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET } from '../data.js';
+import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -79,6 +79,17 @@ export function renderHUD() {
   // 调图鉴集合只改 data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化（hero.bestiary 写入/讨伐收录
   // 判定/图鉴行绘制逐字未动）。
   set('s-codex', BESTIARY_TARGET.filter((n) => ((hero.bestiary || {})[n] | 0) >= 1).length + '/' + BESTIARY_TARGET.length);
+  // v24.120 体验打磨·信息透明·计数现场：HUD 常驻「📦 宝箱 N/12」收集进度（承 v24.115 成就进度「🏆 成就
+  // N/76」/ v24.117 图鉴进度「📕 记忆图鉴 N/13」同一「计数现场报进度」主线/ v19.72 状态页资源行「📦
+  // 已开 X/全图 N」/ v22.26 开箱报文「已开 X/全图 N」同一收集口径）：全游 12 只宝箱（镇 2 + 林 3 + 矿 2 +
+  // 星砂宝藏 4 + 廊 1）是探索深度指标与「开箱寻宝（6 只）/一箱不漏（12 只）」刷箱规划中枢，总进度此前只
+  // 藏在 I 状态页资源行/标题槽预览/drawWin/drawDead 收集行，HUD 第二行一眼可见的计数（🍄/🚶/🏆/📕…）
+  // 唯独缺「宝箱」这枚——想冲一箱不漏或数全图还剩几只没开，要开 I 页数「已开 X/全图 N」；分子读
+  // chestCount(hero)（data.js 单一数据源，Set/数组/缺失三形态防御式旧档零迁移）、分母读 data.js
+  // chestTotal()（由 MAPS/CAVE_TREASURE 逐图派生，与 I 页/标题预览/drawWin/drawDead/开箱报文同式同源，
+  // 调地图只改 data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化（hero.chests 写入/开箱判定/
+  // 掉落/成就判定逐字未动）。
+  set('s-chest', chestCount(hero) + '/' + chestTotal());
   // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
   // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
   set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');

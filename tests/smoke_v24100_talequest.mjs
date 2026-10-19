@@ -44,7 +44,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.99', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 99)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.100（旧 v24.99 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.119';") && !dSrc.includes("const GAME_VERSION = 'v24.99';"));
+  dSrc.includes("const GAME_VERSION = 'v24.120';") && !dSrc.includes("const GAME_VERSION = 'v24.99';"));
 ok('data.js 含 v24.100 注释（灯下新章新支线说明）',
   dSrc.includes('v24.100 新内容·新支线（第十八条）'));
 ok('data.js 仍保留 v22.13 历史注释（说书人三件套说明，零内容丢失）',
@@ -168,16 +168,16 @@ ok('姊妹件 smoke_v2213_teller 已随升格更新（无任务契约翻转为�
   read('smoke_v2213_teller.mjs').includes('灯下新章') && read('smoke_v2213_teller.mjs').includes('可接委托'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为三百四十二件套（三百四十一件套清除）',
-  readme.includes('冒烟三百四十二件套（三百四十一件套清除）'));
+ok('README 件套口径已为三百四十三件套（三百四十二件套清除）',
+  readme.includes('冒烟三百四十三件套（三百四十二件套清除）'));
 ok('README tests 含 v24.100 守护描述与 smoke_v24105_songquest 入库（335 份）',
   readme.includes('v24.100 起含潮灯镇「说书人」升格新支线守护') &&
   readme.includes('smoke_v24105_songquest 入库（335 份）'));
 ok('README 仍有 v24.99 守护描述（历史保留）', readme.includes('v24.99 起含 「后期金币曲线续平滑（第二十五轮）」守护'));
 ok('README 已有三百二十七件套口径且尚无 324（哨兵前望 324 语义：下一版才写 324）',
-  readme.includes('冒烟三百四十二件套（三百四十一件套清除）') && !readme.includes('三百四十三件套') && !readme.includes('（343 份）'));
-ok('README tests 树串尾已延伸（…+ smoke_v2499_goldcurve25 + smoke_v24100_talequest + smoke_v24101_goldcurve26 + smoke_v24102_goldcurve27 + smoke_v24103_goldcurve28 + smoke_v24104_goldcurve29 + smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest + smoke_v24108_shopquest + smoke_v24109_carvequest + smoke_v24110_vowquest + smoke_v24111_hearerquest + smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud + smoke_v24116_guidequest + smoke_v24117_codexhud + smoke_v24118_wellquest + smoke_v24119_huntquest（npm test 串跑））',
-  readme.includes('smoke_v2499_goldcurve25 + smoke_v24100_talequest + smoke_v24101_goldcurve26 + smoke_v24102_goldcurve27 + smoke_v24103_goldcurve28 + smoke_v24104_goldcurve29 + smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest + smoke_v24108_shopquest + smoke_v24109_carvequest + smoke_v24110_vowquest + smoke_v24111_hearerquest + smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud + smoke_v24116_guidequest + smoke_v24117_codexhud + smoke_v24118_wellquest + smoke_v24119_huntquest（npm test 串跑）'));
+  readme.includes('冒烟三百四十三件套（三百四十二件套清除）') && !readme.includes('三百四十四件套') && !readme.includes('（344 份）'));
+ok('README tests 树串尾已延伸（…+ smoke_v2499_goldcurve25 + smoke_v24100_talequest + smoke_v24101_goldcurve26 + smoke_v24102_goldcurve27 + smoke_v24103_goldcurve28 + smoke_v24104_goldcurve29 + smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest + smoke_v24108_shopquest + smoke_v24109_carvequest + smoke_v24110_vowquest + smoke_v24111_hearerquest + smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud + smoke_v24116_guidequest + smoke_v24117_codexhud + smoke_v24118_wellquest + smoke_v24119_huntquest + smoke_v24120_chesthud（npm test 串跑））',
+  readme.includes('smoke_v2499_goldcurve25 + smoke_v24100_talequest + smoke_v24101_goldcurve26 + smoke_v24102_goldcurve27 + smoke_v24103_goldcurve28 + smoke_v24104_goldcurve29 + smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest + smoke_v24108_shopquest + smoke_v24109_carvequest + smoke_v24110_vowquest + smoke_v24111_hearerquest + smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud + smoke_v24116_guidequest + smoke_v24117_codexhud + smoke_v24118_wellquest + smoke_v24119_huntquest + smoke_v24120_chesthud（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（十八条 · 灯下新章 · TALE_GOAL）',
   readme.includes('三十一条支线目标/奖励全部由') &&
   readme.includes('灯下新章（说书人 · 进战即记名 `TALE_GOAL`(6) 种，相遇即记）70 金 + 2 生命药水') &&
@@ -185,11 +185,11 @@ ok('README 支线/奖励行随新现实（十八条 · 灯下新章 · TALE_GOAL
 ok('README 地图速览说书人行随新现实（v24.100 起支线委托人）',
   readme.includes('**v24.100 起为第十八条支线「灯下新章」委托人**'));
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
-ok('package.json 实跑链共 322 份（smoke.mjs + 323 专项）', chain.length === 341 && ['smoke.mjs', ...chain].length === 342, String(chain.length));
-ok('package.json 链尾为 smoke_v24100_talequest（第 324 份）', chain[chain.length - 1] === 'smoke_v24119_huntquest', chain[chain.length - 1]);
+ok('package.json 实跑链共 322 份（smoke.mjs + 323 专项）', chain.length === 342 && ['smoke.mjs', ...chain].length === 343, String(chain.length));
+ok('package.json 链尾为 smoke_v24100_talequest（第 324 份）', chain[chain.length - 1] === 'smoke_v24120_chesthud', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24100_talequest.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v2499_goldcurve25.mjs && node tests/smoke_v24100_talequest.mjs && node tests/smoke_v24101_goldcurve26.mjs && node tests/smoke_v24102_goldcurve27.mjs && node tests/smoke_v24103_goldcurve28.mjs && node tests/smoke_v24104_goldcurve29.mjs && node tests/smoke_v24105_songquest.mjs && node tests/smoke_v24106_moonquest.mjs && node tests/smoke_v24107_peddlequest.mjs && node tests/smoke_v24108_shopquest.mjs && node tests/smoke_v24109_carvequest.mjs && node tests/smoke_v24110_vowquest.mjs && node tests/smoke_v24111_hearerquest.mjs && node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs && node tests/smoke_v24114_fleequest.mjs && node tests/smoke_v24115_achhud.mjs && node tests/smoke_v24116_guidequest.mjs && node tests/smoke_v24117_codexhud.mjs && node tests/smoke_v24118_wellquest.mjs && node tests/smoke_v24119_huntquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.100（startsWith）', changelog.startsWith('## v24.119'));
+  pkgRaw.includes('node tests/smoke_v2499_goldcurve25.mjs && node tests/smoke_v24100_talequest.mjs && node tests/smoke_v24101_goldcurve26.mjs && node tests/smoke_v24102_goldcurve27.mjs && node tests/smoke_v24103_goldcurve28.mjs && node tests/smoke_v24104_goldcurve29.mjs && node tests/smoke_v24105_songquest.mjs && node tests/smoke_v24106_moonquest.mjs && node tests/smoke_v24107_peddlequest.mjs && node tests/smoke_v24108_shopquest.mjs && node tests/smoke_v24109_carvequest.mjs && node tests/smoke_v24110_vowquest.mjs && node tests/smoke_v24111_hearerquest.mjs && node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs && node tests/smoke_v24114_fleequest.mjs && node tests/smoke_v24115_achhud.mjs && node tests/smoke_v24116_guidequest.mjs && node tests/smoke_v24117_codexhud.mjs && node tests/smoke_v24118_wellquest.mjs && node tests/smoke_v24119_huntquest.mjs && node tests/smoke_v24120_chesthud.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.100（startsWith）', changelog.startsWith('## v24.120'));
 ok('CHANGELOG v24.100 条目含「灯下新章」与「TALE_GOAL」与「说书人」',
   changelog.includes('灯下新章') && changelog.includes('TALE_GOAL') && changelog.includes('说书人'));
 ok('CHANGELOG 仍保留 v24.99 条目（历史保留）', changelog.includes('## v24.99'));
@@ -200,27 +200,27 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 321（320 + smoke_v24100_talequest）', files.length === 342, String(files.length));
+ok('tests 目录件套 = 321（320 + smoke_v24100_talequest）', files.length === 343, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.99 pin 零残留 ——
 const s2497 = read('smoke_v2499_goldcurve25.mjs');
-ok('smoke_v2497 的 GAME_VERSION 字面量 pin 已更新为 v24.100', s2497.includes("const GAME_VERSION = 'v24.119';"));
-ok('smoke_v2497 的 CHANGELOG 顶 pin 已更新为 ## v24.101', s2497.includes("startsWith('## v24.119 '"));
-ok('smoke_v2497 的件套 pin 已更新为三百四十二件套（三百四十一件套清除）', s2497.includes('三百四十二件套（三百四十一件套清除）'));
+ok('smoke_v2497 的 GAME_VERSION 字面量 pin 已更新为 v24.100', s2497.includes("const GAME_VERSION = 'v24.120';"));
+ok('smoke_v2497 的 CHANGELOG 顶 pin 已更新为 ## v24.101', s2497.includes("startsWith('## v24.120 '"));
+ok('smoke_v2497 的件套 pin 已更新为三百四十三件套（三百四十二件套清除）', s2497.includes('三百四十三件套（三百四十二件套清除）'));
 ok('smoke_v2497 的 README/链 tail pin 已随新现实延伸（含 smoke_v24100_talequest）',
   s2497.includes('smoke_v24102_goldcurve27'));
 ok('smoke_v2497 的 package.json 串尾 pin 已延伸至 smoke_v24100_talequest', s2497.includes('node tests/smoke_v2499_goldcurve25.mjs && node tests/smoke_v24100_talequest.mjs'));
-ok('smoke_v2497 的链尾 pin 已推进至 smoke_v24100_talequest（第 324 份）', s2497.includes("=== 'smoke_v24119_huntquest'"));
+ok('smoke_v2497 的链尾 pin 已推进至 smoke_v24100_talequest（第 324 份）', s2497.includes("=== 'smoke_v24120_chesthud'"));
 ok('smoke_v2497 的入库 pin 已推进至 321 份', s2497.includes('入库（335 份）'));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（334 专项 / 335）且尚无 336 口径哨兵',
-  s2436.includes('suiteFiles.length === 341 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 342') &&
-  s2436.includes('!readme.includes(\'冒烟三百四十三件套\')') && s2436.includes('!readme.includes(\'（343 份）\')'));
+  s2436.includes('suiteFiles.length === 342 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 343') &&
+  s2436.includes('!readme.includes(\'冒烟三百四十四件套\')') && s2436.includes('!readme.includes(\'（344 份）\')'));
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v24100_talequest（第 324 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24119_huntquest'"));
-ok('smoke_v2415 树串 token 数已推进至 321', s2415.includes('treeTok.length === 342'));
+ok('smoke_v2415 链尾已推进至 smoke_v24100_talequest（第 324 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24120_chesthud'"));
+ok('smoke_v2415 树串 token 数已推进至 321', s2415.includes('treeTok.length === 343'));
 // 旧代 v24.99 pin 零残留扫描（豁免本套件与上一版套件）
 const leftovers = [], _why = {};
 for (const f of files) {
