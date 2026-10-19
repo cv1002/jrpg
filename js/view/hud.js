@@ -3,6 +3,7 @@
 // ============================================================
 import { S, curMap } from '../state.js';
 import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS } from '../data.js';
+import { QUESTS } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -98,6 +99,16 @@ export function renderHUD() {
   // （与其余各端同式同源，调碎片集合只改 data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化
   // （hero.fragments 写入/掉落判定/真结局触发逐字未动）。
   set('s-frag', (hero.fragments || []).length + '/' + FRAGMENTS.length);
+  // v24.124 HUD 常驻「🏮 灯火同心 N/33」支线完成进度（承 v24.123「🧩 记忆碎片 N/4」/ v24.120「📦 宝箱 N/12」/
+  // v24.117「📕 记忆图鉴 N/13」/ v24.115「🏆 成就 N/76」/ v24.16「🚶 步数」同一「计数现场报进度」主线，收集
+  // 口径的 HUD 侧第五枚兑现）：灯火同心（QUESTS kind==='side' 全部支线完成，成就 allquests 判据）是通关后
+  // 的终极完成度指标——交付横幅（v24.21「🏮 灯火同心 N/11」）/任务日志/Ⅰ 状态页只报「进行中」，想数还差
+  // 几条支线清完、或临门一脚差哪条，只能开任务日志逐条核对；现 HUD 第二行 🧩 之右补常驻「🏮 N/33」——
+  // 分子读 QUESTS kind==='side' 中 (hero.quests||{})[id]==='done' 的条数防御式旧档零迁移（缺 quests 字段
+  // 计 0）、分母读 data.js QUESTS 单一数据源（与成就「灯火同心」/任务日志同读一份源，增删支线只改 data.js
+  // 一处全端自动跟随）；纯显示零结算零存档零数值变化（hero.quests 写入/交付判定/成就判定逐字未动）。
+  const sideQ = Object.values(QUESTS).filter((q) => q.kind === 'side');
+  set('s-quests', sideQ.filter((q) => (hero.quests || {})[q.id] === 'done').length + '/' + sideQ.length);
   // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
   // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
   set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');
