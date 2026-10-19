@@ -2,7 +2,7 @@
 // view/hud.js
 // ============================================================
 import { S, curMap } from '../state.js';
-import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal } from '../data.js';
+import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -90,6 +90,14 @@ export function renderHUD() {
   // 调地图只改 data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化（hero.chests 写入/开箱判定/
   // 掉落/成就判定逐字未动）。
   set('s-chest', chestCount(hero) + '/' + chestTotal());
+  // v24.123 HUD 常驻「🧩 记忆碎片 N/4」收集进度（承 v24.120「📦 宝箱 N/12」/ v24.117「📕 记忆图鉴 N/13」/
+  // v24.115「🏆 成就 N/76」同一「计数现场报进度」主线，收集口径的 HUD 侧第四枚兑现）：记忆碎片
+  // （FRAGMENTS 四枚强敌首胜掉落、集齐触发真结局「全记忆」加页）是真结局关键收集，此前只在 I 状态页
+  // 资源行（v21.86「记忆碎片 N/4」）/J 日志碎片节/图鉴评论/胜利与阵亡收集行/标题槽预览可见，HUD 第二行
+  // 独缺这枚；分子读 (hero.fragments||[]).length 防御式旧档零迁移、分母读 data.js FRAGMENTS 单一数据源
+  // （与其余各端同式同源，调碎片集合只改 data.js 一处全端自动跟随）；纯显示零结算零存档零数值变化
+  // （hero.fragments 写入/掉落判定/真结局触发逐字未动）。
+  set('s-frag', (hero.fragments || []).length + '/' + FRAGMENTS.length);
   // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
   // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
   set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');
