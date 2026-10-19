@@ -2611,6 +2611,24 @@
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
+// v24.122 新内容·新支线（第三十三条）：守晶人「星砂归匣」——累计开启 CRYSTAL_GOAL(4) 只宝箱
+// 换 70 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100
+// 说书人 / v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 /
+// v24.110 记誓人 / v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工 / v24.116 引灯人 /
+// v24.118 井巫 / v24.119 守洞人 / v24.121 筛砂人「风味 NPC 升格为支线委托人」先例）：v22.94 纯风味
+// NPC「守晶人」（星井矿脉终焉水晶正南 (12,12)，「这晶石，是回廊的门闩……里头收着全镇没回家的
+// 名字」）升格为委托人——他守水晶守了一辈子、最懂「匣子里散出去的星砂」，玩家每开一只宝箱都算
+// 替他把散落的星砂归回匣里（星砂归匣 · 开一处亮一处），替他攒满 CRYSTAL_GOAL(4) 只；量化：
+// CRYSTAL_GOAL(4) 单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.chests 复用
+// 既有端口（world.onChestStep 开箱成功唯一写入点、随 snapshotHero 全量快照自动持久化、防御式
+// chestCount 三形态（Set 读 size/数组读 length/缺失计 0）旧档零迁移，与 ACH_LIST chests「开箱寻宝」
+// 同读一份源，支线门槛 4 低于成就门槛 TREASURE_GOAL(6)——顺路先完成支线再解锁成就；开箱才算、
+// 任务奖励/升级/读档零计数），零新计数零新状态零新存档；无 unlockOn 从首次进星井矿脉即可 offer
+// （承 side_flee/side_hearer/side_sift 同款——守晶人在星井矿脉，接取时机天然正确；cave.extras/
+// NPC_SPOTS 零新坐标）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按
+// hero.trueBoss/caveBoss/bossDefeated 三档分档（守晶人原有 trueBoss after 彩蛋「水晶空了/名字都回了
+// 灯下」两页并入 done 分档，零内容丢失）；奖励 70 金 + 2 生命药水（承 side_tale 70 档——「开箱」
+// 自开局第一只宝箱即可累计、全程伴随）。
 // v24.121 新内容·新支线（第三十二条）：筛砂人「砂里的光」——累计酿造 SIFT_GOAL(3) 瓶高级灵药
 // 换 60 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100
 // 说书人 / v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 /
@@ -2809,7 +2827,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.121';
+const GAME_VERSION = 'v24.122';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3692,6 +3710,15 @@ const HUNT_TALLY_GOAL = 6; // 守洞人支线需替灯清掉的魔物讨伐数
 // 目标文案（obj）/接取对话（offer）全同步；筛砂人在星井矿脉星砂矿场 (5,5)（cave.extras/NPC_SPOTS
 // 零新坐标），自酿酒起持续累计、全程伴随（「砂是筛出来的，不是挖出来的——手里这把亮的，记得路」）。
 const SIFT_GOAL = 3;      // 筛砂人支线需替砂筛出的高级灵药酿造瓶数
+// v24.122 星砂归匣（守晶人支线）：累计开启 CRYSTAL_GOAL(4) 只宝箱——计数 hero.chests
+// 由本文件 chestCount 三形态防御式读取（Set 读 size/数组读 length/缺失计 0，旧档零迁移），
+// 由 js/world.js onChestStep 开箱成功唯一产生点写入（随 snapshotHero 全量快照自动持久化），
+// 与 ACH_LIST chests「开箱寻宝」同读一份源，支线门槛 4 低于成就门槛 TREASURE_GOAL(6)——顺路先完成
+// 支线再解锁成就；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL/WELL_GOAL/HUNT_TALLY_GOAL/SIFT_GOAL
+// 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/目标文案（obj）/
+// 接取对话（offer）全同步；守晶人在星井矿脉终焉水晶正南 (12,12)（cave.extras/NPC_SPOTS 零新坐标），
+// 自开箱起持续累计、全程伴随（「匣子里散出去的星砂，开一只归一分」）。
+const CRYSTAL_GOAL = 4;   // 守晶人支线需替晶匣攒满的宝箱开启数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4400,6 +4427,10 @@ const NPCS={
   //（水晶空了/门闩不用锁了/名字都回了灯下——与 CAVE_CRYSTAL 第三档「灰晶零光·水晶空了」、
   // 守名者 done「名字都回灯下了」同口径）；mark:'gem' 新增程序化晶石标（view/sprites.js
   // drawNpcMark 新增 gem 分支：蓝晶两粒 + 高光，纯显示零结算）；无任务、无顶标、零结算零存档。
+  // v24.122 升格为支线委托人（QUESTS.side_crystal「星砂归匣」·累计开启 CRYSTAL_GOAL(4) 只宝箱，承
+  // v24.119 守洞人/v24.121 筛砂人「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走任务页
+  //（talk.offer/active/turnin/done 四态），原有 lines 两页与 trueBoss after 两页彩蛋「水晶空了/名字都
+  // 回了灯下」已并入 side_crystal 的 done 分档（零内容丢失，详见 QUESTS.side_crystal 行内注释）。
   crystalwatch:{name:'守晶人', mark:'gem', lines:[
     ['守晶人：这晶石，是回廊的门闩。','一盏灯芯的徽记、一位领主的徽记，','双徽记没凑齐，它就阖着眼。 [Enter] 继续'],
     ['守晶人：它睁眼那刻，无字回廊就开了。','里头收着全镇没回家的名字——','你走得再远，也别把它们丢下。 [Enter] 结束'],
@@ -7371,6 +7402,52 @@ const QUESTS={
       ]])),
     },
   },
+  side_crystal:{
+    id:'side_crystal', kind:'side', store:true, npc:'crystalwatch', giver:'crystalwatch',
+    cond:(g)=>chestCount(g) >= CRYSTAL_GOAL,
+    condProg:(g)=>`${chestCount(g)}/${CRYSTAL_GOAL} 只`,
+    name:'星砂归匣', where:'星井矿脉·终焉水晶（累计开启宝箱）',
+    obj:`累计开启 ${CRYSTAL_GOAL} 只宝箱——星砂归了匣，光就添一分`,
+    offer:'去星井矿脉找守晶人，接下「星砂归匣」的委托',
+    turnin:`替晶匣攒足了 ${CRYSTAL_GOAL} 只！回星井矿脉找守晶人`,
+    done:'守晶人守了一辈子水晶，说你替匣子攒够了星砂——矿脉里的光，从此一粒不丢。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '守晶人：这晶石是回廊的门闩，它阖着眼，',
+        '是还没等到双徽记。可矿脉里的星砂宝箱，',
+        '散得到处都是——',
+        `你每开一只，星砂就归匣一分。攒够 ${CRYSTAL_GOAL} 只，`,
+        '回来找我换谢礼。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守晶人：星砂不白散，匣子不白敞。',
+        `（你已累计开启 ${chestCount(hero)}/${CRYSTAL_GOAL} 只宝箱）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '守晶人：够数了——这一只只匣子，我记着呢。',
+        '星砂喂过灯，也喂过碑；你替它找着归处了。',
+        `攒够 ${CRYSTAL_GOAL} 只宝箱，矿脉里的光，都还给了水晶。`,
+        '这份谢礼拿去，回廊里接着走。 [Enter] 领取谢礼',
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守晶人：水晶空了。','它守的门，再不用它锁着了。','名字都回了灯下——它也能合眼了。 [Enter] 继续'],
+        ['守晶人：往后矿脉只嗡它自己的嗡。','你归进匣里的星砂，替灯守着——','守着没人再丢名字。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '守晶人：领主散了，矿脉也敞亮了。',
+        '你归回匣里的那几粒星砂，还在替灯守着。',
+        '镇上的灯，从此一盏不少。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '守晶人：灯芯回来了，这儿的光都活泛了。',
+        '往后开出的星砂，都往灯里送。 [Enter] 结束',
+      ]] : [[
+        '守晶人：星砂归了匣，光就添一分。',
+        '矿道里有我守着，你只管往前走。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8498,5 +8575,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL,
 };
