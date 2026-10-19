@@ -4,6 +4,7 @@
 import { S, curMap } from '../state.js';
 import { MAPS, ENCOUNTER, DAY_PHASE_S, STEP_GOAL, ACH_LIST, BESTIARY_TARGET, chestCount, chestTotal, FRAGMENTS } from '../data.js';
 import { QUESTS } from '../data.js';
+import { HUNT2_GOAL } from '../data.js';
 import { questBannerLines } from '../quests.js';
 import { bind } from '../bind.js';
 import { elId } from './canvas.js';
@@ -109,6 +110,16 @@ export function renderHUD() {
   // 一处全端自动跟随）；纯显示零结算零存档零数值变化（hero.quests 写入/交付判定/成就判定逐字未动）。
   const sideQ = Object.values(QUESTS).filter((q) => q.kind === 'side');
   set('s-quests', sideQ.filter((q) => (hero.quests || {})[q.id] === 'done').length + '/' + sideQ.length);
+  // v24.125 HUD 常驻「⚔️ 驱雾百战 N/100」讨伐进度（承 v24.124「🏮 灯火同心 N/33」/ v24.123「🧩 记忆碎片 N/4」/
+  // v24.120「📦 宝箱 N/12」/ v24.117「📕 记忆图鉴 N/13」/ v24.115「🏆 成就 N/76」/ v24.16「🚶 步数」同一
+  // 「计数现场报进度」主线，收集口径的 HUD 侧第六枚兑现）：讨伐（hero.totalWins，battle.winBattle 胜利结算
+  // 唯一产生点）是伴随全场战斗的核心投入端口——胜利战报（v24.22「⚔️ 驱雾百战 N/100」）与胜利画面（v24.12
+  // 「⚔️ 身经百战」·遭遇端口）都已报数，HUD 第二行却没有任何讨伐之数，想数还差几场凑满「驱雾百战」（讨伐线
+  // 中档里程碑，HUNT2_GOAL(100) 只）只能开 C 成就页读 X/100；现 HUD 第二行 🏮 之右补常驻「⚔️ N/100」——
+  // 分子读 (hero.totalWins||0) 防御式旧档零迁移、分母读 data.js HUNT2_GOAL 单一数据源（与 C 页/ACH_LIST
+  // hunt100 的 ok/prog/胜利战报同读一份源，调阈值只改 data.js 一处全端自动跟随，打赢当场涨）；纯显示零结算
+  // 零存档零数值变化（totalWins 写入/胜利结算/成就判定逐字未动）。
+  set('s-hunt', (hero.totalWins || 0) + '/' + HUNT2_GOAL);
   // v22.12 HUD 静音指示同步主音量：音量 0%（gain 恒 0）与静音在听觉上等价，指示器如实显示 🔇——
   // 与 S.SND（M 独立开关）互不覆盖：SND 关 + 音量 100% 仍 🔇、SND 开 + 音量 0% 也 🔇。
   set('s-snd', (S.SND && (S.VOL || 1) > 0) ? '🔊' : '🔇');

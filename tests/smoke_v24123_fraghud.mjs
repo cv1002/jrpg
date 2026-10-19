@@ -98,7 +98,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.122', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 118)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.123（旧 v24.122 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.124';") && !dSrc.includes("const GAME_VERSION = 'v24.122';"));
+  dSrc.includes("const GAME_VERSION = 'v24.125';") && !dSrc.includes("const GAME_VERSION = 'v24.122';"));
 ok('data.js 含 v24.123 注释（HUD 记忆碎片进度·计数现场说明）',
   dSrc.includes('v24.123 体验打磨·信息透明·计数现场'));
 ok('data.js 仍保留 v24.122 历史注释（守晶人「星砂归匣」新支线说明，零内容丢失）',
@@ -146,27 +146,27 @@ delete S.G.fragments; renderHUD();
 ok('运行期：缺 fragments 字段防御式 0/4（旧档零迁移）', els['s-frag'].textContent === '0/4', els['s-frag'].textContent);
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为三百四十七件套（三百四十六件套清除）',
-  readme.includes('冒烟三百四十七件套（三百四十六件套清除）'));
+ok('README 件套口径已为三百四十八件套（三百四十七件套清除）',
+  readme.includes('冒烟三百四十八件套（三百四十七件套清除）'));
 ok('README tests 含 v24.123 守护描述与 smoke_v24123_fraghud 入库（346 份）',
   readme.includes('v24.123 起含「HUD 记忆碎片收集进度」守护') &&
   readme.includes('smoke_v24123_fraghud 入库（346 份）'));
 ok('README 仍有 v24.122 守护描述（历史保留）', readme.includes('v24.122 起含「守晶人「星砂归匣」新支线」守护'));
 ok('README 已有三百四十二件套口径且尚无 343（哨兵前望 343 语义：下一版才写 343）',
-  readme.includes('冒烟三百四十七件套（三百四十六件套清除）') && !readme.includes('冒烟三百四十八件套') && !readme.includes('（348 份）'));
-ok('README tests 树串尾已延伸（…+ smoke_v24121_siftquest + smoke_v24122_crystalquest + smoke_v24123_fraghud + smoke_v24124_questshud（npm test 串跑））',
-  readme.includes('smoke_v24121_siftquest + smoke_v24122_crystalquest + smoke_v24123_fraghud + smoke_v24124_questshud（npm test 串跑）'));
+  readme.includes('冒烟三百四十八件套（三百四十七件套清除）') && !readme.includes('冒烟三百四十九件套') && !readme.includes('（349 份）'));
+ok('README tests 树串尾已延伸（…+ smoke_v24121_siftquest + smoke_v24122_crystalquest + smoke_v24123_fraghud + smoke_v24124_questshud + smoke_v24125_hunthud（npm test 串跑））',
+  readme.includes('smoke_v24121_siftquest + smoke_v24122_crystalquest + smoke_v24123_fraghud + smoke_v24124_questshud + smoke_v24125_hunthud（npm test 串跑）'));
 ok('README 成就 bullet 含 v24.123 HUD 记忆碎片口径（v24.123 起 HUD 常驻「🧩 记忆碎片 N/4」收集进度）',
   readme.includes('v24.123 起 HUD 常驻「🧩 记忆碎片 N/4」收集进度'));
 ok('README 视觉 bullet 含 v24.123 HUD 记忆碎片口径（HUD 常驻「🧩 记忆碎片 N/4」收集进度**（v24.123）',
   readme.includes('HUD 常驻「🧩 记忆碎片 N/4」收集进度**（v24.123'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
-ok('package.json 实跑链共 341 份（smoke.mjs + 341 专项）', chain.length === 346 && ['smoke.mjs', ...chain].length === 347, String(chain.length));
-ok('package.json 链尾为 smoke_v24123_fraghud（第 342 份）', chain[chain.length - 1] === 'smoke_v24124_questshud', chain[chain.length - 1]);
+ok('package.json 实跑链共 341 份（smoke.mjs + 341 专项）', chain.length === 347 && ['smoke.mjs', ...chain].length === 348, String(chain.length));
+ok('package.json 链尾为 smoke_v24123_fraghud（第 342 份）', chain[chain.length - 1] === 'smoke_v24125_hunthud', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24121_siftquest.mjs && smoke_v24122_crystalquest.mjs && smoke_v24123_fraghud.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.123（startsWith）', changelog.startsWith('## v24.124'));
+  pkgRaw.includes('node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.123（startsWith）', changelog.startsWith('## v24.125'));
 ok('CHANGELOG v24.123 条目含「记忆碎片」与「s-frag」与「FRAGMENTS」',
   changelog.includes('记忆碎片') && changelog.includes('s-frag') && changelog.includes('FRAGMENTS'));
 ok('CHANGELOG 仍保留 v24.122 条目（历史保留）', changelog.includes('## v24.122'));
@@ -177,33 +177,33 @@ const files = fs.readdirSync(testsDirUrl).filter((f) => f.endsWith('.mjs')).sort
 const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 342（341 + smoke_v24123_fraghud）', files.length === 347, String(files.length));
+ok('tests 目录件套 = 342（341 + smoke_v24123_fraghud）', files.length === 348, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.122 pin 零残留 ——
 const s24118 = read('tests/smoke_v24122_crystalquest.mjs');
-ok('smoke_v24118 的 GAME_VERSION 字面量 pin 已更新为 v24.123', s24118.includes("const GAME_VERSION = 'v24.124';"));
-ok('smoke_v24118 的 CHANGELOG 顶 pin 已更新为 ## v24.123 ', s24118.includes("startsWith('## v24.124'"));
-ok('smoke_v24118 的件套 pin 已更新为三百四十七件套（三百四十六件套清除）', s24118.includes('三百四十七件套（三百四十六件套清除）'));
+ok('smoke_v24118 的 GAME_VERSION 字面量 pin 已更新为 v24.123', s24118.includes("const GAME_VERSION = 'v24.125';"));
+ok('smoke_v24118 的 CHANGELOG 顶 pin 已更新为 ## v24.123 ', s24118.includes("startsWith('## v24.125'"));
+ok('smoke_v24118 的件套 pin 已更新为三百四十八件套（三百四十七件套清除）', s24118.includes('三百四十八件套（三百四十七件套清除）'));
 ok('smoke_v24118 的 README/链 tail pin 已随新现实延伸（含 smoke_v24123_fraghud）',
   s24118.includes('smoke_v24123_fraghud'));
 ok('smoke_v24118 的 package.json 串尾 pin 已延伸至 smoke_v24123_fraghud', s24118.includes('smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs'));
-ok('smoke_v24118 的链尾 pin 已推进至 smoke_v24123_fraghud（第 342 份）', s24118.includes("=== 'smoke_v24124_questshud'"));
+ok('smoke_v24118 的链尾 pin 已推进至 smoke_v24123_fraghud（第 342 份）', s24118.includes("=== 'smoke_v24125_hunthud'"));
 ok('smoke_v24118 的 README 历史块入库 pin 保留（341 份口径，历史块原样保留）',
   s24118.includes('入库（345 份）'));
 const s2436 = read('tests/smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（345 专项 / 346）且尚无 343 口径哨兵',
-  s2436.includes('suiteFiles.length === 346 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 347') &&
-  s2436.includes('!readme.includes(\'冒烟三百四十八件套\')') && s2436.includes('!readme.includes(\'（348 份）\')'));
+  s2436.includes('suiteFiles.length === 347 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 348') &&
+  s2436.includes('!readme.includes(\'冒烟三百四十九件套\')') && s2436.includes('!readme.includes(\'（349 份）\')'));
 const s2415 = read('tests/smoke_v2415_treepin.mjs');
-ok('smoke_v2415 链尾已推进至 smoke_v24123_fraghud（第 342 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24124_questshud'"));
-ok('smoke_v2415 树串 token 数已推进至 342', s2415.includes('treeTok.length === 347'));
+ok('smoke_v2415 链尾已推进至 smoke_v24123_fraghud（第 342 份）', s2415.includes("chain[chain.length - 1] === 'smoke_v24125_hunthud'"));
+ok('smoke_v2415 树串 token 数已推进至 342', s2415.includes('treeTok.length === 348'));
 const s2429 = read('tests/smoke_v2429_xpcurve3.mjs');
 ok('smoke_v2429 哨兵链前望 343（三百四十二件套否定式）',
-  s2429.includes("!readme.includes('冒烟三百四十八件套'"));
+  s2429.includes("!readme.includes('冒烟三百四十九件套'"));
 ok('smoke_v24115 的 GAME_VERSION 字面量 pin 已更新为 v24.123（旧 v24.122 残留归零）',
-  read('tests/smoke_v24119_huntquest.mjs').includes("const GAME_VERSION = 'v24.124';"));
+  read('tests/smoke_v24119_huntquest.mjs').includes("const GAME_VERSION = 'v24.125';"));
 // 旧代 v24.122 pin 零残留扫描（豁免本套件）
 const leftovers = [], _why = {};
 for (const f of files) {
