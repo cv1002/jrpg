@@ -2611,6 +2611,24 @@
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
+// v24.121 新内容·新支线（第三十二条）：筛砂人「砂里的光」——累计酿造 SIFT_GOAL(3) 瓶高级灵药
+// 换 60 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100
+// 说书人 / v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 /
+// v24.110 记誓人 / v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工 / v24.116 引灯人 /
+// v24.118 井巫 / v24.119 守洞人「风味 NPC 升格为支线委托人」先例）：v22.24 纯风味 NPC「筛砂人」
+// （星井矿脉星砂矿场 (5,5)，「砂是筛出来的，不是挖出来的——手里这把亮的，记得路」）升格为委托人——
+// 他筛了一辈子砂，最懂「砂里攒得下光」，玩家每酿一瓶高级灵药（蘑菇吸收了地底星砂的一点光，酿
+// 药师 v23.57「菌盖在夜里发光——那是地底星砂，留给蘑菇的一点光」）都算替他把砂里的光留住一分，
+// 替他攒满 SIFT_GOAL(3) 瓶；量化：SIFT_GOAL(3) 单一数据源（判定/进度/目标文案/接取对话四端同读
+// 一份源）、计数 hero.brews 复用既有端口（core.brewNow 酿造成功唯一产生点、随 snapshotHero 全量
+// 快照自动持久化、防御式 (g.brews||0) 旧档零迁移，与 ACH_LIST brew2「妙手回春」同读一份源，支线
+// 门槛 3 低于成就门槛 BREW2_GOAL(5)——顺路先完成支线再解锁成就；酿造行为才算，任务奖励/战斗掉落
+// 的灵药零计数），零新计数零新状态零新存档；无 unlockOn 从首次进星井矿脉即可 offer（承 side_flee/
+// side_hearer 同款——筛砂人在星井矿脉，接取时机天然正确；cave.extras/NPC_SPOTS 零新坐标）；active
+// 页按 hero 实时报进度（与 side_bell/side_fish 同款函数页）；done 页按 hero.trueBoss/caveBoss/
+// bossDefeated 三档分档（筛砂人原有 trueBoss after 彩蛋「砂堆不亮了/名字都回家了」两页并入 done
+// 分档，零内容丢失）；奖励 60 金 + 2 生命药水（承 side_flee 60 档——「酿造」自第一锅即可累计、
+// 全程伴随）。
 // v24.120 体验打磨·信息透明·计数现场：HUD 常驻「📦 宝箱 N/12」收集进度（承 v24.16 HUD 步数进度
 // 「🚶 千里之行 N/1000」/ v24.115 成就进度「🏆 成就 N/76」/ v24.117 图鉴进度「📕 记忆图鉴 N/13」同一
 // 「计数现场报进度」主线，收集口径的 HUD 侧第三枚兑现——I 状态页资源行六端资源（金币/药水/灵药/蘑菇/
@@ -2791,7 +2809,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.120';
+const GAME_VERSION = 'v24.121';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3666,6 +3684,14 @@ const WELL_GOAL = 8;     // 井巫支线需替井喝够的大地图药水次数
 // 文案（obj）/接取对话（offer）全同步；守洞人在星井矿脉洞窟领主祭坛正北 (20,7)（cave.extras/NPC_SPOTS
 // 零新坐标），自首战起持续累计、全程伴随（「镇上的灯，就缺这一车——你讨平一笔，灯就亮一分」）。
 const HUNT_TALLY_GOAL = 6; // 守洞人支线需替灯清掉的魔物讨伐数
+// v24.121 砂里的光（筛砂人支线）：累计酿造 SIFT_GOAL(3) 瓶高级灵药——计数 hero.brews
+// 由 js/core.js brewNow 酿造成功唯一产生点累加（随 snapshotHero 全量快照自动持久化、防御式
+// (g.brews||0) 旧档零迁移，与 ACH_LIST brew2「妙手回春」同读一份源），支线门槛 3 低于成就门槛
+// BREW2_GOAL(5)——顺路先完成支线再解锁成就；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL/WELL_GOAL/
+// HUNT_TALLY_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度（condProg）/
+// 目标文案（obj）/接取对话（offer）全同步；筛砂人在星井矿脉星砂矿场 (5,5)（cave.extras/NPC_SPOTS
+// 零新坐标），自酿酒起持续累计、全程伴随（「砂是筛出来的，不是挖出来的——手里这把亮的，记得路」）。
+const SIFT_GOAL = 3;      // 筛砂人支线需替砂筛出的高级灵药酿造瓶数
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4106,6 +4132,14 @@ const NPCS={
   // 守碑人 staff 均区分），造型复用 mwChief 魁梧身形（与镇长袍灯长同款身形、跨图不重名；同图星井矿脉内
   // 与井巫/守碑人/拾骨人长者袍、听矿人工人、星砂车夫商贩、老矿工镇民短衫均区分）；无任务、无顶标、
   // 零结算零存档。
+  // v24.121 升格为支线委托人（QUESTS.side_sift「砂里的光」·累计酿造 SIFT_GOAL(3) 瓶高级灵药换
+  // 60 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32
+  // 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/
+  // v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人/v24.111 听矿人/
+  // v24.112 镇民/v24.113 掌灯童/v24.114 老矿工/v24.116 引灯人/v24.118 井巫/v24.119 守洞人「风味
+  // NPC 升格」先例）：npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），
+  // 原有两页台词与 trueBoss after 彩蛋「砂堆不亮了/名字都回家了」已并入 side_sift 的 done 分档
+  // （零内容丢失，详见 QUESTS.side_sift 行内注释）。
   sifter:{name:'筛砂人', mark:'basket', lines:[
     ['筛砂人：矿脉从前往镇上运星砂，喂那些记忆之灯。','砂是筛出来的，不是挖出来的——','手里这把亮的，记得路。 [Enter] 继续'],
     ['筛砂人：矿道里那些骨头架子，当年都是没能走出去的矿工。','他们不是没力气，是没等到灯。','灯亮着，人就找得到门。 [Enter] 结束'],
@@ -7291,6 +7325,52 @@ const QUESTS={
       ]])),
     },
   },
+  side_sift:{
+    id:'side_sift', kind:'side', store:true, npc:'sifter', giver:'sifter',
+    cond:(g)=>((g.brews||0) >= SIFT_GOAL),
+    condProg:(g)=>`${(g&&g.brews)||0}/${SIFT_GOAL} 瓶`,
+    name:'砂里的光', where:'星井矿脉·星砂矿场（累计酿造高级灵药）',
+    obj:`累计酿造 ${SIFT_GOAL} 瓶高级灵药——砂里的光，守一瓶是一瓶`,
+    offer:'去星井矿脉找筛砂人，接下「砂里的光」的委托',
+    turnin:`替砂攒足了 ${SIFT_GOAL} 瓶！回星井矿脉找筛砂人`,
+    done:'筛砂人筛了一辈子砂，说你守住了砂里的光——灯，从此不缺一炉。',
+    reward:{ gold:60, item:2 },
+    talk:{
+      offer:[[
+        '筛砂人：砂是筛出来的。亮的那一把，',
+        '就是星砂留给灯的一点光。',
+        '镇上那口锅，能把菌盖里的光熬成灵药——',
+        `你每酿一瓶，砂里的光就留住一分。攒够 ${SIFT_GOAL} 瓶，`,
+        '回来找我换谢礼。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '筛砂人：砂不白筛，光不白留。',
+        `（你已累计酿造 ${(hero&&hero.brews)||0}/${SIFT_GOAL} 瓶高级灵药）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '筛砂人：够数了——这一炉一炉的光，我记着呢。',
+        '星砂喂过灯，也喂过药；你替它找着归处了。',
+        `攒够 ${SIFT_GOAL} 瓶灵药，砂堆里的亮意，都还给了灯。`,
+        '这份谢礼拿去，矿里接着走。 [Enter] 领取谢礼',
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['筛砂人：砂堆不亮了。','我筛了一辈子，头一回筛出这么多空的。','——不是空了，是被记起来了。 [Enter] 继续'],
+        ['筛砂人：名字都回家了。','往后的矿脉，不用再筛砂——','灯亮着，路就认得人。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '筛砂人：领主散了，矿脉也敞亮了。',
+        '你攒下的那几炉光，还在我这儿替灯守着。',
+        '镇上的灯，从此一盏不少。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '筛砂人：灯芯回来了，这矿里的光都活泛了。',
+        '往后筛出的砂，都往灯里送。 [Enter] 结束',
+      ]] : [[
+        '筛砂人：砂里的光，你替我收了不少。',
+        '矿道里有我守着，你只管往前走。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8418,5 +8498,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL,
 };
