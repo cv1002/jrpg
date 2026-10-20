@@ -87,7 +87,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.10', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 11)), GAME_VERSION);
 ok('data.js 含 v22.11 注释（掌灯童说明）', dSrc.includes('v22.11'));
 ok('GAME_VERSION 字面量已更新为 v24.113（旧 v22.10 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.129';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
+  dSrc.includes("const GAME_VERSION = 'v24.130';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[14,3]===lampkid', NPC_SPOTS['14,3'] === 'lampkid', NPC_SPOTS['14,3']);
@@ -166,7 +166,7 @@ ok('sprites.js NPC_SHEET 已映射 lampkid→mwVillager（镇民短衫孩童身�
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
 const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
 ok('README tests 树收录 smoke_v2211_lampkid', readme.includes('smoke_v2211_lampkid'));
-ok('README 件套口径为三百五十二件套（三百五十一件套清除）', readme.includes('三百五十二件套（三百五十一件套清除）'));
+ok('README 件套口径为三百五十三件套（三百五十二件套清除）', readme.includes('三百五十三件套（三百五十二件套清除）'));
 ok('README 含 v22.11 守护描述（无字回廊掌灯童）', readme.includes('v22.11 起含无字回廊掌灯童'));
 ok('README 快速上手/系统清单含「掌灯童」', readme.includes('掌灯童'));
 ok('package.json 已收录 smoke_v2211_lampkid（npm test 串跑第 107 份）',
@@ -174,9 +174,9 @@ ok('package.json 已收录 smoke_v2211_lampkid（npm test 串跑第 107 份）',
 // 姊妹 pin 复查（v22.10 随新现实更新）
 const s2210 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2210_unsaved.mjs'), 'utf8');
 ok('s2210 GAME_VERSION 字面量 pin 已随新现实更新为 v24.113',
-  s2210.includes("const GAME_VERSION = 'v24.129';"));
+  s2210.includes("const GAME_VERSION = 'v24.130';"));
 ok('s2210 件套 pin 已随新现实更新为三百三十六件套',
-  s2210.includes('三百五十二件套（三百五十一件套清除）'));
+  s2210.includes('三百五十三件套（三百五十二件套清除）'));
 
 console.log(`\n${n - failed}/${n} 通过`);
 process.exit(failed ? 1 : 0);
