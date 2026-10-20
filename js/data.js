@@ -2647,6 +2647,24 @@
 // 结算零存档零数值变化（totalWins 写入/胜利结算/成就判定逐字未动）。只改 js/view/hud.js（import 补
 // HUNT2_GOAL + set('s-hunt',…) 一行）+ index.html（s-quests 之右补 <b id="s-hunt"> + title 口径）；
 // 件套 347→348（smoke_v24125_hunthud 入库，链尾 smoke_v24125_hunthud）。
+// v24.126 新内容·新支线（第三十四条）：失名的旅人「灯下记名」——累计游玩时长 WAIT_GOAL(1200) 秒
+// （=20 分钟）换 60 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 /
+// v24.100 说书人 / v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 /
+// v24.110 记誓人 / v24.111 听矿人 / v24.112 镇民 / v24.113 掌灯童 / v24.114 老矿工 / v24.116 引灯人 /
+// v24.118 井巫 / v24.119 守洞人 / v24.121 筛砂人 / v24.122 守晶人「风味 NPC 升格为支线委托人」
+// 先例）：v22.21 纯风味 NPC「失名的旅人」（雾语林北环路蘑菇田东头 (21,2)，「雾一进林子，就把我的
+// 名字卷走了……你替我记着，成吗」）升格为委托人——他连自己的名字都记不住，只能靠「记得的人」替他
+// 保管；玩家在灯下多守的每一刻游玩时光，都算替他把名字多记一分（灯下记名 · 守一刻添一分）。量化：
+// WAIT_GOAL(1200) 秒=20 分钟单一数据源（判定/进度/目标文案/接取对话四端同读一份源）、计数 hero.time
+// 复用既有端口（js/main.js render 驱动 tick 唯一累加点（每帧按真实流逝秒数累加、上限 60s）、随
+// snapshotHero 全量快照自动持久化、防御式 (g.time||0) 旧档零迁移，与 ACH_LIST ptime「长明不熄」同读
+// 一份源，支线门槛 20 分钟低于成就门槛 PLAY_TIME_GOAL(60 分钟)——顺路先完成支线再解锁成就；挂机/
+// 菜单/战斗全场都在累计，到达即算），零新计数零新状态零新存档；无 unlockOn 开局即可 offer（承
+// side_walk/side_tale 同款——失名的旅人在雾语林 (21,2)，首次进林即可接，接取时机天然正确；
+// dungeon.extras/NPC_SPOTS 零新坐标）；active 页按 hero 实时报进度（与 side_bell/side_fish 同款函数
+// 页）；done 页按 hero.trueBoss 分档（失名的旅人原有 trueBoss after 彩蛋「雾散了/你替我保管的名字」
+// 两页并入 done 分档，零内容丢失）；奖励 60 金 + 2 生命药水（承 side_moon 60 档——「陪伴/纪名」自
+// 开局即开始计时、全程伴随）。件套 348→349（smoke_v24126_waitquest 入库，链尾 smoke_v24126_waitquest）。
 // v24.122 新内容·新支线（第三十三条）：守晶人「星砂归匣」——累计开启 CRYSTAL_GOAL(4) 只宝箱
 // 换 70 金 + 2 生命药水（承 v22.13 说书人 / v24.72 听钟人 / v24.80 渔翁 / v24.82 守夜人 / v24.100
 // 说书人 / v24.105 琴师 / v24.106 放灯童 / v24.107 货郎 / v24.108 货栈掌柜 / v24.109 刻碑人 /
@@ -2863,7 +2881,7 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.125';
+const GAME_VERSION = 'v24.126';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3755,6 +3773,15 @@ const SIFT_GOAL = 3;      // 筛砂人支线需替砂筛出的高级灵药酿造
 // 接取对话（offer）全同步；守晶人在星井矿脉终焉水晶正南 (12,12)（cave.extras/NPC_SPOTS 零新坐标），
 // 自开箱起持续累计、全程伴随（「匣子里散出去的星砂，开一只归一分」）。
 const CRYSTAL_GOAL = 4;   // 守晶人支线需替晶匣攒满的宝箱开启数
+// v24.126 灯下记名（失名的旅人支线）：累计游玩时长 WAIT_GOAL(1200) 秒 = 20 分钟——计数 hero.time
+// 由 js/main.js render 驱动 tick 唯一累加点写入（每帧按真实流逝秒数累加、上限 60s、随 snapshotHero
+// 全量快照自动持久化、防御式 (g.time||0) 旧档零迁移，与 ACH_LIST ptime「长明不熄」同读一份源），支线
+// 门槛 20 分钟低于成就门槛 PLAY_TIME_GOAL(60 分钟)——顺路先完成支线再解锁成就；挂机/菜单/战斗全场
+// 都在累计，到达即算；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL/WELL_GOAL/HUNT_TALLY_GOAL/
+// SIFT_GOAL/CRYSTAL_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/进度
+// （condProg）/目标文案（obj）/接取对话（offer）全同步；失名的旅人在雾语林北环路蘑菇田东头 (21,2)
+// （dungeon.extras/NPC_SPOTS 零新坐标），自开局即开始计时、全程伴随（「你替我记着，成吗」）。
+const WAIT_GOAL = 1200;   // 失名的旅人支线需替灯记下的游玩秒数（=20 分钟，低于成就「长明不熄」60 分）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4142,6 +4169,9 @@ const NPCS={
   // 任务回退直落，零新逻辑、零裸字面量）；mark:'lamp' 复用既有程序化绘制分支（掌灯童同款灯形、
   // 跨图不重），造型复用 mwSage 长者袍（雾语林内与雾径猎手斗篷/拾菇人镇民短衫均区分——风尘
   // 旧袍的迷路人）；无任务、无顶标、零结算零存档。
+  // v24.126 升格为支线委托人（QUESTS.side_wait「灯下记名」·累计游玩时长 WAIT_GOAL(1200) 秒=20 分钟换
+  // 60 金 + 2 生命药水，见 QUESTS.side_wait 行内注释——有任务后 npcQuestPages 走四档任务页、trueBoss
+  // after 彩蛋「雾散了/你替我保管的名字」并入 done 分档零内容丢失）。
   wanderer:{name:'失名的旅人', mark:'lamp', lines:[
     ['失名的旅人：唉……雾一进林子，就把我的名字卷走了。','我只记得，该往有灯的地方走。','你替我记着，成吗？ [Enter] 继续'],
     ['失名的旅人：夜里蘑菇先醒，一盏一盏发着光。','哪一盏，才是我的名字呢……','[Enter] 结束'],
@@ -7484,6 +7514,53 @@ const QUESTS={
       ]])),
     },
   },
+  side_wait:{
+    id:'side_wait', kind:'side', store:true, npc:'wanderer', giver:'wanderer',
+    cond:(g)=>((g.time||0))>=WAIT_GOAL,
+    condProg:(g)=>`${Math.floor((g.time||0)/60)}/${Math.floor(WAIT_GOAL/60)} 分`,
+    name:'灯下记名', where:'雾语林·北环路蘑菇田（累计游玩时长）',
+    obj:`累计在灯下守满 ${Math.floor(WAIT_GOAL/60)} 分钟——守一刻，名字就添一分`,
+    offer:'去雾语林找失名的旅人，接下「灯下记名」的委托',
+    turnin:`替他在灯下守足了 ${Math.floor(WAIT_GOAL/60)} 分钟！回雾语林找失名的旅人`,
+    done:'失名的旅人守了一辈子名字，说你替他记下的每一刻都是他的名——往后他走到哪，都有名有姓了。',
+    reward:{ gold:60, item:2 },
+    talk:{
+      offer:[[
+        '失名的旅人：我的名字给雾卷走了，',
+        '只有记得的人，才能替我把它',
+        '从雾里一点点带回来——',
+        `你只要在灯下多守 ${Math.floor(WAIT_GOAL/60)} 分钟，`,
+        '就算替我多记一个名字。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '失名的旅人：你在灯下守的每一刻，我都记着呢。',
+        `（你已累计游玩 ${Math.floor((hero.time||0)/60)}/${Math.floor(WAIT_GOAL/60)} 分钟）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '失名的旅人：够了，够了——',
+        '你替我守下的这些时辰，雾里',
+        '已经喊得出我的名字了。',
+        `守满 ${Math.floor(WAIT_GOAL/60)} 分钟，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['失名的旅人：雾散了！我记起自己的名字了——','原来它一直亮在灯下，从没走远。','是你替我把灯看住了。 [Enter] 继续'],
+        ['失名的旅人：往后你路过，喊我一声就行。','你喊什么，我都应。','就当……是你替我保管的名字。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '失名的旅人：星砂不再往镇外运，矿脉也敞亮了。',
+        '你替我守住的那些名字，都回了灯下。',
+        '回廊里的碑，从此一块不缺。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '失名的旅人：灯芯回来了，雾也淡了。',
+        '你守下的那些时辰，替我把名字焐热了。',
+        '镇上的灯，从此一盏不少。 [Enter] 结束',
+      ]] : [[
+        '失名的旅人：名字还悬在雾里，可我不慌了。',
+        '有人替我守着灯，它早晚会落下来。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8611,5 +8688,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL,
 };
