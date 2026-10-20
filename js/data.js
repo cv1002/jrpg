@@ -2881,7 +2881,22 @@
 // Lv1-2 镇内零变化（village Lv1/Lv2 12.08/14.55 恒等），hp/atk/def/xp/权重/门槛/区域倍率逐字未动，遇敌/掉落/
 // 战斗/成就/存档零影响（see GAME_VERSION 上方 v24.103/v24.102/v24.101/v24.100/v24.99/v24.98/v24.97/v24.96/v24.95/
 // v24.94/v24.93/v24.92/v24.91/v24.90/v24.89/v24.85/v24.84/v24.45 注释）；件套 326→327（smoke_v24104_goldcurve29 入库，链尾 smoke_v24104_goldcurve29）。
-const GAME_VERSION = 'v24.126';
+// v24.127 新内容·新支线（第三十五条）：拾灯人「彻夜长明」——累计游玩时长 LAMP_GOAL(3600) 秒=60 分钟换
+// 60 金 + 2 生命药水（承 v24.126 失名的旅人「灯下记名」同一「风味 NPC 升格为支线委托人」先例：v22.23
+// 纯风味 NPC「拾灯人」（无字回廊西段北侧 (5,3)，「进了回廊，先把名字在嘴边念一遍」）升格为委托人——
+// 他守了一辈子灯、最懂「灯亮着，名字就找得到回家的路」；玩家在灯下多守的每一刻游玩时光都算替他把
+// 这一夜看亮，替他守满 LAMP_GOAL(3600) 秒=60 分钟（计数 hero.time 复用既有端口 — js/main.js render
+// 驱动 tick 唯一累加点（每帧按真实流逝秒数累加、上限 60s）、随 snapshotHero 全量快照自动持久化、防御式
+// (g.time||0) 旧档零迁移，与 side_wait「灯下记名」/ ACH_LIST ptime「长明不熄」/ ptime2「彻夜长明」同读
+// 一份源；支线门槛 60 分钟低于成就门槛 PLAY_TIME2_GOAL(120 分钟)——顺路先完成支线再解锁成就；挂机/
+// 菜单/战斗全场都在累计，到达即算；与 WAIT_GOAL 两档阈值 20 分/60 分错开）；零新计数零新状态零新存档、
+// QUESTS 表驱动（弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随，34→35）、无 unlockOn
+// （拾灯人在无字回廊，玩家到访回廊时天然可接）、active 页函数型实时报进度、done 页按 hero.trueBoss/
+// caveBoss/bossDefeated 三档分档（原 after 彩蛋「廊子空了·碑上的字都亮了/往后走夜路·替我看一眼灯」两页
+// 并入 done 分档，零内容丢失）；只改 js/data.js（LAMP_GOAL 常量+export、QUESTS.side_lamp、NPCS.lampman
+// 升格注释、GAME_VERSION v24.126→v24.127）+ README/package.json/CHANGELOG + 新套件 smoke_v24127_lampquest
+// + 姊妹件 smoke_v2223_lampman 按升格重写 + smoke_v2235_minimapquest 补位 + 纯风味列表 lampman→stele1 交换。
+const GAME_VERSION = 'v24.127';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3782,6 +3797,16 @@ const CRYSTAL_GOAL = 4;   // 守晶人支线需替晶匣攒满的宝箱开启数
 // （condProg）/目标文案（obj）/接取对话（offer）全同步；失名的旅人在雾语林北环路蘑菇田东头 (21,2)
 // （dungeon.extras/NPC_SPOTS 零新坐标），自开局即开始计时、全程伴随（「你替我记着，成吗」）。
 const WAIT_GOAL = 1200;   // 失名的旅人支线需替灯记下的游玩秒数（=20 分钟，低于成就「长明不熄」60 分）
+// v24.127 彻夜长明（拾灯人支线）：累计游玩时长 LAMP_GOAL(3600) 秒 = 60 分钟——计数 hero.time 由
+// js/main.js render 驱动 tick 唯一累加点写入（每帧按真实流逝秒数累加、上限 60s、随 snapshotHero 全量
+// 快照自动持久化、防御式 (g.time||0) 旧档零迁移，与 ACH_LIST ptime2「彻夜长明」同读一份源），支线门槛
+// 60 分钟低于成就门槛 PLAY_TIME2_GOAL(120 分钟)——顺路先完成支线再解锁成就；与 side_wait「灯下记名」
+// 同读 hero.time 一份源、两档阈值 20 分/60 分错开（守片刻的名、续长夜的灯）；挂机/菜单/战斗全场都在
+// 累计，到达即算；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL/WELL_GOAL/HUNT_TALLY_GOAL/
+// SIFT_GOAL/CRYSTAL_GOAL/WAIT_GOAL 同一「支线目标单一数据源」家族，想调阈值只改这一处，判定（cond）/
+// 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；拾灯人在无字回廊西段北侧 (5,3)
+// （gallery.extras/NPC_SPOTS 零新坐标），自回廊亮起可接、全程伴随（「灯亮着，名字就找得到回家的路」）。
+const LAMP_GOAL = 3600;   // 拾灯人支线需替灯守满的游玩秒数（=60 分钟，低于成就「彻夜长明」120 分）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -4206,6 +4231,15 @@ const NPCS={
   // 复用既有程序化绘制分支（与拾骨人/井巫/守书记同款兜帽、跨图不重；同图无字回廊内与守名者 staff/
   // 掌灯童 lamp 均区分），造型复用 mwHunter 斗篷身形（回廊内与守名者/掌灯阿婆同款长者袍、掌灯童
   // 镇民短衫均区分）；无任务、无顶标、零结算零存档。
+  // v24.127 升格为支线委托人（QUESTS.side_lamp「彻夜长明」·累计游玩时长 LAMP_GOAL(3600) 秒=60 分钟换
+  // 60 金 + 2 生命药水，承 v23.32 拾菇人/v23.42 客栈老板娘/v23.57 酿药师/v24.24 掌灯阿婆/v24.32
+  // 锻灯师/v24.34 守碑人/v24.72 听钟人/v24.80 渔翁/v24.82 守夜人/v24.100 说书人/v24.105 琴师/
+  // v24.106 放灯童/v24.107 货郎/v24.108 货栈掌柜/v24.109 刻碑人/v24.110 记誓人/v24.111 听矿人/
+  // v24.112 镇民/v24.113 掌灯童/v24.114 老矿工/v24.116 引灯人/v24.118 井巫/v24.119 守洞人/v24.121
+  // 筛砂人/v24.122 守晶人/v24.126 失名的旅人「风味 NPC 升格」先例）：npcQuestPages 有任务后优先走
+  // 任务页（talk.offer/active/turnin/done 四态），原有两页台词与 trueBoss after 彩蛋「廊子空了·碑上的
+  // 字都亮了/往后走夜路·替我看一眼灯」已并入 side_lamp 的 done 分档（零内容丢失，详见 QUESTS.side_lamp
+  // 行内注释）。
   lampman:{name:'拾灯人', mark:'hood', lines:[
     ['拾灯人：进了回廊，先把名字在嘴边念一遍——','这里摆着的，都是被忘掉的名字。','别把自个儿的也留下。 [Enter] 继续'],
     ['拾灯人：廊里没有泉水，也没有旅店，药水备足了再走。','北壁四块石碑，从墙缺口上去就能读。','中段那团灰烬在守门，守名者知道怎么对付它。 [Enter] 结束'],
@@ -7561,6 +7595,67 @@ const QUESTS={
       ]])),
     },
   },
+  // v24.127 彻夜长明（拾灯人支线）：累计游玩时长 LAMP_GOAL(3600) 秒 = 60 分钟——承 v24.126 失名的
+  // 旅人「灯下记名」同一「风味 NPC 升格为支线委托人」先例：v22.23 纯风味 NPC「拾灯人」（无字回廊西段
+  // 北侧 (5,3)，「进了回廊，先把名字在嘴边念一遍——这里摆着的，都是被忘掉的名字」）升格为委托人——
+  // 他守了一辈子灯、最懂「灯亮着，名字就找得到回家的路」；玩家在灯下多守的每一刻游玩时光都算替他把
+  // 这一夜看亮，替他守满 LAMP_GOAL(3600) 秒=60 分钟。量化：LAMP_GOAL(3600) 单一数据源（判定/进度/
+  // 目标文案/接取对话四端同读一份源）、计数 hero.time 复用既有端口（js/main.js render 驱动 tick 唯一
+  // 累加点（每帧按真实流逝秒数累加、上限 60s、随 snapshotHero 全量快照自动持久化、防御式 (g.time||0)
+  // 旧档零迁移，与 side_wait「灯下记名」/ ACH_LIST ptime「长明不熄」同读一份源；支线门槛 60 分钟低于
+  // 成就门槛 PLAY_TIME2_GOAL(120 分钟)——顺路先完成支线再解锁成就「彻夜长明」；与 WAIT_GOAL 两档阈值
+  // 20 分/60 分错开，全程累计、到达即算），零新计数零新状态零新存档；无 unlockOn 从首次进无字回廊即可
+  // offer（承 side_guide 同款——拾灯人在回廊西段，接取时机天然正确；gallery.extras/NPC_SPOTS 零新
+  // 坐标）；active 页按 hero 实时报进度（与 side_wait/side_bell/side_fish 同款函数页）；done 页按
+  // hero.trueBoss/caveBoss/bossDefeated 三档分档（拾灯人原有 trueBoss after 彩蛋「廊子空了·碑上的字
+  // 都亮了/往后走夜路·替我看一眼灯」两页并入 done 分档，零内容丢失）；奖励 60 金 + 2 生命药水（承
+  // side_wait 60 档——「守灯」自开灯起持续累计、全程伴随）。
+  side_lamp:{
+    id:'side_lamp', kind:'side', store:true, npc:'lampman', giver:'lampman',
+    cond:(g)=>((g.time||0))>=LAMP_GOAL,
+    condProg:(g)=>`${Math.floor((g.time||0)/60)}/${Math.floor(LAMP_GOAL/60)} 分`,
+    name:'彻夜长明', where:'无字回廊·西段北侧（累计游玩时长）',
+    obj:`替他在灯下守满 ${Math.floor(LAMP_GOAL/60)} 分钟——灯亮一夜，名字就够得着家门`,
+    offer:'去无字回廊找拾灯人，接下「彻夜长明」的委托',
+    turnin:`替他把灯看亮了 ${Math.floor(LAMP_GOAL/60)} 分钟！回无字回廊找拾灯人`,
+    done:'拾灯人守了一辈子灯，就是等你替他再多看一夜——灯没熄，名字就没散。',
+    reward:{ gold:60, item:2 },
+    talk:{
+      offer:[[
+        '拾灯人：灯要是一夜没人看，',
+        '名字就找不到回家的路——',
+        `你只要在灯下多守 ${Math.floor(LAMP_GOAL/60)} 分钟，`,
+        '就算替我把这一夜看亮了。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '拾灯人：灯芯还亮着，我都看着呢。',
+        `（你已累计游玩 ${Math.floor((hero.time||0)/60)}/${Math.floor(LAMP_GOAL/60)} 分钟）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '拾灯人：亮了，亮了——',
+        '这一夜你替我看得够久，',
+        '名字都认得回家的路了。',
+        `守满 ${Math.floor(LAMP_GOAL/60)} 分钟，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['拾灯人：廊子空了，碑上的字都亮了——','这些名字，都回灯下去了。','我这点灯的活儿，到头了。 [Enter] 继续'],
+        ['拾灯人：往后走夜路，替我看一眼灯。','灯亮着，名字就找得到回家的路。','就当……是替我看的最后一夜。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '拾灯人：星砂不再往镇外运，回廊也敞亮了。',
+        '这一夜你替我看得值——',
+        '名字都认得回灯下的路了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '拾灯人：灯芯回来了，廊子也暖了。',
+        '你替我看亮的这一夜，',
+        '够那些名字走出雾了。 [Enter] 结束',
+      ]] : [[
+        '拾灯人：名字还悬在雾里，可灯还亮着。',
+        '有人替我看夜，它就落不下来。',
+        '（支线任务·已完成）[Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8688,5 +8783,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL,
 };
