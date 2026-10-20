@@ -110,7 +110,7 @@ ok('九条讨伐支线均具 condProg/turnin/name（战报与日志/NPC 同读�
   HUNTS.every((id) => { const q = QUESTS[id]; return q && q.condProg && q.turnin && q.name; }));
 ok('side_name（记忆碎片）确有 condProg 且为唯一被排除者（双报排除面精确；v24.24 随新现实更新 9→10 · v24.32 side_golem 入列随新现实更新 10→11 · v24.34 side_trial 入列随新现实更新 11→12 · v24.72 side_bell 入列随新现实更新 12→13 · v24.80 side_fish 入列随新现实更新 13→14 · v24.108 side_shop 入列随新现实更新 14→15 · v24.112 side_talk 入列随新现实更新 22→23 · v24.113 side_walk 入列随新现实更新 24→25 · v24.114 side_retreat 入列随新现实更新 25→26 · v24.116 side_guide 入列随新现实更新 26→27 · v24.118 side_well 入列随新现实更新 27→28 · v24.119 side_hunt 入列随新现实更新 28→29 · v24.121 side_sift 入列随新现实更新 29→30 · v24.126 side_wait 入列随新现实更新 31→32）',
   !!QUESTS.side_name && !!QUESTS.side_name.condProg &&
-  Object.values(QUESTS).filter((q) => q.condProg).length === 33);
+  Object.values(QUESTS).filter((q) => q.condProg).length === 34);
 
 // —— 运行期实证：winBattle 真实路径 + bind.boxMsg 捕获（承 v21.40 捕获桩法）——
 function mkHero(extra) {

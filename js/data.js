@@ -2896,7 +2896,22 @@
 // 并入 done 分档，零内容丢失）；只改 js/data.js（LAMP_GOAL 常量+export、QUESTS.side_lamp、NPCS.lampman
 // 升格注释、GAME_VERSION v24.126→v24.127）+ README/package.json/CHANGELOG + 新套件 smoke_v24127_lampquest
 // + 姊妹件 smoke_v2223_lampman 按升格重写 + smoke_v2235_minimapquest 补位 + 纯风味列表 lampman→stele1 交换。
-const GAME_VERSION = 'v24.127';
+// v24.128 新内容·新支线（第三十六条）：第一块名字石碑「看好矿车」——累计遭遇 STELE_GOAL(40) 场战斗换
+// 70 金 + 2 生命药水（承 v24.127 拾灯人「彻夜长明」/ v24.126 失名的旅人「灯下记名」同一「风味 NPC 升格为
+// 支线委托人」先例：无字回廊北壁四块名字石碑（v22.55 名字石碑回灯温光）中最靠西的第一块（(5,1)，碑文=
+// 「旧矿的守门人走丢那天，把最后一句『看好矿车』说给了石头听」= FRAGMENTS[0] 碎片·守门人的脚印）升格为
+// 委托人——碑里还存着守门人那句没说完的话，如今石头把它托付给肯替它记着的人；玩家在灯下走进的每一场
+// 战斗，石头都当作替守门人多看了一夜矿车，替他守满 STELE_GOAL(40) 场（计数 hero.battles 复用既有端口 —
+// js/battle.js startBattle 进战即记唯一产生点、胜/败/逃都算、随 snapshotHero 全量快照自动持久化、防御式
+// (g.battles||0) 旧档零迁移，与 ACH_LIST battle「身经百战」同读一份源；支线门槛 40 低于成就门槛
+// BATTLE_GOAL(100)——顺路先完成支线再解锁成就，进战即算、战斗全程伴随）；零新计数零新状态零新存档、
+// QUESTS 表驱动（弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随，35→36）、无 unlockOn
+// （第一块碑在无字回廊，玩家到访回廊时天然可接）、active 页函数型实时报进度、done 页按 hero.trueBoss/
+// caveBoss/bossDefeated 三档分档（原碑文「——碑上没有名字，摸上去是温的。」并入各档末页，零内容丢失）；
+// 只改 js/data.js（STELE_GOAL 常量+export、QUESTS.side_stele、NPCS.stele1 升格注释、GAME_VERSION
+// v24.127→v24.128）+ README/package.json/CHANGELOG + 新套件 smoke_v24128_stelequest + 姊妹件
+// smoke_v2235_minimapquest 补位 + 纯风味列表 stele1→stele2 交换。
+const GAME_VERSION = 'v24.128';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3807,6 +3822,14 @@ const WAIT_GOAL = 1200;   // 失名的旅人支线需替灯记下的游玩秒数
 // 进度（condProg）/目标文案（obj）/接取对话（offer）全同步；拾灯人在无字回廊西段北侧 (5,3)
 // （gallery.extras/NPC_SPOTS 零新坐标），自回廊亮起可接、全程伴随（「灯亮着，名字就找得到回家的路」）。
 const LAMP_GOAL = 3600;   // 拾灯人支线需替灯守满的游玩秒数（=60 分钟，低于成就「彻夜长明」120 分）
+// v24.128 看好矿车（第一块名字石碑支线）：累计遭遇 STELE_GOAL(40) 场战斗——计数 hero.battles 由
+// js/battle.js startBattle 进战即记唯一产生点写入（胜/败/逃都算、随 snapshotHero 全量快照自动持久化、
+// 防御式 (g.battles||0) 旧档零迁移，与 ACH_LIST battle「身经百战」同读一份源），支线门槛 40 低于成就门槛
+// BATTLE_GOAL(100)——顺路先完成支线再解锁成就；与 TALK_GOAL/WALK_GOAL/RETREAT_GOAL/GUIDE_GOAL/WELL_GOAL/
+// HUNT_TALLY_GOAL/SIFT_GOAL/CRYSTAL_GOAL/WAIT_GOAL/LAMP_GOAL 同一「支线目标单一数据源」家族，想调阈值只改
+// 这一处，判定（cond）/进度（condProg）/目标文案（obj）/接取对话（offer）全同步；第一块碑在无字回廊北壁
+// (5,1)（gallery extras/NPC_SPOTS 零新坐标），自回廊亮起可接、战斗全程伴随（「看好矿车」）。
+const STELE_GOAL = 40;    // 第一块名字石碑支线需替守门人看住的战斗场数（低于成就「身经百战」100 场）
 
 // 蘑菇出售单价（单一数据源）：shop.sellMushroom 卖菇结账（扣株 + 得金）与提示文案、buildShopList 商店列表
 // 卖出价签三处同读此源——此前这个 10 硬编码在 shop.js 三处互不相关（hero.gold += 10、'售出 1 株魔法蘑菇，
@@ -5894,7 +5917,9 @@ const FRAGMENTS=[
     text:'初灯记得所有人的名字，唯独没人记得它的。于是它把自己点着了。' },
 ];
 
-// 名字石碑（无字回廊）：碑文与 FRAGMENTS 逐字同源，只读展示不涉任务/掉落
+// 名字石碑（无字回廊）：碑文与 FRAGMENTS 逐字同源，只读展示不涉任务/掉落（v24.128 起第一块碑 stele1
+// 升格为第三十六条支线「看好矿车」的委托人——任务期对话由 QUESTS.side_stele.talk 承接，原碑文并入
+// done 分档末页零内容丢失；stele2-4 保持纯风味只读展示）
 FRAGMENTS.forEach((f, i) => {
   NPCS['stele' + (i + 1)] = {
     name: '名字石碑', mark: 'staff',
@@ -7656,6 +7681,61 @@ const QUESTS={
       ]])),
     },
   },
+  side_stele:{
+    id:'side_stele', kind:'side', store:true, npc:'stele1', giver:'stele1',
+    // v24.128 第三十六条「看好矿车」：第一块名字石碑（守门人的脚印碑）升格为委托人——碑里存着旧矿守门人
+    // 那句「看好矿车」，如今石头把它托付给肯替它记着的人；计数 hero.battles（遭遇场次）复用既有端口
+    // （battle.startBattle 进战即记唯一产生点、胜/败/逃都算，随 snapshotHero 全量快照自动持久化、防御式
+    // (g.battles||0) 旧档零迁移，与 ACH_LIST battle「身经百战」同读一份源），门槛 40 < BATTLE_GOAL(100)
+    // 顺路先完成支线再解锁成就；无 unlockOn（碑在无字回廊，到访天然可接）；done 页三档分档，末页保留
+    // 原碑文「——碑上没有名字，摸上去是温的。」零内容丢失。
+    cond:(g)=>((g.battles||0))>=STELE_GOAL,
+    condProg:(g)=>`${(g.battles||0)}/${STELE_GOAL} 场`,
+    name:'看好矿车', where:'无字回廊·第一块名字石碑（累计遭遇战斗）',
+    obj:`替守门人在灯下看住 ${STELE_GOAL} 场战斗——每一场夜路，碑都当作多看了一夜矿车`,
+    offer:'去无字回廊读第一块名字石碑，接下「看好矿车」的嘱托',
+    turnin:`替守门人看住了 ${STELE_GOAL} 场战斗！回第一块名字石碑前`,
+    done:'守门人那句「看好矿车」，石头替你记到了最后——碑是温的，名字有人记着。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '名字石碑：……旧矿的守门人走丢那天，',
+        '把最后一句「看好矿车」，说给了石头听。',
+        '如今这话，石头只托付给肯替它记着的人。',
+        `（你每走进一场战斗，碑都当作替守门人多看了一夜矿车——守满 ${STELE_GOAL} 场）`,
+        '[Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '名字石碑：……矿车一节不落地跑着，',
+        '石头替守门人看好着呢。',
+        `（你已累计遭遇 ${(hero.battles||0)}/${STELE_GOAL} 场战斗）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '名字石碑：……这 40 个夜晚，你都替守门人看住了。',
+        '碑上的字，温了。',
+        `守满 ${STELE_GOAL} 场战斗，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['名字石碑：……「看好矿车」这句话，石头守了这些年。','如今名字都回灯下了，碑还是温的——','守门人的脚印，总算有人替它记着了。','——碑上没有名字，摸上去是温的。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '名字石碑：……星砂不再往镇外运，',
+        '矿车卸了最后一车，守门人该放心了。',
+        '看好矿车——这句话，石头替你记着。',
+        '——碑上没有名字，摸上去是温的。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '名字石碑：……灯芯回来了，矿道也亮了。',
+        '守门人那句「看好矿车」，',
+        '你替石头守到了头。',
+        '——碑上没有名字，摸上去是温的。 [Enter] 结束',
+      ]] : [[
+        '名字石碑：……名字还悬在雾里，可矿车没停。',
+        '你替守门人看住的那些夜晚，',
+        '石头都替你记着。',
+        '（支线任务·已完成）——碑上没有名字，摸上去是温的。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -8783,5 +8863,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };

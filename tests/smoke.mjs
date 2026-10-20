@@ -50,7 +50,7 @@ ok('掌灯童升格后带可接委托顶标', npcQuestMark(fresh,'lampkid')==='�
 ok('老矿工升格后带可接委托顶标', npcQuestMark(fresh,'miner')==='❕ 可接委托');
 ok('引灯人升格后带可接委托顶标', npcQuestMark(fresh,'lampguide')==='❕ 可接委托');
 ok('井巫升格后带可接委托顶标', npcQuestMark(fresh,'sage')==='❕ 可接委托');
-ok('闲聊 NPC 无顶标', npcQuestMark(fresh,'stele1')==null);
+ok('闲聊 NPC 无顶标', npcQuestMark(fresh,'stele2')==null);
 const acc=resolveNpcTalk({quests:{},gold:0,item:0,level:1},'chief');
 ok('对话接委托写回 active', acc&&acc.kind==='accept'&&acc.name==='灯长的委托');
 const prev=questRewardPreview({level:1},'side_mushroom');
@@ -244,7 +244,7 @@ ok('pageShownAt 渐进显字', (()=>{ const r=pageShownAt(['一二三四'], page
 ok('pageShownAt 超时全显', (()=>{ const r=pageShownAt(['你好','世界'], 99999); return r.done && r.lines[0]===2 && r.lines[1]===2; })());
 let talkOk=true;
 try {
-  openTalk('stele1'); render();  // 石碑肖像路径
+  openTalk('stele2'); render();  // 石碑肖像路径（stele1 已升格为支线委托人）
   openTalk('chief'); render();   // NPC 肖像路径
 } catch(e){ talkOk=false; }
 ok('对话（含石碑/肖像/富文本）绘制不抛错', talkOk);
@@ -269,8 +269,8 @@ const payN=applyQuestReward({level:5,gold:0,item:0,potion2:0},'side_name');
 ok('巡灯人支线奖励含灵药', payN.gold===120 && payN.potion2===1);
 const pg1=npcQuestPages({bossDefeated:true,caveBoss:true,galleryOpen:true},'adventurer');
 ok('巡灯人回廊阶段台词', pg1.flat().join('').includes('回廊'));
-const pgS1=npcQuestPages({},'stele1');
-ok('石碑碑文与碎片同源', pgS1.flat().join('').includes('守门人'));
+const pgS1=npcQuestPages({},'stele2');
+ok('石碑碑文与碎片同源（stele2 纯风味不改，灯卫的誓）', pgS1.flat().join('').includes('吞下灯芯'));
 
 console.log(`\n${n-failed}/${n} 通过`+(failed?`，失败 ${failed}`:''));
 if(failed) process.exit(1);
