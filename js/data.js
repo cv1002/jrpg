@@ -2911,7 +2911,21 @@
 // 只改 js/data.js（STELE_GOAL 常量+export、QUESTS.side_stele、NPCS.stele1 升格注释、GAME_VERSION
 // v24.127→v24.128）+ README/package.json/CHANGELOG + 新套件 smoke_v24128_stelequest + 姊妹件
 // smoke_v2235_minimapquest 补位 + 纯风味列表 stele1→stele2 交换。
-const GAME_VERSION = 'v24.128';
+// v24.129 新内容·新支线（第三十七条）：第二块名字石碑「灯下的誓」——击败幽冥魔王后回去告诉石
+// 碑「誓已还了」，对话即交 80 金 + 1 生命药水（承 v24.128 有望台阶梯：v24.128 看好矿车（第一块碑·累计
+// 遭遇战斗）延续「风味 NPC 升格为支线委托人」先例，v24.129 把第二块碑也升格——无字回廊北壁第二块名字
+// 石碑（(10,1)，碑文=「他吞下灯芯那晚立下誓：镇子若忘了他，他就替镇子记着镇子」= FRAGMENTS[1] 碎片·
+// 灯卫的誓）升格为委托人——碑里记着旧灯卫那句誓，幽冥魔王即旧灯卫（主线口径：击败幽冥魔王、把灯芯讨
+// 回镇里的那一夜，恰是 winBattle 强敌首胜掉落「碎片·灯卫的誓」的瞬间）；玩家击败幽冥魔王（bossDefeated）
+// 后回到碑前，把「灯芯回来了、灯卫的誓已还」的消息说给石头听（unlockOn:'bossDefeated' + completeOnTalk
+// 交付即结算，承 side_cart 星砂之约同款「里程碑对话」支线）；零新计数零新状态零存档（无 cond/condProg、
+// 无新 GOAL 常量无 export 变化——unlockOn 解锁即达）、QUESTS 表驱动（灯火同心分母 36→37 全端自动跟随）、
+// 无 offer 页（unlockOn 未达 locked 态下 npcQuestPpages 回退既有碑文 lines 纯风味只读、npcQuestMark 锁定
+// 态零顶标——stele2 从未解锁到通关前始终纯风味，姊妹件套零级联）、done 页按 hero.trueBoss/caveBoss/
+// bossDefeated 分档（原碑文「——碑上没有名字，摸上去是温的。」并入各档末页，零内容丢失）；只改
+// js/data.js（QUESTS.side_stele2、GAME_VERSION v24.128→v24.129）+ README/package.json/CHANGELOG + 新套件
+// smoke_v24129_stele2quest + 全库 351 件套 pin 级联（哨兵前望 353）。
+const GAME_VERSION = 'v24.129';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -5918,8 +5932,9 @@ const FRAGMENTS=[
 ];
 
 // 名字石碑（无字回廊）：碑文与 FRAGMENTS 逐字同源，只读展示不涉任务/掉落（v24.128 起第一块碑 stele1
-// 升格为第三十六条支线「看好矿车」的委托人——任务期对话由 QUESTS.side_stele.talk 承接，原碑文并入
-// done 分档末页零内容丢失；stele2-4 保持纯风味只读展示）
+// 升格为第三十六条支线「看好矿车」的委托人、v24.129 起第二块碑 stele2 升格为第三十七条支线「灯下的誓」
+// 的委托人——任务期对话由 QUESTS.side_stele/side_stele2 的 talk 承接，原碑文并入 done 分档末页零内容
+// 丢失；stele3/stele4 保持纯风味只读展示）
 FRAGMENTS.forEach((f, i) => {
   NPCS['stele' + (i + 1)] = {
     name: '名字石碑', mark: 'staff',
@@ -7733,6 +7748,49 @@ const QUESTS={
         '你替守门人看住的那些夜晚，',
         '石头都替你记着。',
         '（支线任务·已完成）——碑上没有名字，摸上去是温的。 [Enter] 结束',
+      ]])),
+    },
+  },
+  side_stele2:{
+    id:'side_stele2', kind:'side', store:true, npc:'stele2', giver:'stele2', unlockOn:'bossDefeated',
+    completeOnTalk:true,
+    // v24.129 第三十七条「灯下的誓」：第二块名字石碑（(10,1)，碑文=FRAGMENTS[1] 碎片·灯卫的誓——他吞下
+    // 灯芯那晚立下誓：镇子若忘了他，他就替镇子记着镇子，幽冥魔王即旧灯卫的主线口径）升格为委托人——击败
+    // 幽冥魔王（bossDefeated，灯芯回来之夜恰是 winBattle 强敌首胜掉落「碎片·灯卫的誓」的瞬间）后回碑前
+    // 把「誓已还了」的消息说给石头听即完成（unlockOn:'bossDefeated' + completeOnTalk 交付即结算，承
+    // side_cart 星砂之约同款「里程碑对话」支线）；无 cond/condProg（unlockOn 解锁即达）、无 offer 页
+    // （locked 态回退既有碑文 lines 纯风味只读、npcQuestMark 零顶标）、done 页三档分档末页保留原碑文
+    // 「——碑上没有名字，摸上去是温的。」零内容丢失；零新计数零新状态零新存档。
+    name:'灯下的誓', where:'无字回廊·第二块名字石碑（击败幽冥魔王后）',
+    unlockHint:'击败幽冥魔王后',
+    obj:'把「灯卫的誓已还」的消息告诉第二块名字石碑',
+    turnin:'灯芯回来了！回第二块名字石碑前，告诉它誓已还了。',
+    done:'灯卫的誓还了，碑上亮起一粒一粒微光。',
+    reward:{ gold:80, item:1 },
+    talk:{
+      active:[[
+        '名字石碑：……他吞下灯芯那晚立下的誓，',
+        '石头替他记到了今天。',
+        '灯芯回来了——是你替镇子讨回来的。',
+        '这消息，石头等了太久。 [Enter] 把消息告诉碑',
+      ]],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['名字石碑：……如今名字都回灯下了，','那句誓，也算还到了头。','灯卫的誓——石头替你记着，也替镇子记着。','——碑上没有名字，摸上去是温的。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '名字石碑：……星砂不再往镇外运，',
+        '灯卫的誓还压着最后一车旧账，',
+        '如今账清了，誓也轻了。',
+        '——碑上没有名字，摸上去是温的。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '名字石碑：……灯芯回来了，',
+        '那句誓，总算有人听见了。',
+        '替镇子记着镇子——你替石头记到了。',
+        '——碑上没有名字，摸上去是温的。 [Enter] 结束',
+      ]] : [[
+        '名字石碑：……灯还在路上，',
+        '可你替镇子说过的话，',
+        '石头都替它记着。',
+        '——碑上没有名字，摸上去是温的。 [Enter] 结束',
       ]])),
     },
   },
