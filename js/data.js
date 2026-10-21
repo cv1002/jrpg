@@ -2977,7 +2977,18 @@
 // +export、QUESTS.side_inn、NPCS.nightwatch、NPC_SPOTS '8,13'、village.extras (8,13)、GAME_VERSION
 // v24.132→v24.133）+ README/package.json/CHANGELOG + 新套件 smoke_v24133_inquest + 全库 355 件套 pin
 // 级联（哨兵前望 357）。
-const GAME_VERSION = 'v24.133';
+// v24.134 新内容·新支线（第四十二条）：雾语林新 NPC「守火翁」+「薪火的气」——累计蓄力 KINDLE_GOAL(10)
+// 次换 80 金 + 1 高级灵药（承 v24.133 打更人「一夜好眠」/ v24.132 守墓人「灰烬不冷」同一「全新 NPC +
+// 累计计数支线」先例系列，第三例）：营地篝火守着林间那口火——风大的夜里得先压住一口气，柴才烧得透；
+// 出手也是，先把劲儿攥住，打出去才够火候（计数 hero.charges 复用既有端口：battle.doCharge 蓄力成功
+// 唯一写入点、随 snapshotHero 全量快照自动持久化、防御式 (g.charges||0) 旧档零迁移，与 ACH_LIST charge
+// 「蓄势待发」CHARGE_GOAL(15) 同读一份源，支线门槛 10 低于成就门槛顺路先完成支线再解锁成就；无
+// unlockOn 到访营地即 offer、active 函数页、done 三档分档）。
+// 零新计数零新状态零新存档、QUESTS 表驱动（灯火同心分母 41→42、voiceList/有口皆碑分母 Object.keys
+// (NPCS) 41→42 自动跟随）；只改 js/data.js（KINDLE_GOAL 常量+export、QUESTS.side_kindle、NPCS.kindle、
+// NPC_SPOTS '11,10'、dungeon.extras (11,10)、GAME_VERSION v24.133→v24.134）+ README/package.json/
+// CHANGELOG + 新套件 smoke_v24134_kindleq + 全库 356 件套 pin 级联（哨兵前望 358）。
+const GAME_VERSION = 'v24.134';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3487,6 +3498,11 @@ const MAPS={
                                        // 且未被他图占用，四邻 (19,12)/(21,12)/(20,11) 皆 '0' 可行走、南邻
                                        // (20,13) 即祭坛 BOSS 瓦片——守着祭坛不设卡，与雾径猎手/拾菇人/
                                        // 失名的旅人/货郎/琴师互不占位）
+      // 守火翁（v24.134 新 NPC·第四十二条支线「薪火的气」委托人）：营地篝火 (11,9) 正南 (11,10)——
+      // 坐标为可行走 '0' 格且未被他图占用（全图 extras 扫描 (11,10) 仅 dungeon 一处），四邻
+      // (10,10)/(12,10)/(11,9)/(11,11) 皆 '0' 可行走可面对面对话，守着林间那口火不挡泉水 (12,9)/
+      // 猎手 (13,9) 任何动线，与营地主干道不设卡
+      { x: 11, y: 10, ty: 'NPC' },
       { x: 20, y: 13, ty: 'BOSS' },    // 幽冥魔王祭坛 2×1
       { x: 20, y: 14, ty: 'BOSS' },
     ],
@@ -4069,6 +4085,11 @@ const NPC_SPOTS = {
   // (7,13)/(9,13)/(8,12)/(8,14) 皆 '0'/'.' 可行走，立在旅馆门房东侧石阶不挡主街/旅馆/城门任何动线；
   // 与客栈老板娘 (7,14) 隔一门框相守，一个看店、一个听夜）
   '8,13': 'nightwatch',
+  // 守火翁（v24.134 新 NPC·第四十二条支线「薪火的气」委托人）：雾语林营地篝火南侧 (11,10) ——
+  // 全局坐标键未被他图占用（全图 extras 扫描 (11,10) 仅 dungeon 一处；四邻 (10,10)/(12,10)/(11,9)/
+  // (11,11) 皆 '0' 可行走，正南邻营地篝火 (11,9) 而立——守着林间那口火，不挡泉水 (12,9)/猎手 (13,9)
+  // 任何动线，可面对面对话；与雾径猎手/拾菇人/失名的旅人/货郎/琴师/守夜人互不占位）
+  '11,10': 'kindle',
 };
 
 const NPCS={
@@ -4755,7 +4776,35 @@ const NPCS={
     ]},
   ], after:[
     ['打更人：灯都亮回来了。','这一夜，我头一回觉得','全镇的人都能睡个整觉了。 [Enter] 继续'],
-    ['打更人：往后你住店，更声就当是','替你记着夜的人。','一夜好眠——向来不是小事。 [Enter] 结束'],
+    ['打更人：往后你住店，更声就当是','替你记着夜的人。','一夜好眠，向来不是小事。 [Enter] 结束'],
+  ]},
+  // v24.134 新 NPC「守火翁」（雾语林营地篝火正南 (11,10)）：守着林间那口火的老守火人——风大的夜里
+  // 得先压住一口气、柴才烧得透，出手也是：先把劲儿攥住，打出去才够火候——全游「灯与火」主题的
+  // 营外一件（营地篝火 v22.56 是镇子之外第一处「灯油之外的火」，守火翁就是它的看火人；与守夜人
+  // 「它怕的不是剑，是有人还记得它」/ 引灯人「把灯引到这儿就再没有前路了」同脉）；坐标为可行走 '0'
+  // 格且未被他图占用（全图 extras 扫描 (11,10) 仅 dungeon 一处；四邻 (10,10)/(12,10)/(11,9)/(11,11)
+  // 皆 '0' 可行走，正南邻营地篝火而立，不挡泉水/猎手任何动线）；mark:'lamp' 复用既有提灯标
+  // （drawNpcMark 既有分支零改动），造型走 NPC_SHEET 默认 mwVillager（零视觉新代码）。v24.134 起为
+  // 第四十二条支线「薪火的气」委托人（QUESTS.side_kindle：累计蓄力 KINDLE_GOAL(10) 次，计数
+  // hero.charges 与成就「蓄势待发」同读一份源——你替他把劲儿攥住又打出去的每一次，火都烧旺一分）；
+  // npcQuestPages 有任务后优先走任务页（talk.offer/active/turnin/done 四态），voiceList/灯下之声 N 由
+  // Object.keys(NPCS) 派生自动跟随、有口皆碑分母自动跟随。
+  kindle:{name:'守火翁', mark:'lamp', linesByStage:[
+    { gate:null, lines:[
+      ['守火翁：这堆火啊，是攒出来的。','风大的夜里，得先压住一口气，','柴才烧得透。 [Enter] 继续'],
+      ['守火翁：你出手也是这个理。','先把劲儿攥住，再打出去——','攒住的火，才燎得起来。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['守火翁：灯芯回了镇，林间的火也跟着旺。','看来你没少把这口气攥住。','[Enter] 继续'],
+      ['守火翁：往后遇着风大夜寒，','就坐下来烤烤这堆火。','火攒得住，路就走得下去。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['守火翁：回廊开了，名字都有处去了。','林间这口火，还替赶夜路的人亮着。','[Enter] 继续'],
+      ['守火翁：去吧。','你每把劲儿攥住一次，','林子里就多一粒暖灰。 [Enter] 结束'],
+    ]},
+  ], after:[
+    ['守火翁：都亮回来了。','林间这口火也烧透了，','只剩一捧温灰，替夜路人留着一粒火种。 [Enter] 继续'],
+    ['守火翁：往后这火我替你守着。','你只管往前走——','气攒住，火就在。 [Enter] 结束'],
   ]},
 };
 
@@ -5326,6 +5375,13 @@ const DEFLECT_GOAL = 15;
 // 数值取与「以守为攻」同档的中期档（蓄力每次主动消耗一回合、与暴击可叠，主动用
 // 蓄力的玩家一个流程内可达；纯里程碑零奖励零结算影响）。
 const CHARGE_GOAL = 15;
+// v24.134 支线「薪火的气」阈值（蓄力端口·单一数据源）：累计蓄力 N 次即可向守火翁交付委托（第四十二条）
+// ——与 QUESTS.side_kindle 的 cond/condProg/obj/turnin 同读一份源，调门槛只改本行一处全端自动跟随；
+// 数值取 10（「薪火的气」——蓄力 [6] 自战斗开局可用、每次主动消耗一回合，中期自然量级，低于
+// ACH_LIST charge「蓄势待发」CHARGE_GOAL(15)：顺路先完成支线再解锁成就）；计数 hero.charges 由
+// battle.doCharge 蓄力成功全游唯一产生点写入（随 snapshotHero 全量快照自动持久化、防御式
+// (g.charges||0) 旧档零迁移），与成就「蓄势待发」同读一份源。
+const KINDLE_GOAL = 10;
 // v23.63 成就「暴击如雨」阈值（战斗维度第三枚里程碑·单一数据源）：[1]普攻暴击累计 N 次解锁 ——
 // 与 ACH_LIST.crit 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取中低档
 // 20（暴击是 12% 概率的被动事件、不像防御/蓄力那样按一下记一下——按期望每约 8 次普攻一暴，
@@ -8126,6 +8182,64 @@ const QUESTS={
       ]])),
     },
   },
+  // v24.134 第四十二条「薪火的气」（守火翁支线）：累计蓄力 KINDLE_GOAL(10) 次换谢礼——承 v24.133
+  // 打更人「一夜好眠」/ v24.132 守墓人「灰烬不冷」同一「全新 NPC + 累计计数支线」先例系列（第三例；
+  // 雾语林营地篝火正南 (11,10)：老守火翁守着林间那口火——风大的夜里得先压住一口气、柴才烧得透，
+  // 出手也是：先把劲儿攥住，打出去才够火候）：玩家在战斗里把劲儿攥住又打出去的每一次，都算替他
+  // 把火吹旺一分——替他攒满 KINDLE_GOAL(10) 次。计数 hero.charges 复用既有端口（battle.doCharge 蓄力
+  // 成功全游唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式 (g.charges||0) 旧档零迁移，
+  // 与 ACH_LIST charge「蓄势待发」同读一份源，支线门槛 10 低于成就门槛 CHARGE_GOAL(15)——顺路先完成
+  // 支线再解锁成就）；零新计数零新状态零新存档、QUESTS 表驱动（弹窗对话/任务日志/顶标/交付/灯火同心
+  // 分母全端自动跟随 41→42）；无 unlockOn（守火翁在雾语林营地，开局即可接，承 side_well/side_stele
+  // 同款——蓄力 [6] 自战斗开局可用，第一场仗就可计）；active 页函数型实时报进度（与 side_crystal/
+  // side_stele/side_fallen 同款）；done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档（守火翁原有
+  // linesByStage 叙事与 after 彩蛋并入，零内容丢失）；奖励 80 金 + 1 高级灵药（承 side_bell/side_watch
+  // 80 档——「攒火」自开局第一场仗起持续累计、全程伴随）。
+  side_kindle:{
+    id:'side_kindle', kind:'side', store:true, npc:'kindle', giver:'kindle',
+    cond:(g)=>((g.charges||0))>=KINDLE_GOAL,
+    condProg:(g)=>`${g.charges||0}/${KINDLE_GOAL} 次`,
+    name:'薪火的气', where:'雾语林·营地篝火（累计蓄力）',
+    obj:`累计在战斗里蓄力 ${KINDLE_GOAL} 次——每把劲儿攥住一次，就替林间那口火攒一分火候`,
+    offer:'去雾语林营地找守火翁，接下「薪火的气」的委托',
+    turnin:`替守火翁攒了 ${KINDLE_GOAL} 次火候！回雾语林营地找守火翁`,
+    done:'守火翁看了看你攥劲儿的架势，说火候到了——气攒得住，火就烧得透，路也走得下去。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '守火翁：这堆火啊，是攒出来的。',
+        '风大的夜里，得先压住一口气，柴才烧得透。',
+        `你只要在战斗里蓄力 ${KINDLE_GOAL} 次——`,
+        '替我把这口气也攥住，我就认你是真会攒火的人。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守火翁：气要沉，火才旺。',
+        `（你已累计蓄力 ${hero.charges||0}/${KINDLE_GOAL} 次——火候还差一口气）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '守火翁：够数了。你把劲儿攥住又打出去的样子，',
+        '跟风夜里那口压住的柴火一个脾气。',
+        `蓄满 ${KINDLE_GOAL} 次仍没松手，这份谢礼拿去。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守火翁：名字都回了灯下，林间这口火也烧透了。','你攥住又打出去的那些劲儿，','我都看在眼里——火种给你留着。 [Enter] 继续'],
+        ['守火翁：往后遇上再大的夜风，','想想这堆火——','气攒住，火就在。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '守火翁：领主散了，矿脉也敞亮了。',
+        '林间的火替你把路照着，',
+        '你的劲儿也没白攥。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '守火翁：灯芯回来了，林间的火也更旺了。',
+        '夜路人烤着火，',
+        '都会念你这一手攒住的气。 [Enter] 结束',
+      ]] : [[
+        '守火翁：这口火替你留着。',
+        '往后每一次把劲儿攥住，',
+        '都是在给夜路人攒火。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -9253,5 +9367,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, INN_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };
