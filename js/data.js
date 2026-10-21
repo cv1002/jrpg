@@ -2966,7 +2966,18 @@
 // (NPCS) 39→40 自动跟随）；只改 js/data.js（FALLEN_GOAL 常量+export、QUESTS.side_fallen、NPCS.fallen、
 // NPC_SPOTS '21,14'、village.extras (21,14)、GAME_VERSION v24.131→v24.132）+ README/package.json/
 // CHANGELOG + 新套件 smoke_v24132_fallenquest + 全库 354 件套 pin 级联（哨兵前望 356）。
-const GAME_VERSION = 'v24.132';
+// v24.133 新内容·新支线（第四十一条）：潮灯镇新 NPC「打更人」+「一夜好眠」——累计住店 INN_GOAL(8) 夜
+// 换 70 金 + 2 生命药水（承 v24.132 守墓人「灰烬不冷」同一「全新 NPC 计数支线」先例）：全镇都睡下的
+// 时候，打更人醒着替大家看灯——你在旅馆住下的每一夜都算替他多守了一班更（计数 hero.innRests 复用
+// 既有端口：shop.stayInn 成功住店全游唯一产生点写入（金币不足/精神饱满早退零计数）、随 snapshotHero
+// 全量快照自动持久化、防御式 (g.innRests||0) 旧档零迁移，与 ACH_LIST innrest「夜宿灯下」
+// INN_REST_GOAL(15) 同读一份源，支线门槛 8 低于成就门槛顺路先完成支线再解锁成就；无 unlockOn 开局即
+// offer、active 函数页、done 三档分档）。零新计数零新状态零新存档、QUESTS 表驱动（灯火同心分母
+// 40→41、voiceList/有口皆碑分母 Object.keys(NPCS) 40→41 自动跟随）；只改 js/data.js（INN_GOAL 常量
+// +export、QUESTS.side_inn、NPCS.nightwatch、NPC_SPOTS '8,13'、village.extras (8,13)、GAME_VERSION
+// v24.132→v24.133）+ README/package.json/CHANGELOG + 新套件 smoke_v24133_inquest + 全库 355 件套 pin
+// 级联（哨兵前望 357）。
+const GAME_VERSION = 'v24.133';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3394,6 +3405,10 @@ const MAPS={
       // 终于有了人——坐标为可行走格且未被他图占用，四邻 (8,14)/(7,13)/(7,15) 皆可行走
       // （西邻 (6,14) 是旅馆外墙），立在旅馆门口不挡主街/广场/井任何动线，东侧可面对面对话）
       { x: 7, y: 14, ty: 'NPC' },
+      // 打更人（v24.133 新 NPC·旅馆门前石阶 (8,13)：人人都睡了的时候醒着替全镇听动静——坐标为可行走
+      // 格且未被他图占用（全图 extras/NPC_SPOTS 键全局唯一扫描仅 village 一处），四邻 (7,13)/(9,13)/
+      // (8,12)/(8,14) 皆 '0'/'.' 可行走、不挡主街/旅馆/城门任何动线，立于旅馆门房东侧石阶可面对面对话）
+      { x: 8, y: 13, ty: 'NPC' },
       // 货栈掌柜（v22.49 新 NPC·商店门前 (8,10)：全镇最热闹的铺子终于有了掌柜——坐标为可行走格
       // 且未被他图占用（全图 extras 扫描仅 village 一处），北邻 (8,9) 是商店 S 瓦片、四邻
       // (7,10)/(9,10)/(8,11) 皆 '4'/'.' 可行走，立在商铺门口台阶前不挡主街/广场/城门任何动线，
@@ -4049,6 +4064,11 @@ const NPC_SPOTS = {
   // 全局坐标键未被他图占用（全图 extras 扫描 (21,14) 仅 village 一处；四邻 (20,14)/(22,14)/(21,13)/
   // (21,15) 皆可行走，立在粮田东南角不挡广场/城门/粮田任何动线；与粮铺掌柜 (15,12) 同看粮田南缘）
   '21,14': 'fallen',
+  // 打更人（v24.133 新 NPC·第四十一条支线「一夜好眠」委托人）：潮灯镇旅馆门前石阶 (8,13) ——
+  // 全局坐标键未被他图占用（全图 extras/NPC_SPOTS 键全局唯一扫描 (8,13) 仅 village 一处；四邻
+  // (7,13)/(9,13)/(8,12)/(8,14) 皆 '0'/'.' 可行走，立在旅馆门房东侧石阶不挡主街/旅馆/城门任何动线；
+  // 与客栈老板娘 (7,14) 隔一门框相守，一个看店、一个听夜）
+  '8,13': 'nightwatch',
 };
 
 const NPCS={
@@ -4715,6 +4735,27 @@ const NPCS={
   ], after:[
     ['守墓人：都亮回来了。','冢边的灯一盏盏收进镇里，','没人再倒在这条路上了。 [Enter] 继续'],
     ['守墓人：往后这灯我替你提着。','你只管往前走——','灰不冷，名就丢不了。 [Enter] 结束'],
+  ]},
+  // 打更人（v24.133 新 NPC·第四十一条支线「一夜好眠」委托人）：潮灯镇旅馆门前石阶 (8,13) ——
+  // mark:'lamp' 复用既有灯标零视觉新代码（与守墓人/巡灯人/引灯人同款）；台词走 linesByStage 按主线
+  // 旗标（gate 判定 hero[st.gate]）选段 + trueBoss 后 after 两页彩蛋；npcQuestPages 在 offer//active/
+  // turnin 态覆盖其 lines 展示支线页、done 后回退本表（睁眼替全镇守夜的人，最懂「一夜好眠」有多贵）。
+  nightwatch:{name:'打更人', mark:'lamp', linesByStage:[
+    { gate:null, lines:[
+      ['打更人：梆——三更。','人人都睡了，灯才敢放心地亮着。','我醒着，就是替全镇听动静。 [Enter] 继续'],
+      ['打更人：你若在旅馆住下，','也算替我把这一夜看稳了。','灯下的觉，是有人守着才睡得着的。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['打更人：灯芯回来了，夜里也亮堂多了。','可更还得打——','亮着的夜，更要有人听着。 [Enter] 继续'],
+      ['打更人：你歇你的，我守我的。','一夜好眠，就是给打更人的谢礼。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['打更人：回廊开了，名字都有地方去了。','镇上的夜里，就少了几分牵挂。','[Enter] 继续'],
+      ['打更人：走吧。你睡够的每一夜，','都是替醒着的人多空了一班清醒。 [Enter] 结束'],
+    ]},
+  ], after:[
+    ['打更人：灯都亮回来了。','这一夜，我头一回觉得','全镇的人都能睡个整觉了。 [Enter] 继续'],
+    ['打更人：往后你住店，更声就当是','替你记着夜的人。','一夜好眠——向来不是小事。 [Enter] 结束'],
   ]},
 };
 
@@ -5400,6 +5441,13 @@ const DEATH_GOAL = 10;
 // 结算点写入（retryBoss 只恢复战斗子集字段不清零，强敌重整旗鼓同样如实累计）、随 snapshotHero 全量
 // 快照自动持久化、防御式 (g.deaths||0) 旧档零迁移，与成就「败而不馁」同读一份源。
 const FALLEN_GOAL = 3;
+// v24.133 支线「一夜好眠」阈值（住店端口·单一数据源）：累计住店 N 夜即可向打更人交付委托
+// ——与 QUESTS.side_inn 的 cond/condProg/obj/turnin 同读一份源，调门槛只改本行一处全端自动跟随；
+// 数值取 8（「一夜好眠」——INN_PRICE=10 的付费休整，8 夜=80 金，开荒中后期自然量级；低于
+// ACH_LIST innrest「夜宿灯下」INN_REST_GOAL(15)：顺路先完成支线再解锁成就）；计数 hero.innRests 由
+// shop.stayInn 成功住店全游唯一产生点写入（金币不足/精神饱满早退零计数）、随 snapshotHero 全量
+// 快照自动持久化、防御式 (g.innRests||0) 旧档零迁移，与成就「夜宿灯下」同读一份源。
+const INN_GOAL = 8;
 // v23.91 成就「提灯夜行」阈值（昼夜相位端口·单一数据源）：夜间战胜 N 场解锁
 // ——与 ACH_LIST.nightwins 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 10
 // （「提灯夜行」——夜战是「灯与夜」世界的题眼相位：夜晚危险格步进 ×1.25（v23.31）、刷出来的是
@@ -8028,6 +8076,56 @@ const QUESTS={
       ]])),
     },
   },
+  // 第四十一条「一夜好眠」：打更人（v24.133 新 NPC·旅馆门前石阶 (8,13)，承 v24.132 守墓人「灰烬不冷」
+  // 同一「全新 NPC 计数支线」先例）——累计住店 INN_GOAL(8) 夜换 70 金 + 2 生命药水；计数 hero.innRests
+  // 复用既有端口（shop.stayInn 成功住店全游唯一产生点写入、随 snapshotHero 全量快照自动持久化、防御式
+  // (g.innRests||0) 旧档零迁移，与 ACH_LIST innrest「夜宿灯下」同读一份源，支线门槛 8 低于成就门槛
+  // INN_REST_GOAL(15)——顺路先完成支线再解锁成就）；无 unlockOn 开局即 offer、active 函数页、done 三档
+  side_inn:{
+    id:'side_inn', kind:'side', store:true, npc:'nightwatch', giver:'nightwatch',
+    cond:(g)=>((g.innRests||0))>=INN_GOAL,
+    condProg:(g)=>`${g.innRests||0}/${INN_GOAL} 夜`,
+    name:'一夜好眠', where:'潮灯镇·旅馆门前（累计住店）',
+    obj:`累计在旅馆住下 ${INN_GOAL} 夜——镇上的人能睡个好觉，全靠有人醒着看灯`,
+    offer:'去潮灯镇旅馆门前找打更人，接下「一夜好眠」的委托',
+    turnin:`替打更人在灯下守了 ${INN_GOAL} 夜！回潮灯镇旅馆门前找打更人`,
+    done:'打更人数了数你住过的夜，说更声每歇一晚，镇上就少一个被雾勾着走的人。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '打更人：梆——三更。镇上的人都睡了，',
+        '可灯还醒着，我也醒着。',
+        '你若在旅馆住下，就算替我把这一夜看稳了——',
+        `住满 ${INN_GOAL} 夜，我认你是懂「一夜好眠」的人。 [Enter] 接下委托   [Esc] 离开`,
+      ]],
+      active:(hero)=>[[
+        '打更人：夜还长，灯还亮着。',
+        `（你已累计住店 ${hero.innRests||0}/${INN_GOAL} 夜——夜里安稳）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '打更人：够数了。你睡过的每一夜，',
+        '都是醒来还能继续走的一夜。',
+        `住满 ${INN_GOAL} 夜仍惦记灯下这片镇子，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['打更人：灯都亮回来了。','这一夜，我头一回觉得','全镇的人都能睡个整觉了。 [Enter] 继续'],
+        ['打更人：往后你住店，更声就当是','替你记着夜的人。','一夜好眠，向来不是小事。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '打更人：领主散了，矿脉也敞亮了。',
+        '夜里再没有矿洞的动静，',
+        '我这更，打得也松快了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '打更人：灯芯回来了，夜里的灯火也稳了。',
+        '你替镇上守过的那些觉，',
+        '更声都替他们记着。 [Enter] 结束',
+      ]] : [[
+        '打更人：一夜好眠，是你给这镇子的谢礼。',
+        '醒着的人少走丢一个，',
+        '灯下就多一个安心睡下的人。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -9155,5 +9253,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, INN_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };

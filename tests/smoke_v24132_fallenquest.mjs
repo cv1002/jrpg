@@ -45,7 +45,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.131', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 131)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.132（旧 v24.131 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.132';") && !dSrc.includes("const GAME_VERSION = 'v24.131';"));
+  dSrc.includes("const GAME_VERSION = 'v24.133';") && !dSrc.includes("const GAME_VERSION = 'v24.131';"));
 ok('data.js 含 v24.132 注释（灰烬不冷新支线说明）',
   dSrc.includes('v24.132 新内容·新支线（第四十条）'));
 ok('data.js 仍保留 v24.131 历史注释（初灯的名字支线说明，零内容丢失）',
@@ -73,7 +73,7 @@ ok('data.js village.extras 含 (21,14) NPC 项（全局唯一点位，不与既�
 const sideDefs = Object.values(QUESTS).filter((q) => q.kind === 'side');
 const mainDefs = Object.values(QUESTS).filter((q) => q.kind === 'main');
 ok('QUESTS 共 44 条（40 side + 4 main，派生计数）',
-  sideDefs.length === 40 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 44,
+  sideDefs.length === 41 && mainDefs.length === 4 && sideDefs.length + mainDefs.length === 45,
   `${sideDefs.length}/${mainDefs.length}`);
 ok('side_fallen 存在且为第四十条（kind side · store · npc/giver fallen · 无 unlockOn）',
   !!QUESTS.side_fallen && QUESTS.side_fallen.kind === 'side' && QUESTS.side_fallen.store === true &&
@@ -97,18 +97,18 @@ ok('side_fallen reward 逐值：70 金 + 2 生命药水（承 side_stele 70 档�
 
 // —— ACH_LIST allquests 同源互证（与 sideQuestDone 输出一致）——
 const achAll = ACH_LIST.find((a) => a.id === 'allquests');
-ok('ACH_LIST allquests 名称「灯火同心」且描述派生 40（「40 个支线任务」）',
-  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('40 个支线任务'), achAll && achAll.d);
+ok('ACH_LIST allquests 名称「灯火同心」且描述派生 40（「41 个支线任务」）',
+  !!achAll && achAll.name === '灯火同心' && achAll.d.includes('41 个支线任务'), achAll && achAll.d);
 ok('ACH_LIST allquests 判定/进度与 QUESTS 派生同源（0/40 false · 39/40 false · 40/40 true · prog 40/40）',
-  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 39).map(q => [q.id, 'done'])) }) === false &&
+  !!achAll && achAll.ok({ quests: {} }) === false && achAll.ok({ quests: Object.fromEntries(sideDefs.slice(0, 40).map(q => [q.id, 'done'])) }) === false &&
   achAll.ok({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === true &&
-  achAll.prog({ quests: {} }) === '0/40' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '40/40');
+  achAll.prog({ quests: {} }) === '0/41' && achAll.prog({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }) === '41/41');
 
 // —— quests.js 运行期：sideQuestDone ——
 ok('运行期：sideQuestDone 0/40 · 3/40 · 40/40 · 主线不入列',
-  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 40 &&
+  sideQuestDone({ quests: {} }).done === 0 && sideQuestDone({ quests: {} }).total === 41 &&
   sideQuestDone({ quests: { side_mushroom: 'done', side_cart: 'done', side_pond: 'done' } }).done === 3 &&
-  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 40 &&
+  sideQuestDone({ quests: Object.fromEntries(sideDefs.map(q => [q.id, 'done'])) }).done === 41 &&
   sideQuestDone({ quests: { main_demon: 'done' } }).done === 0);
 
 // —— 运行期状态机：offer → active → turnin → done（quests 纯函数，零 DOM）——
@@ -178,26 +178,26 @@ ok('姊妹件 smoke_v2235_minimapquest 已随新现实更新（fallen 入任务 
   read('smoke_v2235_minimapquest.mjs').includes('goldAt(capA, 21, 14)'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为三百五十五件套（三百五十四件套清除）',
-  readme.includes('冒烟三百五十五件套（三百五十四件套清除）'));
+ok('README 件套口径已为三百五十六件套（三百五十五件套清除）',
+  readme.includes('冒烟三百五十六件套（三百五十五件套清除）'));
 ok('README tests 含 v24.132 守护描述与 smoke_v24132_fallenquest 入库（355 份）',
   readme.includes('v24.132 起含「守墓人「灰烬不冷」新支线」守护') &&
   readme.includes('smoke_v24132_fallenquest 入库（355 份）'));
 ok('README 仍有 v24.131 守护描述（历史保留）', readme.includes('v24.131 起含「第四块名字石碑「初灯的名字」新支线」守护'));
 ok('README 已有三百五十五件套口径且尚无 356（哨兵前望 356 语义：下一版才写 356）',
-  readme.includes('冒烟三百五十五件套（三百五十四件套清除）') && !readme.includes('冒烟三百五十六件套') && !readme.includes('（356 份）'));
-ok('README tests 树串尾已延伸（…+ smoke_v24131_stele4quest + smoke_v24132_fallenquest（npm test 串跑））',
-  readme.includes('smoke_v24131_stele4quest + smoke_v24132_fallenquest（npm test 串跑）'));
+  readme.includes('冒烟三百五十六件套（三百五十五件套清除）') && !readme.includes('冒烟三百五十七件套') && !readme.includes('（357 份）'));
+ok('README tests 树串尾已延伸（…+ smoke_v24131_stele4quest + smoke_v24132_fallenquest + smoke_v24133_inquest（npm test 串跑））',
+  readme.includes('smoke_v24131_stele4quest + smoke_v24132_fallenquest + smoke_v24133_inquest（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（四十条 · 灰烬不冷 · FALLEN_GOAL）',
-  readme.includes('四十条支线目标/奖励全部由') &&
+  readme.includes('四十一条支线目标/奖励全部由') &&
   readme.includes('灰烬不冷（守墓人 · 累计阵亡 `FALLEN_GOAL`(3) 次') &&
-  readme.includes('v24.132 补第四十条') && readme.includes('v24.131 补第三十九条'));
+  readme.includes('v24.132 补第四十条 · v24.133 补第四十一条') && readme.includes('v24.131 补第三十九条'));
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
-ok('package.json 实跑链共 354 份（smoke.mjs + 354 专项）', chain.length === 354 && ['smoke.mjs', ...chain].length === 355, String(chain.length));
-ok('package.json 链尾为 smoke_v24132_fallenquest（第 355 份）', chain[chain.length - 1] === 'smoke_v24132_fallenquest', chain[chain.length - 1]);
+ok('package.json 实跑链共 354 份（smoke.mjs + 354 专项）', chain.length === 355 && ['smoke.mjs', ...chain].length === 356, String(chain.length));
+ok('package.json 链尾为 smoke_v24132_fallenquest（第 355 份）', chain[chain.length - 1] === 'smoke_v24133_inquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24131_stele4quest.mjs && smoke_v24132_fallenquest.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.132（startsWith）', changelog.startsWith('## v24.132'));
+  pkgRaw.includes('node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.132（startsWith）', changelog.startsWith('## v24.133'));
 ok('CHANGELOG v24.132 条目含「灰烬不冷」与「FALLEN_GOAL」与「守墓人」',
   changelog.includes('灰烬不冷') && changelog.includes('FALLEN_GOAL') && changelog.includes('守墓人'));
 ok('CHANGELOG 仍保留 v24.131 条目（历史保留）', changelog.includes('## v24.131 '));
@@ -208,25 +208,25 @@ const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a
 const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
-ok('tests 目录件套 = 355（354 + smoke_v24132_fallenquest）', files.length === 355, String(files.length));
+ok('tests 目录件套 = 355（354 + smoke_v24132_fallenquest）', files.length === 356, String(files.length));
 ok('tests 目录与实跑链零孤儿（每个文件都在链上）', orphans.length === 0, orphans.join(','));
 ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', missed.length === 0, missed.join(','));
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.131 pin 零残留 ——
 const s24131 = read('smoke_v24131_stele4quest.mjs');
-ok('smoke_v24131 的 GAME_VERSION 字面量 pin 已更新为 v24.132', s24131.includes("const GAME_VERSION = 'v24.132';"));
-ok('smoke_v24131 的 CHANGELOG 顶 pin 已更新为 ## v24.132 ', s24131.includes("startsWith('## v24.132'"));
-ok('smoke_v24131 的件套 pin 已更新为三百五十五件套（三百五十四件套清除）', s24131.includes('三百五十五件套（三百五十四件套清除）'));
+ok('smoke_v24131 的 GAME_VERSION 字面量 pin 已更新为 v24.132', s24131.includes("const GAME_VERSION = 'v24.133';"));
+ok('smoke_v24131 的 CHANGELOG 顶 pin 已更新为 ## v24.132 ', s24131.includes("startsWith('## v24.133'"));
+ok('smoke_v24131 的件套 pin 已更新为三百五十六件套（三百五十五件套清除）', s24131.includes('三百五十六件套（三百五十五件套清除）'));
 ok('smoke_v24131 的 README/链 tail pin 已随新现实延伸（含 smoke_v24132_fallenquest）',
   s24131.includes('smoke_v24132_fallenquest'));
-ok('smoke_v24131 的链尾 pin 已推进至 smoke_v24132_fallenquest（第 355 份）', s24131.includes("=== 'smoke_v24132_fallenquest'"));
+ok('smoke_v24131 的链尾 pin 已推进至 smoke_v24132_fallenquest（第 355 份）', s24131.includes("=== 'smoke_v24133_inquest'"));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（354 专项 / 355）且尚无 356 口径哨兵',
-  s2436.includes('suiteFiles.length === 354 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 355') &&
-  s2436.includes('!readme.includes(\'冒烟三百五十六件套\')') && s2436.includes('!readme.includes(\'（356 份）\')'));
+  s2436.includes('suiteFiles.length === 355 && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length === 356') &&
+  s2436.includes('!readme.includes(\'冒烟三百五十七件套\')') && s2436.includes('!readme.includes(\'（357 份）\')'));
 const s2429 = read('smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 哨兵链前望 356（三百五十六件套否定式）',
-  s2429.includes("!readme.includes('冒烟三百五十六件套'"));
+ok('smoke_v2429 哨兵链前望 356（三百五十七件套否定式）',
+  s2429.includes("!readme.includes('冒烟三百五十七件套'"));
 // 旧代 v24.131 pin 零残留扫描（豁免本套件）
 const leftovers = [], _why = {};
 for (const f of files) {
