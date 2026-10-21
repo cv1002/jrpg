@@ -2988,6 +2988,19 @@
 // (NPCS) 41→42 自动跟随）；只改 js/data.js（KINDLE_GOAL 常量+export、QUESTS.side_kindle、NPCS.kindle、
 // NPC_SPOTS '11,10'、dungeon.extras (11,10)、GAME_VERSION v24.133→v24.134）+ README/package.json/
 // CHANGELOG + 新套件 smoke_v24134_kindleq + 全库 356 件套 pin 级联（哨兵前望 358）。
+// v24.136 新内容·新支线（第四十四条）：雾语林新 NPC「采药翁」+「药囊常满」——持有 MEDKIT_GOAL(15) 瓶
+// 药水换 80 金 + 1 高级灵药（承 v24.135 账房先生「灯油的账」同一「全新 NPC + 持有类计数支线」先例系列
+// 第二例，持有类口径：灯下的夜路，药和灯一样要紧）：雾里的草晾干了就是药，镇民句句提醒「出门前去
+// 杂货铺补药水」——采药翁守着林间药篓，玩家随身备下的每一瓶药水，都算替他把药囊续上一笔（计数口径
+// hero.item 复用既有字段：newGame 起始 START_POTIONS(3)、shop.buyPotion/开箱/掉落/任务奖励写定、
+// 喝药扣减，随 snapshotHero 全量快照自动持久化、防御式 (g.item||0) 旧档零迁移，与 ACH_LIST stock
+// 「有备无患」同读一份源，支线门槛 15 低于成就门槛 POTIONS_GOAL(20) 顺路先完成支线再解锁成就——
+// 持有类 cond 状态判定、交付后 done 粘性不受消耗回落影响）；无 unlockOn 开局即 offer（采药翁在雾语林
+// 南坡 (13,12)，开局即可接，承 side_wait/side_ledger 同款）、active 页函数型实时报进度、done 三档分档）。
+// 零新计数零新状态零新存档、QUESTS 表驱动（灯火同心分母 43→44、voiceList/有口皆碑分母 Object.keys
+// (NPCS) 43→44 自动跟随）；只改 js/data.js（MEDKIT_GOAL 常量+export、QUESTS.side_herb、NPCS.herbalist、
+// NPC_SPOTS '13,12'、dungeon.extras (13,12)、GAME_VERSION v24.135→v24.136）+ README/package.json/
+// CHANGELOG + 新套件 smoke_v24136_herbquest + 全库 358 件套 pin 级联（哨兵前望 360）。
 // v24.135 新内容·新支线（第四十三条）：潮灯镇新 NPC「账房先生」+「灯油的账」——持有 LEDGER_GOAL(200)
 // 金换 80 金 + 1 高级灵药（承 v24.134 守火翁「薪火的气」/ v24.133 打更人「一夜好眠」/ v24.132 守墓人
 // 「灰烬不冷」同一「全新 NPC 计数支线」先例系列，首条「持有类」口径）：镇子的灯靠灯油撑着、油是拿钱
@@ -3000,7 +3013,7 @@
 // voiceList/有口皆碑分母 Object.keys(NPCS) 42→43 自动跟随）；只改 js/data.js（LEDGER_GOAL 常量+export、
 // QUESTS.side_ledger、NPCS.ledger、NPC_SPOTS '9,11'、village.extras (9,11)、GAME_VERSION v24.134→v24.135）
 // + README/package.json/CHANGELOG + 新套件 smoke_v24135_ledgerquest + 全库 357 件套 pin 级联（哨兵前望 359）。
-const GAME_VERSION = 'v24.135';
+const GAME_VERSION = 'v24.136';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3519,6 +3532,11 @@ const MAPS={
       // (10,10)/(12,10)/(11,9)/(11,11) 皆 '0' 可行走可面对面对话，守着林间那口火不挡泉水 (12,9)/
       // 猎手 (13,9) 任何动线，与营地主干道不设卡
       { x: 11, y: 10, ty: 'NPC' },
+      // 采药翁（v24.136 新 NPC·第四十四条支线「药囊常满」委托人）：雾语林南坡 (13,12)——坐标为可行走
+      // '0'/'.' 格且未被他图占用（全图 extras 扫描 (13,12) 仅 dungeon 一处），四邻 (12,12)/(14,12)/
+      // (13,11)/(13,13) 皆可行走可面对面对话，立在蛇形主路以东草格不挡主路/营地/祭坛任何动线，
+      // 与琴师 (14,15) 同处南坡草场互不占位
+      { x: 13, y: 12, ty: 'NPC' },
       { x: 20, y: 13, ty: 'BOSS' },    // 幽冥魔王祭坛 2×1
       { x: 20, y: 14, ty: 'BOSS' },
     ],
@@ -4110,6 +4128,11 @@ const NPC_SPOTS = {
   // 全局坐标键未被他图占用（全图 extras 扫描 (9,11) 仅 village 一处；与既有 43 键零冲突，西邻 (8,11)
   // '0' 可行走可面对面对话、南邻酿药师 (9,12) 互不占位，立在铺口东侧不挡商店/酿造/旅馆任何动线）
   '9,11': 'ledger',
+  // 采药翁（v24.136 新 NPC·第四十四条支线「药囊常满」委托人）：雾语林南坡 (13,12) ——
+  // 全局坐标键未被他图占用（全图 extras 扫描 (13,12) 仅 dungeon 一处；与既有 44 键零冲突，四邻
+  // (12,12)/(14,12)/(13,11)/(13,13) 皆 '0'/'.' 可行走可面对面对话，立在蛇形主路以东草格上不挡
+  // 主路/营地/祭坛任何动线；与琴师 (14,15) 同处南坡草场、互不占位）
+  '13,12': 'herbalist',
 };
 
 const NPCS={
@@ -4852,6 +4875,31 @@ const NPCS={
   ], after:[
     ['账房先生：都亮回来了。','灯油账的点滴，如今都成了旧页。','合上账本，镇子自己就是那盏灯。 [Enter] 继续'],
     ['账房先生：往后这账我替你记着。','你只管往前走——','灯要亮着，账要先稳。 [Enter] 结束'],
+  ]},
+  // v24.136 新内容·新支线（第四十四条「药囊常满」委托人）：雾语林南坡 (13,12)「采药翁」——守着林间
+  // 药篓的老采药人：雾里的草晾干了就是药，镇子杂货铺的红瓶大半出自他背出林子的草药；灯下人最容易
+  // 在雾里受伤，「药和灯一样要紧」（与守墓人守冢/打更人守夜/守火翁守火/账房先生守账同脉，守着灯下
+  // 人的药囊）；玩家随身备下的每一瓶药水（QUESTS.side_herb：持有 MEDKIT_GOAL(15) 瓶，计数 hero.item
+  // 复用既有字段——newGame 起始 START_POTIONS、shop.buyPotion/开箱/掉落/任务奖励写定、喝药扣减，
+  // 与 ACH_LIST stock「有备无患」同读一份源、支线门槛 15 低于成就门槛 POTIONS_GOAL(20)）；npcQuestPages
+  // 有任务后优先走任务页（talk.offer/active/turnin/done 四态），voiceList/灯下之声 N 由 Object.keys(NPCS)
+  // 派生自动跟随、有口皆碑分母自动跟随。
+  herbalist:{name:'采药翁', mark:'basket', linesByStage:[
+    { gate:null, lines:[
+      ['采药翁：雾里的草，晾干了就是药。','镇子杂货铺里的红瓶，','大半是我背出林子去的。 [Enter] 继续'],
+      ['采药翁：灯下的人，容易在雾里受伤。','你出门前，药囊得常满——','药和灯，一样要紧。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['采药翁：魔王倒下了，可雾夜还没过完。','药囊里的红瓶，还得一瓶一瓶续。','别把命省着，省着省着就没了。 [Enter] 继续'],
+      ['采药翁：你这一路背去的药，','都在替你往灯下续命。','够了，够亮堂了。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['采药翁：回廊开了。','听说名字被忘掉的人，都在那里躺着。','那地方的夜，比雾还长。 [Enter] 继续'],
+      ['采药翁：去吧。药带够——','名字要记得，命也得留着。','[Enter] 结束'],
+    ]},
+  ], after:[
+    ['采药翁：都亮回来了。','药香顺着夜风','散遍了整个林子。 [Enter] 继续'],
+    ['采药翁：往后你的药囊，我替你记着。','备足药，走稳路——','灯下的人，就都回得来。 [Enter] 结束'],
   ]},
 };
 
@@ -5645,6 +5693,10 @@ const RICH3_GOAL = 3000;
 // 同读此源，与 ACH_LIST rich「小富翁」RICH_GOLD(500) 同一「金币持有」家族——支线门槛 200 低于成就
 // 门槛 500，顺路先完成支线再解锁成就，调门槛只改本行一处全端自动跟随。
 const LEDGER_GOAL = 200;
+// 第四十四条支线「药囊常满」持有药水阈值（单一数据源）：QUESTS.side_herb 的 cond/condProg/obj/turnin
+// 同读此源，与 ACH_LIST stock「有备无患」POTIONS_GOAL(20) 同一「药水持有」家族——支线门槛 15 低于成就
+// 门槛 20，顺路先完成支线再解锁成就，调门槛只改本行一处全端自动跟随。
+const MEDKIT_GOAL = 15;
 
 // 成就「有备无患」药水持有阈值（单一数据源，v22.0 新成就·药水线首枚里程碑，承 v21.91 长明不熄 /
 // v21.93 驱雾百战 / v21.95 彻夜长明 / v21.97 鸿运当头 / v21.99 金玉满堂 单成就先例）：药水是全程陪伴的
@@ -8350,6 +8402,64 @@ const QUESTS={
       ]])),
     },
   },
+  // 第四十四条支线「药囊常满」（v24.136 新内容·新支线·持有类：雾语林南坡 (13,12) 新 NPC「采药翁」
+  // 承 v24.135 账房先生「灯油的账」同一「全新 NPC + 持有类计数支线」先例（持有类系列第二例）：灯下的
+  // 夜路，药和灯一样要紧——雾里的草晾干了就是药、镇民句句提醒「出门前去杂货铺补药水」，采药翁守着
+  // 林间药篓；玩家随身备下的每一瓶药水，都算替他把药囊续上一笔——替他持有 MEDKIT_GOAL(15) 瓶。
+  // 计数 hero.item 复用既有字段（newGame 起始 START_POTIONS(3)、shop.buyPotion/开箱/掉落/任务奖励写定、
+  // 喝药扣减，随 snapshotHero 全量快照自动持久化、防御式 (g.item||0) 旧档零迁移，与 ACH_LIST stock
+  // 「有备无患」同读一份源——持有类 cond 状态判定、交付后 done 粘性不受消耗回落影响，支线门槛 15 低于
+  // 成就门槛 POTIONS_GOAL(20)、顺路先完成支线再解锁成就）；零新计数零新状态零新存档、QUESTS 表驱动
+  // （弹窗对话/任务日志/顶标/交付/灯火同心分母全端自动跟随 43→44、voiceList/有口皆碑分母 Object.keys
+  // (NPCS) 43→44 自动跟随）；无 unlockOn（采药翁在雾语林南坡，开局即可接，承 side_wait/side_ledger
+  // 同款）；active 页函数型实时报进度、done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档（采药翁
+  // 原有 linesByStage 叙事与 after 彩蛋并入零内容丢失）。奖励 80 金 + 1 高级灵药（承 side_bell/side_watch/
+  // side_kindle/side_ledger 80 档——「备药」自开局第一瓶药起持续累计、全程伴随）。
+  side_herb:{
+    id:'side_herb', kind:'side', store:true, npc:'herbalist', giver:'herbalist',
+    cond:(g)=>((g.item||0))>=MEDKIT_GOAL,
+    condProg:(g)=>`${Math.floor(g.item||0)}/${MEDKIT_GOAL} 瓶`,
+    name:'药囊常满', where:'雾语林·采药翁（持有药水）',
+    obj:`随身备好 ${MEDKIT_GOAL} 瓶药水——雾里的夜，药和灯一样要紧`,
+    offer:'去雾语林找采药翁，接下「药囊常满」的委托',
+    turnin:`替采药翁备足 ${MEDKIT_GOAL} 瓶药水！回雾语林找采药翁`,
+    done:'采药翁点过药囊，说药香不散、灯下的人才走得远——药要备足，路才安稳。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '采药翁：雾里的草，晾干了就是药。',
+        '药铺里的红瓶，总是进得快、出得也快。',
+        `你若随身备下 ${MEDKIT_GOAL} 瓶药水——`,
+        '灯下的夜路，便有人走得过去了。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '采药翁：药囊得常满，命才经得起雾。',
+        `（你身边现有 ${Math.floor((hero.item||0))}/${MEDKIT_GOAL} 瓶药水——还差一些）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '采药翁：药香不散。你这一囊药，',
+        '够灯下人把雾夜走过去了。',
+        `备足 ${MEDKIT_GOAL} 瓶仍肯随身带着，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['采药翁：灯都亮回来了。','药香顺着夜风，','散遍了整个林子。 [Enter] 继续'],
+        ['采药翁：往后你的药囊我替你记着。','备足药，走稳路——','灯下的人，就都回得来。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '采药翁：领主散了，矿脉也敞亮了。',
+        '采药的路好走了，',
+        '药香也该飘得更远了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '采药翁：灯芯回来了，夜也没那么长了。',
+        '你备下的那些药，',
+        '都护在镇子人身上了。 [Enter] 结束',
+      ]] : [[
+        '采药翁：这囊药替你留着。',
+        '往后每一次备药，',
+        '都是在给灯下的人续命。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -9477,5 +9587,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };
