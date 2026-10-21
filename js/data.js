@@ -2955,7 +2955,18 @@
 // caveBoss/bossDefeated 分档（原碑文「——碑上没有名字，摸上去是温的。」并入各档末页，零内容丢失）；
 // 只改 js/data.js（QUESTS.side_stele4、GAME_VERSION v24.130→v24.131）+ README/package.json/CHANGELOG
 // + 新套件 smoke_v24131_stele4quest + 全库 353 件套 pin 级联（哨兵前望 355）。
-const GAME_VERSION = 'v24.131';
+// v24.132 新内容·新支线（第四十条）：潮灯镇新 NPC「守墓人」+「灰烬不冷」——累计阵亡 FALLEN_GOAL(3)
+// 次换 70 金 + 2 生命药水（承 v24.128 第一块名字石碑「看好矿车」/ v24.122 守晶人「星砂归匣」同一
+// 「累计计数支线」先例，首条「全新 NPC 而非风味升格」的计数支线）：镇边埋着没能等回名字的灯下人，
+// 守墓人替他们提着灯、守着空名——你倒下的每一次都算替他把灰吹亮一分（计数 hero.deaths 复用既有
+// 端口：battle.loseBattle 全游唯一战败结算点写入、随 snapshotHero 全量快照自动持久化、防御式
+// (g.deaths||0) 旧档零迁移，与 ACH_LIST deaths「败而不馁」DEATH_GOAL(10) 同读一份源，支线门槛 3 低于
+// 成就门槛顺路先完成支线再解锁成就；无 unlockOn 开局即 offer、active 函数页、done 三档分档）。
+// 零新计数零新状态零新存档、QUESTS 表驱动（灯火同心分母 39→40、voiceList/有口皆碑分母 Object.keys
+// (NPCS) 39→40 自动跟随）；只改 js/data.js（FALLEN_GOAL 常量+export、QUESTS.side_fallen、NPCS.fallen、
+// NPC_SPOTS '21,14'、village.extras (21,14)、GAME_VERSION v24.131→v24.132）+ README/package.json/
+// CHANGELOG + 新套件 smoke_v24132_fallenquest + 全库 354 件套 pin 级联（哨兵前望 356）。
+const GAME_VERSION = 'v24.132';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3408,6 +3419,11 @@ const MAPS={
       // （全图 extras 扫描 (17,7) 仅 village 一处），西/北邻 (16,7)/(17,6) 皆水面 '3'（面水而钓）、
       // 东/南邻 (18,7)/(17,8) 皆 '0' 可行走可面对面对话，立在水塘东岸不挡广场/城门/粮田任何动线
       { x: 17, y: 7, ty: 'NPC' },
+      // 守墓人（v24.132 新 NPC·第四十条支线「灰烬不冷」委托人）：潮灯镇镇南粮田东南角 (21,14)——
+      // 坐标为可行走 '0' 格且未被他图占用（全图 extras 扫描 (21,14) 仅 village 一处），四邻
+      // (20,14)/(22,14)/(21,13)/(21,15) 皆可行走可面对面对话，立在粮田东南角不挡广场/城门/粮田
+      // 任何动线，与粮铺掌柜 (15,12) 同看粮田南缘
+      { x: 21, y: 14, ty: 'NPC' },
     ],
   },
   // 雾语林（v13.5 重排）：西入口 → 蛇形主路 → 中段营地（泉水+猎手）→ 北环路蘑菇宝箱 → 东祭坛，裂洞在祭坛南
@@ -4029,6 +4045,10 @@ const NPC_SPOTS = {
   // 四邻 (18,7)/(17,8) 皆 '0' 可行走可面对面对话；与掌灯阿婆 (14,8)/放灯童 (19,7)/说书人 (16,9)
   // 均隔开，立在水塘东岸不挡广场/城门/粮田任何动线
   '17,7': 'fisher',
+  // 守墓人（v24.132 新 NPC·第四十条支线「灰烬不冷」委托人）：潮灯镇镇南粮田东南角 (21,14) ——
+  // 全局坐标键未被他图占用（全图 extras 扫描 (21,14) 仅 village 一处；四邻 (20,14)/(22,14)/(21,13)/
+  // (21,15) 皆可行走，立在粮田东南角不挡广场/城门/粮田任何动线；与粮铺掌柜 (15,12) 同看粮田南缘）
+  '21,14': 'fallen',
 };
 
 const NPCS={
@@ -4667,6 +4687,34 @@ const NPCS={
   ], after:[
     ['渔翁：清喽。','这塘水好久没这么清了，','月亮沉在塘底，看得真真切切。 [Enter] 继续'],
     ['渔翁：名字都回了灯下，灯也回了镇上。','我这网啊，往后只捞鱼，不捞灯。','[Enter] 结束'],
+  ]},
+  // v24.132 新 NPC「守墓人」（潮灯镇镇南粮田东南角 (21,14)）：镇边埋着没能等回名字的守灯人，
+  // 守墓人替他们提着灯、守着空名——全游「名字/记忆」主题的碑外一件（四块名字石碑收着旧矿/旧灯卫/
+  // 星砂/初灯的名字，镇边的冢则替没人记得的守灯人守着灰烬；与守名者「碑是刻给还活着、却把名字弄丢
+  // 的人看的」/ 拾骨人「矿道里的骷髅兵是当年没能走出矿洞的矿工亡骨」同脉）；坐标为可行走 '0' 格且
+  // 未被他图占用（全图 extras 扫描 (21,14) 仅 village 一处；四邻 (20,14)/(22,14)/(21,13)/(21,15)
+  // 皆可行走，立在粮田东南角不挡广场/城门/粮田任何动线）；mark:'lamp' 复用既有提灯标（drawNpcMark
+  // 既有分支零改动），造型走 NPC_SHEET 默认 mwVillager（零视觉新代码）。v24.132 起为第四十条支线
+  // 「灰烬不冷」委托人（QUESTS.side_fallen：累计阵亡 FALLEN_GOAL(3) 次，计数 hero.deaths 与成就
+  // 「败而不馁」同读一份源——你倒下的每一次，都算替冢里的人把灰吹亮一分）；npcQuestPages 有任务后
+  // 优先走任务页（talk.offer/active/turnin/done 四态），voiceList/灯下之声 N 由 Object.keys(NPCS)
+  // 派生自动跟随、有口皆碑分母自动跟随。
+  fallen:{name:'守墓人', mark:'lamp', linesByStage:[
+    { gate:null, lines:[
+      ['守墓人：这镇边埋着的，都是没等回名字的灯下人。','他们倒下去那晚，灯芯都还亮着。','[Enter] 继续'],
+      ['守墓人：我替他们提着这盏灯，','灯亮着，灰就不算凉透。','名字有人记着，人就没算白走。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['守墓人：灯芯回来了，镇上的灯一盏盏亮。','冢里的灰，也跟着暖了几分。','[Enter] 继续'],
+      ['守墓人：往后你走夜路，若也栽了跟头，','就想想这些冢——','灯倒下了，还能再点着。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['守墓人：回廊开了，名字都有地方去了。','可镇边的冢，还替没名字的人守着。','[Enter] 继续'],
+      ['守墓人：去吧。你每亮一盏灯，','这镇边就少一粒凉灰。','[Enter] 结束'],
+    ]},
+  ], after:[
+    ['守墓人：都亮回来了。','冢边的灯一盏盏收进镇里，','没人再倒在这条路上了。 [Enter] 继续'],
+    ['守墓人：往后这灯我替你提着。','你只管往前走——','灰不冷，名就丢不了。 [Enter] 结束'],
   ]},
 };
 
@@ -5345,6 +5393,13 @@ const SELL_GOAL = 30;
 // retryBoss 只恢复战斗子集字段不清零，强敌反复重整旗鼓也如实累计）；纯里程碑零奖励零结算
 // 影响，与 BATTLE_GOAL/SELL_GOAL 同「阈值数据化」家族）。
 const DEATH_GOAL = 10;
+// v24.132 支线「灰烬不冷」阈值（阵亡端口·单一数据源）：累计阵亡 N 次即可向守墓人交付委托
+// ——与 QUESTS.side_fallen 的 cond/condProg/obj/turnin 同读一份源，调门槛只改本行一处全端自动跟随；
+// 数值取 3（「灰烬不冷」——开荒期普通战败/强敌反复 B 再战的自然量级，低于 ACH_LIST.deaths「败而不馁」
+// DEATH_GOAL(10)：顺路先完成支线再解锁成就）；计数 hero.deaths 由 battle.loseBattle 全游唯一战败
+// 结算点写入（retryBoss 只恢复战斗子集字段不清零，强敌重整旗鼓同样如实累计）、随 snapshotHero 全量
+// 快照自动持久化、防御式 (g.deaths||0) 旧档零迁移，与成就「败而不馁」同读一份源。
+const FALLEN_GOAL = 3;
 // v23.91 成就「提灯夜行」阈值（昼夜相位端口·单一数据源）：夜间战胜 N 场解锁
 // ——与 ACH_LIST.nightwins 的 ok/prog/d 同读一份源，调门槛只改本行一处三端自动跟随；数值取 10
 // （「提灯夜行」——夜战是「灯与夜」世界的题眼相位：夜晚危险格步进 ×1.25（v23.31）、刷出来的是
@@ -7915,6 +7970,64 @@ const QUESTS={
       ]])),
     },
   },
+  // v24.132 第四十条「灰烬不冷」（守墓人支线）：累计阵亡 FALLEN_GOAL(3) 次换谢礼——承 v24.128 名字
+  // 石碑「看好矿车」/ v24.122 守晶人「星砂归匣」同一「累计计数支线」先例（v24.132 起为全新 NPC
+  // 「守墓人」，潮灯镇镇南粮田东南角 (21,14)：镇边埋着没能等回名字的守灯人，他替他们提着灯、守着
+  // 空名——与四块名字石碑/记忆碎片同一「名字/记忆」主题）：玩家在灯下倒下的每一次，都是替冢里的
+  // 人把灰吹亮一分——替他守满 FALLEN_GOAL(3) 次。计数 hero.deaths 复用既有端口（battle.loseBattle
+  // 全游唯一战败结算点写入（普通/强敌/试炼全走此处、retryBoss 只恢复战斗子集字段不清零）、随
+  // snapshotHero 全量快照自动持久化、防御式 (g.deaths||0) 旧档零迁移，与 ACH_LIST deaths「败而不馁」
+  // 同读一份源，支线门槛 3 低于成就门槛 DEATH_GOAL(10)——顺路先完成支线再解锁成就）；零新计数零新
+  // 状态零新存档、QUESTS 表驱动（弹窗对话/任务日志/顶标/交付/灯火同心分母全端自动跟随 39→40）；
+  // 无 unlockOn（守墓人在潮灯镇，开局即可接，承 side_well/side_stele 同款——倒下的第一场败仗自始可
+  // 计）；active 页函数型实时报进度（与 side_crystal/side_stele 同款）；done 页按 hero.trueBoss/
+  // caveBoss/bossDefeated 三档分档（守墓人原有 linesByStage 叙事与 after 彩蛋并入，零内容丢失）；
+  // 奖励 70 金 + 2 生命药水（承 side_stele 70 档——「倒下」自开局第一场败仗起持续累计、全程伴随）。
+  side_fallen:{
+    id:'side_fallen', kind:'side', store:true, npc:'fallen', giver:'fallen',
+    cond:(g)=>((g.deaths||0))>=FALLEN_GOAL,
+    condProg:(g)=>`${g.deaths||0}/${FALLEN_GOAL} 次`,
+    name:'灰烬不冷', where:'潮灯镇·镇南无名冢（累计阵亡）',
+    obj:`累计在灯下倒下 ${FALLEN_GOAL} 次——倒下一次，就替冢里的灯下人把灰吹亮一分`,
+    offer:'去潮灯镇镇南找守墓人，接下「灰烬不冷」的委托',
+    turnin:`替无名冢在灯下守了 ${FALLEN_GOAL} 次！回潮灯镇镇南找守墓人`,
+    done:'守墓人数了数你倒下的次数，说灰没凉透——灯下人倒在路上，有人记得，名字就回得了家。',
+    reward:{ gold:70, item:2 },
+    talk:{
+      offer:[[
+        '守墓人：这镇边埋着的，都是没等回名字的灯下人。',
+        '他们倒下去那晚，灯芯都还亮着——',
+        `你只要在灯下倒下 ${FALLEN_GOAL} 次，`,
+        '却还能再点着灯站起来，我就认你是同路人。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守墓人：灯倒下了，还能再点着。',
+        `（你已累计倒下 ${hero.deaths||0}/${FALLEN_GOAL} 次——灰还温着）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '守墓人：够数了。你倒下过，又站起来了——',
+        '灯下人最怕的不是灰凉，是没人记得再点。',
+        `倒下 ${FALLEN_GOAL} 次仍往前走，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守墓人：名字都回了灯下，冢也暖了。','你倒下又站起来的那些夜，','我在冢边都替你点着灯记着。 [Enter] 继续'],
+        ['守墓人：往后这条灯路，你再倒下，','灰也有人替你吹亮了。','守墓人替全镇守着。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '守墓人：领主散了，矿脉也敞亮了。',
+        '你倒下又站起来的样子，',
+        '冢里的灯下人都看见了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '守墓人：灯芯回来了，冢边的灯也亮了。',
+        '你替灯下人流过的每一滴汗，',
+        '灰都替他们记着。 [Enter] 结束',
+      ]] : [[
+        '守墓人：灰还温着，灯还亮着。',
+        '你倒下了又站起来，',
+        '这镇上就多一盏点着的灯。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -9042,5 +9155,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };
