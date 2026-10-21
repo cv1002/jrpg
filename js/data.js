@@ -2988,7 +2988,19 @@
 // (NPCS) 41→42 自动跟随）；只改 js/data.js（KINDLE_GOAL 常量+export、QUESTS.side_kindle、NPCS.kindle、
 // NPC_SPOTS '11,10'、dungeon.extras (11,10)、GAME_VERSION v24.133→v24.134）+ README/package.json/
 // CHANGELOG + 新套件 smoke_v24134_kindleq + 全库 356 件套 pin 级联（哨兵前望 358）。
-const GAME_VERSION = 'v24.134';
+// v24.135 新内容·新支线（第四十三条）：潮灯镇新 NPC「账房先生」+「灯油的账」——持有 LEDGER_GOAL(200)
+// 金换 80 金 + 1 高级灵药（承 v24.134 守火翁「薪火的气」/ v24.133 打更人「一夜好眠」/ v24.132 守墓人
+// 「灰烬不冷」同一「全新 NPC 计数支线」先例系列，首条「持有类」口径）：镇子的灯靠灯油撑着、油是拿钱
+// 买的，账房先生守着灯油账——你能自己攒下 200 金，说明这笔账镇子续得下去（计数口径 hero.gold 复用
+// 既有字段：胜利/开箱/掉落/任务结算写定、shop 扣款消费，随 snapshotHero 全量快照自动持久化、防御式
+// (g.gold||0) 旧档零迁移，与 ACH_LIST rich「小富翁」同读一份源，支线门槛 200 低于成就门槛
+// RICH_GOLD(500) 顺路先完成支线再解锁成就——持有类 cond 状态判定、交付后 done 粘性不受消费回落影响）；
+// 无 unlockOn 开局即 offer（账房先生在潮灯镇，商店/酿造/旅馆商业区 (9,11)，开局即可接）、active 页
+// 函数型实时报进度、done 三档分档）。零新计数零新状态零新存档、QUESTS 表驱动（灯火同心分母 42→43、
+// voiceList/有口皆碑分母 Object.keys(NPCS) 42→43 自动跟随）；只改 js/data.js（LEDGER_GOAL 常量+export、
+// QUESTS.side_ledger、NPCS.ledger、NPC_SPOTS '9,11'、village.extras (9,11)、GAME_VERSION v24.134→v24.135）
+// + README/package.json/CHANGELOG + 新套件 smoke_v24135_ledgerquest + 全库 357 件套 pin 级联（哨兵前望 359）。
+const GAME_VERSION = 'v24.135';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3430,6 +3442,10 @@ const MAPS={
       // village 一处），东邻 (10,12) 即酿造锅、四邻 (8,12)/(9,11)/(9,13) 皆 '0' 可行走，立在锅台边
       // 不挡广场/商店/旅馆/城门任何动线，西侧可面对面对话）
       { x: 9, y: 12, ty: 'NPC' },
+      // 账房先生（v24.135 新 NPC·第四十三条「灯油的账」委托人）：潮灯镇商店/酿造商业区 (9,11)——坐标
+      // 为可行走 '0' 格且未被他图占用（全图 extras 扫描 (9,11) 仅 village 一处），西邻 (8,11) '0'、
+      // 南邻 (9,12) 酿药师可面对面对话，立在铺口东侧不挡商店/酿造/旅馆任何动线
+      { x: 9, y: 11, ty: 'NPC' },
       // 放灯童（v22.76 新 NPC·纯风味）：潮灯镇水塘东岸 (19,7)——掌灯阿婆守着水塘南岸的旧故事
       // （「灯灭那晚，塘里的月亮也熄了」），这孩子守着东岸的新灯：把纸灯放到水上，「灯走到哪儿，
       // 月亮就跟到哪儿」；坐标为可行走 '0' 格且未被他图占用（全图 extras 扫描 (19,7) 仅 village
@@ -4090,6 +4106,10 @@ const NPC_SPOTS = {
   // (11,11) 皆 '0' 可行走，正南邻营地篝火 (11,9) 而立——守着林间那口火，不挡泉水 (12,9)/猎手 (13,9)
   // 任何动线，可面对面对话；与雾径猎手/拾菇人/失名的旅人/货郎/琴师/守夜人互不占位）
   '11,10': 'kindle',
+  // 账房先生（v24.135 新 NPC·第四十三条支线「灯油的账」委托人）：潮灯镇商店/酿造商业区 (9,11) ——
+  // 全局坐标键未被他图占用（全图 extras 扫描 (9,11) 仅 village 一处；与既有 43 键零冲突，西邻 (8,11)
+  // '0' 可行走可面对面对话、南邻酿药师 (9,12) 互不占位，立在铺口东侧不挡商店/酿造/旅馆任何动线）
+  '9,11': 'ledger',
 };
 
 const NPCS={
@@ -4805,6 +4825,33 @@ const NPCS={
   ], after:[
     ['守火翁：都亮回来了。','林间这口火也烧透了，','只剩一捧温灰，替夜路人留着一粒火种。 [Enter] 继续'],
     ['守火翁：往后这火我替你守着。','你只管往前走——','气攒住，火就在。 [Enter] 结束'],
+  ]},
+  // v24.135 新 NPC「账房先生」（潮灯镇商店/酿造/旅馆商业区 (9,11)）：守着镇子灯油账的老账房——灯是拿
+  // 钱买油点着的、镇上每一笔账他都记着（与货栈掌柜 (8,10) 的铺子隔街相对、与酿药师 (9,12) 一墙之隔，
+  // 商业区「收钱/记账/熬药」三件齐整；与守火翁「火」/打更人「夜」/守墓人「冢」同脉，守的是「账」——
+  // 灯要亮着，账要先稳）；坐标为可行走 '0' 格且未被他图占用（全图 extras 扫描 (9,11) 仅 village 一处，
+  // 与 NPC_SPOTS 既有 43 键零冲突；西邻 (8,11) '0'、南邻 (9,12) 酿药师 NPC 可面对面对话，不挡
+  // 商店/酿造/旅馆任何动线）；mark:'basket' 复用既有货篮标（drawNpcMark 既有分支零改动），造型走
+  // NPC_SHEET 默认 mwVillager（零视觉新代码）。v24.135 起为第四十三条支线「灯油的账」委托人
+  // （QUESTS.side_ledger：持有 LEDGER_GOAL(200) 金，计数 hero.gold 与成就「小富翁」同读一份源——你
+  // 攒下的每一笔钱，都算替他把灯油账续上一笔）；npcQuestPages 有任务后优先走任务页（talk.offer/
+  // active/turnin/done 四态），voiceList/灯下之声 N 由 Object.keys(NPCS) 派生自动跟随、有口皆碑分母自动跟随。
+  ledger:{name:'账房先生', mark:'basket', linesByStage:[
+    { gate:null, lines:[
+      ['账房先生：镇子的灯，是拿油点着的。','油是钱买的，钱是镇里人一笔一笔攒的。','我守着这盏灯油账。 [Enter] 继续'],
+      ['账房先生：你若是自己攒得下 200 金，','说明你认得清灯下这世道的价钱——','那这份账，就续得下去。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['账房先生：灯芯回来那晚，','账本上最旧的那笔——「欠灯芯一盏」——','总算能合上了。 [Enter] 继续'],
+      ['账房先生：往后镇子点的每一盏灯，','都是拿还回来的灯芯续的。','这笔账，我记着。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['账房先生：回廊开了，名字都有处可去了。','灯油钱照旧收着，可镇子不再只买灯火了。','[Enter] 继续'],
+      ['账房先生：去吧。','你攒下的每一笔，','灯下都有人替你还着。 [Enter] 结束'],
+    ]},
+  ], after:[
+    ['账房先生：都亮回来了。','灯油账的点滴，如今都成了旧页。','合上账本，镇子自己就是那盏灯。 [Enter] 继续'],
+    ['账房先生：往后这账我替你记着。','你只管往前走——','灯要亮着，账要先稳。 [Enter] 结束'],
   ]},
 };
 
@@ -5594,6 +5641,10 @@ const RICH2_GOAL = 1500;
 // 解锁时机：applyAchievements 既有通路任意判定点当场解锁（gold 为持续变化量无需新判定点，承
 // rich2/lvl12 同款——先攒钱再存到 3000 也照常解锁，已解锁不因消费回落而撤销）。
 const RICH3_GOAL = 3000;
+// 第四十三条支线「灯油的账」持有金币阈值（单一数据源）：QUESTS.side_ledger 的 cond/condProg/obj/turnin
+// 同读此源，与 ACH_LIST rich「小富翁」RICH_GOLD(500) 同一「金币持有」家族——支线门槛 200 低于成就
+// 门槛 500，顺路先完成支线再解锁成就，调门槛只改本行一处全端自动跟随。
+const LEDGER_GOAL = 200;
 
 // 成就「有备无患」药水持有阈值（单一数据源，v22.0 新成就·药水线首枚里程碑，承 v21.91 长明不熄 /
 // v21.93 驱雾百战 / v21.95 彻夜长明 / v21.97 鸿运当头 / v21.99 金玉满堂 单成就先例）：药水是全程陪伴的
@@ -8240,6 +8291,65 @@ const QUESTS={
       ]])),
     },
   },
+  // v24.135 第四十三条「灯油的账」（账房先生支线）：持有 LEDGER_GOAL(200) 金换谢礼——承 v24.134
+  // 守火翁「薪火的气」/ v24.133 打更人「一夜好眠」/ v24.132 守墓人「灰烬不冷」同一「全新 NPC + 计数
+  // 支线」先例系列（第四例，首条「持有类」口径：潮灯镇商店/酿造商业区 (9,11) 新增账房先生——守着镇子
+  // 灯油账的老账房，灯是拿钱买油点着的、镇上每一笔账他都记着）：玩家自己攒下的每一笔钱，都算替他把
+  // 灯油账续上一笔——替他持有 LEDGER_GOAL(200) 金。计数口径 hero.gold 复用既有字段（胜利/开箱/掉落/
+  // 任务结算写定、shop 扣款消费，随 snapshotHero 全量快照自动持久化、防御式 (g.gold||0) 旧档零迁移，
+  // 与 ACH_LIST rich「小富翁」同读一份源——持有类 cond 状态判定、交付后 done 粘性不受消费回落影响，
+  // 支线门槛 200 低于成就门槛 RICH_GOLD(500)、顺路先完成支线再解锁成就）；零新计数零新状态零新存档、
+  // QUESTS 表驱动（弹窗对话/任务日志/顶标/交付/灯火同心分母全端自动跟随 42→43）；无 unlockOn（账房
+  // 先生在潮灯镇，开局即可接，承 side_wait/side_well 同款——金币自开局第一笔买卖起持续积累、全程伴随）；
+  // active 页函数型实时报进度（与 side_crystal/side_stele/side_fallen 同款）；done 页按
+  // hero.trueBoss/caveBoss/bossDefeated 三档分档（账房先生原有 linesByStage 叙事与 after 彩蛋并入零内容
+  // 丢失）；奖励 80 金 + 1 高级灵药（承 side_bell/side_watch/side_kindle 80 档——「攒钱」自开局第一笔
+  // 收入起持续累计、全程伴随）。
+  side_ledger:{
+    id:'side_ledger', kind:'side', store:true, npc:'ledger', giver:'ledger',
+    cond:(g)=>((g.gold||0))>=LEDGER_GOAL,
+    condProg:(g)=>`${Math.floor(g.gold||0)}/${LEDGER_GOAL} 金`,
+    name:'灯油的账', where:'潮灯镇·账房（持有金币）',
+    obj:`身上攒下 ${LEDGER_GOAL} 金——镇子的灯油账，靠这样的积蓄续着`,
+    offer:'去潮灯镇找账房先生，接下「灯油的账」的委托',
+    turnin:`替账房先生攒够 ${LEDGER_GOAL} 金！回潮灯镇找账房先生`,
+    done:'账房先生合上账本，说你攒下的这笔钱够买一季灯油——灯要亮着，账要先稳。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '账房先生：灯是拿油点着的，油是钱买的，',
+        '钱是镇里人一笔一笔攒出来的。',
+        `你若能自己攒下 ${LEDGER_GOAL} 金——`,
+        '我就认你是懂「灯油的账」的人。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '账房先生：账要一笔一笔对，灯要一盏一盏点。',
+        `（你已攒下 ${Math.floor((hero.gold||0))}/${LEDGER_GOAL} 金——灯油钱还差一些）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '账房先生：够数了。你攒下的每一笔，',
+        '都是镇子下一季灯油的底气。',
+        `攒满 ${LEDGER_GOAL} 金仍记得账要稳，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['账房先生：灯都亮回来了。','账本上最旧的那几页，','如今都能合上了。 [Enter] 继续'],
+        ['账房先生：往后这笔账我替你记着。','你只管往前走——','灯要亮着，账要先稳。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '账房先生：领主散了，矿脉也敞亮了。',
+        '星砂不再往外运，账上少了一大笔开销，',
+        '镇子的灯油钱反而宽裕了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '账房先生：灯芯回来了，夜里的灯火也稳了。',
+        '你替镇上攒下的那些金，',
+        '都变成了亮堂堂的灯。 [Enter] 结束',
+      ]] : [[
+        '账房先生：这笔账替你留着。',
+        '往后每一次攒钱，',
+        '都是在给灯下续油。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -9367,5 +9477,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };
