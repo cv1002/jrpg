@@ -45,7 +45,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.131', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 131)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.132（旧 v24.131 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.140';") && !dSrc.includes("const GAME_VERSION = 'v24.131';"));
+  dSrc.includes("const GAME_VERSION = 'v24.141';") && !dSrc.includes("const GAME_VERSION = 'v24.131';"));
 ok('data.js 含 v24.132 注释（灰烬不冷新支线说明）',
   dSrc.includes('v24.132 新内容·新支线（第四十条）'));
 ok('data.js 仍保留 v24.131 历史注释（初灯的名字支线说明，零内容丢失）',
@@ -197,7 +197,7 @@ ok('package.json 实跑链共 354 份（smoke.mjs + 354 专项）', chain.length
 ok('package.json 链尾为 smoke_v24132_fallenquest（第 355 份）', chain[chain.length - 1] === 'smoke_v24136_herbquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24131_stele4quest.mjs && smoke_v24132_fallenquest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.132（startsWith）', changelog.startsWith('## v24.140'));
+ok('CHANGELOG.md 顶部条目已为 v24.132（startsWith）', changelog.startsWith('## v24.141'));
 ok('CHANGELOG v24.132 条目含「灰烬不冷」与「FALLEN_GOAL」与「守墓人」',
   changelog.includes('灰烬不冷') && changelog.includes('FALLEN_GOAL') && changelog.includes('守墓人'));
 ok('CHANGELOG 仍保留 v24.131 条目（历史保留）', changelog.includes('## v24.131 '));
@@ -214,8 +214,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.131 pin 零残留 ——
 const s24131 = read('smoke_v24131_stele4quest.mjs');
-ok('smoke_v24131 的 GAME_VERSION 字面量 pin 已更新为 v24.132', s24131.includes("const GAME_VERSION = 'v24.140';"));
-ok('smoke_v24131 的 CHANGELOG 顶 pin 已更新为 ## v24.132 ', s24131.includes("startsWith('## v24.140'"));
+ok('smoke_v24131 的 GAME_VERSION 字面量 pin 已更新为 v24.132', s24131.includes("const GAME_VERSION = 'v24.141';"));
+ok('smoke_v24131 的 CHANGELOG 顶 pin 已更新为 ## v24.132 ', s24131.includes("startsWith('## v24.141'"));
 ok('smoke_v24131 的件套 pin 已更新为三百五十九件套（三百五十八件套清除）', s24131.includes('三百五十九件套（三百五十八件套清除）'));
 ok('smoke_v24131 的 README/链 tail pin 已随新现实延伸（含 smoke_v24132_fallenquest）',
   s24131.includes('smoke_v24132_fallenquest'));

@@ -88,7 +88,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.77', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 77)), GAME_VERSION);
 ok('data.js 含 v23.79 注释（战斗画面所在地说明）', dSrc.includes('v23.80 新内容·战斗遭遇维度单档里程碑'));
 ok('GAME_VERSION 字面量已为 v23.79（旧 v23.77 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.140';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "7';"));
+  dSrc.includes("const GAME_VERSION = 'v24.141';") && !dSrc.includes("const GAME_VERSION = 'v23.7" + "7';"));
 ok('data.js 仍保留 v23.77 历史注释（暂停菜单当前所在地，累积注释块）', dSrc.includes('v23.77 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v23.76 历史注释（步行累计里程碑，姊妹 pin 不失效）', dSrc.includes('v23.76 新内容·步行累计维度里程碑'));
 
@@ -104,6 +104,16 @@ ok('「⚔️ 回合 N」行逐字未动（v12.9 起既有口径零回归）',
   dbSrc.includes("text(`⚔️ 回合 ${S.battleTurn || 1}`, 60, 26, 'bold 14px', '#ffd24a');"));
 ok('试炼关行「🧭 试炼三连战 第 N/3 关」零回归（v12.9 口径）',
   dbSrc.includes('`🧭 试炼三连战 第 ${st}/${RUSH_BOSSES.length} 关${rushNote}`'));
+// —— v24.141 战后升级预览 源级落位 ————
+ok('drawBattle.js 补 learnsAt import（插于 FRAGMENTS 前，既有 import pin 零破坏）',
+  dbSrc.includes('learnsAt, FRAGMENTS, MAPS, dayPhase'));
+ok('drawBattle.js 含 v24.141 注释（战前「战后升级预览」说明）', dbSrc.includes('v24.141 体验打磨·信息透明·纯显示'));
+ok('drawBattle.js 战后升级判定与 grantXp 同源（xp+enemy.xp≥xpNext、xpNext>0 防御式）',
+  dbSrc.includes('(hero.xpNext > 0) && hero.xp + (enemy.xp || 0) >= hero.xpNext'));
+ok('drawBattle.js ⭐ 角标落 620 右对齐 12px 金标（y=176 角标列下延）',
+  dbSrc.includes("620, 176, 'bold 12px', '#ffd24a', 'right'"));
+ok('drawBattle.js 领悟新招经 learnsAt（与 checkSkills 同读 LEARN_AT 单一数据源）',
+  dbSrc.includes('learnsAt(hero.level + 1)'));
 
 // —— 运行期：drawBattle 真实渲染捕获（village / gallery 两档 📍 + 回合计数零回归 + 零抛错）——
 {
@@ -135,6 +145,13 @@ ok('试炼关行「🧭 试炼三连战 第 N/3 关」零回归（v12.9 口径�
     drawBattle();
     ok('gallery（最长名档）：头部捕获「📍无字回廊」', cap.includes('📍 无字回廊'), JSON.stringify(cap.filter((t) => t.includes('📍'))));
     ok('两档渲染零抛错', true);
+    // —— v24.141 战后升级预览 运行期实证（hero.level 3 / xpNext 20 / enemy.xp 8）——
+    S.G.xp = 0; cap.length = 0; drawBattle();
+    ok('xp 0 + 敌 8 < 20：不显示 ⭐ 战后升级（未命中零噪音）',
+      !cap.some((t) => t.includes('⭐ 战后升至')), JSON.stringify(cap.filter((t) => t.includes('⭐'))));
+    S.G.xp = 15; cap.length = 0; drawBattle();
+    ok('xp 15 + 敌 8 ≥ 20：捕获「⭐ 战后升至 Lv.4 · 领悟「治愈术」」（learnsAt 同源）',
+      cap.includes('⭐ 战后升至 Lv.4 · 领悟「治愈术」'), JSON.stringify(cap.filter((t) => t.includes('⭐'))));
   } catch (e) { threw = e; }
   ok('运行期 drawBattle 渲染零抛错', threw === null, threw && String(threw.stack || threw));
   CTX.fillText = origFt;
@@ -160,7 +177,7 @@ ok('README 含 smoke_v2318_battlemap 入库（214 份）', readme.includes('smok
 ok('README 仍保留 v23.78 战斗行当前所在地口径（历史口径）', readme.includes('v23.78 起战斗画面顶部常显「📍 当前地图名」'));
 ok('README 仍保留 v23.77 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.77 起含 暂停菜单「当前所在地」守护') && readme.includes('smoke_v2317_pausemap 入库（213 份）'));
-ok('CHANGELOG 顶部已追加 v23.79 条目（战斗画面所在地）', changelog.startsWith('## v24.140 '));
+ok('CHANGELOG 顶部已追加 v23.79 条目（战斗画面所在地）', changelog.startsWith('## v24.141 '));
 ok('CHANGELOG 仍保留 v23.78 条目标题（战斗画面顶部右缘补「📍 所在地」，历史口径）', changelog.includes('## v23.78 战斗画面顶部右缘补「📍 所在地」'));
 ok('CHANGELOG 仍保留 v23.77 条目标题（历史口径）', changelog.includes('## v23.77 暂停菜单（Esc）头部补「当前所在地」'));
 

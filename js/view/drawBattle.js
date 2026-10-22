@@ -2,7 +2,7 @@
 // view/drawBattle.js —— 战斗画面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, DIFFS, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, FRAGMENTS, MAPS, dayPhase, NIGHT_WIN_GOAL } from '../data.js';
+import { SKILL_DATA, RUSH_BOSSES, CHARGE_MULT, DIFFS, ELEM_NAME, RUSH_RECOVER, SPECIES, FLEE_SUCCESS, BURN_PCT, POISON_PCT, DEFEND_MULT, DEFEND_MP, COUNTER_CHANCE, COUNTER_MULT, SHIELD_MULT, HIT_FB_MS, UI_PULSE_MS, FX_ENEMY, FX_HERO, BATTLE_MON, BATTLE_HERO, HEAVY_MULT, HEAVY_MULT_PHASED, HEAL_PCT, PHASE2_AT, PHASE2_HEAL_PCT, TRUE_BONUS_GOLD, DOT_MIN, BLOG_WIN, learnsAt, FRAGMENTS, MAPS, dayPhase, NIGHT_WIN_GOAL } from '../data.js';
 import { cmdDmg, atkEstimate, skillEstimate, rushReward, canonicalName, isBossFoe, potionRestore, elixirRestore } from '../rules.js';
 import { CV, CTX, rr, panel, text, hpbar } from './canvas.js';
 import { drawHero, drawMonster, BATTLE_SCALE } from './sprites.js';
@@ -361,6 +361,23 @@ export function drawBattle() {
       // 纯显示零结算零存档变化。
       const spTag = (SPECIES[canonicalName(enemy.name)] || {}).tag;
       if (spTag) text(`敌方特性：${spTag}`, 620, 162, 'bold 11px', '#8fa8b8', 'right');
+    }
+    // v24.141 体验打磨·信息透明·纯显示：战前「战后升级预览」——承 v24.18 胜利战报「距 Lv.N 升级还需
+    // M 经验」/ v21.61 状态页「距升级还差 N 经验」/ v19.x 状态页经验条同一「升级需求可见」主线补战争现场：
+    // 胜利战报/状态页都报「距升级还差 N」，唯独战斗决策现场（要不要省药/换装/硬刚 Boss）查无「这仗打完
+    // 会不会升级」一眼之数——战利品预览行（112）只报「经验 +XP」，玩家得心算 hero.xp+enemy.xp 会不会
+    // 越过 xpNext；现与 hero.grantXp 升级循环逐字同源判定 hero.xp + enemy.xp >= hero.xpNext（enemy.xp
+    // 已是区域倍率加成后的实际结算值，随胜即发、与 battle.winBattle 同读一份源），命中时右缘角标列下方
+    // y=176（敌招/特性行 162 之下 14px、石甲 112/灼烧 128/冻结 144 之上已空、620 右对齐与画布底精灵区
+    // 零重叠）补一行金标「⭐ 战后升至 Lv.N」（跨级仍报首级，与胜利战报「距 Lv.X 升级」同口径），若升到
+    // 的等级正领悟新招（data.js learnsAt 单一数据源，与 hero.checkSkills 升级领悟同读一份 LEARN_AT 表）
+    // 再补「 · 领悟「技能名」」——「这仗打完能把新招学到手」是回城补给/硬刚 Boss 前最强的决策信号；
+    // 未命中零噪音（战利品预览行/角标列既有元素逐字未动），纯显示零结算零存档零数值变化（经验/升级/
+    // 技能领悟结算逐字未动，遇敌/掉落/战斗/成就/存档零影响）。
+    const lvlUpNow = (hero.xpNext > 0) && hero.xp + (enemy.xp || 0) >= hero.xpNext;
+    if (lvlUpNow) {
+      const _newSkill = learnsAt(hero.level + 1);
+      text(`⭐ 战后升至 Lv.${hero.level + 1}${_newSkill ? ` · 领悟「${_newSkill}」` : ''}`, 620, 176, 'bold 12px', '#ffd24a', 'right');
     }
   }
   drawHero(BATTLE_HERO.x, BATTLE_HERO.y, 'R', hero.hurt ? { hurt: 1 } : null, BATTLE_SCALE);
