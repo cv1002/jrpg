@@ -3031,6 +3031,21 @@
 // 同一份源），仅显示不结算。零结算零数值零存档，遇敌/掉落/战斗/成就零影响。配套：smoke_v2153 运行期
 // 断言与 smoke_v2313 源级 pin 同步升级；全库 359 件套 GAME_VERSION 字面量 pin 级联（v24.137→v24.138，
 // 哨兵前望 360 不变 —— 本轮无新套件无计数变化）。
+// v24.143 新内容·新支线（第四十五条）：「守炉翁」+「灵药照炉」——持有 FURNACE_GOAL(2) 瓶高级灵药换 80 金
+// + 1 高级灵药（承 v24.136 采药翁「药囊常满」/ v24.135 账房先生「灯油的账」同一「全新 NPC + 持有类计数
+// 支线」先例系列，持有类第三例）：星井矿脉东北内室 (21,5) 新增「守炉翁」——守着矿道深处那口老丹炉的
+// 守炉人：星砂入炉、炼出灯下人最后那口猛药，「丹炉的火，是和灯芯一样不能熄的东西」（与守墓人守冢/打更人
+// 守夜/守火翁守火/账房先生守账/采药翁守药囊同脉，守着灯下人的丹炉）。玩家手里每多一瓶高级灵药，都算替他
+// 把炉口的火续上一把——替他持有 FURNACE_GOAL(2) 瓶（计数口径 hero.potion2 复用既有字段：core.brewNow
+// 酿造/支线奖励/战斗掉落写定、喝药扣减，随 snapshotHero 全量快照自动持久化、防御式 (g.potion2||0) 旧档
+// 零迁移，与 ACH_LIST elixir「灵药盈囊」ELIXIR_STOCK_GOAL(3) 同读一份源——支线门槛 2 低于成就门槛、
+// 顺路先完成支线再解锁成就；持有类 cond 状态判定、交付后 done 粘性不受消耗回落影响）；无 unlockOn
+// （守炉翁在星井矿脉东北内室，到访矿脉即可接）、active 页函数型实时报进度、done 页按 hero.trueBoss/
+// caveBoss/bossDefeated 三档分档（守炉翁 linesByStage 叙事与 after 彩蛋并入零内容丢失）。零新计数零新
+// 状态零新存档、QUESTS 表驱动（弹窗对话/任务日志/顶标/交付/灯火同心分母全端自动跟随 44→45、voiceList/
+// 有口皆碑分母 Object.keys(NPCS) 44→45 自动跟随）；只改 js/data.js（FURNACE_GOAL 常量+export、QUESTS.
+// side_furnace、NPCS.furnace、NPC_SPOTS '21,5'、cave.extras (21,5)、GAME_VERSION v24.142→v24.143）+
+// README/package.json/CHANGELOG + 新套件 smoke_v24143_furnacequest + 全库 359 件套 pin 级联（哨兵前望 361）。
 // v24.142 文档整理·版本锚点推进（无新功能、零行为变化——本轮实践「自动持续完善」的文档兜底路径）：
 // 背景：项目计数端口已近枯竭、显示面已彻底打磨（v24.128-136 新支线系 + v24.115-125 HUD 进度系 +
 // v24.137-141 文档/帮助页/战斗/商店/战前升级预览打磨后全屏无缺口），本轮走「若已足够完整则改做打磨/文档」
@@ -3075,7 +3090,7 @@
 // 补 4 字口径（12px estW 增 51.5 ≈463.7 ≤470 面板预算、行数不变仍 14、r[1] 与既有各段逐字未动，
 // 纯文字零逻辑零结算零存档）。battle/view 逐字未动，遇敌/掉落/战斗/成就/存档零影响。配套：全库
 // 285 件套 GAME_VERSION 字面量 pin 级联（v24.138→v24.139，哨兵前望 360 不变 —— 本轮无新套件无计数变化）。
-const GAME_VERSION = 'v24.142';
+const GAME_VERSION = 'v24.143';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
@@ -3654,6 +3669,11 @@ const MAPS={
       // 可面对面对话、西邻 (11,12) '。' 轨道动线、东邻 (13,12) 岩壁——立在水晶脚下不卡矿车轨道/
       // 矿车区/试炼碑/星砂宝箱任何动线）
       { x: 12, y: 12, ty: 'NPC' },
+      // 守炉翁（v24.143 新 NPC·第四十五条支线「灵药照炉」委托人）：矿脉东北内室 (21,5)——坐标为可行走
+      // '0' 格且未被他图占用（全图 extras 扫描 (21,5) 仅 cave 一处；四邻 (20,5)/(22,5)/(21,4)/(21,6)
+      // 皆 '0' 可行走可面对面对话，立在矿脉东北内室、不卡祭坛/试炼碑/星砂车/宝箱任何动线），
+      // 守着矿道深处那口炼灯下猛药的老丹炉
+      { x: 21, y: 5, ty: 'NPC' },
       { x: 12, y: 11, ty: 'SB' },   // 终焉水晶（双徽记开门 → 无字回廊）
       { x: 18, y: 12, ty: 'TRIAL' },
     ],
@@ -4195,6 +4215,11 @@ const NPC_SPOTS = {
   // (12,12)/(14,12)/(13,11)/(13,13) 皆 '0'/'.' 可行走可面对面对话，立在蛇形主路以东草格上不挡
   // 主路/营地/祭坛任何动线；与琴师 (14,15) 同处南坡草场、互不占位）
   '13,12': 'herbalist',
+  // 守炉翁（v24.143 新 NPC·第四十五条支线「灵药照炉」委托人）：星井矿脉东北内室 (21,5) ——
+  // 全局坐标键未被他图占用（全图 extras 扫描 (21,5) 仅 cave 一处；与既有 45 键零冲突，四邻
+  // (20,5)/(22,5)/(21,4)/(21,6) 皆 '0' 可行走可面对面对话，立在矿脉东北内室、远离祭坛/试炼碑/
+  // 星砂车/宝箱任何动线；与失名的旅人 (21,2) 同处北段、互不占位）
+  '21,5': 'furnace',
 };
 
 const NPCS={
@@ -4962,6 +4987,30 @@ const NPCS={
   ], after:[
     ['采药翁：都亮回来了。','药香顺着夜风','散遍了整个林子。 [Enter] 继续'],
     ['采药翁：往后你的药囊，我替你记着。','备足药，走稳路——','灯下的人，就都回得来。 [Enter] 结束'],
+  ]},
+  // v24.143 新内容·新支线（第四十五条「灵药照炉」委托人）：星井矿脉东北内室 (21,5)「守炉翁」——守着
+  // 矿道深处那口老丹炉的老守炉人：星砂入炉，炼出灯下人最后那口猛药，「丹炉的火，是和灯芯一样不能熄的
+  // 东西」（与守墓人守冢/打更人守夜/守火翁守火/账房先生守账/采药翁守药囊同脉，守着灯下人的丹炉）；玩家
+  // 手里每多一瓶高级灵药（QUESTS.side_furnace：持有 FURNACE_GOAL(2) 瓶，计数 hero.potion2 复用既有字段
+  // ——core.brewNow 酿造/支线奖励/战斗掉落写定、喝药扣减，与 ACH_LIST elixir「灵药盈囊」同读一份源、
+  // 支线门槛 2 低于成就门槛 ELIXIR_STOCK_GOAL(3)）；npcQuestPages 有任务后优先走任务页（talk.offer/
+  // active/turnin/done 四态），voiceList/灯下之声 N 由 Object.keys(NPCS) 派生自动跟随、有口皆碑分母自动跟随。
+  furnace:{name:'守炉翁', mark:'kettle', linesByStage:[
+    { gate:null, lines:[
+      ['守炉翁：矿道深处的这口炉，','炼的是灯下人最后那口猛药。','星砂入炉，火不能停。 [Enter] 继续'],
+      ['守炉翁：药在瓶里存着，火在心里存着。','你身上那瓶灵药，','就替我续着炉口的火。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['守炉翁：魔王倒下了，可夜路还长。','炉子还得烧，药还得炼。','猛药不是吃药的人贪，','是走夜路的人要。 [Enter] 继续'],
+      ['守炉翁：你带着灵药走过的地方，','炉火都替你记着。','够亮了，够滚烫了。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['守炉翁：回廊开了。','听说名字被忘掉的人，都在那暗处躺着。','那里没有炉火，','比冻骨头还冷。 [Enter] 继续'],
+      ['守炉翁：去吧。药带够——','名字要记得，命也得留着。','炉子替你守着。 [Enter] 结束'],
+    ]},
+  ], after:[
+    ['守炉翁：都亮回来了。','丹炉的火光','顺着矿道一直亮到了镇口。 [Enter] 继续'],
+    ['守炉翁：往后你的灵药，我替你记着。','炉火不熄，灯就长明——','灯下的人，就都回得来。 [Enter] 结束'],
   ]},
 };
 
@@ -5759,6 +5808,10 @@ const LEDGER_GOAL = 200;
 // 同读此源，与 ACH_LIST stock「有备无患」POTIONS_GOAL(20) 同一「药水持有」家族——支线门槛 15 低于成就
 // 门槛 20，顺路先完成支线再解锁成就，调门槛只改本行一处全端自动跟随。
 const MEDKIT_GOAL = 15;
+// 第四十五条支线「灵药照炉」持有高级灵药阈值（单一数据源）：QUESTS.side_furnace 的 cond/condProg/obj/turnin
+// 同读此源，与 ACH_LIST elixir「灵药盈囊」ELIXIR_STOCK_GOAL(3) 同一「灵药持有」家族——支线门槛 2 低于成就
+// 门槛 3，顺路先完成支线再解锁成就，调门槛只改本行一处全端自动跟随。
+const FURNACE_GOAL = 2;
 
 // 成就「有备无患」药水持有阈值（单一数据源，v22.0 新成就·药水线首枚里程碑，承 v21.91 长明不熄 /
 // v21.93 驱雾百战 / v21.95 彻夜长明 / v21.97 鸿运当头 / v21.99 金玉满堂 单成就先例）：药水是全程陪伴的
@@ -8522,6 +8575,65 @@ const QUESTS={
       ]])),
     },
   },
+  // 第四十五条支线「灵药照炉」（v24.143 新内容·新支线·持有类：星井矿脉东北内室 (21,5) 新 NPC「守炉翁」
+  // 承 v24.135 账房先生「灯油的账」/ v24.136 采药翁「药囊常满」同一「全新 NPC + 持有类计数支线」先例
+  // （持有类系列第三例）：丹炉的火，是和灯芯一样不能熄的东西——守炉翁守着矿道深处那口老丹炉，玩家手里
+  // 每多一瓶高级灵药，都算替他把炉口的火续上一把——替他持有 FURNACE_GOAL(2) 瓶。
+  // 计数 hero.potion2 复用既有字段（core.brewNow 酿造成功/支线奖励/战斗掉落写定、喝药扣减，随
+  // snapshotHero 全量快照自动持久化、防御式 (g.potion2||0) 旧档零迁移，与 ACH_LIST elixir「灵药盈囊」
+  // 同读一份源——持有类 cond 状态判定、交付后 done 粘性不受消耗回落影响，支线门槛 2 低于成就门槛
+  // ELIXIR_STOCK_GOAL(3)、顺路先完成支线再解锁成就；交付奖励 80 金 + 1 高级灵药，交付后持有 3 瓶恰过
+  // 成就门槛、当场顺路解锁）；零新计数零新状态零新存档、QUESTS 表驱动（弹窗对话/任务日志/顶标/交付/
+  // 灯火同心分母全端自动跟随 44→45、voiceList/有口皆碑分母 Object.keys(NPCS) 44→45 自动跟随）；
+  // 无 unlockOn（守炉翁在星井矿脉，到访矿脉即可接，承 side_wait/side_ledger/side_herb 同款）；
+  // active 页函数型实时报进度、done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档（守炉翁原有
+  // linesByStage 叙事与 after 彩蛋并入零内容丢失）。奖励 80 金 + 1 高级灵药（承 side_bell/side_watch/
+  // side_kindle/side_ledger/side_herb 80 档——「备药」自开局第一瓶灵药起持续累计、全程伴随）。
+  side_furnace:{
+    id:'side_furnace', kind:'side', store:true, npc:'furnace', giver:'furnace',
+    cond:(g)=>((g.potion2||0))>=FURNACE_GOAL,
+    condProg:(g)=>`${Math.floor(g.potion2||0)}/${FURNACE_GOAL} 瓶`,
+    name:'灵药照炉', where:'星井矿脉·守炉翁（持有高级灵药）',
+    obj:`随身备好 ${FURNACE_GOAL} 瓶高级灵药——猛药在身，炉火不熄`,
+    offer:'去星井矿脉找守炉翁，接下「灵药照炉」的委托',
+    turnin:`替守炉翁备足 ${FURNACE_GOAL} 瓶高级灵药！回星井矿脉找守炉翁`,
+    done:'守炉翁点过药瓶，说猛药在身、炉火不熄——灯下人的夜路，有药才算稳。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '守炉翁：矿道深处的这口炉，',
+        '炼的是灯下人最后那口猛药。',
+        `你若随身备下 ${FURNACE_GOAL} 瓶高级灵药——`,
+        '夜再长，也有人走得到头。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '守炉翁：药在瓶里存着，火在心里存着。',
+        `（你身上现有 ${Math.floor((hero.potion2||0))}/${FURNACE_GOAL} 瓶高级灵药——还差一些）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '守炉翁：炉火够旺。你这一瓶灵药，',
+        '够灯下人把最长的夜走过去了。',
+        `备足 ${FURNACE_GOAL} 瓶仍肯随身带着，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['守炉翁：灯都亮回来了。','丹炉的火光','顺着矿道一直亮到了镇口。 [Enter] 继续'],
+        ['守炉翁：往后你的灵药，我替你记着。','炉火不熄，灯就长明——','灯下的人，就都回得来。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '守炉翁：领主散了，矿脉也敞亮了。',
+        '炉子添了把新火，',
+        '炼出的药也该更暖了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '守炉翁：灯芯回来了，夜也没那么长了。',
+        '你带在身上的那些灵药，',
+        '都护在走夜路的人身上了。 [Enter] 结束',
+      ]] : [[
+        '守炉翁：这瓶药替你留着。',
+        '往后每多一瓶灵药，',
+        '都是在给灯下的夜路续火。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -9654,5 +9766,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, FURNACE_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL,
 };
