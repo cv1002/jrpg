@@ -98,7 +98,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.03', !!_gv && (_gv[0] > 24 || (_gv
 // —— data.js 源级落位 ——
 ok('data.js 含 v24.04 注释（宝箱/宝藏 数值速查行说明）', dSrc.includes('// v24.04 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.03 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.141';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "3';"));
+  dSrc.includes("const GAME_VERSION = 'v24.142';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "3';"));
 ok('data.js 仍保留 v24.03 历史注释（战斗画面 ⚡ 困难 角标说明，累积注释块）',
   dSrc.includes('// v24.03 体验打磨·信息透明·纯显示'));
 ok('data.js 仍保留 v24.02 与 v24.01 历史注释（首胜/彩头 行 · 专属 BGM）',
@@ -179,7 +179,7 @@ ok('README 含 smoke_v2404_chestrow 入库（228 份）', readme.includes('smoke
 ok('README 仍保留 v24.03 历史守护描述与入库口径（历史累积）',
   readme.includes('v24.03 起含 战斗画面「⚡ 困难」角标守护') && readme.includes('smoke_v2403_diffbattle 入库（227 份）'));
 ok('README 仍保留 v24.02 历史守护描述（「首胜 / 彩头」数值速查行守护）', readme.includes('v24.02 起含 「首胜 / 彩头」数值速查行守护'));
-ok('CHANGELOG 顶部已追加 v24.18 条目（宝箱 / 宝藏 数值速查行）', changelog.startsWith('## v24.141 '));
+ok('CHANGELOG 顶部已追加 v24.18 条目（宝箱 / 宝藏 数值速查行）', changelog.startsWith('## v24.142 '));
 ok('CHANGELOG 顶部条目含宝箱/宝藏与 chestTotal 口径说明',
   changelog.includes('宝箱 / 宝藏') && changelog.includes('chestTotal') && changelog.includes('CHEST_GOLD_BASE'));
 ok('CHANGELOG 仍保留 v24.03 与 v24.02 条目标题（历史口径）',

@@ -97,7 +97,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.01', !!_gv && (_gv[0] > 24 || (_gv
 // —— data.js 源级落位 ——
 ok('data.js 含 v24.02 注释（首胜/彩头 数值速查行说明）', dSrc.includes('// v24.02 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.01 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.141';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "1';"));
+  dSrc.includes("const GAME_VERSION = 'v24.142';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "1';"));
 ok('data.js 仍保留 v24.01 历史注释（胜利/阵亡/尾声专属 BGM 说明，累积注释块）',
   dSrc.includes('// v24.01 音效反馈·听觉信息透明'));
 ok('data.js 仍保留 v24.00 与 v23.99 历史注释（试炼碑预警/伤害公式行）',
@@ -161,7 +161,7 @@ ok('README 含 smoke_v2402_firstwin 入库（226 份）', readme.includes('smoke
 ok('README 仍保留 v24.01 历史守护描述与入库口径（历史累积）',
   readme.includes('v24.01 起含 胜利/阵亡/尾声专属 BGM 守护') && readme.includes('smoke_v2401_winbgm 入库（225 份）'));
 ok('README 仍保留 v24.00 历史守护描述（试炼碑等级达标预警守护）', readme.includes('v24.00 起含 试炼碑等级达标预警守护'));
-ok('CHANGELOG 顶部已追加 v24.18 条目（首胜 / 彩头 数值速查行）', changelog.startsWith('## v24.141 '));
+ok('CHANGELOG 顶部已追加 v24.18 条目（首胜 / 彩头 数值速查行）', changelog.startsWith('## v24.142 '));
 ok('CHANGELOG 顶部条目含首胜/彩头口径说明',
   changelog.includes('首胜 / 彩头') && changelog.includes('守门人的脚印') && changelog.includes('PERFECTION_GOLD'));
 ok('CHANGELOG 仍保留 v24.01 与 v24.00 条目标题（历史口径）',

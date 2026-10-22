@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.94', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 94)), GAME_VERSION);
 ok('data.js 含 v23.95 注释（商店视窗滚动说明）', dSrc.includes('v23.95 体验打磨·可发现性·纯显示（商店商品清单视窗滚动'));
 ok('data.js GAME_VERSION 字面量已为 v23.95（旧 v23.94 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.141';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "4';"));
+  dSrc.includes("const GAME_VERSION = 'v24.142';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "4';"));
 ok('data.js 仍保留 v23.94 历史注释（重整旗鼓行 P 口径说明，累积注释块）',
   dSrc.includes('v23.94 文档整理·口径收口（帮助页「试炼进阶」重整旗鼓行补 P 存档口径'));
 
@@ -187,7 +187,7 @@ ok('README 含 smoke_v2395_shopscroll 入库（219 份）', readme.includes('smo
 ok('README 仍保留 v23.94 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.94 起含 帮助页「试炼进阶」重整旗鼓行 P 存档口径守护') &&
   readme.includes('smoke_v2394_fightback 入库（218 份）'));
-ok('CHANGELOG 顶部已追加 v23.95 条目（商店视窗滚动）', changelog.startsWith('## v24.141 '));
+ok('CHANGELOG 顶部已追加 v23.95 条目（商店视窗滚动）', changelog.startsWith('## v24.142 '));
 ok('CHANGELOG 顶部条目含视窗滚动说明', changelog.includes('商店商品清单视窗滚动'));
 ok('CHANGELOG 仍保留 v23.94 条目标题（历史口径）', changelog.includes('## v23.94 帮助页「试炼进阶」重整旗鼓行补 P 存档'));
 
