@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, POTIONS2_GOAL, BREW2_GOAL, ELIXIR_STOCK2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, SPEND_GOAL, POTIONS2_GOAL, BREW2_GOAL, ELIXIR_STOCK2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -43,6 +43,22 @@ export function drawShop(){
   // 零重叠，最宽档「🧪 药香满囊 50/50」≈100px 右缘 ≈306 < 面板中点 320 与金币左缘 ≈425）；纯显示
   // 零结算零存档零数值变化（POTIONS2_GOAL/药水持有/购买结算/商品清单/页脚逐字未动）。
   text(`🧪 药香满囊 ${(hero.item || 0)}/${POTIONS2_GOAL}`, 206, 80, '12px', '#7d93a3', 'left');
+  // v24.140 商店界面补「💸 一掷千金 N/1000」进度角标（体验打磨·信息透明·决策现场，承 v24.25 商店
+  // 「🧪 药香满囊 N/50」/ v24.09 商店「🍄 蘑菇商路 N/30」同屏同款行内角标 / v23.74 一掷千金成就同一
+  // 「成就进度于决策现场可见」主线：消费线（一掷千金 = 全游唯一消费端口里程碑，计数 hero.spent 由
+  // shop.buyPotion/buyWeapon/buyArmor/stayInn 扣款 + core.brewNow 酿造成本五处唯一产生点写入、
+  // snapshotHero 全量快照自动持久化、防御式 (hero.spent||0) 旧档零迁移、扣款落账当场 applyAchievements）
+  // 的决策现场正是杂货商店本身——v24.54/55/56 起扣款瞬间战报已补「（💸 一掷千金 N/1000）」进度后缀
+  // （五端口全部收口），但站柜台前想确认「离花满 SPEND_GOAL 还差多少」仍要开 C 成就页读一行 X/1000
+  // （与 v24.09 补蘑菇商路角标前「站柜台前查无一眼之数」同型）；现按 v24.09/v24.25 同款补角标（分子读
+  // hero.spent 防御式 (hero.spent||0)、分母读 data.js SPEND_GOAL 单一数据源，与 C 页/ACH_LIST spend
+  // 的 ok/prog 及五端口扣款战报同读一份源，调阈值只改 data.js 一处三端自动跟随；同 v24.09/v24.25
+  // 只报本线唯一档位先例——消费线仅此一档无姊妹档），12px 灰字左对齐 x=313（「药香满囊 50/50」右缘
+  // @napi-rs/canvas 12px 实测 ≈305.7 之后、右缘「💰 N 金币」（520 右对齐）左缘 ≈447.6 之间空地 ≈142px，
+  // 最宽档「💸 一掷千金 1000/1000」实测 ≈126.4px 右缘 ≈439.4、两侧各留 ≈7px 余量，与 86/206 两枚
+  // 既有角标与右缘金币零重叠）；纯显示零结算零存档零数值变化（SPEND_GOAL/扣款计数/购买结算/商品清单/
+  // 页脚/既有两枚角标逐字未动）。
+  text(`💸 一掷千金 ${(hero.spent || 0)}/${SPEND_GOAL}`, 313, 80, '12px', '#7d93a3', 'left');
   // v23.95 商品清单视窗滚动（体验打磨·可发现性·纯显示）：v23.92 星铁剑入店后清单最长 10 行
   // （新手持木剑布衣+持菇：药水/卖菇/铁剑/秘银剑/星铁剑/勇者之剑/皮甲/锁子甲/龙鳞甲/离开——
   // buildShopList 实测），第 9 行（i=8，rect 400..432）已画出 360 高的面板底（410）、第 10 行

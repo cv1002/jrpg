@@ -46,7 +46,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.121', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 121)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.122（旧 v24.121 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v24.121';"));
+  dSrc.includes("const GAME_VERSION = 'v24.140';") && !dSrc.includes("const GAME_VERSION = 'v24.121';"));
 ok('data.js 含 v24.122 注释（星砂归匣新支线说明）',
   dSrc.includes('v24.122 新内容·新支线（第三十三条）'));
 ok('data.js 仍保留 v24.121 历史注释（筛砂人砂里的光说明，零内容丢失）',
@@ -202,7 +202,7 @@ ok('package.json 实跑链共 344 份（smoke.mjs + 344 专项）', chain.length
 ok('package.json 链尾为 smoke_v24122_crystalquest（第 345 份）', chain[chain.length - 1] === 'smoke_v24136_herbquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24121_siftquest.mjs && smoke_v24122_crystalquest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs && node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.122（startsWith）', changelog.startsWith('## v24.139'));
+ok('CHANGELOG.md 顶部条目已为 v24.122（startsWith）', changelog.startsWith('## v24.140'));
 ok('CHANGELOG v24.122 条目含「星砂归匣」与「CRYSTAL_GOAL」与「守晶人」',
   changelog.includes('星砂归匣') && changelog.includes('CRYSTAL_GOAL') && changelog.includes('守晶人'));
 ok('CHANGELOG 仍保留 v24.121 条目（历史保留）', changelog.includes('## v24.121 '));
@@ -219,15 +219,15 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.121 pin 零残留 ——
 const s24121 = read('smoke_v24121_siftquest.mjs');
-ok('smoke_v24121 的 GAME_VERSION 字面量 pin 已更新为 v24.122', s24121.includes("const GAME_VERSION = 'v24.139';"));
-ok('smoke_v24121 的 CHANGELOG 顶 pin 已更新为 ## v24.122 ', s24121.includes("startsWith('## v24.139'"));
+ok('smoke_v24121 的 GAME_VERSION 字面量 pin 已更新为 v24.122', s24121.includes("const GAME_VERSION = 'v24.140';"));
+ok('smoke_v24121 的 CHANGELOG 顶 pin 已更新为 ## v24.122 ', s24121.includes("startsWith('## v24.140'"));
 ok('smoke_v24121 的件套 pin 已更新为三百五十九件套（三百五十八件套清除）', s24121.includes('三百五十九件套（三百五十八件套清除）'));
 ok('smoke_v24121 的 README/链 tail pin 已随新现实延伸（含 smoke_v24122_crystalquest）',
   s24121.includes('smoke_v24122_crystalquest'));
 ok('smoke_v24121 的 package.json 串尾 pin 已延伸至 smoke_v24122_crystalquest', s24121.includes('node tests/smoke_v24121_siftquest.mjs'));
 ok('smoke_v24121 的链尾 pin 已推进至 smoke_v24122_crystalquest（第 345 份）', s24121.includes("=== 'smoke_v24136_herbquest'"));
 const s24120 = read('smoke_v24120_chesthud.mjs');
-ok('smoke_v24120 的 GAME_VERSION 字面量 pin 已更新为 v24.122', s24120.includes("const GAME_VERSION = 'v24.139';"));
+ok('smoke_v24120 的 GAME_VERSION 字面量 pin 已更新为 v24.122', s24120.includes("const GAME_VERSION = 'v24.140';"));
 ok('smoke_v24120 的链尾 pin 已推进至 smoke_v24122_crystalquest（第 345 份）', s24120.includes("=== 'smoke_v24136_herbquest'"));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（344 专项 / 345）且尚无 346 口径哨兵',

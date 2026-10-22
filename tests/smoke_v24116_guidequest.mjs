@@ -44,7 +44,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.115', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 115)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.116（旧 v24.115 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v24.115';"));
+  dSrc.includes("const GAME_VERSION = 'v24.140';") && !dSrc.includes("const GAME_VERSION = 'v24.115';"));
 ok('data.js 含 v24.116 注释（药要带足新支线说明）',
   dSrc.includes('v24.116 新内容·新支线（第二十九条）'));
 ok('data.js 仍保留 v24.115 历史注释（HUD 成就进度说明，零内容丢失）',
@@ -190,7 +190,7 @@ ok('package.json 实跑链共 338 份（smoke.mjs + 338 专项）', chain.length
 ok('package.json 链尾为 smoke_v24116_guidequest（第 339 份）', chain[chain.length - 1] === 'smoke_v24136_herbquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24115_achhud.mjs && smoke_v24116_guidequest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24115_achhud.mjs && node tests/smoke_v24116_guidequest.mjs && node tests/smoke_v24117_codexhud.mjs && node tests/smoke_v24118_wellquest.mjs && node tests/smoke_v24119_huntquest.mjs && node tests/smoke_v24120_chesthud.mjs && node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs && node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.116（startsWith）', changelog.startsWith('## v24.139'));
+ok('CHANGELOG.md 顶部条目已为 v24.116（startsWith）', changelog.startsWith('## v24.140'));
 ok('CHANGELOG v24.116 条目含「药要带足」与「GUIDE_GOAL」与「引灯人」',
   changelog.includes('药要带足') && changelog.includes('GUIDE_GOAL') && changelog.includes('引灯人'));
 ok('CHANGELOG 仍保留 v24.115 条目（历史保留）', changelog.includes('## v24.115'));
@@ -207,8 +207,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.115 pin 零残留 ——
 const s24115 = read('smoke_v24115_achhud.mjs');
-ok('smoke_v24115 的 GAME_VERSION 字面量 pin 已更新为 v24.116', s24115.includes("const GAME_VERSION = 'v24.139';"));
-ok('smoke_v24115 的 CHANGELOG 顶 pin 已更新为 ## v24.116 ', s24115.includes("startsWith('## v24.139'"));
+ok('smoke_v24115 的 GAME_VERSION 字面量 pin 已更新为 v24.116', s24115.includes("const GAME_VERSION = 'v24.140';"));
+ok('smoke_v24115 的 CHANGELOG 顶 pin 已更新为 ## v24.116 ', s24115.includes("startsWith('## v24.140'"));
 ok('smoke_v24115 的件套 pin 已更新为三百五十九件套（三百五十八件套清除）', s24115.includes('三百五十九件套（三百五十八件套清除）'));
 ok('smoke_v24115 的 README/链 tail pin 已随新现实延伸（含 smoke_v24116_guidequest）',
   s24115.includes('smoke_v24116_guidequest'));

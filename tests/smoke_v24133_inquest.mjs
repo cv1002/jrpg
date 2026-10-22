@@ -44,7 +44,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.132', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 132)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.133（旧 v24.132 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
+  dSrc.includes("const GAME_VERSION = 'v24.140';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
 ok('data.js 含 v24.133 注释（一夜好眠新支线说明）',
   dSrc.includes('v24.133 新内容·新支线（第四十一条）'));
 ok('data.js 仍保留 v24.132 历史注释（灰烬不冷支线说明，零内容丢失）',
@@ -195,7 +195,7 @@ ok('package.json 实跑链共 355 份（smoke.mjs + 355 专项）', chain.length
 ok('package.json 链尾为 smoke_v24133_inquest（第 359 份）', chain[chain.length - 1] === 'smoke_v24136_herbquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24132_fallenquest.mjs && smoke_v24133_inquest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.133（startsWith）', changelog.startsWith('## v24.139'));
+ok('CHANGELOG.md 顶部条目已为 v24.133（startsWith）', changelog.startsWith('## v24.140'));
 ok('CHANGELOG v24.133 条目含「一夜好眠」与「INN_GOAL」与「打更人」',
   changelog.includes('一夜好眠') && changelog.includes('INN_GOAL') && changelog.includes('打更人'));
 ok('CHANGELOG 仍保留 v24.132 条目（历史保留）', changelog.includes('## v24.132 '));
@@ -212,8 +212,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.132 pin 零残留 ——
 const s24132 = read('smoke_v24132_fallenquest.mjs');
-ok('smoke_v24132 的 GAME_VERSION 字面量 pin 已更新为 v24.133', s24132.includes("const GAME_VERSION = 'v24.139';"));
-ok('smoke_v24132 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24132.includes("startsWith('## v24.139'"));
+ok('smoke_v24132 的 GAME_VERSION 字面量 pin 已更新为 v24.133', s24132.includes("const GAME_VERSION = 'v24.140';"));
+ok('smoke_v24132 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24132.includes("startsWith('## v24.140'"));
 ok('smoke_v24132 的件套 pin 已更新为三百五十九件套（三百五十八件套清除）', s24132.includes('三百五十九件套（三百五十八件套清除）'));
 ok('smoke_v24132 的 README/链 tail pin 已随新现实延伸（含 smoke_v24133_inquest）',
   s24132.includes('smoke_v24133_inquest'));
