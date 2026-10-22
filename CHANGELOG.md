@@ -1,4 +1,9 @@
-# CHANGELOG
+## v24.144 收口修复·版本锚点推进（无新功能、零行为变化 —— 复验收口 v24.143 WIP 遗留并推进版本锚点）
+
+- 【背景】v24.143（守炉翁「灵药照炉」新支线）以 WIP 形态提交：全库 359 件套 GAME_VERSION 字面量 pin 级联（v24.142→v24.143、件套口径 359→360）散在工作区未提交，且姊妹件 smoke_v2300_sidemore「sideObjectives 全部支线在列」断言误写 45（实测 44：multiSideHero 存档构型无 trueBoss，side_stele4「初灯的名字」locked 不计入 sideObjectives——45 条支线 - 1 锁 = 44；同屏 `statusSideSuffix`「还有 43 条」早已正确），360 件套 npm test 因此非全绿（1 处断言）。
+- 【修复】smoke_v2300_sidemore 的 sideObjectives 断言 45→44（断言名补注原因）；全库 360 件套 GAME_VERSION 字面量/顶 pin pin 级联补提交（v24.143→v24.144，哨兵前望 361 不变）。
+- 【零回归面】只改 js/data.js（GAME_VERSION v24.143→v24.144 + v24.144 注释块，历史注释块逐字保留）+ tests/smoke_v2300_sidemore（断言修正）+ README（维护者速查追加──v24.144 修复复核 / 版本速览（v24.144））+ CHANGELOG 顶条目（「# CHANGELOG」标题行随本轮移除，与 tests 的 changelog.startsWith 契约对齐）；battle/core/world/quests/view 逐字未动，遇敌/掉落/战斗/成就/存档零影响，零新套件零计数变化。
+- 【验证】`node --check js/data.js` + `npm run check` 25 模块 + 全库 **360 件套 `npm test` 端到端全绿**；GAME_VERSION v24.143→v24.144。
 
 ## v24.143 新内容·新支线（第四十五条）：星井矿脉新 NPC「守炉翁」+「灵药照炉」——持有高级灵药换谢礼
 

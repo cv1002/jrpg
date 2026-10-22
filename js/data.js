@@ -3046,6 +3046,15 @@
 // 有口皆碑分母 Object.keys(NPCS) 44→45 自动跟随）；只改 js/data.js（FURNACE_GOAL 常量+export、QUESTS.
 // side_furnace、NPCS.furnace、NPC_SPOTS '21,5'、cave.extras (21,5)、GAME_VERSION v24.142→v24.143）+
 // README/package.json/CHANGELOG + 新套件 smoke_v24143_furnacequest + 全库 359 件套 pin 级联（哨兵前望 361）。
+// v24.144 收口修复·版本锚点推进：复验并收口 v24.143 WIP 遗留——HEAD 的 v24.143 为「WIP」提交态：全库
+// 359 件套 GAME_VERSION 字面量 pin 级联与件套口径（三百六十件套）散在工作区未提交，且姊妹件
+// smoke_v2300_sidemore「sideObjectives 全部支线在列」断言误写 45（实测 44：multiSideHero 存档构型无
+// trueBoss，side_stele4「初灯的名字」locked 不计入 sideObjectives——45 条支线 - 1 锁 = 44），360 件套
+// 端到端因此非全绿；本轮修复断言 45→44 并提交级联收口（GAME_VERSION v24.143→v24.144 + README 复核注记
+// 追加──v24.144 修复复核／版本速览版本号 + CHANGELOG 顶条目——「# CHANGELOG」标题行随本轮移除收口，
+// 与 tests 的 changelog.startsWith('## v24.144') 契约对齐），游戏逻辑（battle/core/world/quests/view）
+// 逐字未动，遇敌/掉落/战斗/成就/存档零影响，零新套件零计数变化。配套：全库 360 件套 GAME_VERSION
+// 字面量 pin 级联（v24.143→v24.144，哨兵前望 361 不变）。
 // v24.142 文档整理·版本锚点推进（无新功能、零行为变化——本轮实践「自动持续完善」的文档兜底路径）：
 // 背景：项目计数端口已近枯竭、显示面已彻底打磨（v24.128-136 新支线系 + v24.115-125 HUD 进度系 +
 // v24.137-141 文档/帮助页/战斗/商店/战前升级预览打磨后全屏无缺口），本轮走「若已足够完整则改做打磨/文档」
@@ -3090,7 +3099,7 @@
 // 补 4 字口径（12px estW 增 51.5 ≈463.7 ≤470 面板预算、行数不变仍 14、r[1] 与既有各段逐字未动，
 // 纯文字零逻辑零结算零存档）。battle/view 逐字未动，遇敌/掉落/战斗/成就/存档零影响。配套：全库
 // 285 件套 GAME_VERSION 字面量 pin 级联（v24.138→v24.139，哨兵前望 360 不变 —— 本轮无新套件无计数变化）。
-const GAME_VERSION = 'v24.143';
+const GAME_VERSION = 'v24.144';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：
