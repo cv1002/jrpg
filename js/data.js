@@ -3013,7 +3013,18 @@
 // voiceList/有口皆碑分母 Object.keys(NPCS) 42→43 自动跟随）；只改 js/data.js（LEDGER_GOAL 常量+export、
 // QUESTS.side_ledger、NPCS.ledger、NPC_SPOTS '9,11'、village.extras (9,11)、GAME_VERSION v24.134→v24.135）
 // + README/package.json/CHANGELOG + 新套件 smoke_v24135_ledgerquest + 全库 357 件套 pin 级联（哨兵前望 359）。
-const GAME_VERSION = 'v24.136';
+// v24.137 文档整理·版本锚点推进（无新功能、零行为变化——本轮实践「自动持续完善」的文档兜底路径）：
+// 背景：本轮运行遇 TCC 封锁（launchd 网关对 ~/Downloads 旧文件 readdir/open-read EPERM，真实项目不可读不可写）
+// + github.com:443 间歇性阻断（push 留待后续运行补推），故在 /tmp 按既有「/tmp 主分支工作法」从权威
+// bundle（v24.133-main / e833b671）+ codeload 拉取 origin/main（v24.136 / 9794af66）逐字节重建最新工作树，
+// 先是证基线（25 模块 node --check EXIT=0 + 全库 359 件套端到端全绿）再复核文档。内容：README 数值速查
+// 开篇注记的「据 v21.35 代码实测整理」陈旧口径更新为「据 v24.136 逐值与 data.js 结算复核」，并补
+// 「版本速览」一行（44 条支线 · 44 名 NPC · 76 项成就 · 13 种图鉴 · 359 件套），CHANGELOG 顶条目如实记录
+// 本轮实况；游戏逻辑（battle/core/world/quests/view）逐字未动，遇敌/掉落/战斗/成就/存档零影响——纯文档
+// 整理，全库 359 件套 GAME_VERSION 字面量 pin 级联（v24.136→v24.137，哨兵前望 360 不变 —— 本轮无新套件
+// 无计数变化）。真机项目解封后首命令 `cd ~/Downloads/my-jrpg && git fetch origin main && git reset --hard
+// origin/main`（现目标 9794af66），并在网络恢复后自 /tmp/jrpg_work_v24137 补推本版。
+const GAME_VERSION = 'v24.137';
 // v24.22 体验打磨·信息透明·计数现场：🏆 胜利战报补「⚔️ 驱雾百战 N/100」进度后缀（承 v24.21 支线交付
 // 「🏮 灯火同心 N/11」/ v24.20 领悟战报「📖 诸技通明 N/8」/ v24.19 掉落战报「🍀 鸿运当头 N/30」/
 // v24.17 喝药「💧 渴饮甘露 N/10」同一「计数现场报进度」主线，详见 battle.js winBattle 行内注释）：

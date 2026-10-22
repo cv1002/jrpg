@@ -87,7 +87,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v22.10', !!_gv && (_gv[0] > 22 || (_gv[0] === 22 && _gv[1] >= 11)), GAME_VERSION);
 ok('data.js 含 v22.11 注释（掌灯童说明）', dSrc.includes('v22.11'));
 ok('GAME_VERSION 字面量已更新为 v24.113（旧 v22.10 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.136';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
+  dSrc.includes("const GAME_VERSION = 'v24.137';") && !dSrc.includes("const GAME_VERSION = 'v22.10';"));
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[14,3]===lampkid', NPC_SPOTS['14,3'] === 'lampkid', NPC_SPOTS['14,3']);
@@ -174,7 +174,7 @@ ok('package.json 已收录 smoke_v2211_lampkid（npm test 串跑第 107 份）',
 // 姊妹 pin 复查（v22.10 随新现实更新）
 const s2210 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2210_unsaved.mjs'), 'utf8');
 ok('s2210 GAME_VERSION 字面量 pin 已随新现实更新为 v24.113',
-  s2210.includes("const GAME_VERSION = 'v24.136';"));
+  s2210.includes("const GAME_VERSION = 'v24.137';"));
 ok('s2210 件套 pin 已随新现实更新为三百三十六件套',
   s2210.includes('三百五十九件套（三百五十八件套清除）'));
 

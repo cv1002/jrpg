@@ -125,7 +125,7 @@ ok('README 旧行「Lv1→2 约 1.5 场（潮灯镇）」已清零（守护描�
 ok('README 该行含成因（单场上限 18 < 阈值 20 / 两场最低 22）', readme.includes('单场经验上限 18 < 阈值 20') && readme.includes('两场最低 22 ≥ 20'));
 ok('README 含 v21.35 复核注记（Lv5→6 ≈2.1 / Lv9→10 ≈5.1 / Lv11→12 ≈7.0）',
   readme.includes('Lv5→6 ≈2.1') && readme.includes('Lv9→10 ≈5.1') && readme.includes('Lv11→12 ≈7.0'));
-ok('README 数值速查「据 v21.35 代码实测整理」', readme.includes('据 v21.35 代码实测整理'));
+ok('README 数值速查「历版逐值与 data.js 结算复核」（v24.137 更新口径）', readme.includes('历版逐值与 data.js 结算复核'));
 ok('README tests 树收录 smoke_v2135_levelpace', readme.includes('smoke_v2135_levelpace'));
 ok('README 件套口径存在（存在性口径——v21.7 去硬化惯例：实件数由 v21.36 冒烟守护）',
   readme.includes('冒烟') && readme.includes('件套'));
