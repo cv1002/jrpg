@@ -92,7 +92,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.93', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 94)), GAME_VERSION);
 ok('data.js 含 v23.94 注释（文档整理·口径收口说明）', dSrc.includes('v23.94 文档整理·口径收口'));
 ok('data.js GAME_VERSION 字面量已为 v23.94（旧 v23.93 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.138';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "3';"));
+  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "3';"));
 ok('data.js 仍保留 v23.93 历史注释（README 速查表「阵亡」行 P 口径说明，累积注释块）',
   dSrc.includes('v23.93 文档整理·口径收口（README 快速上手表「阵亡」行补 P 存档口径'));
 
@@ -207,7 +207,7 @@ ok('README 含 smoke_v2394_fightback 入库（218 份）', readme.includes('smok
 ok('README 仍保留 v23.93 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.93 起含 README 快速上手表「阵亡」行 P 存档口径守护') &&
   readme.includes('smoke_v2393_deadkey 入库（217 份）'));
-ok('CHANGELOG 顶部已追加 v23.94 条目（重整旗鼓行 P 口径）', changelog.startsWith('## v24.138 '));
+ok('CHANGELOG 顶部已追加 v23.94 条目（重整旗鼓行 P 口径）', changelog.startsWith('## v24.139 '));
 ok('CHANGELOG 顶部条目含重整旗鼓行 P 说明', changelog.includes('帮助页「试炼进阶」重整旗鼓行补 P 存档'));
 ok('CHANGELOG 仍保留 v23.93 条目标题（历史口径）', changelog.includes('## v23.93 文档整理·口径收口：README 快速上手表「阵亡」行补 P 存档'));
 

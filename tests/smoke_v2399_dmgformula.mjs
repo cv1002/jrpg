@@ -42,7 +42,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.98', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 98)), GAME_VERSION);
 ok('data.js 含 v23.99 注释（伤害公式速查行说明）', dSrc.includes('// v23.99 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v23.99 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.138';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
+  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
 ok('data.js 仍保留 v23.98 历史注释（经济行灵药恢复量口径说明，累积注释块）',
   dSrc.includes('// v23.98 文档整理·数值说明·同源口径'));
 
@@ -100,7 +100,7 @@ ok('README 掉落/魔物数值/技能数值行零回归（同表既行逐字未�
   readme.includes('| 掉落 | 战斗胜利 38%：8% 装备或 +60 金 / 12% 药水 / 12% 蘑菇 / 6% 灵药；宝箱 林 60% 菇 · 镇/矿/廊 45% 金 | `DROP_*` `CHEST_*` |') &&
   readme.includes('| 魔物数值 | 普通怪 hp/atk/def/xp/gold 五组均为一阶线性'));
 
-ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.138 '));
+ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.139 '));
 ok('CHANGELOG 顶部条目含伤害公式口径说明', changelog.includes('「伤害公式」') && changelog.includes('攻×2−防'));
 ok('CHANGELOG 仍保留 v23.98 与 v23.97 条目标题（历史口径）',
   changelog.includes('## v23.98 文档整理·数值说明·同源口径') &&

@@ -40,7 +40,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.12', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.12 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.138';") && !dSrc.includes("const GAME_VERSION = 'v24.12';"));
+  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v24.12';"));
 ok('data.js 含 v24.13 注释（后期经验曲线续平滑说明）',
   dSrc.includes('// v24.13 数值平衡·后期经验曲线续平滑'));
 ok('data.js 仍保留 v24.12 历史注释（胜利画面「⚔️ 身经百战 N/100」进度行说明，累积注释块）',
@@ -170,9 +170,9 @@ ok('package.json test 串 smoke_v2413 出现次数为 1', (pkg.match(/smoke_v241
 const testsDir0 = path.join(ROOT, 'tests');
 const fileCount = fs.readdirSync(testsDir0).filter((f) => f.endsWith('.mjs')).length;
 ok('tests 目录件套 = 349（348 + smoke_v24126_waitquest 入库）', fileCount === 359, String(fileCount));
-ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.138'));
+ok('CHANGELOG.md 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.139'));
 ok('CHANGELOG v24.13 条目含「数值平衡」与「续平滑」',
-  changelog.startsWith('## v24.138') && changelog.includes('数值平衡') && changelog.includes('续平滑'));
+  changelog.startsWith('## v24.139') && changelog.includes('数值平衡') && changelog.includes('续平滑'));
 ok('CHANGELOG 仍保留 v24.12 条目（历史保留）', changelog.includes('## v24.12'));
 
 // —— 哨兵链（旧代 pin 全库零残留：无任何测试再断言 v24.12 GAME_VERSION 字面量）——

@@ -97,7 +97,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.123', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 123)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.124（旧 v24.123 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.138';") && !dSrc.includes("const GAME_VERSION = 'v24.123';"));
+  dSrc.includes("const GAME_VERSION = 'v24.139';") && !dSrc.includes("const GAME_VERSION = 'v24.123';"));
 ok('data.js 含 v24.124 注释（HUD 灯火同心进度·计数现场说明）',
   dSrc.includes('v24.124 体验打磨·信息透明·计数现场'));
 ok('data.js 仍保留 v24.123 历史注释（HUD 记忆碎片进度说明，零内容丢失）',
@@ -172,7 +172,7 @@ ok('package.json 实跑链共 347 份（smoke.mjs + 346 专项）', chain.length
 ok('package.json 链尾为 smoke_v24124_questshud（第 346 份）', chain[chain.length - 1] === 'smoke_v24136_herbquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24123_fraghud.mjs && smoke_v24124_questshud.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs && node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.124（startsWith）', changelog.startsWith('## v24.138'));
+ok('CHANGELOG.md 顶部条目已为 v24.124（startsWith）', changelog.startsWith('## v24.139'));
 ok('CHANGELOG v24.124 条目含「灯火同心」与「s-quests」与「QUESTS」',
   changelog.includes('灯火同心') && changelog.includes('s-quests') && changelog.includes('QUESTS'));
 ok('CHANGELOG 仍保留 v24.123 条目（历史保留）', changelog.includes('## v24.123'));
@@ -189,8 +189,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.123 pin 零残留 ——
 const f123 = read('tests/smoke_v24123_fraghud.mjs');
-ok('smoke_v24123 的 GAME_VERSION 字面量 pin 已更新为 v24.124', f123.includes("const GAME_VERSION = 'v24.138';"));
-ok('smoke_v24123 的 CHANGELOG 顶 pin 已更新为 ## v24.124 ', f123.includes("startsWith('## v24.138'"));
+ok('smoke_v24123 的 GAME_VERSION 字面量 pin 已更新为 v24.124', f123.includes("const GAME_VERSION = 'v24.139';"));
+ok('smoke_v24123 的 CHANGELOG 顶 pin 已更新为 ## v24.124 ', f123.includes("startsWith('## v24.139'"));
 ok('smoke_v24123 的件套 pin 已更新为三百五十九件套（三百五十八件套清除）', f123.includes('三百五十九件套（三百五十八件套清除）'));
 ok('smoke_v24123 的 README/链 tail pin 已随新现实延伸（含 smoke_v24124_questshud）',
   f123.includes('smoke_v24124_questshud'));
