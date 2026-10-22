@@ -47,7 +47,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.126', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 126)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.127（旧 v24.126 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.137';") && !dSrc.includes("const GAME_VERSION = 'v24.126';"));
+  dSrc.includes("const GAME_VERSION = 'v24.138';") && !dSrc.includes("const GAME_VERSION = 'v24.126';"));
 ok('data.js 含 v24.127 注释（彻夜长明新支线说明）',
   dSrc.includes('v24.127 新内容·新支线（第三十五条）'));
 ok('data.js 仍保留 v24.126 历史注释（灯下记名说明，零内容丢失）',
@@ -206,7 +206,7 @@ ok('package.json 实跑链共 349 份（smoke.mjs + 349 专项）', chain.length
 ok('package.json 链尾为 smoke_v24127_lampquest（第 350 份）', chain[chain.length - 1] === 'smoke_v24136_herbquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24126_waitquest.mjs && smoke_v24127_lampquest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.127（startsWith）', changelog.startsWith('## v24.137'));
+ok('CHANGELOG.md 顶部条目已为 v24.127（startsWith）', changelog.startsWith('## v24.138'));
 ok('CHANGELOG v24.127 条目含「彻夜长明」与「LAMP_GOAL」与「拾灯人」',
   changelog.includes('彻夜长明') && changelog.includes('LAMP_GOAL') && changelog.includes('拾灯人'));
 ok('CHANGELOG 仍保留 v24.126 条目（历史保留）', changelog.includes('## v24.126 '));
@@ -223,14 +223,14 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.126 pin 零残留 ——
 const s24126 = read('smoke_v24126_waitquest.mjs');
-ok('smoke_v24126 的 GAME_VERSION 字面量 pin 已更新为 v24.127', s24126.includes("const GAME_VERSION = 'v24.137';"));
-ok('smoke_v24126 的 CHANGELOG 顶 pin 已更新为 ## v24.127 ', s24126.includes("startsWith('## v24.137'"));
+ok('smoke_v24126 的 GAME_VERSION 字面量 pin 已更新为 v24.127', s24126.includes("const GAME_VERSION = 'v24.138';"));
+ok('smoke_v24126 的 CHANGELOG 顶 pin 已更新为 ## v24.127 ', s24126.includes("startsWith('## v24.138'"));
 ok('smoke_v24126 的件套 pin 已更新为三百五十九件套（三百五十八件套清除）', s24126.includes('三百五十九件套（三百五十八件套清除）'));
 ok('smoke_v24126 的 README/链 tail pin 已随新现实延伸（含 smoke_v24127_lampquest）',
   s24126.includes('smoke_v24127_lampquest'));
 ok('smoke_v24126 的链尾 pin 已推进至 smoke_v24127_lampquest（第 350 份）', s24126.includes("=== 'smoke_v24136_herbquest'"));
 const s24125 = read('smoke_v24125_hunthud.mjs');
-ok('smoke_v24125 的 GAME_VERSION 字面量 pin 已更新为 v24.127', s24125.includes("const GAME_VERSION = 'v24.137';"));
+ok('smoke_v24125 的 GAME_VERSION 字面量 pin 已更新为 v24.127', s24125.includes("const GAME_VERSION = 'v24.138';"));
 ok('smoke_v24125 的链尾 pin 已推进至 smoke_v24127_lampquest（第 350 份）', s24125.includes("=== 'smoke_v24136_herbquest'"));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（349 专项 / 350）且尚无 351 口径哨兵',

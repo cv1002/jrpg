@@ -1,4 +1,5 @@
-// v21.53 专项冒烟：逃脱失败战报追加后果提示「（X 即将行动）」（体验打磨·信息透明）。
+// v21.53 专项冒烟：逃脱失败战报追加后果提示「（X 即将行动）」；v24.138 升级为同源追加「（我方 HP x/y）」
+// 存活数值（体验打磨·信息透明·纯显示，详见 data.js v24.138 注释）。
 // 背景：battle.doFlee 普通逃跑失败此前只报「❌ 逃脱失败！」——玩家按 4 失败后往往没意识到
 // 这一回合已经让给敌方（afterPlayer 实际推进 battleTurn 并 600ms 后编排 enemyAct）；而 Boss
 // 气场分支早已明示「（本回合行动保留）」，普通失败分支恰恰是「行动被消耗」却无任何提示，
@@ -82,11 +83,17 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v21.52', !!_gv && (_gv[0] > 21 || (_gv[0] === 21 && _gv[1] >= 53)), GAME_VERSION);
 const dSrc = fs.readFileSync(path.join(ROOT, 'js/data.js'), 'utf8');
 ok('data.js 含 v21.53 注释（逃脱失败战报追加后果提示说明）', dSrc.includes('v21.53 体验打磨：逃脱失败战报追加后果提示'));
+// v24.138 版本锚点升级：GAME_VERSION 已越过 v24.137 且 v24.138 data.js 注释落位
+const _gv138 = _vm(GAME_VERSION);
+ok('v24.138 锚点：GAME_VERSION 已越过 v24.137 且格式合法', !!_gv138 && (_gv138[0] > 24 || (_gv138[0] === 24 && _gv138[1] >= 138)), GAME_VERSION);
+ok('v24.138 data.js 注释落位（逃脱失败战报补我方 HP 说明）', dSrc.includes('v24.138 体验打磨·信息透明·纯显示：逃脱失败战报补'));
 
 // —— battle.js 源级落位 ——
 const bSrc = fs.readFileSync(path.join(ROOT, 'js/battle.js'), 'utf8');
-ok('battle.js 失败战报追加「（X 即将行动）」（enemy.name 单一数据源派生）',
-  bSrc.includes('S.blog.push(`❌ 逃脱失败！（${enemy.name} 即将行动）`);'));
+ok('battle.js 含 v21.53 历史注释（「逃脱失败战报追加后果提示」先例说明零内容丢失）',
+  bSrc.includes('v21.53 逃脱失败战报追加后果提示'));
+ok('battle.js 失败战报 v24.138 同源追加「（我方 HP ${hero.hp}/${hero.hpMax}）」（与 HUD/受击战报同源）',
+  bSrc.includes('S.blog.push(`❌ 逃脱失败！（${enemy.name} 即将行动）（我方 HP ${hero.hp}/${hero.hpMax}）`);'));
 ok('battle.js 旧裸文案「❌ 逃脱失败！」源级零残留',
   !bSrc.includes("S.blog.push('❌ 逃脱失败！');"));
 ok('battle.js 成功分支「🏃 成功逃脱了！」主体逐字保留 + v23.65 走为上计进度后缀落位',
@@ -103,11 +110,11 @@ ok('drawBattle 指令栏「逃跑·N%」仍由 FLEE_SUCCESS 派生（单一数�
   dbSrc.includes("'·' + Math.round(FLEE_SUCCESS * 100) + '%'"));
 
 // —— 运行期实证：startBattle + playerAction('flee') 真实路径（承 v21.50 castFire 桩法）——
-function mkHero() {
-  return { name: '测试者', level: 5, hp: 80, hpMax: 80, mp: 30, mpMax: 30,
+function mkHero(extra) {
+  return Object.assign({ name: '测试者', level: 5, hp: 80, hpMax: 80, mp: 30, mpMax: 30,
     atkMax: 30, defMax: 40, gold: 0, xp: 0, xpNext: 9999, item: 1, potion2: 0,
     weapon: '铁剑', armor: '皮甲', diff: null, skills: ['火焰斩'],
-    poison: 0, seen: {}, bestiary: {}, chests: [], fragments: [], quests: {}, x: 1, y: 1, map: 'village' };
+    poison: 0, seen: {}, bestiary: {}, chests: [], fragments: [], quests: {}, x: 1, y: 1, map: 'village' }, extra || {});
 }
 function mkDoll(extra) {
   return Object.assign({ name: '练功木桩', hp: 500, hpMax: 500, atk: 5, def: 10, xp: 1, gold: 0, color: '#888888' }, extra || {});
@@ -130,8 +137,8 @@ function tryFlee(hero, enemy, randVal) {
 
 // 失败档：rand=0.99 ≥ FLEE_SUCCESS → 必失败
 const r1 = tryFlee(mkHero(), mkDoll(), 0.99);
-ok('运行期：失败档战报为「❌ 逃脱失败！（练功木桩 即将行动）」（新文案落位）',
-  r1.line === '❌ 逃脱失败！（练功木桩 即将行动）', r1.line);
+ok('运行期：失败档战报为「❌ 逃脱失败！（练功木桩 即将行动）（我方 HP 80/80）」（v21.53+v24.138 新文案落位）',
+  r1.line === '❌ 逃脱失败！（练功木桩 即将行动）（我方 HP 80/80）', r1.line);
 ok('运行期：失败档 battleTurn 1→2（回合确被消耗——与「即将行动」文案口径一致，结算未动）',
   r1.turnBefore === 1 && r1.turnAfter === 2, `${r1.turnBefore}→${r1.turnAfter}`);
 ok('运行期：失败档仍在战斗且敌人未消失（afterPlayer 编排敌方回合，零回归）',
@@ -139,7 +146,11 @@ ok('运行期：失败档仍在战斗且敌人未消失（afterPlayer 编排敌�
 // 敌名动态派生档：换名敌人同路径 → 文案读 enemy.name（非写死）
 const r2 = tryFlee(mkHero(), mkDoll({ name: '史莱姆' }), 0.99);
 ok('运行期：失败档敌名动态派生（史莱姆 →「（史莱姆 即将行动）」，非裸字面量）',
-  r2.line === '❌ 逃脱失败！（史莱姆 即将行动）', r2.line);
+  r2.line === '❌ 逃脱失败！（史莱姆 即将行动）（我方 HP 80/80）', r2.line);
+// 残血档：hero.hp=30 时后缀如实读动态 HP（v24.138 与 HUD/受击战报同源，非写死 80）
+const r2b = tryFlee(mkHero({ hp: 30, hpMax: 80 }), mkDoll({ name: '史莱姆' }), 0.99);
+ok('运行期：失败档残血后缀动态读取（hp 30/80 →「（我方 HP 30/80）」）',
+  r2b.line === '❌ 逃脱失败！（史莱姆 即将行动）（我方 HP 30/80）', r2b.line);
 // 边界档：rand===FLEE_SUCCESS → 0.6 < 0.6 不成立 → 判负（成功须严格小于，边界语义守护）
 const r3 = tryFlee(mkHero(), mkDoll(), FLEE_SUCCESS);
 ok('运行期：边界 rand===FLEE_SUCCESS 判负（< 严格小于语义守护）',
