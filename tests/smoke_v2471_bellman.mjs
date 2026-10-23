@@ -32,7 +32,7 @@ const changelog = read('../CHANGELOG.md');
 // —— 源级落位：data.js v24.71 注释 + 三件套 + GAME_VERSION + sprites.js bell 分支 ——
 ok('data.js 含 v24.71 版本注释（听钟人三件套说明，注释按引入版次锚定 v24.71）', dataSrc.includes('v24.71 新 NPC·纯风味'));
 ok('data.js GAME_VERSION 字面量已为 v24.71（旧 v24.70 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.145';") && !dataSrc.includes("const GAME_VERSION = 'v24.70';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.146';") && !dataSrc.includes("const GAME_VERSION = 'v24.70';"));
 ok('data.js 仍保留 v24.70 历史注释（第二十轮经验平滑注释未动）', dataSrc.includes('v24.70 数值平衡·后期经验曲线续平滑'));
 ok('data.js NPC_SPOTS 含 14,5 → bellman 键', dataSrc.includes("'14,5': 'bellman'"));
 ok('data.js NPCS 含 bellman 听钟人（name/mark/linesByStage 落位）', dataSrc.includes("bellman:{name:'听钟人', mark:'bell', linesByStage:["));
@@ -215,7 +215,7 @@ ok('package.json 已收录 smoke_v2471_bellman（npm test 串跑第 295 份 · �
   pkg.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs && node tests/smoke_v2472_bellquest.mjs'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 295 件套', testChain === 360, String(testChain));
-ok('CHANGELOG 含 v24.71 条目（顶 pin）', changelog.startsWith('## v24.145 '));
+ok('CHANGELOG 含 v24.71 条目（顶 pin）', changelog.startsWith('## v24.146 '));
 ok('CHANGELOG v24.71 条目含「听钟人/第十四位」', changelog.includes('听钟人') && changelog.includes('第十四位可对话角色'));
 ok('CHANGELOG 仍保留 v24.70 条目标题（历史积累）', changelog.includes('## v24.70 数值平衡'));
 
@@ -233,8 +233,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.70 pin 零残留 ——
 const s2470 = read('smoke_v2470_xpcurve20.mjs');
-ok('smoke_v2470 的 GAME_VERSION 字面量 pin 已更新为 v24.71', s2470.includes("const GAME_VERSION = 'v24.145';"));
-ok('smoke_v2470 的 CHANGELOG 顶 pin 已更新为 ## v24.71', s2470.includes("startsWith('## v24.145 '"));
+ok('smoke_v2470 的 GAME_VERSION 字面量 pin 已更新为 v24.71', s2470.includes("const GAME_VERSION = 'v24.146';"));
+ok('smoke_v2470 的 CHANGELOG 顶 pin 已更新为 ## v24.71', s2470.includes("startsWith('## v24.146 '"));
 ok('smoke_v2470 的件套 pin 已更新为三百六十件套（三百五十九件套清除）', s2470.includes('三百六十件套（三百五十九件套清除）'));
 ok('smoke_v2470 的 README 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('smoke_v2470_xpcurve20 + smoke_v2471_bellman + smoke_v2472_bellquest + smoke_v2473_xpcurve21 + smoke_v2475_xpcurve22 + smoke_v2476_achprog + smoke_v2477_fisher + smoke_v2478_xpcurve23 + smoke_v2479_xpcurve24 + smoke_v2480_fisherquest + smoke_v2481_xpcurve25 + smoke_v2482_watchquest + smoke_v2483_xpcurve26 + smoke_v2484_goldcurve10 + smoke_v2485_goldcurve11 + smoke_v2486_goldcurve12 + smoke_v2487_goldcurve13 + smoke_v2488_goldcurve14 + smoke_v2489_goldcurve15 + smoke_v2490_goldcurve16 + smoke_v2491_goldcurve17 + smoke_v2492_goldcurve18 + smoke_v2493_goldcurve19 + smoke_v2494_goldcurve20 + smoke_v2495_goldcurve21 + smoke_v2496_goldcurve22 + smoke_v2497_goldcurve23 + smoke_v2498_goldcurve24 + smoke_v2499_goldcurve25 + smoke_v24100_talequest + smoke_v24101_goldcurve26 + smoke_v24102_goldcurve27 + smoke_v24103_goldcurve28 + smoke_v24104_goldcurve29 + smoke_v24105_songquest + smoke_v24106_moonquest + smoke_v24107_peddlequest + smoke_v24108_shopquest + smoke_v24109_carvequest + smoke_v24110_vowquest + smoke_v24111_hearerquest + smoke_v24112_talkquest + smoke_v24113_walkquest + smoke_v24114_fleequest + smoke_v24115_achhud + smoke_v24116_guidequest + smoke_v24117_codexhud + smoke_v24118_wellquest + smoke_v24119_huntquest + smoke_v24120_chesthud + smoke_v24121_siftquest + smoke_v24122_crystalquest + smoke_v24123_fraghud + smoke_v24124_questshud + smoke_v24125_hunthud + smoke_v24126_waitquest + smoke_v24127_lampquest + smoke_v24128_stelequest + smoke_v24129_stele2quest + smoke_v24130_stele3quest + smoke_v24131_stele4quest + smoke_v24132_fallenquest + smoke_v24133_inquest + smoke_v24134_kindleq + smoke_v24135_ledgerquest + smoke_v24136_herbquest + smoke_v24143_furnacequest（npm test 串跑）'));
 ok('smoke_v2470 的 package.json 串尾 pin 已延伸至 smoke_v2471_bellman', s2470.includes('node tests/smoke_v2470_xpcurve20.mjs && node tests/smoke_v2471_bellman.mjs'));

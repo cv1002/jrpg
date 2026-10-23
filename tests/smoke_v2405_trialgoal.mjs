@@ -102,7 +102,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.04', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.04 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.145';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "4';"));
+  dSrc.includes("const GAME_VERSION = 'v24.146';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "4';"));
 ok('data.js 含 v24.05 注释（试炼碑奖励行「📜 千锤百炼 N/3」进度角标说明）',
   dSrc.includes('// v24.05 体验打磨·信息透明·决策现场'));
 ok('data.js 仍保留 v24.04 历史注释（宝箱 / 宝藏 数值速查行说明，累积注释块）',
@@ -209,7 +209,7 @@ ok('README 快速旅行预警行零回归（v21.92 口径逐字保留）',
   readme.includes('⚠️ 推荐 Lv.N · 你当前 Lv.M · 先补给再战！'));
 ok('README 数值速查「试炼推荐等级」行零回归（RUSH_REC_LV 派生口径逐字保留）',
   readme.includes('`RUSH_REC_LV`（`SPECIES[].lv` 派生）'));
-ok('CHANGELOG 顶部已追加 v24.18 条目（试炼碑千锤百炼进度角标）', changelog.startsWith('## v24.145 '));
+ok('CHANGELOG 顶部已追加 v24.18 条目（试炼碑千锤百炼进度角标）', changelog.startsWith('## v24.146 '));
 ok('CHANGELOG 顶部条目含千锤百炼与 RUSH_CLEAR_GOAL 口径说明',
   changelog.includes('千锤百炼') && changelog.includes('RUSH_CLEAR_GOAL') && changelog.includes('进度角标'));
 ok('CHANGELOG 仍保留 v24.04 与 v24.03 条目标题（历史口径）',

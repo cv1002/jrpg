@@ -25,7 +25,7 @@ const pkgRaw = fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8');
 
 // —— data.js 版本与注释 ——
 ok('data.js GAME_VERSION 字面量已为 v24.83（旧 v24.82 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.145';") && !dSrc.includes("const GAME_VERSION = 'v24.82';"));
+  dSrc.includes("const GAME_VERSION = 'v24.146';") && !dSrc.includes("const GAME_VERSION = 'v24.82';"));
 ok('data.js 含 v24.83 注释（后期经验曲线续平滑第二十六轮说明）',
   dSrc.includes('// v24.83 数值平衡·后期经验曲线续平滑'));
 ok('data.js 保留 v24.81/v24.79/v24.78/v24.75 历史注释（第二十五轮/第二十四轮/第二十三轮/第二十二轮方法论零丢失）',
@@ -133,7 +133,7 @@ ok('package.json test 串收录 smoke_v2490_goldcurve16.mjs（node tests/ 前缀
   pkgRaw.includes('node tests/smoke_v2482_watchquest.mjs && node tests/smoke_v2483_xpcurve26.mjs && node tests/smoke_v2484_goldcurve10.mjs && node tests/smoke_v2485_goldcurve11.mjs && node tests/smoke_v2486_goldcurve12.mjs && node tests/smoke_v2487_goldcurve13.mjs && node tests/smoke_v2488_goldcurve14.mjs && node tests/smoke_v2489_goldcurve15.mjs && node tests/smoke_v2490_goldcurve16.mjs && node tests/smoke_v2491_goldcurve17.mjs && node tests/smoke_v2492_goldcurve18.mjs && node tests/smoke_v2493_goldcurve19.mjs && node tests/smoke_v2494_goldcurve20.mjs && node tests/smoke_v2495_goldcurve21.mjs && node tests/smoke_v2496_goldcurve22.mjs && node tests/smoke_v2497_goldcurve23.mjs && node tests/smoke_v2498_goldcurve24.mjs && node tests/smoke_v2499_goldcurve25.mjs && node tests/smoke_v24100_talequest.mjs && node tests/smoke_v24101_goldcurve26.mjs && node tests/smoke_v24102_goldcurve27.mjs && node tests/smoke_v24103_goldcurve28.mjs && node tests/smoke_v24104_goldcurve29.mjs && node tests/smoke_v24105_songquest.mjs && node tests/smoke_v24106_moonquest.mjs && node tests/smoke_v24107_peddlequest.mjs && node tests/smoke_v24108_shopquest.mjs && node tests/smoke_v24109_carvequest.mjs && node tests/smoke_v24110_vowquest.mjs && node tests/smoke_v24111_hearerquest.mjs && node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs && node tests/smoke_v24114_fleequest.mjs && node tests/smoke_v24115_achhud.mjs && node tests/smoke_v24116_guidequest.mjs && node tests/smoke_v24117_codexhud.mjs && node tests/smoke_v24118_wellquest.mjs && node tests/smoke_v24119_huntquest.mjs && node tests/smoke_v24120_chesthud.mjs && node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs && node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs"'));
 
 // —— CHANGELOG ——
-ok('CHANGELOG 顶部条目已为 v24.83（startsWith）', changelog.startsWith('## v24.145 '));
+ok('CHANGELOG 顶部条目已为 v24.83（startsWith）', changelog.startsWith('## v24.146 '));
 ok('CHANGELOG v24.83 条目含「数值平衡」「续平滑」「xp[1]」「29→30」',
   changelog.includes('数值平衡') && changelog.includes('续平滑') && changelog.includes('xp[1]') && changelog.includes('29→30'));
 ok('CHANGELOG 仍保留 v24.82/v24.81 条目标题（历史零丢失）',
@@ -149,8 +149,8 @@ ok('smoke_v2490_goldcurve16.mjs 已在目录中且链尾无遗漏',
 
 // —— 套件内遗留哨兵（零残留） ——
 const s2482 = fs.readFileSync(path.join(__dirname, 'smoke_v2482_watchquest.mjs'), 'utf8');
-ok('smoke_v2482 套件内 GAME_VERSION 字面量 pin 已推进为 v24.83', s2482.includes("const GAME_VERSION = 'v24.145';"));
-ok('smoke_v2482 套件内 CHANGELOG 顶 pin 已推进为 ## v24.83', s2482.includes("startsWith('## v24.145 '"));
+ok('smoke_v2482 套件内 GAME_VERSION 字面量 pin 已推进为 v24.83', s2482.includes("const GAME_VERSION = 'v24.146';"));
+ok('smoke_v2482 套件内 CHANGELOG 顶 pin 已推进为 ## v24.83', s2482.includes("startsWith('## v24.146 '"));
 ok('smoke_v2482 套件内 README 件数口径已推进为三百六十件套（三百五十九件套清除）',
   s2482.includes('三百六十件套（三百五十九件套清除）'));
 ok('smoke_v2482 套件内串尾 pin 已推进为 smoke_v2490_goldcurve16（npm test 串跑）',
