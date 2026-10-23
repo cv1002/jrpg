@@ -1,3 +1,9 @@
+## v24.145 体验打磨·信息透明·纯显示：世界画布常驻「📍 地图 · 推荐 Lv.N · 你 Lv.M」地方等级小标——当前图推荐等级 vs 自己等级的一眼之数
+
+- 【内容】承 v23.78 战斗画面「📍 所在地」/ v19.89 状态页「📍 地图名 · 推荐 Lv.N」/ v21.92 快速旅行红色预警同一「我在哪 · 够不够格」口径的世界现场持久化收口：进图预警（world.transition boxMsg）/快速旅行预警（v21.92）/状态页（I）都「查得到但只报一次或要开页」，唯独世界画布这面玩家走最久的决策现场查无「当前图推荐等级 vs 自己等级」的常驻一眼之数——DOM HUD s-map 只混合报 英雄名·地图名·相位·难度、不含量级比对，在星井矿脉/无字回廊刷级、跨图追怪时「该不该留在这图／该不该回镇补给」只能凭记忆；现与 drawStatus/快速旅行/进图预警同读 `(MAPS[curMap()]||{}).recLv` 一份单一数据源（防御式缺 recLv 则整行不画——加/删/改图自动跟随零裸字面量），世界画布左上角常驻深底小标（bold 12px、距顶 10px 左缘 10px，与右上小地图／遇敌槽／faceHint 世界锚定提示零重叠，世界内容滚动其下不遮挡任何决策信息）：未达标（hero.level < recLv）红字「📍 名 · ⚠️ 推荐 Lv.N · 你 Lv.M · 差 K 级」（与 v21.92 红字同式同色 `#ff5b5b`）、达标灰字「📍 名 · 推荐 Lv.N · 你 Lv.M」（与 v23.78 地图名同式同色 `#7d93a3`）；仅世界场景（S.scene==='world'，与 faceHint 同门）绘制，商店/状态/暂停等以 drawWorld 为底的面板零干扰；潮灯镇（recLv=1 恒达标）同灰字档零噪音。纯显示零结算零存档零数值变化（MAPS/recLv/进图预警/快速旅行/战斗预览逐字未动）。计数端口近枯竭、显示面持续打磨，本轮走「信息透明·决策现场」路径。
+- 【零回归面】只改 `js/view/drawWorld.js`（新增 zonePill 纯显示函数 + drawWorld 末尾调用，零新 import 零新 export、既有 MAPS/S/curMap/text/rr/CTX 复用）与 `js/data.js`（GAME_VERSION v24.144→v24.145 + v24.145 注释块）+ CHANGELOG 顶条目 + README 维护者速查复核注记/版本速览版本号 + 全库 **360 件套** GAME_VERSION 字面量 pin 级联（v24.144→v24.145，哨兵前望 361 不变——本轮无新套件无计数变化）。遇敌/掉落/战斗/成就/存档零影响。
+- 【验证】`node --check js/view/drawWorld.js js/data.js` + `npm run check` 25 模块 + 全库 **360 件套 `npm test` 端到端全绿**；GAME_VERSION v24.144→v24.145，哨兵前望 361 不变。
+
 ## v24.144 收口修复·版本锚点推进（无新功能、零行为变化 —— 复验收口 v24.143 WIP 遗留并推进版本锚点）
 
 - 【背景】v24.143（守炉翁「灵药照炉」新支线）以 WIP 形态提交：全库 359 件套 GAME_VERSION 字面量 pin 级联（v24.142→v24.143、件套口径 359→360）散在工作区未提交，且姊妹件 smoke_v2300_sidemore「sideObjectives 全部支线在列」断言误写 45（实测 44：multiSideHero 存档构型无 trueBoss，side_stele4「初灯的名字」locked 不计入 sideObjectives——45 条支线 - 1 锁 = 44；同屏 `statusSideSuffix`「还有 43 条」早已正确），360 件套 npm test 因此非全绿（1 处断言）。

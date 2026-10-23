@@ -43,7 +43,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.14', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.14 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.144';") && !dSrc.includes("const GAME_VERSION = 'v24.14';"));
+  dSrc.includes("const GAME_VERSION = 'v24.145';") && !dSrc.includes("const GAME_VERSION = 'v24.14';"));
 ok('data.js 含 v24.15 注释（README tests 树串漏录补记说明）',
   dSrc.includes('// v24.15 文档整理·README tests 树串漏录补记'));
 ok('data.js 仍保留 v24.14 历史注释（战斗画面相位标签说明，累积注释块）',
@@ -106,7 +106,7 @@ for (const f of fs.readdirSync(testsDir)) {
 ok('全库测试零残留 v24.14 GAME_VERSION/顶 pin（哨兵链）', leftovers.length === 0, leftovers.join(','));
 
 // —— CHANGELOG 顶 pin ——
-ok('CHANGELOG 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.144'));
+ok('CHANGELOG 顶部条目已为 v24.21（startsWith）', changelog.startsWith('## v24.145'));
 ok('CHANGELOG v24.15 条目含「树串」与「恒等」', changelog.includes('树串') && changelog.includes('恒等'));
 ok('CHANGELOG 仍保留 v24.14 条目（历史保留）', changelog.includes('## v24.14'));
 

@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.95', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 95)), GAME_VERSION);
 ok('data.js 含 v23.96 注释（装备曲线补全说明）', dSrc.includes('v23.96 数值平衡·装备曲线补全'));
 ok('data.js GAME_VERSION 字面量已为 v23.96（旧 v23.95 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.144';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "5';"));
+  dSrc.includes("const GAME_VERSION = 'v24.145';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "5';"));
 ok('data.js 仍保留 v23.95 历史注释（商店视窗滚动说明，累积注释块）',
   dSrc.includes('v23.95 体验打磨·可发现性·纯显示（商店商品清单视窗滚动'));
 
@@ -202,7 +202,7 @@ ok('README 装备属性行收录 精钢甲 10（防具 def 五档）',
   readme.includes('防具 def：布衣 1 / 皮甲 4 / 锁子甲 8 / 精钢甲 10 / 龙鳞甲 13'));
 ok('README 装备属性行补录标记含 v23.96 补精钢甲',
   readme.includes('（v23.37 补录、v23.92 补星铁剑、v23.96 补精钢甲） | `WEAPONS` / `ARMORS` / `BEST_ARMOR` |'));
-ok('CHANGELOG 顶部已追加 v23.96 条目（精钢甲）', changelog.startsWith('## v24.144 '));
+ok('CHANGELOG 顶部已追加 v23.96 条目（精钢甲）', changelog.startsWith('## v24.145 '));
 ok('CHANGELOG 顶部条目含精钢甲说明', changelog.includes('新防具「精钢甲」'));
 ok('CHANGELOG 仍保留 v23.95 条目标题（历史口径）', changelog.includes('## v23.95 商店商品清单视窗滚动'));
 

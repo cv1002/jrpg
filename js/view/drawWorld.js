@@ -1214,6 +1214,44 @@ function cellBase(ty, x, y) {
   return TILE[TY.GRASS];
 }
 
+// v24.145 体验打磨·信息透明·纯显示（世界画布常驻「📍 地图 · 推荐 Lv.N · 你 Lv.M」地方等级小标——承
+// v23.78 战斗画面「📍 所在地」/ v19.89 状态页「📍 地图名 · 推荐 Lv.N」/ v21.92 快速旅行红色预警同一
+// 「我在哪 · 够不够格」口径的世界现场持久化收口）：进图预警（world.transition boxMsg）/快速旅行预警
+// （v21.92）/状态页（I）都「查得到但只报一次或要开页」，唯独世界画布这面玩家走最久的决策现场查无
+// 「当前图推荐等级 vs 自己等级」的常驻一眼之数（DOM HUD s-map 只混合报 英雄名·地图名·相位·难度，
+// 不含量级比对；在星井矿脉/无字回廊刷级、跨图追怪时「该不该留在这图／该不该回镇补给」只能凭记忆）；
+// 现与 drawStatus/快速旅行/进图预警同读 (MAPS[curMap()]||{}).recLv 一份单一数据源（防御式缺 recLv 则
+// 整行不画——加/删/改图自动跟随零裸字面量），画布左上角常驻深底小标（bold 12px、距顶 10px 左缘 10px，
+// 与右上小地图（512 起）/遇敌槽（其下）/faceHint 世界锚定提示零重叠；世界内容滚动其下不遮挡任何决策
+// 信息）：未达标（hero.level < recLv）红字「📍 名 · ⚠️ 推荐 Lv.N · 你 Lv.M · 差 K 级」（与 v21.92 红字
+// 同式同色 #ff5b5b）、达标灰字「📍 名 · 推荐 Lv.N · 你 Lv.M」（与 v23.78 地图名同式同色 #7d93a3）；
+// 仅世界场景（S.scene==='world'，与 faceHint 同门）绘制，商店/状态/暂停等以 drawWorld 为底的面板零
+// 干扰；纯显示零结算零存档零数值变化（MAPS/recLv/进图预警/快速旅行/战斗预览逐字未动）。
+function zonePill() {
+  const hero = S.G;
+  if (!hero || S.scene !== 'world') return;
+  const def = MAPS[curMap()] || {};
+  const rec = def.recLv;
+  if (rec == null) return;
+  const lv = hero.level || 1;
+  const mapName = def.name || curMap();
+  const under = lv < rec;
+  const lab = under
+    ? `📍 ${mapName} · ⚠️ 推荐 Lv.${rec} · 你 Lv.${lv} · 差 ${rec - lv} 级`
+    : `📍 ${mapName} · 推荐 Lv.${rec} · 你 Lv.${lv}`;
+  CTX.font = 'bold 12px sans-serif';
+  const w = CTX.measureText(lab).width + 16;
+  const x = 10, y = 10, h = 18;
+  CTX.fillStyle = 'rgba(10,16,24,.74)';
+  rr(x, y, w, h, 4);
+  CTX.fill();
+  CTX.strokeStyle = under ? 'rgba(255,91,91,.7)' : 'rgba(255,210,74,.4)';
+  CTX.lineWidth = 1;
+  rr(x, y, w, h, 4);
+  CTX.stroke();
+  text(lab, x + 8, y + 13, 'bold 12px', under ? '#ff5b5b' : '#7d93a3', 'left');
+}
+
 export function drawWorld() {
   if (!S.maze || !S.G) return;
   CTX.imageSmoothingEnabled = false;
@@ -1421,6 +1459,7 @@ export function drawWorld() {
   drawMinimap();
   drawWeather();
   drawTimeTint();
+  zonePill();
 }
 
 export { timeOfDay };

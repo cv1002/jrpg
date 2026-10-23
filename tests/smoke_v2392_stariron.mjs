@@ -86,7 +86,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.92', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 92)), GAME_VERSION);
 ok('data.js 含 v23.92 注释（装备曲线补全说明）', dSrc.includes('v23.92 数值平衡·装备曲线补全'));
 ok('data.js GAME_VERSION 字面量已为 v23.92（旧 v23.91 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.144';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "1';"));
+  dSrc.includes("const GAME_VERSION = 'v24.145';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "1';"));
 ok('data.js 仍保留 v23.91 历史注释（提灯夜行说明，累积注释块）', dSrc.includes('v23.91 新内容·昼夜维度单档里程碑'));
 
 // —— data.js 源级落位：星铁剑 逐字 + 五把既有剑逐字未动 + 行内注释 ——
@@ -171,7 +171,7 @@ ok('README 装备属性行保留 v23.37/v23.92 补录标记并补 v23.96 补精�
   readme.includes('（v23.37 补录、v23.92 补星铁剑、v23.96 补精钢甲） | `WEAPONS` / `ARMORS` / `BEST_ARMOR` |'));
 ok('README 装备价格行仍在装备属性行之前（行序位置正确）',
   readme.indexOf('| 装备价格 |') < readme.indexOf('| 装备属性 |'));
-ok('CHANGELOG 顶部已追加 v23.92 条目（星铁剑）', changelog.startsWith('## v24.144 '));
+ok('CHANGELOG 顶部已追加 v23.92 条目（星铁剑）', changelog.startsWith('## v24.145 '));
 ok('CHANGELOG 顶部条目含 v23.92 星铁剑说明', changelog.includes('## v23.92 新武器「星铁剑」——装备曲线补全'));
 ok('CHANGELOG 仍保留 v23.91 条目标题（历史口径）', changelog.includes('## v23.91 新成就「提灯夜行」'));
 
