@@ -97,7 +97,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.00', !!_gv && (_gv[0] > 24 || (_gv
 // —— data.js 源级落位 ——
 ok('data.js 含 v24.01 注释（胜利/阵亡/尾声专属 BGM 说明）', dSrc.includes('// v24.01 音效反馈·听觉信息透明'));
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.00 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.148';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "0';"));
+  dSrc.includes("const GAME_VERSION = 'v24.149';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "0';"));
 ok('data.js 仍保留 v24.00 历史注释（试炼碑等级达标预警说明，累积注释块）',
   dSrc.includes('// v24.00 体验打磨·信息透明·决策现场'));
 
@@ -183,7 +183,7 @@ ok('README 仍保留 v24.00 历史守护描述与入库口径（历史累积）'
   readme.includes('v24.00 起含 试炼碑等级达标预警守护') && readme.includes('smoke_v2400_trialwarn 入库（224 份）'));
 ok('README v23.45 战斗 Boss 轨历史守护描述保留（Boss/试炼战专属战斗 BGM）',
   readme.includes('battleBoss') || readme.includes('Boss/试炼战专属战斗 BGM'));
-ok('CHANGELOG 顶部已追加 v24.18 条目（胜利/阵亡/尾声专属 BGM）', changelog.startsWith('## v24.148 '));
+ok('CHANGELOG 顶部已追加 v24.18 条目（胜利/阵亡/尾声专属 BGM）', changelog.startsWith('## v24.149 '));
 ok('CHANGELOG 顶部条目含三轨口径说明', changelog.includes('胜利/阵亡/尾声三屏专属 BGM') && changelog.includes('C-E-G-C'));
 ok('CHANGELOG 仍保留 v24.00 与 v23.99 条目标题（历史口径）',
   changelog.includes('## v24.00 体验打磨·信息透明·决策现场') && changelog.includes('## v23.99 文档整理·数值说明·同源口径'));

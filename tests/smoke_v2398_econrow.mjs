@@ -88,7 +88,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.97', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 97)), GAME_VERSION);
 ok('data.js 含 v23.98 注释（经济行灵药恢复量口径说明）', dSrc.includes('// v23.98 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v23.99 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.148';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
+  dSrc.includes("const GAME_VERSION = 'v24.149';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "8';"));
 ok('data.js 仍保留 v23.97 历史注释（基础属性速查行说明，累积注释块）',
   dSrc.includes('// v23.97 文档整理·数值说明·同源口径'));
 
@@ -146,7 +146,7 @@ ok('README 升级经验行零回归（XP_INIT 20 链式口径）',
 ok('index.html #help F 块零回归（同样 80%HP+20并回40%MP 口径）',
   indexHtml.includes('灵药 80%HP+20并回40%MP'));
 
-ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.148 '));
+ok('CHANGELOG 顶部已追加 v24.00 条目（试炼碑等级达标预警）', changelog.startsWith('## v24.149 '));
 ok('CHANGELOG 顶部条目含伤害公式口径说明', changelog.includes('「伤害公式」') && changelog.includes('攻×2−防'));
 ok('CHANGELOG 仍保留 v23.98 与 v23.97 条目标题（历史口径）',
   changelog.includes('## v23.98 文档整理·数值说明·同源口径') &&

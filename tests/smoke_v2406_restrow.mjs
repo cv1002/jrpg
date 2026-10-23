@@ -45,7 +45,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.06', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.21（旧 v24.05 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.148';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "5';"));
+  dSrc.includes("const GAME_VERSION = 'v24.149';") && !dSrc.includes("const GAME_VERSION = 'v24.0" + "5';"));
 ok('data.js 含 v24.06 注释（「恢复点 / 补给」数值速查行说明）',
   dSrc.includes('// v24.06 文档整理·数值说明·同源口径'));
 ok('data.js 仍保留 v24.05 历史注释（试炼碑「📜 千锤百炼 N/3」进度角标说明，累积注释块）',
@@ -109,7 +109,7 @@ ok('README 仍保留 v24.05 历史守护描述与入库口径（试炼碑千锤�
   readme.includes('v24.05 起含 试炼碑「千锤百炼」进度角标守护') && readme.includes('smoke_v2405_trialgoal 入库（229 份）'));
 ok('README 仍保留 v24.04 历史守护描述（宝箱 / 宝藏 + 228 份）',
   readme.includes('v24.04 起含 「宝箱 / 宝藏」数值速查行守护') && readme.includes('smoke_v2404_chestrow 入库（228 份）'));
-ok('CHANGELOG 顶部已追加 v24.18 条目（「恢复点 / 补给」数值速查行）', changelog.startsWith('## v24.148 '));
+ok('CHANGELOG 顶部已追加 v24.18 条目（「恢复点 / 补给」数值速查行）', changelog.startsWith('## v24.149 '));
 ok('CHANGELOG 顶部条目含恢复点与 INN_PRICE/RUSH_RECOVER 口径说明',
   changelog.includes('恢复点') && changelog.includes('INN_PRICE') && changelog.includes('RUSH_RECOVER') && changelog.includes('数值速查'));
 ok('CHANGELOG 仍保留 v24.05 与 v24.04 条目标题（历史口径）',

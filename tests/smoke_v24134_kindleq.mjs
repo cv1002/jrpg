@@ -47,7 +47,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.133', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 133)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.134（旧 v24.133 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.148';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
+  dSrc.includes("const GAME_VERSION = 'v24.149';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
 ok('data.js 含 v24.134 注释（薪火的气新支线说明）',
   dSrc.includes('v24.134 新内容·新支线（第四十二条）'));
 ok('data.js 仍保留 v24.133 打更人历史注释（一夜好眠支线说明，零内容丢失）',
@@ -201,7 +201,7 @@ ok('package.json 实跑链共 356 份（smoke.mjs + 356 专项）', chain.length
 ok('package.json 链尾为 smoke_v24134_kindleq（第 362 份）', chain[chain.length - 1] === 'smoke_v24148_swift', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24133_inquest.mjs && smoke_v24134_kindleq.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.134（startsWith）', changelog.startsWith('## v24.148'));
+ok('CHANGELOG.md 顶部条目已为 v24.134（startsWith）', changelog.startsWith('## v24.149'));
 ok('CHANGELOG v24.134 条目含「薪火的气」与「KINDLE_GOAL」与「守火翁」',
   changelog.includes('薪火的气') && changelog.includes('KINDLE_GOAL') && changelog.includes('守火翁'));
 ok('CHANGELOG 仍保留 v24.133 条目（历史保留）', changelog.includes('## v24.133 '));
@@ -219,8 +219,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 const s24132 = read('smoke_v24132_fallenquest.mjs');
 const s24133 = read('smoke_v24133_inquest.mjs');
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v24133 的 GAME_VERSION 字面量 pin 已更新为 v24.134', s24133.includes("const GAME_VERSION = 'v24.148';"));
-ok('smoke_v24133 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24133.includes("startsWith('## v24.148'"));
+ok('smoke_v24133 的 GAME_VERSION 字面量 pin 已更新为 v24.134', s24133.includes("const GAME_VERSION = 'v24.149';"));
+ok('smoke_v24133 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24133.includes("startsWith('## v24.149'"));
 ok('smoke_v24133 的件套 pin 已更新为三百六十二件套（三百六十一件套清除）', s24133.includes('三百六十二件套（三百六十一件套清除）'));
 ok('smoke_v24133 的 README/链 tail pin 已随新现实延伸（含 smoke_v24134_kindleq）',
   s24133.includes('smoke_v24134_kindleq'));

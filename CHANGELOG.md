@@ -1,3 +1,9 @@
+## v24.149 文档整理·版本锚点推进·复核收口（无新功能、零行为变化）
+
+- 【内容】版本速览五数复核（承 v24.137/v24.142 文档整理先例）：由 node 直读 `js/data.js` 与 README「版本速览」（v24.148）逐项对账——**78 项成就**（`ACH_LIST.length`）· **45 名 NPC**（`Object.keys(NPCS)`）· 46 处 `NPC_SPOTS` · **45 条支线**（`QUESTS` kind==='side'）· **13 种图鉴**（`BESTIARY_TARGET`）· **8 招技能**（`SKILL_DATA`）· **4 图**（`MAPS`）· **362 件套冒烟**（`tests/` 文件数）全部吻合，哨兵前望 363、`package.json` 链尾 `smoke_v24148_swift.mjs` 逐处一致；README 维护者速查与 GAME_VERSION 注释、CHANGELOG 顶部各版本锚点无漂移。纯文档零逻辑零结算零存档零数值变化，battle/core/world/view/quests/hero 逐字未动。
+- 【零回归面】只改 `js/data.js`（GAME_VERSION v24.148→v24.149 + v24.149 注释块）+ README（维护者速查追加──v24.149 文档复核 / 版本速览（v24.148）→（v24.149））+ CHANGELOG 顶条目 + 全库 **362 件套** GAME_VERSION 字面量 pin 级联（v24.148→v24.149，哨兵前望 363 不变——本轮无新套件无计数变化；含最新两件套的 README 版本速览 pin `版本速览（v24.148）`→`（v24.149）`、`已越过 v24.147`→`已越过 v24.148`、`_gv[1] > 147`→`> 148`）。遇敌/掉落/战斗/成就/存档零影响。
+- 【验证】`node --check js/data.js` + `npm run check` 25 模块 + 全库 **362 件套 `npm test` 端到端全绿**；GAME_VERSION v24.148→v24.149，哨兵前望 363 不变。
+
 ## v24.148 新内容·单成就（第七十八项）：「速战速决」——在 70 场战斗内击败终焉之神的挑战向速通档
 
 - 【内容】承 v23.68 逆风行灯（hardtrue）/ v24.147 未曾熄灯（unflicker）先例，成就版图「以怎样的姿态通关」这一挑战维度第二次开垦：v24.147 盖住了「别倒下」（未曾熄灯=零阵亡），「别拖沓」（速通）这一面查无一行——Boss 线三档（boss/cave/trueboss）与难度向（hardtrue）皆只认「打过了」，玩家只要打过终焉之神便「记得一切」，但「六十多场速攻走完全程」的档与「刷到天荒地老才过」的档在成就一览毫无分别。判定读既有 `hero.trueBoss`（终焉之神，与 trueboss/hardtrue/unflicker 同读一份源）与既有 `hero.battles` 遭遇场次（`battle.startBattle` 进战即记唯一产生点、胜/败/逃都算——想靠逃跑刷数只会把 battles 越刷越大、随 snapshotHero 全量快照自动持久化；防御式 `(g.battles||0)` 旧档零迁移，承 v24.128 STELE_GOAL / v23.80 身经百战同款），`(g.trueBoss && (g.battles||0)<=SPEED_GOAL(70))` 即速通达成——battles 只增不减，超出门槛的档永久无缘此档（与 hardtrue 换难度 / unflicker 死过一次同属「重新来过才拿得到」的挑战品类）；取 70 < `BATTLE_GOAL`(100) 身经百战门槛，「明显快于老练战士、却给随机遇敌留足余量」；零新计数零新状态零新写点零新存档（trueBoss/battles 皆既有字段）、无 r 无 prog 纯里程碑（与 hardtrue/unflicker 同款——一路快人一步本身就是奖励）；解锁走 winBattle → applyAchievements 既有通路（trueboss/hardtrue/unflicker 同路径零新增依赖），反馈不迟到。
