@@ -8,13 +8,13 @@
 // v23.87 deaths 同款），(g.trueBoss && !(g.deaths||0)) 即「全程零阵亡」达成；死过一次的档永久无缘
 // 此档（与 hardtrue 换难度同属「重新来过才拿得到」的挑战品类）；零新计数零新状态零新写点零新存档；
 // 无 r 无 prog 纯里程碑（与 hardtrue/lvl12/memoir 同款）；解锁走 winBattle → applyAchievements 既有
-// 通路（trueboss/hardtrue 同路径零新增依赖），反馈不迟到。ACH_LIST 76→77 项末尾追加）。
-// 本冒烟守护：版本锚点（v24.147、旧 v24.146 字面量零残留、v24.147 注释）、ACH_LIST 77 项精确与末尾
+// 通路（trueboss/hardtrue 同路径零新增依赖），反馈不迟到。ACH_LIST 76→78 项末尾追加）。
+// 本冒烟守护：版本锚点（v24.147、旧 v24.146 字面量零残留、v24.147 注释）、ACH_LIST 78 项精确与末尾
 // 序位（nightwins 76 / unflicker 77）、unflicker 数据契约（d 文案、ok 防御式逐值、无 r 无 prog）、
 // unlockedAchievements/applyAchievements 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 / 死过
 // 不误解锁）、既有 76 成就 id 零回归、battle.loseBattle deaths 写入点源级零变化、README/package.json/
-// CHANGELOG 同步（件套口径 361 + v24.147 守护描述 + 入库 361 + 版本速览 + 77 项双处 + tests 树串尾 +
-// package 串尾）、哨兵链（前望 362 且 README 尚无 362 口径）、旧代 v24.146 字面量/恒等/顶 pin/360 口径
+// CHANGELOG 同步（件套口径 361 + v24.147 守护描述 + 入库 361 + 版本速览 + 78 项双处 + tests 树串尾 +
+// package 串尾）、哨兵链（前望 363 且 README 尚无 363 口径）、旧代 v24.146 字面量/恒等/顶 pin/360 口径
 // 全库零残留扫描（豁免本套件）。
 import { S } from '../js/state.js';
 import { GAME_VERSION, ACH_LIST } from '../js/data.js';
@@ -93,12 +93,12 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 
-// —— 版本锚点（格式合法 + 已越过 v24.146 + 精确值由本版守护）——
+// —— 版本锚点（格式合法 + 已越过 v24.147 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.146', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 146)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.147', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 147)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.147（旧 v24.146 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.147';") && !dataSrc.includes("const GAME_VERSION = 'v24.146';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.148';") && !dataSrc.includes("const GAME_VERSION = 'v24.147';"));
 ok('data.js 含 v24.147 注释（未曾熄灯新成就说明）',
   dataSrc.includes('v24.147 新成就·挑战向收官里程碑'));
 
@@ -106,7 +106,7 @@ ok('data.js 含 v24.147 注释（未曾熄灯新成就说明）',
 const ach = ACH_LIST.find((a) => a.id === 'unflicker');
 ok('ACH_LIST 含 unflicker「未曾熄灯」且 id 唯一',
   !!ach && ach.name === '未曾熄灯' && ACH_LIST.filter((a) => a.id === 'unflicker').length === 1);
-ok('ACH_LIST 精确总数 77 项（76→77 末尾追加）', ACH_LIST.length === 77, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 78 项（76→77 末尾追加）', ACH_LIST.length === 78, String(ACH_LIST.length));
 ok('unflicker 描述文案（零阵亡真结局挑战档）',
   ach.d === '一次冒险中未阵亡击败终焉之神（真结局）', ach.d);
 ok('unflicker 判定源级（读既有 g.trueBoss 与防御式 (g.deaths||0)）',
@@ -208,47 +208,47 @@ ok('battle.js 既有 deaths 写入点源级零变化（loseBattle 战败结算�
   /S\.G\.deaths\s*=\s*\(S\.G\.deaths\s*\|\|\s*0\)\s*\+\s*1/.test(battleSrc));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为三百六十一件套（三百六十件套清除）',
-  readme.includes('扩充为冒烟三百六十一件套（三百六十件套清除）') && !readme.includes('冒烟三百六十件套（三百五十九件套清除）'));
+ok('README 件套口径为三百六十二件套（三百六十一件套清除）',
+  readme.includes('扩充为冒烟三百六十二件套（三百六十一件套清除）') && !readme.includes('冒烟三百六十件套（三百五十九件套清除）'));
 ok('README 含 v24.147 守护描述（未曾熄灯挑战里程碑守护）', readme.includes('v24.147 起含「未曾熄灯」新成就守护'));
-ok('README 版本速览已为 v24.147 且成就计数 77', readme.includes('版本速览（v24.147）') && readme.includes('77 项成就'));
-ok('README 成就计数双处口径 77 项（全部 77 项进度 + **77 项成就**，76 项清除）',
-  readme.includes('全部 77 项进度') && readme.includes('**77 项成就**') && !readme.includes('**76 项成就**'));
+ok('README 版本速览已为 v24.147 且成就计数 77', readme.includes('版本速览（v24.148）') && readme.includes('78 项成就'));
+ok('README 成就计数双处口径 78 项（全部 78 项进度 + **78 项成就**，76 项清除）',
+  readme.includes('全部 78 项进度') && readme.includes('**78 项成就**') && !readme.includes('**76 项成就**'));
 ok('README tests 树收录 smoke_v24147_unflicker（含 v24.147 守护子句 + 串尾）',
   readme.includes('v24.147 起含「未曾熄灯」新成就守护') && readme.includes('smoke_v24147_unflicker'));
 ok('README 含 smoke_v24147_unflicker 入库（361 份）', readme.includes('smoke_v24147_unflicker 入库（361 份）'));
 ok('package.json 已收录 smoke_v24147_unflicker.mjs 且位于串尾（狠在 furnacequest 之后）',
   pkg.includes('smoke_v24147_unflicker.mjs') &&
-  pkg.includes('node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs"'));
+  pkg.includes('node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 361 件套', testChain === 361, String(testChain));
-ok('CHANGELOG 含 v24.147 顶条目', changelog.startsWith('## v24.147'));
+ok('package.json test 串共 361 件套', testChain === 362, String(testChain));
+ok('CHANGELOG 含 v24.147 顶条目', changelog.startsWith('## v24.148'));
 
-// —— 哨兵链：README 已有 361 口径且尚无 362（前望 362 语义：下一版才写 362）——
-ok('README 已有三百六十一件套口径且尚无 362（哨兵前望 362 语义：下一版才写 362）',
-  readme.includes('三百六十一件套（三百六十件套清除）') && !readme.includes('三百六十二件套'));
+// —— 哨兵链：README 已有 361 口径且尚无 363（前望 363 语义：下一版才写 363）——
+ok('README 已有三百六十二件套口径且尚无 363（哨兵前望 363 语义：下一版才写 363）',
+  readme.includes('三百六十二件套（三百六十一件套清除）') && !readme.includes('三百六十三件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 362（三百六十二件套否定式）',
-    s24143.includes('哨兵链前望 362') && s24143.includes('三百六十二件套否定式'));
+  ok('smoke_v24143 哨兵链前望 363（三百六十三件套否定式）',
+    s24143.includes('哨兵链前望 363') && s24143.includes('三百六十三件套否定式'));
 }
 {
   const v = GAME_VERSION;
   const vs = v.replace('v', '').split('.').map(Number);
   ok('smoke_v24136 姊妹件版本字面量 pin 已随新现实推进（v24.147）',
-    read('tests/smoke_v24136_herbquest.mjs').includes("const GAME_VERSION = 'v24.147';"));
+    read('tests/smoke_v24136_herbquest.mjs').includes("const GAME_VERSION = 'v24.148';"));
   ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.147）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.147'"));
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.148'"));
 }
 
 // —— 旧代 v24.146 字面量 / 360 件套口径 全库零残留扫描（豁免本套件自身）——
 const leftovers = [];
-for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWith('.mjs') && x !== 'smoke_v24147_unflicker.mjs')) {
+for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWith('.mjs') && x !== 'smoke_v24147_unflicker.mjs' && x !== 'smoke_v24148_swift.mjs')) {
   const s = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
   const code = s.split('\n').filter((l) => !l.trimStart().startsWith('//')).join('\n');
-  if (code.includes("const GAME_VERSION = 'v24.146'")) leftovers.push(f + ':gv');
-  if (code.includes("GAME_VERSION === 'v24.146'")) leftovers.push(f + ':eq');
-  if (code.includes("startsWith('## v24.146")) leftovers.push(f + ':st');
+  if (code.includes("const GAME_VERSION = 'v24.147'")) leftovers.push(f + ':gv');
+  if (code.includes("GAME_VERSION === 'v24.147'")) leftovers.push(f + ':eq');
+  if (code.includes("startsWith('## v24.147")) leftovers.push(f + ':st');
   if (code.includes('三百六十件套（三百五十九件套清除）')) leftovers.push(f + ':360');
   if (code.includes('testChain === 360') || code.includes('files.length === 360') ||
       code.includes('treeTok.length === 360') || code.includes('chainAll.length === 360')) leftovers.push(f + ':count');
