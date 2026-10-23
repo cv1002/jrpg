@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/78）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/79）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,10 +2564,10 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/78）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/79）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
-// 「（成就 N/78）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
+// 「（成就 N/79）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
 // M=ACH_LIST.length(76) 单一数据源五端同读；perfection 特别庆贺分支保持逐字零回归。纯显示零结算零存档）。
 // v24.75 数值平衡·后期经验曲线续平滑（第二十二轮）：四强怪每级经验 +1（xp[1] 25→26），无字回廊池加权
 // Lv10→11 1.33→1.29 / Lv11→12 1.73→1.67 / Lv12→13 2.27→2.19 / Lv13→14 2.99→2.88 / Lv14→15 3.95→3.81 /
@@ -2600,19 +2600,19 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
-// v24.115 体验打磨·信息透明·计数现场：HUD 常驻「🏆 成就 N/78」收集进度（承 v24.16 HUD 步数进度
+// v24.115 体验打磨·信息透明·计数现场：HUD 常驻「🏆 成就 N/79」收集进度（承 v24.16 HUD 步数进度
 // 「🚶 千里之行 N/1000」/ v24.12 胜利画面「⚔️ 身经百战 N/100」/ v24.09 商店「🍄 蘑菇商路 N/30」同一
 // 「计数现场报进度」主线，收集口径的 HUD 侧兑现——图鉴/宝箱/碎片进度在 I 状态页资源行一眼可见
 // （v21.94/v22.1 收集三件套+碎片），唯独「成就」这枚总进度只在 C 成就页/标题槽预览/阵亡行可见，
 // 大地图没有任何一眼数：想冲「记忆守护者」（perfection，X 页 999 金）或数还差几枚成就齐活，只能
-// 开 C 页数 X/76；现 HUD 第二行统计位 🚶 之右补「🏆 N/78」——分子读 (hero.ach||[]) 防御式旧档
-// 零迁移、分母读 data.js ACH_LIST 单一数据源，与 C 页/解锁横幅「（成就 N/78）」（v24.76）/slotPreview/
+// 开 C 页数 X/76；现 HUD 第二行统计位 🚶 之右补「🏆 N/79」——分子读 (hero.ach||[]) 防御式旧档
+// 零迁移、分母读 data.js ACH_LIST 单一数据源，与 C 页/解锁横幅「（成就 N/79）」（v24.76）/slotPreview/
 // drawDead 收集行同读一份源，调成就集合只改 data.js 一处四端自动跟随；纯显示零结算零存档零数值
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
 // v24.123 体验打磨·信息透明·计数现场：HUD 常驻「🧩 记忆碎片 N/4」收集进度（承 v24.120 HUD 宝箱
-// 「📦 N/12」/ v24.117 HUD 记忆图鉴「📕 N/13」/ v24.115 HUD 成就进度「🏆 N/78」/ v24.16 步数进度
+// 「📦 N/12」/ v24.117 HUD 记忆图鉴「📕 N/13」/ v24.115 HUD 成就进度「🏆 N/79」/ v24.16 步数进度
 // 「🚶 N/1000」同一「计数现场报进度」主线，收集口径的 HUD 侧第四枚兑现——图鉴/成就/宝箱/碎片进度
 // 在 I 状态页资源行一眼可见（v21.94/v22.1 收集三件套+碎片），HUD 第二行步数/成就/图鉴/宝箱四枚进度
 // 皆已有数，唯独「记忆碎片」这枚真结局关键收集（FRAGMENTS 四枚强敌首胜掉落、集齐触发真结局「全记忆」
@@ -2625,7 +2625,7 @@
 // <b id="s-frag"> + title 口径）；件套 345→346（smoke_v24123_fraghud 入库，链尾 smoke_v24123_fraghud）。
 // v24.124 体验打磨·信息透明·计数现场：HUD 常驻「🏮 灯火同心 N/33」支线完成进度（承 v24.123 HUD 记忆
 // 碎片「🧩 N/4」/ v24.120 HUD 宝箱「📦 N/12」/ v24.117 HUD 记忆图鉴「📕 N/13」/ v24.115 HUD 成就进度
-// 「🏆 N/78」/ v24.16 步数进度「🚶 N/1000」同一「计数现场报进度」主线，收集口径的 HUD 侧第五枚兑现——
+// 「🏆 N/79」/ v24.16 步数进度「🚶 N/1000」同一「计数现场报进度」主线，收集口径的 HUD 侧第五枚兑现——
 // 图鉴/成就/宝箱/碎片四收集进度与步数在 HUD 第二行皆有数，唯独「灯火同心」（QUESTS kind==='side' 全部
 // 支线完成，成就 allquests 判据）这枚终极完成度没有任何一眼之数：交付横幅（v24.21「🏮 灯火同心 N/11」）
 // /任务日志/Ⅰ 状态页只报「进行中」，想数还差几条支线清完、或临门一脚差哪条（灯火同心成就判据），只能
@@ -2637,7 +2637,7 @@
 // 件套 346→347（smoke_v24124_questshud 入库，链尾 smoke_v24124_questshud）。
 // v24.125 体验打磨·信息透明·计数现场：HUD 常驻「⚔️ 驱雾百战 N/100」讨伐进度（承 v24.124 HUD 支线
 // 「🏮 灯火同心 N/33」/ v24.123 HUD 碎片「🧩 N/4」/ v24.120 HUD 宝箱「📦 N/12」/ v24.117 HUD 图鉴
-// 「📕 N/13」/ v24.115 HUD 成就「🏆 N/78」/ v24.16 步数「🚶 N/1000」同一「计数现场报进度」主线，收集
+// 「📕 N/13」/ v24.115 HUD 成就「🏆 N/79」/ v24.16 步数「🚶 N/1000」同一「计数现场报进度」主线，收集
 // 口径的 HUD 侧第六枚兑现——讨伐（hero.totalWins，winBattle 胜利结算唯一产生点）是伴随全场战斗的核心
 // 投入端口：胜利战报（v24.22「⚔️ 驱雾百战 N/100」）与胜利画面（v24.12「⚔️ 身经百战」·遭遇端口）都
 // 已报数，唯独大地图 HUD 第二行没有任何讨伐之数——想数还差几场凑满「驱雾百战」（讨伐线中档里程碑，
@@ -2702,7 +2702,7 @@
 // 分档，零内容丢失）；奖励 60 金 + 2 生命药水（承 side_flee 60 档——「酿造」自第一锅即可累计、
 // 全程伴随）。
 // v24.120 体验打磨·信息透明·计数现场：HUD 常驻「📦 宝箱 N/12」收集进度（承 v24.16 HUD 步数进度
-// 「🚶 千里之行 N/1000」/ v24.115 成就进度「🏆 成就 N/78」/ v24.117 图鉴进度「📕 记忆图鉴 N/13」同一
+// 「🚶 千里之行 N/1000」/ v24.115 成就进度「🏆 成就 N/79」/ v24.117 图鉴进度「📕 记忆图鉴 N/13」同一
 // 「计数现场报进度」主线，收集口径的 HUD 侧第三枚兑现——I 状态页资源行六端资源（金币/药水/灵药/蘑菇/
 // 图鉴/宝箱·成就/碎片/时长）里「宝箱」与「碎片」同步的进度此前只在 I 页/标题槽预览/阵亡行可见，大地图
 // 没有一眼数：想冲「开箱寻宝（6 只）/一箱不漏（12 只）」或扫箱规划还剩几只没开，只能开 I 页数「已开
@@ -2746,7 +2746,7 @@
 // 叙事与 trueBoss after 彩蛋「记得的灯，从此由你掌着」两页并入，零内容丢失）；件套 340→341
 // （smoke_v24118_wellquest 入库，链尾 smoke_v24118_wellquest）。
 // v24.117 体验打磨·信息透明·计数现场：HUD 常驻「📕 记忆图鉴 N/13」收集进度（承 v24.115 HUD 成就进度
-// 「🏆 成就 N/78」/ v24.16 步数进度「🚶 千里之行 N/1000」同一「计数现场报进度」主线，收集口径的
+// 「🏆 成就 N/79」/ v24.16 步数进度「🚶 千里之行 N/1000」同一「计数现场报进度」主线，收集口径的
 // HUD 侧第二枚兑现——图鉴/成就/宝箱/碎片进度在 I 状态页资源行一眼可见（v21.94/v22.1 收集三件套+碎片），
 // 唯独「记忆图鉴」这枚总进度只在 I 状态页资源行/图鉴页汇总/标题槽预览可见，大地图没有任何一眼数：
 // 记忆图鉴（B 键）是全游最大的收藏面与「该去打哪只」的刷怪中枢（出没地/强度/讨伐进度全在里头），
@@ -3133,7 +3133,20 @@
 // 缺失保持「推荐 Lv.?」原样、潮灯镇（recLv=1）恒达标灰字零噪音；只改 js/view/menus.js drawStatus 地图行
 // + 本常量，纯显示零结算零存档零数值变化（级别/经验/升级结算零影响），battle/core/world 逐字未动。配套：
 // 全库 362 件套 GAME_VERSION 字面量 pin 级联（v24.149→v24.150，哨兵前望 363 不变 —— 本轮无新套件无计数变化）。
-const GAME_VERSION = 'v24.150';
+// v24.151 新内容·新成就（第七十九项）「未及十级」——挑战向·低等级档：击败终焉之神（trueBoss）时等级
+// 未满 LOWLV_GOAL(10) 即解锁（承 v24.148 swift / v24.147 unflicker / v23.68 hardtrue 同一「以怎样的姿态
+// 通关」挑战维度第三次开垦：「别倒下」已被 v24.147 盖住、「别拖沓」已被 v24.148 盖住，「别练级」这一面
+// 查无一行——判定读既有 hero.trueBoss（与 trueboss/hardtrue/unflicker/swift 同源）与既有 hero.level
+// （hero.js grantXp 升级唯一产生点 hero.level++、随 snapshotHero 全量快照自动持久化、防御式 (g.level||1)
+// 旧档零迁移），(g.trueBoss && (g.level||1)<LOWLV_GOAL) 即达成；level 只增不减，升过 10 级永久无缘此档，
+// 与 hardtrue/unflicker/swift 同属「重新来过才拿得到」的挑战品类；10 = 无字回廊 recLv（v24.145 zonePill /
+// v24.150 状态页同一「我在哪·够不够格」口径）——「举着回廊全程的红灯打赢 Lv.12 终焉之神」；零新计数零新
+// 状态零新写点零新存档（trueBoss/level 皆既有字段）、无 r 无 prog 纯里程碑、解锁走 winBattle →
+// applyAchievements 既有通路反馈不迟到）。只改本常量（LOWLV_GOAL = 10 阈值常量 + ACH_LIST 末尾 lowlv 条目
+// + export LOWLV_GOAL），battle/core/world/view 逐字未动，遇敌/掉落/战斗/升级/存档零影响。配套：全库
+// 362 件套 GAME_VERSION 字面量 pin 级联（v24.150→v24.151，哨兵前望 363→364）+ 全库 件套口径 362→363 /
+// 成就计数 78→79 pin 级联 + 新套件 smoke_v24151_lowlv 入库 363 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.151';
 // v24.149 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——版本速览五数与 data.js 实核对账）：
 // 78 项成就（ACH_LIST.length）/45 名 NPC（NPCS）·46 处 NPC_SPOTS/45 条支线（QUESTS kind==='side'）/
 // 13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/362 件套冒烟（tests/ 文件数）由
@@ -5777,6 +5790,16 @@ const NIGHT_WIN_GOAL = 10;
 // ACH_LIST 身经百战 / 支线 side_stele 同读一份源，调门槛只改本行一处全端自动跟随）；70 < BATTLE_GOAL(100)
 // 身经百战门槛，取「明显快于老练战士、却给随机遇敌留足余量」的速通档。
 const SPEED_GOAL = 70;
+// v24.151 成就「未及十级」阈值（挑战向·低等级档·单一数据源）：击败终焉之神时等级不足 LOWLV_GOAL(10)
+// 即解锁——判定读既有 hero.level（g/grantXp 升级唯一产生点 hero.level++、随 snapshotHero 全量快照自动
+// 持久化、防御式 (g.level||1) 旧档零迁移，与 ACH_LIST LVL10_GOAL「身经百战不怠」级档同读一份源，调门槛
+// 只改本行一处全端自动跟随）；10 = 无字回廊推荐等级 recLv（v24.145 zonePill / v24.150 状态页「推荐 Lv」/
+// v21.92 快旅红字同一「我在哪·够不够格」口径）——回廊从进图起整条路都挂着「⚠️ 推荐 Lv.10 · 差 K 级」的
+// 红灯，举着这盏红灯一路打赢终焉之神（Lv.12 Boss）即本档达成：等级只增不减，「未满 10 就通关」的档
+// 一次升级即永久无缘（与 hardtrue 换难度 / unflicker 死过一次 / swift 超场同属「重新来过才拿得到」的
+// 挑战品类）；取整 10 低于回廊推荐等级（通关时 zonePill 恒为红灯的天然极限，比 LVL10_GOAL 的「抵达 10 级」
+// 低一档、「练到哪级就该走哪图」的反向纪念）。
+const LOWLV_GOAL = 10;
 
 // 敌方重击倍率（单一数据源）：enemyAI.enemyAct 的重击结算与 view/drawBattle 的 Boss 逐招受击预判
 // 同读此源——此前 `enemy.phased ? 2.3 : 1.9` 硬编码在两处（enemyAI.js 结算、drawBattle.js 预判），
@@ -9366,6 +9389,28 @@ const ACH_LIST=[
   // unflicker 同路径零新增依赖），反馈不迟到。
   // ACH_LIST 77→78 项（末尾追加，既有 77 项 id/序位零回归）。
   {id:'swift', name:'速战速决', d:`在 ${SPEED_GOAL} 场战斗内击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && (g.battles||0)<=SPEED_GOAL)},
+  // v24.151 新成就·挑战向·低等级档（第七十九项）「未及十级」——承 v24.148 速战速决（swift）/ v24.147
+  // 未曾熄灯（unflicker）/ v23.68 逆风行灯（hardtrue）先例，「以怎样的姿态通关」这一挑战维度的第三次
+  // 开垦：v24.147 盖住了「别倒下」（零阵亡）、v24.148 盖住了「别拖沓」（速通），「别练级」这一面查无
+  // 一行——Boss 线三档（boss/cave/trueboss）与难度向（hardtrue）皆只认「打过了」，玩家只要打过终焉之神
+  // 便「记得一切」，但「九级就闯通关的档」与「刷满十二级才过」的档在成就一览毫无分别（只差 LVL12_GOAL
+  // 抵达 12 级的正向纪念，反向的「没到 10 级就通关」查无一行）。现补低等级向独立单档——判定读既有
+  // hero.trueBoss（终焉之神=真结局最终 Boss，击败即「走完全程」的终极口径，与 trueboss/hardtrue/unflicker/
+  // swift 同源）与既有 hero.level（hero.js grantXp 升级唯一产生点 hero.level++、随 snapshotHero 全量快照
+  // 自动持久化、防御式 (g.level||1) 旧档零迁移，与 ACH_LIST LVL5/LVL10/LVL12 级档同读一份源），
+  // (g.trueBoss && (g.level||1)<LOWLV_GOAL) 即「未及十级通关」达成：level 只增不减，升过门槛（10）的档
+  // 永久无缘此档（与 hardtrue 换难度 / unflicker 死过一次 / swift 超场同属「重新来过才拿得到」的挑战品类）；
+  // 10 = 无字回廊推荐等级 recLv（v24.145 zonePill / v24.150 状态页「推荐 Lv」/ v21.92 快旅红字同一口径）——
+  // 「举着回廊全程的红灯一路打赢终焉之神（Lv.12 Boss）」，同时 zonePill/状态页从 1 到 9 级一路陪着玩家
+  // 把「差 K 级」的红字走到通关，通关瞬间的红灯正是这枚成就的注脚。零新计数零新状态零新写点零新存档
+  // （trueBoss/level 皆既有字段）；无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift 同款——级别本身
+  // 就是进度，省下来的练级时间本身就是奖励）；解锁时机：winBattle → applyAchievements 既有通路（终焉之神
+  // 击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，与 trueboss/hardtrue/unflicker/swift 同路径
+  // 零新增依赖），反馈不迟到。
+  // ACH_LIST 78→79 项（末尾追加，既有 78 项 id/序位零回归）。真实可行性：Lv9 满配（圣光之剑+龙鳞甲）对
+  // 终焉之神伤害 ≈79/击、受击 ≈32/回合、三瓶灵药+两株蘑菇制 NPC 补给可磨穿 700HP——行得通但要一路跳过
+  // 大部分随机遇敌（Boss 线必修 XP 670 + 随机战预算约 390 XP < Lv10 门槛 1063 XP）。
+  {id:'lowlv', name:'未及十级', d:`等级未满 ${LOWLV_GOAL} 时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && (g.level||1)<LOWLV_GOAL)},
 ];
 
 function codexTag(name) {
@@ -9853,5 +9898,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, FURNACE_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL, SPEED_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, FURNACE_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL, SPEED_GOAL, LOWLV_GOAL,
 };
