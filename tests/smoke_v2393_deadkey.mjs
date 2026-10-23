@@ -90,7 +90,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.92', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 92)), GAME_VERSION);
 ok('data.js 含 v23.93 注释（文档整理·口径收口说明）', dSrc.includes('v23.93 文档整理·口径收口'));
 ok('data.js GAME_VERSION 字面量已为 v23.93（旧 v23.92 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.149';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "2';"));
+  dSrc.includes("const GAME_VERSION = 'v24.150';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "2';"));
 ok('data.js 仍保留 v23.92 历史注释（星铁剑说明，累积注释块）', dSrc.includes('v23.92 数值平衡·装备曲线补全'));
 
 // —— README 快速上手表「阵亡」行源级落位：行头 B/R/T/P + P 存档口径 ——
@@ -157,7 +157,7 @@ ok('README 含 v23.93 守护描述（阵亡行 P 存档口径守护）',
 ok('README 含 smoke_v2393_deadkey 入库（217 份）', readme.includes('smoke_v2393_deadkey 入库（217 份）'));
 ok('README 仍保留 v23.92 历史守护描述与入库口径（历史累积）',
   readme.includes('v23.92 起含 新武器「星铁剑」守护') && readme.includes('smoke_v2392_stariron 入库（216 份）'));
-ok('CHANGELOG 顶部已追加 v23.93 条目（阵亡行 P 口径）', changelog.startsWith('## v24.149 '));
+ok('CHANGELOG 顶部已追加 v23.93 条目（阵亡行 P 口径）', changelog.startsWith('## v24.150 '));
 ok('CHANGELOG 顶部条目含阵亡行 P 说明', changelog.includes('README 快速上手表「阵亡」行补 P 存档'));
 ok('CHANGELOG 仍保留 v23.92 条目标题（历史口径）', changelog.includes('## v23.92 新武器「星铁剑」'));
 

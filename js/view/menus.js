@@ -191,7 +191,21 @@ export function drawStatus(){
   const mapKey=curMap();
   const mapDef=MAPS[mapKey]||{};
   const zoneLabel=mapDef.zone&&mapDef.zone.label?`（${mapDef.zone.label}）`:'';
-  text(`📍 ${mapDef.name||mapKey}${zoneLabel} · 推荐 Lv.${mapDef.recLv||'?'}`,320,82,'12px','#7d93a3','center');
+  // v24.150 体验打磨·信息透明·纯显示：状态页地图行补「推荐 Lv.N · 你 Lv.M」等级比对（「我在哪·够不够格」
+  // 单一数据源口径在状态页(I)的收口——承 v24.145 世界画布 zonePill / v21.92 快速旅行预警同一主线：状态页
+  // 头部行已报「Lv.M」、地图行（v19.89）却只报「推荐 Lv.N」，「该不该留在这图练级、还差几级」要心算；
+  // 现与 v24.145 同读 (MAPS[curMap()]||{}).recLv 一份源、同式派生「差 K 级」——未达标（hero.level < recLv）
+  // 整行红字「📍 名 · ⚠️ 推荐 Lv.N · 你 Lv.M · 差 K 级」（与 v24.145 红字同式同色 #ff5b5b）、达标灰字
+  // 「📍 名 · 推荐 Lv.N · 你 Lv.M」（与既有多行同色 #7d93a3；v24.145 zonePill 同款同词），防御式 recLv
+  // 缺失保持「推荐 Lv.?」原样、潮灯镇（recLv=1）恒达标灰字零噪音；纯显示零结算零存档零数值变化（级别/
+  // 经验/升级结算零影响），battle/core/world 逐字未动。
+  const _rec = mapDef.recLv != null ? mapDef.recLv : null;
+  const _lvl = hero.level || 1;
+  const _under = _rec != null && _lvl < _rec;
+  const _recTxt = _rec != null
+    ? (_under ? ` · ⚠️ 推荐 Lv.${_rec} · 你 Lv.${_lvl} · 差 ${_rec - _lvl} 级` : ` · 推荐 Lv.${_rec} · 你 Lv.${_lvl}`)
+    : ' · 推荐 Lv.?';
+  text(`📍 ${mapDef.name||mapKey}${zoneLabel}${_recTxt}`,320,82,'12px', _under ? '#ff5b5b' : '#7d93a3','center');
   text(`经验 ${hero.xp} / ${hero.xpNext} · 距升级还差 ${Math.max(0,(hero.xpNext||0)-(hero.xp||0))} 经验`,320,98,'13px','#e8eef1','center');
   CTX.fillStyle='#122029'; rr(180,106,280,10,5); CTX.fill();
   CTX.fillStyle='#62c6ff'; rr(180,106,Math.max(0,280*(hero.xp/hero.xpNext)),10,5); CTX.fill();

@@ -96,7 +96,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.114', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 114)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.115（旧 v24.114 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.149';") && !dSrc.includes("const GAME_VERSION = 'v24.114';"));
+  dSrc.includes("const GAME_VERSION = 'v24.150';") && !dSrc.includes("const GAME_VERSION = 'v24.114';"));
 ok('data.js 含 v24.115 注释（HUD 成就进度·计数现场说明）',
   dSrc.includes('v24.115 体验打磨·信息透明·计数现场'));
 ok('data.js 仍保留 v24.114 历史注释（先撤为敬新支线说明，零内容丢失）',
@@ -160,7 +160,7 @@ ok('package.json 实跑链共 338 份（smoke.mjs + 337 专项）', chain.length
 ok('package.json 链尾为 smoke_v24115_achhud（第 338 份）', chain[chain.length - 1] === 'smoke_v24148_swift', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24114_fleequest.mjs && smoke_v24115_achhud.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24114_fleequest.mjs && node tests/smoke_v24115_achhud.mjs && node tests/smoke_v24116_guidequest.mjs && node tests/smoke_v24117_codexhud.mjs && node tests/smoke_v24118_wellquest.mjs && node tests/smoke_v24119_huntquest.mjs && node tests/smoke_v24120_chesthud.mjs && node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs && node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.115（startsWith）', changelog.startsWith('## v24.149'));
+ok('CHANGELOG.md 顶部条目已为 v24.115（startsWith）', changelog.startsWith('## v24.150'));
 ok('CHANGELOG v24.115 条目含「成就 N/78」与「s-ach」与「ACH_LIST」',
   changelog.includes('成就 N/78') && changelog.includes('s-ach') && changelog.includes('ACH_LIST'));
 ok('CHANGELOG 仍保留 v24.114 条目（历史保留）', changelog.includes('## v24.114'));
@@ -177,8 +177,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.114 pin 零残留 ——
 const s24114 = read('tests/smoke_v24114_fleequest.mjs');
-ok('smoke_v24114 的 GAME_VERSION 字面量 pin 已更新为 v24.115', s24114.includes("const GAME_VERSION = 'v24.149';"));
-ok('smoke_v24114 的 CHANGELOG 顶 pin 已更新为 ## v24.115 ', s24114.includes("startsWith('## v24.149'"));
+ok('smoke_v24114 的 GAME_VERSION 字面量 pin 已更新为 v24.115', s24114.includes("const GAME_VERSION = 'v24.150';"));
+ok('smoke_v24114 的 CHANGELOG 顶 pin 已更新为 ## v24.115 ', s24114.includes("startsWith('## v24.150'"));
 ok('smoke_v24114 的件套 pin 已更新为三百六十二件套（三百六十一件套清除）', s24114.includes('三百六十二件套（三百六十一件套清除）'));
 ok('smoke_v24114 的 README/链 tail pin 已随新现实延伸（含 smoke_v24115_achhud）',
   s24114.includes('smoke_v24115_achhud'));
