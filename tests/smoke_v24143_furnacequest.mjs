@@ -48,9 +48,9 @@ const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
 // —— 版本锚点（格式合法 + 已越过 v24.155 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.155', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 154)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.155', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 155)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.143（旧 v24.142 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.155';") && !dSrc.includes("const GAME_VERSION = 'v24.142';"));
+  dSrc.includes("const GAME_VERSION = 'v24.156';") && !dSrc.includes("const GAME_VERSION = 'v24.142';"));
 ok('data.js 含 v24.143 注释（灵药照炉新支线说明）',
   dSrc.includes('v24.143 新内容·新支线（第四十五条）'));
 ok('data.js 仍保留 v24.142 文档复核历史注释（零内容丢失）',
@@ -206,7 +206,7 @@ ok('package.json 实跑链共 359 份（smoke.mjs + 359 专项）', chain.length
 ok('package.json 链尾为 smoke_v24143_furnacequest（第 363 份）', chain[chain.length - 1] === 'smoke_v24155_frugal', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24136_herbquest.mjs && smoke_v24143_furnacequest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs && node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs && node tests/smoke_v24153_penny.mjs && node tests/smoke_v24154_steadfast.mjs && node tests/smoke_v24155_frugal.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.143（startsWith）', changelog.startsWith('## v24.155'));
+ok('CHANGELOG.md 顶部条目已为 v24.143（startsWith）', changelog.startsWith('## v24.156'));
 ok('CHANGELOG v24.143 条目含「灵药照炉」与「FURNACE_GOAL」与「守炉翁」',
   changelog.includes('灵药照炉') && changelog.includes('FURNACE_GOAL') && changelog.includes('守炉翁'));
 ok('CHANGELOG 仍保留 v24.136 条目（历史保留）', changelog.includes('## v24.136 '));
@@ -225,8 +225,8 @@ const s24136 = read('smoke_v24136_herbquest.mjs');
 const s24135 = read('smoke_v24135_ledgerquest.mjs');
 const s24134 = read('smoke_v24134_kindleq.mjs');
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v24136 的 GAME_VERSION 字面量 pin 已更新为 v24.143', s24136.includes("const GAME_VERSION = 'v24.155';"));
-ok('smoke_v24136 的 CHANGELOG 顶 pin 已更新为 ## v24.143 ', s24136.includes("startsWith('## v24.155'"));
+ok('smoke_v24136 的 GAME_VERSION 字面量 pin 已更新为 v24.143', s24136.includes("const GAME_VERSION = 'v24.156';"));
+ok('smoke_v24136 的 CHANGELOG 顶 pin 已更新为 ## v24.143 ', s24136.includes("startsWith('## v24.156'"));
 ok('smoke_v24136 的件套 pin 已更新为三百六十七件套（三百六十六件套清除）', s24136.includes('三百六十七件套（三百六十六件套清除）'));
 ok('smoke_v24136 的 README/链 tail pin 已随新现实延伸（含 smoke_v24143_furnacequest）',
   s24136.includes('smoke_v24143_furnacequest'));

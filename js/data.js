@@ -3244,7 +3244,15 @@
 // 逐字未动，遇敌/掉落/战斗/升级/存档零影响。配套：全库 366 件套 GAME_VERSION 字面量 pin 级联（v24.154→
 // v24.155，哨兵前望 367→368）+ 全库 件套口径 366→367 / 成就计数 83→83 pin 级联 + 新套件
 // smoke_v24155_frugal 入库 367 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.155';
+const GAME_VERSION = 'v24.156';
+// v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
+// 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
+// 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
+// 件套冒烟（tests/ 文件数），哨兵前望 368、链尾 smoke_v24155_frugal 逐处一致（v24.152-155 四个成就版本
+// 推进 79→83、件套 363→367，其中 v24.154/155 由并行运行完成——文档侧统一复核收口，账目五数与 README
+// 版本速览零漂移）；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 367 件套 GAME_VERSION 字面量 pin 级联（v24.155→v24.156，哨兵前望 368 不变 —— 本轮无新
+// 套件无计数变化）。
 // v24.149 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——版本速览五数与 data.js 实核对账）：
 // 78 项成就（ACH_LIST.length）/45 名 NPC（NPCS）·46 处 NPC_SPOTS/45 条支线（QUESTS kind==='side'）/
 // 13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/362 件套冒烟（tests/ 文件数）由

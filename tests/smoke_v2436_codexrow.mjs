@@ -47,7 +47,7 @@ ok('GAME_VERSION 格式合法且已越过 v24.36', !!_gv && (_gv[0] > 24 || (_gv
 
 // —— data.js 源级落位 ——
 ok('data.js GAME_VERSION 字面量已为 v24.36（旧 v24.35 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.155';") && !dSrc.includes("const GAME_VERSION = 'v24.35';"));
+  dSrc.includes("const GAME_VERSION = 'v24.156';") && !dSrc.includes("const GAME_VERSION = 'v24.35';"));
 ok('data.js 含 v24.36 注释（「图鉴 / 收集」数值速查行说明）',
   dSrc.includes('// v24.36 文档整理·数值说明·同源口径'));
 ok('data.js 仍保留 v24.35 历史注释（后期金币曲线续平滑（第五轮）说明，累积注释块）',
@@ -130,7 +130,7 @@ ok('README 仍保留 v24.35 历史守护描述与入库口径（后期金币曲�
   readme.includes('v24.35 起含 「后期金币曲线续平滑（第五轮）」守护') && readme.includes('smoke_v2435_goldcurve5 入库（335 份）'));
 ok('README 仍保留 v24.06 历史守护描述（「恢复点 / 补给」数值速查行守护）',
   readme.includes('v24.06 起含 「恢复点 / 补给」数值速查行守护'));
-ok('CHANGELOG 顶部已追加 v24.36 条目（「图鉴 / 收集」数值速查行）', changelog.startsWith('## v24.155 '));
+ok('CHANGELOG 顶部已追加 v24.36 条目（「图鉴 / 收集」数值速查行）', changelog.startsWith('## v24.156 '));
 ok('CHANGELOG 顶部条目含图鉴与 BESTIARY_TARGET/PERFECTION_GOLD/FRAGMENTS 口径说明',
   changelog.includes('图鉴') && changelog.includes('BESTIARY_TARGET') &&
   changelog.includes('PERFECTION_GOLD') && changelog.includes('FRAGMENTS') && changelog.includes('数值速查'));
