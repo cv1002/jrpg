@@ -14,11 +14,11 @@
 // potionUses 皆既有字段）；无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift/lowlv 同款）；解锁时机：
 // winBattle → applyAchievements 既有通路（trueboss/hardtrue/unflicker/swift/lowlv 同路径零新增依赖），
 // 反馈不迟到。ACH_LIST 79→80 项末尾追加）。
-// 本冒烟守护：版本锚点（v24.152、旧 v24.151 字面量零残留、v24.152 注释）、ACH_LIST 80 项精确与末尾序位
+// 本冒烟守护：版本锚点（v24.152、旧 v24.151 字面量零残留、v24.152 注释）、ACH_LIST 81 项精确与末尾序位
 // （unflicker 76 / swift 77 / lowlv 78 / nopotion 79）、nopotion 数据契约（d 文案、ok 防御式逐值、无 r 无
 // prog）、unlockedAchievements/applyAchievements 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 /
 // 用过一次药不解锁 / 未通关不解锁）、既有 79 成就 id 零回归、battle.js doItem potionUses 写入点源级零变化
-// （hero.potionUses = useN 唯一产生点）、README/package.json/CHANGELOG 同步（件套口径 364 + v24.152 守护
+// （hero.potionUses = useN 唯一产生点）、README/package.json/CHANGELOG 同步（件套口径 365 + v24.152 守护
 // 描述 + 入库 364 + 版本速览 + 80 项 + tests 树串尾 + package 串尾）、哨兵链（前望 365 且 README 尚无 365
 // 口径）、旧代 v24.151 字面量/恒等/顶 pin/363 口径/79 项 全库零残留扫描（豁免本套件 + 上一版 v24151 +
 // 上上版 v24148）。
@@ -99,12 +99,12 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 
-// —— 版本锚点（格式合法 + 已越过 v24.151 + 精确值由本版守护）——
+// —— 版本锚点（格式合法 + 已越过 v24.152 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.151', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 151)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已为 v24.152（旧 v24.151 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.152';") && !dataSrc.includes("const GAME_VERSION = 'v24.151';"));
+ok('GAME_VERSION 格式合法且已越过 v24.152', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 152)), GAME_VERSION);
+ok('data.js GAME_VERSION 字面量已为 v24.153（旧 v24.152 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v24.153';") && !dataSrc.includes("const GAME_VERSION = 'v24.152';"));
 ok('data.js 含 v24.152 注释（药囊未启新成就说明）',
   dataSrc.includes('v24.152 新内容·新成就'));
 
@@ -112,7 +112,7 @@ ok('data.js 含 v24.152 注释（药囊未启新成就说明）',
 const ach = ACH_LIST.find((a) => a.id === 'nopotion');
 ok('ACH_LIST 含 nopotion「药囊未启」且 id 唯一',
   !!ach && ach.name === '药囊未启' && ACH_LIST.filter((a) => a.id === 'nopotion').length === 1);
-ok('ACH_LIST 精确总数 80 项（79→80 末尾追加）', ACH_LIST.length === 80, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 81 项（79→81 末尾追加）', ACH_LIST.length === 81, String(ACH_LIST.length));
 ok('nopotion 描述文案（零战斗用药真结局档）',
   ach.d === '未在战斗中使用药水/灵药击败终焉之神（真结局）', ach.d);
 ok('nopotion 判定源级（读既有 g.trueBoss 与防御式 !(g.potionUses||0)）',
@@ -243,37 +243,37 @@ ok('battle.js 全文件无第二处 potionUses 写入（唯一产生点口径）
   (battleSrc.match(/potionUses\s*=/g) || []).length === 1, String((battleSrc.match(/potionUses\s*=/g) || []).length));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为三百六十四件套（三百六十三件套清除）',
-  readme.includes('扩充为冒烟三百六十四件套（三百六十三件套清除）') && !readme.includes('冒烟三百六十三件套（三百六十二件套清除）'));
+ok('README 件套口径为三百六十五件套（三百六十四件套清除）',
+  readme.includes('扩充为冒烟三百六十五件套（三百六十四件套清除）') && !readme.includes('冒烟三百六十三件套（三百六十二件套清除）'));
 ok('README 含 v24.152 守护描述（药囊未启新成就守护）', readme.includes('v24.152 起含「药囊未启」新成就守护'));
-ok('README 版本速览已为 v24.152 且成就计数 80', readme.includes('版本速览（v24.152）') && readme.includes('80 项成就'));
-ok('README 成就计数双处口径 80 项（全部 80 项进度 + **80 项成就**，79 项清除）',
-  readme.includes('全部 80 项进度') && readme.includes('**80 项成就**') && !readme.includes('**79 项成就**'));
+ok('README 版本速览已为 v24.153 且成就计数 81', readme.includes('版本速览（v24.153）') && readme.includes('81 项成就'));
+ok('README 成就计数双处口径 81 项（全部 81 项进度 + **81 项成就**，79 项清除）',
+  readme.includes('全部 81 项进度') && readme.includes('**81 项成就**') && !readme.includes('**79 项成就**'));
 ok('README tests 树收录 smoke_v24152_nopotion（含 v24.152 守护子句 + 串尾）',
   readme.includes('v24.152 起含「药囊未启」新成就守护') && readme.includes('smoke_v24152_nopotion'));
 ok('README 含 smoke_v24152_nopotion 入库（364 份）', readme.includes('smoke_v24152_nopotion 入库（364 份）'));
-ok('package.json 已收录 smoke_v24152_nopotion.mjs 且位于串尾（狠在 lowlv 之后）',
-  pkg.includes('smoke_v24152_nopotion.mjs') &&
-  pkg.includes('node tests/smoke_v24148_swift.mjs && node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs"'));
+ok('package.json 已收录 smoke_v24153_penny.mjs 且位于串尾（狠在 nopotion 之后）',
+  pkg.includes('smoke_v24153_penny.mjs') &&
+  pkg.includes('node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs && node tests/smoke_v24153_penny.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 364 件套', testChain === 364, String(testChain));
-ok('CHANGELOG 含 v24.152 顶条目', changelog.startsWith('## v24.152'));
+ok('package.json test 串共 365 件套', testChain === 365, String(testChain));
+ok('CHANGELOG 含 v24.153 顶条目', changelog.startsWith('## v24.153'));
 
-// —— 哨兵链：README 已有 364 口径且尚无 365（前望 365 语义：下一版才写 365）——
-ok('README 已有三百六十四件套口径且尚无 365（哨兵前望 365 语义：下一版才写 365）',
-  readme.includes('三百六十四件套（三百六十三件套清除）') && !readme.includes('三百六十五件套'));
+// —— 哨兵链：README 已有 365 口径且尚无 366（前望 366 语义：下一版才写 366）——
+ok('README 已有三百六十五件套口径且尚无 366（哨兵前望 366 语义：下一版才写 366）',
+  readme.includes('三百六十五件套（三百六十四件套清除）') && !readme.includes('三百六十六件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 365（三百六十五件套否定式）',
-    s24143.includes('哨兵链前望 365') && s24143.includes('三百六十五件套否定式'));
+  ok('smoke_v24143 哨兵链前望 366（三百六十六件套否定式）',
+    s24143.includes('哨兵链前望 366') && s24143.includes('三百六十六件套否定式'));
 }
 {
-  ok('smoke_v24151 姊妹件版本字面量 pin 已随新现实推进（v24.152）',
-    read('tests/smoke_v24151_lowlv.mjs').includes("const GAME_VERSION = 'v24.152';"));
-  ok('smoke_v24148 姊妹件版本字面量 pin 已随新现实推进（v24.152）',
-    read('tests/smoke_v24148_swift.mjs').includes("const GAME_VERSION = 'v24.152';"));
-  ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.152）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.152'"));
+  ok('smoke_v24151 姊妹件版本字面量 pin 已随新现实推进（v24.153）',
+    read('tests/smoke_v24151_lowlv.mjs').includes("const GAME_VERSION = 'v24.153';"));
+  ok('smoke_v24148 姊妹件版本字面量 pin 已随新现实推进（v24.153）',
+    read('tests/smoke_v24148_swift.mjs').includes("const GAME_VERSION = 'v24.153';"));
+  ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.153）',
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.153'"));
 }
 
 // —— 旧代 v24.151 字面量 / 363 件套口径 / 79 项 全库零残留扫描（豁免本套件 + 上一版 v24151 + 上上版 v24148）——
