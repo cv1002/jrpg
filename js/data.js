@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/95）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/96）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,10 +2564,10 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/95）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/96）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
-// 「（成就 N/95）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
+// 「（成就 N/96）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
 // M=ACH_LIST.length(76) 单一数据源五端同读；perfection 特别庆贺分支保持逐字零回归。纯显示零结算零存档）。
 // v24.75 数值平衡·后期经验曲线续平滑（第二十二轮）：四强怪每级经验 +1（xp[1] 25→26），无字回廊池加权
 // Lv10→11 1.33→1.29 / Lv11→12 1.73→1.67 / Lv12→13 2.27→2.19 / Lv13→14 2.99→2.88 / Lv14→15 3.95→3.81 /
@@ -2600,19 +2600,19 @@
 // （刻碑人原有 trueBoss after 彩蛋「碑上的字全亮了/手艺是暖的」两页并入真结局分档，零内容丢失；
 // npcQuestPages 有任务后不再单独展示 after，lines 两页叙事保留在数据层）；件套 331→332
 // （smoke_v24109_carvequest 入库，链尾 smoke_v24109_carvequest）。
-// v24.115 体验打磨·信息透明·计数现场：HUD 常驻「🏆 成就 N/95」收集进度（承 v24.16 HUD 步数进度
+// v24.115 体验打磨·信息透明·计数现场：HUD 常驻「🏆 成就 N/96」收集进度（承 v24.16 HUD 步数进度
 // 「🚶 千里之行 N/1000」/ v24.12 胜利画面「⚔️ 身经百战 N/100」/ v24.09 商店「🍄 蘑菇商路 N/30」同一
 // 「计数现场报进度」主线，收集口径的 HUD 侧兑现——图鉴/宝箱/碎片进度在 I 状态页资源行一眼可见
 // （v21.94/v22.1 收集三件套+碎片），唯独「成就」这枚总进度只在 C 成就页/标题槽预览/阵亡行可见，
 // 大地图没有任何一眼数：想冲「记忆守护者」（perfection，X 页 999 金）或数还差几枚成就齐活，只能
-// 开 C 页数 X/76；现 HUD 第二行统计位 🚶 之右补「🏆 N/95」——分子读 (hero.ach||[]) 防御式旧档
-// 零迁移、分母读 data.js ACH_LIST 单一数据源，与 C 页/解锁横幅「（成就 N/95）」（v24.76）/slotPreview/
+// 开 C 页数 X/76；现 HUD 第二行统计位 🚶 之右补「🏆 N/96」——分子读 (hero.ach||[]) 防御式旧档
+// 零迁移、分母读 data.js ACH_LIST 单一数据源，与 C 页/解锁横幅「（成就 N/96）」（v24.76）/slotPreview/
 // drawDead 收集行同读一份源，调成就集合只改 data.js 一处四端自动跟随；纯显示零结算零存档零数值
 // 变化（hero.ach 写入/解锁判定/奖励结算逐字未动）。只改 js/view/hud.js（import 补 ACH_LIST +
 // set('s-ach',…) 一行）+ index.html（s-steps 之右补 <b id="s-ach"> + title 口径）；件套 337→338
 // （smoke_v24115_achhud 入库，链尾 smoke_v24115_achhud）。
 // v24.123 体验打磨·信息透明·计数现场：HUD 常驻「🧩 记忆碎片 N/4」收集进度（承 v24.120 HUD 宝箱
-// 「📦 N/12」/ v24.117 HUD 记忆图鉴「📕 N/13」/ v24.115 HUD 成就进度「🏆 N/95」/ v24.16 步数进度
+// 「📦 N/12」/ v24.117 HUD 记忆图鉴「📕 N/13」/ v24.115 HUD 成就进度「🏆 N/96」/ v24.16 步数进度
 // 「🚶 N/1000」同一「计数现场报进度」主线，收集口径的 HUD 侧第四枚兑现——图鉴/成就/宝箱/碎片进度
 // 在 I 状态页资源行一眼可见（v21.94/v22.1 收集三件套+碎片），HUD 第二行步数/成就/图鉴/宝箱四枚进度
 // 皆已有数，唯独「记忆碎片」这枚真结局关键收集（FRAGMENTS 四枚强敌首胜掉落、集齐触发真结局「全记忆」
@@ -2625,7 +2625,7 @@
 // <b id="s-frag"> + title 口径）；件套 345→346（smoke_v24123_fraghud 入库，链尾 smoke_v24123_fraghud）。
 // v24.124 体验打磨·信息透明·计数现场：HUD 常驻「🏮 灯火同心 N/33」支线完成进度（承 v24.123 HUD 记忆
 // 碎片「🧩 N/4」/ v24.120 HUD 宝箱「📦 N/12」/ v24.117 HUD 记忆图鉴「📕 N/13」/ v24.115 HUD 成就进度
-// 「🏆 N/95」/ v24.16 步数进度「🚶 N/1000」同一「计数现场报进度」主线，收集口径的 HUD 侧第五枚兑现——
+// 「🏆 N/96」/ v24.16 步数进度「🚶 N/1000」同一「计数现场报进度」主线，收集口径的 HUD 侧第五枚兑现——
 // 图鉴/成就/宝箱/碎片四收集进度与步数在 HUD 第二行皆有数，唯独「灯火同心」（QUESTS kind==='side' 全部
 // 支线完成，成就 allquests 判据）这枚终极完成度没有任何一眼之数：交付横幅（v24.21「🏮 灯火同心 N/11」）
 // /任务日志/Ⅰ 状态页只报「进行中」，想数还差几条支线清完、或临门一脚差哪条（灯火同心成就判据），只能
@@ -2637,7 +2637,7 @@
 // 件套 346→347（smoke_v24124_questshud 入库，链尾 smoke_v24124_questshud）。
 // v24.125 体验打磨·信息透明·计数现场：HUD 常驻「⚔️ 驱雾百战 N/100」讨伐进度（承 v24.124 HUD 支线
 // 「🏮 灯火同心 N/33」/ v24.123 HUD 碎片「🧩 N/4」/ v24.120 HUD 宝箱「📦 N/12」/ v24.117 HUD 图鉴
-// 「📕 N/13」/ v24.115 HUD 成就「🏆 N/95」/ v24.16 步数「🚶 N/1000」同一「计数现场报进度」主线，收集
+// 「📕 N/13」/ v24.115 HUD 成就「🏆 N/96」/ v24.16 步数「🚶 N/1000」同一「计数现场报进度」主线，收集
 // 口径的 HUD 侧第六枚兑现——讨伐（hero.totalWins，winBattle 胜利结算唯一产生点）是伴随全场战斗的核心
 // 投入端口：胜利战报（v24.22「⚔️ 驱雾百战 N/100」）与胜利画面（v24.12「⚔️ 身经百战」·遭遇端口）都
 // 已报数，唯独大地图 HUD 第二行没有任何讨伐之数——想数还差几场凑满「驱雾百战」（讨伐线中档里程碑，
@@ -2702,7 +2702,7 @@
 // 分档，零内容丢失）；奖励 60 金 + 2 生命药水（承 side_flee 60 档——「酿造」自第一锅即可累计、
 // 全程伴随）。
 // v24.120 体验打磨·信息透明·计数现场：HUD 常驻「📦 宝箱 N/12」收集进度（承 v24.16 HUD 步数进度
-// 「🚶 千里之行 N/1000」/ v24.115 成就进度「🏆 成就 N/95」/ v24.117 图鉴进度「📕 记忆图鉴 N/13」同一
+// 「🚶 千里之行 N/1000」/ v24.115 成就进度「🏆 成就 N/96」/ v24.117 图鉴进度「📕 记忆图鉴 N/13」同一
 // 「计数现场报进度」主线，收集口径的 HUD 侧第三枚兑现——I 状态页资源行六端资源（金币/药水/灵药/蘑菇/
 // 图鉴/宝箱·成就/碎片/时长）里「宝箱」与「碎片」同步的进度此前只在 I 页/标题槽预览/阵亡行可见，大地图
 // 没有一眼数：想冲「开箱寻宝（6 只）/一箱不漏（12 只）」或扫箱规划还剩几只没开，只能开 I 页数「已开
@@ -2746,7 +2746,7 @@
 // 叙事与 trueBoss after 彩蛋「记得的灯，从此由你掌着」两页并入，零内容丢失）；件套 340→341
 // （smoke_v24118_wellquest 入库，链尾 smoke_v24118_wellquest）。
 // v24.117 体验打磨·信息透明·计数现场：HUD 常驻「📕 记忆图鉴 N/13」收集进度（承 v24.115 HUD 成就进度
-// 「🏆 成就 N/95」/ v24.16 步数进度「🚶 千里之行 N/1000」同一「计数现场报进度」主线，收集口径的
+// 「🏆 成就 N/96」/ v24.16 步数进度「🚶 千里之行 N/1000」同一「计数现场报进度」主线，收集口径的
 // HUD 侧第二枚兑现——图鉴/成就/宝箱/碎片进度在 I 状态页资源行一眼可见（v21.94/v22.1 收集三件套+碎片），
 // 唯独「记忆图鉴」这枚总进度只在 I 状态页资源行/图鉴页汇总/标题槽预览可见，大地图没有任何一眼数：
 // 记忆图鉴（B 键）是全游最大的收藏面与「该去打哪只」的刷怪中枢（出没地/强度/讨伐进度全在里头），
@@ -3612,7 +3612,40 @@
 // 同路径零新增依赖），反馈不迟到。只改本常量与 ACH_LIST 末尾 lowlvnopo 条目，battle/core/world/view 逐字未动，遇敌/掉落/
 // 战斗/升级/存档零影响。配套：全库 378 件套 GAME_VERSION 字面量 pin 级联（v24.167→v24.168，哨兵前望 379→380）+ 全库 件套
 // 口径 378→379 / 成就计数 94→95 pin 级联 + 新套件 smoke_v24168_lowlvnopo 入库 379 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.168';
+// v24.169 新内容·新成就（第九十六项）「长明疾行」——零阵亡 × 七十场内击败终焉之神的挑战向双克制交叉档
+// （承 v24.168 不饮青芽（lowlvnopo）/ v24.167 不饮疾行（swiftnopo）/ v24.166 素手长明（unflskill）/ v24.148 速战速决
+// （swift）/ v24.147 未曾熄灯（unflicker）先例，成就版图「以怎样的姿态通关」这一挑战维度的第二十次开垦：v24.162-168
+// 先后把 {swift, lowlv, noskill, nopotion} 四姿态的两两交叉区全部收口（素手青灯/踏雪无痕/速成青芽/素手不沾/不饮疾行/不饮
+// 青芽 六角各占一家），v24.166 又把最早的克制姿态「别倒下」拉进交叉区（零阵亡×零用技=素手长明）——「别倒下」自此与另一
+// 姿态的交叉区只开垦了「×零用技」一角，而 unflicker「未曾熄灯」只认「零阵亡」（普通/困难通吃）、swift「速战速决」只认
+// 「七十场内」（普通/困难通吃），两者交叉的「零阵亡 + 七十场内」硬核档与分开的两枚拿到的是同一枚未曾熄灯（或速战速决），
+// 成就一览毫无分别；本枚落地后「别倒下」交叉区开垦第二角（零阵亡×七十场内=长明疾行）。判定读既有 `hero.trueBoss`（终焉
+// 之神＝真结局最终 Boss，与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/penny/steadfast/frugal/dry/swift2/
+// lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/lowlvnopo 同读一份源）、既有
+// `hero.deaths`（battle.loseBattle 全游唯一战败结算点写入（`S.G.deaths = (S.G.deaths||0) + 1`）、retryBoss 不清零、
+// 随 snapshotHero 全量快照自动持久化、防御式 `(g.deaths||0)` 旧档零迁移，与 unflicker「未曾熄灯」/steadfast「逆风不灭」/
+// deaths「败而不馁」/unflskill 同读一份源）与既有 `hero.battles`（battle.startBattle 进战即记唯一产生点——胜/败/逃都算，
+// 随 snapshotHero 全量快照自动持久化、防御式 `(g.battles||0)` 旧档零迁移，与 swift/swift2/swiftskill/swiftlv/swiftnopo/
+// battles「身经百战」同读一份源），`(g.trueBoss && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL)` 即「零阵亡 · 七十场内
+// 通关」达成：deaths 与 battles 都只增不减，死过一次或超场就永久无缘此档——与 hardtrue 换难度 / unflicker 死过一次 /
+// swift 超场 / lowlv 升过十级 / nopotion 用过药 / penny 花过金 / steadfast 死过一次 / frugal 花过金 / dry 用过药 /
+// swift2 超场 / lowlv2 升过十级 / noskill 用过技 / noskill2 用过技 / lowskill 升过十级或放过技 / swiftskill 超场或放过技 /
+// swiftlv 超场或升过十级 / nopotskill 用过技或用过药 / unflskill 死过或放过技 / swiftnopo 用过药或超场 / lowlvnopo 用过药或
+// 升过十级同属「重新来过才拿得到」的挑战品类；是 unflicker 与 swift 两枚的严格交叠——零阵亡七十场内通关必同时满足二者，
+// 本枚是这一交叉区的唯一纪念（难度通吃：普通档与困难档同义、不读 diff）；与既有正向里程碑 battles「身经百战」（[累计遭遇
+// 达 `BATTLE_GOAL`(100) 场）成镜面对、互不重叠——一个纪念「身经百战」、一个纪念「长明的疾行」。可行性：[1]普攻/[4]防御
+// 回蓝（v19.96）/[5]蓄力三路照常可用（都不碰 deaths/battles），本档不禁技能不禁药——七十场红线内死亡零容忍意味着每场都要
+// 全额止损（防御/逃跑/药水硬磨）、与 unflicker 同档位同难度的纪律跑（普通通关本就极少阵亡、七十场预算与 swift 同款余量充
+// 足），吃满「不倒下 + 疾速」双克制的是一场不许回头的快跑（比 unflicker 更严七十场红线、比 swift 更严禁死亡）。零新计数
+// 零新状态零新写点零新存档（trueBoss/deaths/battles 皆既有字段）、无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift/
+// lowlv/nopotion/penny/steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/
+// unflskill/swiftnopo/lowlvnopo 同款——不熄而疾本身就是奖励、硬核才是）、解锁走 winBattle → applyAchievements 既有通路
+// （终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/
+// penny/steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/
+// lowlvnopo 同路径零新增依赖），反馈不迟到。只改本常量与 ACH_LIST 末尾 unflswift 条目，battle/core/world/view 逐字未动，
+// 遇敌/掉落/战斗/升级/存档零影响。配套：全库 379 件套 GAME_VERSION 字面量 pin 级联（v24.168→v24.169，哨兵前望 380→381）
+// + 全库 件套口径 379→380 / 成就计数 95→96 pin 级联 + 新套件 smoke_v24169_unflswift 入库 380 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.169';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -10222,6 +10255,20 @@ const ACH_LIST=[
   // 药」双克制的是一场最纯的青芽纪律跑（比 lowlv 更严禁止战斗用药、比 nopotion 更严九级红线）。
   // ACH_LIST 94→95 项（末尾追加，既有 94 项 id/序位零回归）。
   {id:'lowlvnopo', name:'不饮青芽', d:`未在战斗中使用药水/灵药且未满 ${LOWLV_GOAL} 级击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && (g.level||1)<LOWLV_GOAL && !(g.potionUses||0))},
+  // v24.169 挑战向·双克制交叉档（第九十六项）「长明疾行」（unflswift）——承 v24.168 lowlvnopo / v24.167 swiftnopo /
+  // v24.166 unflskill / v24.148 swift / v24.147 unflicker 先例：零阵亡 × 七十场内（unflicker×swift 普通档交叉，
+  // 难度通吃不读 diff）。判定读既有 hero.trueBoss（与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/penny/
+  // steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/
+  // lowlvnopo 同读一份源）、既有 hero.deaths（battle.loseBattle 全游唯一战败结算点 S.G.deaths=(S.G.deaths||0)+1
+  // 写入、retryBoss 不清零、随 snapshotHero 全量快照自动持久化、防御式 (g.deaths||0) 旧档零迁移，与 unflicker/
+  // steadfast/deaths/unflskill 同读一份源）与既有 hero.battles（battle.startBattle 进战即记唯一产生点，随
+  // snapshotHero 全量快照自动持久化、防御式 (g.battles||0) 旧档零迁移，与 swift/swift2/battles/swiftskill/swiftlv/
+  // swiftnopo 同读一份源），(g.trueBoss && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL) 即「零阵亡·七十场内通关」
+  // 达成；与 unflicker「未曾熄灯」/swift「速战速决」两枚严格交叠、难度通吃（不读 diff），与正向里程碑 battles「身经百战」
+  // 镜面对。零新计数零新状态零新写点零新存档（trueBoss/deaths/battles 皆既有字段）、无 r 无 prog 纯里程碑、
+  // winBattle→applyAchievements 既有通路当场解锁反馈不迟到。
+  // ACH_LIST 95→96 项（末尾追加，既有 95 项 id/序位零回归）。
+  {id:'unflswift', name:'长明疾行', d:`零阵亡且在 ${SPEED_GOAL} 场战斗内击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL)},
 ];
 
 function codexTag(name) {
