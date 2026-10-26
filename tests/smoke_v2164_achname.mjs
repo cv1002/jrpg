@@ -151,7 +151,7 @@ function runAch(hero) {
   const m = runAch(h);
   ok('运行期：perfection 档报文逐字「🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）」且连带 scholar2「见多识广」中档横幅（v22.72 全图鉴 13 种也越过 10 种门槛）',
     m.length === 2 && m[0] === '🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 1099 金）' &&
-    m[1] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 5/94）', m.join(' | '));
+    m[1] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 5/95）', m.join(' | '));
   ok('运行期：perfection 档加奖结算一致（gold 100→1099，ach 落 perfection）',
     h.gold === 100 + PERFECTION_GOLD && (h.ach || []).includes('perfection'));
 }
@@ -161,7 +161,7 @@ function runAch(hero) {
   const h = mkHero({ gold: 100, level: 5 });
   const m = runAch(h);
   ok('运行期：lvl5 档报文逐字零回归「🔓 成就解锁：【独当一面】 等级达到 5 级」',
-    m.length === 1 && m[0] === '🔓 成就解锁：【独当一面】 等级达到 5 级（成就 1/94）', m.join(' | '));
+    m.length === 1 && m[0] === '🔓 成就解锁：【独当一面】 等级达到 5 级（成就 1/95）', m.join(' | '));
   ok('运行期：lvl5 档零加奖（gold 100 不变，ach 落 lvl5）',
     h.gold === 100 && (h.ach || []).includes('lvl5'));
 }
@@ -173,9 +173,9 @@ function runAch(hero) {
   const m = runAch(h);
   ok('运行期：双解锁档三条横幅（lvl5 通用口径 + perfection 带名 + scholar2 中档）',
     m.length === 3 &&
-    m.includes('🔓 成就解锁：【独当一面】 等级达到 5 级（成就 3/94）') &&
+    m.includes('🔓 成就解锁：【独当一面】 等级达到 5 级（成就 3/95）') &&
     m.includes('🏆 成就解锁：【记忆守护者】图鉴收集完成！额外奖励 999 金币！（剩余 999 金）') &&
-    m.includes('🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 5/94）'),
+    m.includes('🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 5/95）'),
     m.join(' | '));
   ok('运行期：双解锁档结算一致（gold 0→999，两成就均落）',
     h.gold === PERFECTION_GOLD && h.ach.includes('lvl5') && h.ach.includes('perfection'));
@@ -202,7 +202,7 @@ function runAch(hero) {
   const h = mkHero({ gold: 100, bestiary: b, ach: ['scholar', 'elites'] });
   const m = runAch(h);
   ok('运行期：图鉴缺一种档 scholar2 中档横幅且 perfection 不解锁零加奖',
-    m.length === 1 && m[0] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 3/94）' &&
+    m.length === 1 && m[0] === '🔓 成就解锁：【见多识广】 记忆图鉴收录 10 种魔物（成就 3/95）' &&
     h.gold === 100 && !(h.ach || []).includes('perfection'), m.join(' | '));
 }
 
