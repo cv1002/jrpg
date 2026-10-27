@@ -47,7 +47,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.133', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 133)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.134（旧 v24.133 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.171';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
+  dSrc.includes("const GAME_VERSION = 'v24.172';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
 ok('data.js 含 v24.134 注释（薪火的气新支线说明）',
   dSrc.includes('v24.134 新内容·新支线（第四十二条）'));
 ok('data.js 仍保留 v24.133 打更人历史注释（一夜好眠支线说明，零内容丢失）',
@@ -181,14 +181,14 @@ ok('姊妹件 smoke_v2235_minimapquest 已随新现实更新（kindle 入任务 
   read('smoke_v2235_minimapquest.mjs').includes('goldAt(capD, 11, 10)'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为三百八十二件套（三百八十一件套清除）',
-  readme.includes('冒烟三百八十二件套（三百八十一件套清除）'));
+ok('README 件套口径已为三百八十三件套（三百八十二件套清除）',
+  readme.includes('冒烟三百八十三件套（三百八十二件套清除）'));
 ok('README tests 含 v24.134 守护描述与 smoke_v24134_kindleq 入库（357 份）',
   readme.includes('v24.134 起含「守火翁「薪火的气」新支线」守护') &&
   readme.includes('smoke_v24134_kindleq 入库（357 份）'));
 ok('README 仍保留 v24.133 打更人守护描述（历史保留）', readme.includes('v24.133 起含「打更人「一夜好眠」新支线」守护'));
 ok('README 已有三百五十八件套口径且尚无 358（哨兵前望 358 语义：下一版才写 358）',
-  readme.includes('冒烟三百八十二件套（三百八十一件套清除）') && !readme.includes('冒烟三百八十三件套') && !readme.includes('（383 份）'));
+  readme.includes('冒烟三百八十三件套（三百八十二件套清除）') && !readme.includes('冒烟三百八十四件套') && !readme.includes('（384 份）'));
 ok('README tests 树串尾已延伸（…+ smoke_v24133_inquest + smoke_v24134_kindleq + smoke_v24135_ledgerquest + smoke_v24136_herbquest + smoke_v24143_furnacequest（npm test 串跑））',
   readme.includes('smoke_v24133_inquest + smoke_v24134_kindleq + smoke_v24135_ledgerquest + smoke_v24136_herbquest + smoke_v24143_furnacequest（npm test 串跑）'));
 ok('README 支线/奖励行随新现实（四十二条 · 薪火的气 · KINDLE_GOAL）',
@@ -197,18 +197,18 @@ ok('README 支线/奖励行随新现实（四十二条 · 薪火的气 · KINDLE
   readme.includes('v24.134 补第四十二条 · v24.135 补第四十三条 · v24.136 补第四十四条 · v24.143 补第四十五条') && readme.includes('v24.133 补第四十一条'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
-ok('package.json 实跑链共 356 份（smoke.mjs + 356 专项）', chain.length === 381 && ['smoke.mjs', ...chain].length === 382, String(chain.length));
-ok('package.json 链尾为 smoke_v24134_kindleq（第 363 份）', chain[chain.length - 1] === 'smoke_v24171_unflnopo', chain[chain.length - 1]);
+ok('package.json 实跑链共 356 份（smoke.mjs + 356 专项）', chain.length === 382 && ['smoke.mjs', ...chain].length === 383, String(chain.length));
+ok('package.json 链尾为 smoke_v24134_kindleq（第 363 份）', chain[chain.length - 1] === 'smoke_v24172_unflpenny', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24133_inquest.mjs && smoke_v24134_kindleq.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs && node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs && node tests/smoke_v24153_penny.mjs && node tests/smoke_v24154_steadfast.mjs && node tests/smoke_v24155_frugal.mjs && node tests/smoke_v24157_dry.mjs && node tests/smoke_v24158_swift2.mjs && node tests/smoke_v24159_lowlv2.mjs && node tests/smoke_v24160_noskill.mjs && node tests/smoke_v24161_noskill2.mjs && node tests/smoke_v24162_lowskill.mjs && node tests/smoke_v24163_swiftskill.mjs && node tests/smoke_v24164_swiftlv.mjs && node tests/smoke_v24165_nopotskill.mjs && node tests/smoke_v24166_unflskill.mjs && node tests/smoke_v24167_swiftnopo.mjs && node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.134（startsWith）', changelog.startsWith('## v24.171'));
+  pkgRaw.includes('node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs && node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs && node tests/smoke_v24153_penny.mjs && node tests/smoke_v24154_steadfast.mjs && node tests/smoke_v24155_frugal.mjs && node tests/smoke_v24157_dry.mjs && node tests/smoke_v24158_swift2.mjs && node tests/smoke_v24159_lowlv2.mjs && node tests/smoke_v24160_noskill.mjs && node tests/smoke_v24161_noskill2.mjs && node tests/smoke_v24162_lowskill.mjs && node tests/smoke_v24163_swiftskill.mjs && node tests/smoke_v24164_swiftlv.mjs && node tests/smoke_v24165_nopotskill.mjs && node tests/smoke_v24166_unflskill.mjs && node tests/smoke_v24167_swiftnopo.mjs && node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs && node tests/smoke_v24172_unflpenny.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.134（startsWith）', changelog.startsWith('## v24.172'));
 ok('CHANGELOG v24.134 条目含「薪火的气」与「KINDLE_GOAL」与「守火翁」',
   changelog.includes('薪火的气') && changelog.includes('KINDLE_GOAL') && changelog.includes('守火翁'));
 ok('CHANGELOG 仍保留 v24.133 条目（历史保留）', changelog.includes('## v24.133 '));
 
 const testsDir = new URL('../tests/', import.meta.url);
 const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a, b) => a.localeCompare(b));
-ok('tests 目录件套 = 357（356 + smoke_v24134_kindleq）', files.length === 382, String(files.length));
+ok('tests 目录件套 = 357（356 + smoke_v24134_kindleq）', files.length === 383, String(files.length));
 const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
@@ -219,21 +219,21 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 const s24132 = read('smoke_v24132_fallenquest.mjs');
 const s24133 = read('smoke_v24133_inquest.mjs');
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v24133 的 GAME_VERSION 字面量 pin 已更新为 v24.134', s24133.includes("const GAME_VERSION = 'v24.171';"));
-ok('smoke_v24133 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24133.includes("startsWith('## v24.171'"));
-ok('smoke_v24133 的件套 pin 已更新为三百八十二件套（三百八十一件套清除）', s24133.includes('三百八十二件套（三百八十一件套清除）'));
+ok('smoke_v24133 的 GAME_VERSION 字面量 pin 已更新为 v24.134', s24133.includes("const GAME_VERSION = 'v24.172';"));
+ok('smoke_v24133 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24133.includes("startsWith('## v24.172'"));
+ok('smoke_v24133 的件套 pin 已更新为三百八十三件套（三百八十二件套清除）', s24133.includes('三百八十三件套（三百八十二件套清除）'));
 ok('smoke_v24133 的 README/链 tail pin 已随新现实延伸（含 smoke_v24134_kindleq）',
   s24133.includes('smoke_v24134_kindleq'));
-ok('smoke_v24133 的链尾 pin 已推进至 smoke_v24134_kindleq（第 363 份）', s24133.includes("=== 'smoke_v24171_unflnopo'"));
+ok('smoke_v24133 的链尾 pin 已推进至 smoke_v24134_kindleq（第 363 份）', s24133.includes("=== 'smoke_v24172_unflpenny'"));
 ok('smoke_v24132 的 README/链 tail pin 已随新现实延伸（含 smoke_v24133_inquest + smoke_v24134_kindleq）',
   s24132.includes('smoke_v24134_kindleq') && s24132.includes('smoke_v24133_inquest'));
 const s2436 = read('smoke_v2436_codexrow.mjs');
 ok('smoke_v2436 双计数 pin 已推进（356 专项 / 357）且尚无 358 口径哨兵',
-  s2436.includes('suiteFiles.length ===  381  && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length ===  382') &&
-  s2436.includes('!readme.includes(\'冒烟三百八十三件套\')') && s2436.includes('!readme.includes(\'（383 份）\')'));
+  s2436.includes('suiteFiles.length ===  382  && fs.readdirSync(testsDir).filter((f) => f.endsWith(\'.mjs\')).length ===  383') &&
+  s2436.includes('!readme.includes(\'冒烟三百八十四件套\')') && s2436.includes('!readme.includes(\'（384 份）\')'));
 const s2429 = read('smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 哨兵链前望 358（三百八十三件套否定式）',
-  s2429.includes("!readme.includes('冒烟三百八十三件套'"));
+ok('smoke_v2429 哨兵链前望 358（三百八十四件套否定式）',
+  s2429.includes("!readme.includes('冒烟三百八十四件套'"));
 
 // 旧代 v24.133 pin 零残留扫描（豁免本套件与上一版 smoke_v24133_inquest）
 const leftovers = [], _why = {};

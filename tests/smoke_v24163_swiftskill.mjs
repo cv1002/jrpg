@@ -117,7 +117,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.162', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 162)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.163（旧 v24.162 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.171';") && !dataSrc.includes("const GAME_VERSION = 'v24.162';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.172';") && !dataSrc.includes("const GAME_VERSION = 'v24.162';"));
 ok('data.js 含 v24.163 注释（踏雪无痕新成就说明）',
   dataSrc.includes('v24.163 新内容·新成就'));
 
@@ -125,7 +125,7 @@ ok('data.js 含 v24.163 注释（踏雪无痕新成就说明）',
 const ach = ACH_LIST.find((a) => a.id === 'swiftskill');
 ok('ACH_LIST 含 swiftskill「踏雪无痕」且 id 唯一',
   !!ach && ach.name === '踏雪无痕' && ACH_LIST.filter((a) => a.id === 'swiftskill').length === 1);
-ok('ACH_LIST 精确总数 90 项（89→90 末尾追加）', ACH_LIST.length === 98, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 90 项（89→90 末尾追加）', ACH_LIST.length === 99, String(ACH_LIST.length));
 ok('swiftskill 描述文案（七十场内零用技真结局交叉档）',
   ach.d === '七十场战斗内且未使用任何技能（战斗指令 [2]）击败终焉之神（真结局）', ach.d);
 ok('swiftskill 判定源级（读既有 g.trueBoss / (g.battles||0)<=SPEED_GOAL / 防御式 !(g.casts||0)）',
@@ -299,45 +299,45 @@ ok('data.js SPEED_GOAL 常量仍为 70（单一数据源，与 swift/swift2 同�
   dataSrc.includes('const SPEED_GOAL = 70;'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为三百八十二件套（三百八十一件套清除）',
-  readme.includes('扩充为冒烟三百八十二件套（三百八十一件套清除）') && !readme.includes('扩充为冒烟三百七十三件套（三百七十二件套清除）'));
+ok('README 件套口径为三百八十三件套（三百八十二件套清除）',
+  readme.includes('扩充为冒烟三百八十三件套（三百八十二件套清除）') && !readme.includes('扩充为冒烟三百七十三件套（三百七十二件套清除）'));
 ok('README 含 v24.163 守护描述（踏雪无痕新成就守护）', readme.includes('v24.163 起含「踏雪无痕」新成就守护'));
-ok('README 版本速览已为 v24.163 且成就计数 90', readme.includes('版本速览（v24.171）') && readme.includes('98 项成就'));
-ok('README 成就计数双处口径 90 项（全部 98 项进度 + **98 项成就**，89 项清除）',
-  readme.includes('全部 98 项进度') && readme.includes('**98 项成就**') && !readme.includes('**89 项成就**'));
+ok('README 版本速览已为 v24.163 且成就计数 90', readme.includes('版本速览（v24.172）') && readme.includes('99 项成就'));
+ok('README 成就计数双处口径 90 项（全部 99 项进度 + **99 项成就**，89 项清除）',
+  readme.includes('全部 99 项进度') && readme.includes('**99 项成就**') && !readme.includes('**89 项成就**'));
 ok('README tests 树收录 smoke_v24163_swiftskill（含 v24.163 守护子句 + 串尾）',
   readme.includes('v24.163 起含「踏雪无痕」新成就守护') && readme.includes('smoke_v24163_swiftskill'));
 ok('README 含 smoke_v24163_swiftskill 入库（374 份）', readme.includes('smoke_v24163_swiftskill 入库（374 份）'));
 ok('package.json 已收录 smoke_v24164_swiftlv.mjs 且位于串尾（在 lowskill 之后）',
   pkg.includes('smoke_v24164_swiftlv.mjs') &&
-  pkg.includes('node tests/smoke_v24162_lowskill.mjs && node tests/smoke_v24163_swiftskill.mjs && node tests/smoke_v24164_swiftlv.mjs && node tests/smoke_v24165_nopotskill.mjs && node tests/smoke_v24166_unflskill.mjs && node tests/smoke_v24167_swiftnopo.mjs && node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs"'));
+  pkg.includes('node tests/smoke_v24162_lowskill.mjs && node tests/smoke_v24163_swiftskill.mjs && node tests/smoke_v24164_swiftlv.mjs && node tests/smoke_v24165_nopotskill.mjs && node tests/smoke_v24166_unflskill.mjs && node tests/smoke_v24167_swiftnopo.mjs && node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs && node tests/smoke_v24172_unflpenny.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 374 件套', testChain === 382, String(testChain));
-ok('CHANGELOG 含 v24.163 顶条目', changelog.startsWith('## v24.171'));
+ok('package.json test 串共 374 件套', testChain === 383, String(testChain));
+ok('CHANGELOG 含 v24.163 顶条目', changelog.startsWith('## v24.172'));
 
 // —— 哨兵链：README 已有 374 口径且尚无 375（前望 376 语义：下一版才写 375）——
-ok('README 已有三百七十五件套口径且尚无 376（哨兵前望 383 语义：下一版才写 375）',
-  readme.includes('扩充为冒烟三百八十二件套（三百八十一件套清除）') && !readme.includes('三百八十三件套'));
+ok('README 已有三百七十五件套口径且尚无 376（哨兵前望 384 语义：下一版才写 375）',
+  readme.includes('扩充为冒烟三百八十三件套（三百八十二件套清除）') && !readme.includes('三百八十四件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 383（三百八十三件套否定式）',
-    s24143.includes('哨兵链前望 383') && s24143.includes('三百八十三件套否定式'));
+  ok('smoke_v24143 哨兵链前望 384（三百八十四件套否定式）',
+    s24143.includes('哨兵链前望 384') && s24143.includes('三百八十四件套否定式'));
 }
 {
   ok('smoke_v24162 姊妹件版本字面量 pin 已随新现实推进（v24.163）',
-    read('tests/smoke_v24162_lowskill.mjs').includes("const GAME_VERSION = 'v24.171';"));
+    read('tests/smoke_v24162_lowskill.mjs').includes("const GAME_VERSION = 'v24.172';"));
   ok('smoke_v24161 姊妹件版本字面量 pin 已随新现实推进（v24.163）',
-    read('tests/smoke_v24161_noskill2.mjs').includes("const GAME_VERSION = 'v24.171';"));
+    read('tests/smoke_v24161_noskill2.mjs').includes("const GAME_VERSION = 'v24.172';"));
   ok('smoke_v24160 姊妹件版本字面量 pin 已随新现实推进（v24.163）',
-    read('tests/smoke_v24160_noskill.mjs').includes("const GAME_VERSION = 'v24.171';"));
+    read('tests/smoke_v24160_noskill.mjs').includes("const GAME_VERSION = 'v24.172';"));
   ok('smoke_v24159 姊妹件版本字面量 pin 已随新现实推进（v24.163）',
-    read('tests/smoke_v24159_lowlv2.mjs').includes("const GAME_VERSION = 'v24.171';"));
+    read('tests/smoke_v24159_lowlv2.mjs').includes("const GAME_VERSION = 'v24.172';"));
   ok('smoke_v24158 姊妹件版本字面量 pin 已随新现实推进（v24.163）',
-    read('tests/smoke_v24158_swift2.mjs').includes("const GAME_VERSION = 'v24.171';"));
+    read('tests/smoke_v24158_swift2.mjs').includes("const GAME_VERSION = 'v24.172';"));
   ok('smoke_v24157 姊妹件版本字面量 pin 已随新现实推进（v24.163）',
-    read('tests/smoke_v24157_dry.mjs').includes("const GAME_VERSION = 'v24.171';"));
+    read('tests/smoke_v24157_dry.mjs').includes("const GAME_VERSION = 'v24.172';"));
   ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.163）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.171'"));
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.172'"));
 }
 
 // —— 旧代 v24.162 字面量 / 373 件套口径 / 89 项 全库零残留扫描（豁免本套件 + 上一版 v24162 + 上上版 v24161）——
