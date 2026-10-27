@@ -117,9 +117,9 @@ const changelog = read('CHANGELOG.md');
 // —— 版本锚点（格式合法 + 已越过 v24.168 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.169', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 169)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.170', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 170)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.169（旧 v24.168 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.170';") && !dataSrc.includes("const GAME_VERSION = 'v24.168';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.171';") && !dataSrc.includes("const GAME_VERSION = 'v24.168';"));
 ok('data.js 含 v24.169 注释（长明疾行新成就说明）',
   dataSrc.includes('v24.169 新内容·新成就'));
 
@@ -127,7 +127,7 @@ ok('data.js 含 v24.169 注释（长明疾行新成就说明）',
 const ach = ACH_LIST.find((a) => a.id === 'unflswift');
 ok('ACH_LIST 含 unflswift「长明疾行」且 id 唯一',
   !!ach && ach.name === '长明疾行' && ACH_LIST.filter((a) => a.id === 'unflswift').length === 1);
-ok('ACH_LIST 精确总数 97 项（96→97 末尾追加）', ACH_LIST.length === 97, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 98 项（97→98 末尾追加）', ACH_LIST.length === 98, String(ACH_LIST.length));
 ok('unflswift 描述文案（零阵亡七十场内真结局交叉档）',
   ach.d === `零阵亡且在 ${SPEED_GOAL} 场战斗内击败终焉之神（真结局）`, ach.d);
 ok('unflswift 判定源级（读既有 g.trueBoss / !(g.deaths||0) / (g.battles||0)<=SPEED_GOAL）',
@@ -331,47 +331,47 @@ ok('data.js DEATH_GOAL 常量仍为 10（单一数据源，与 unflicker/steadfa
   dataSrc.includes('const DEATH_GOAL = 10;'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为三百八十一件套（三百八十件套清除）',
-  readme.includes('扩充为冒烟三百八十一件套（三百八十件套清除）') && !readme.includes('扩充为冒烟三百八十件套（三百七十九件套清除）'));
+ok('README 件套口径为三百八十二件套（三百八十一件套清除）',
+  readme.includes('扩充为冒烟三百八十二件套（三百八十一件套清除）') && !readme.includes('扩充为冒烟三百八十一件套（三百八十件套清除）'));
 ok('README 含 v24.169 守护描述（长明疾行新成就守护）', readme.includes('v24.169 起含「长明疾行」新成就守护'));
-ok('README 版本速览已为 v24.170 且成就计数 97', readme.includes('版本速览（v24.170）') && readme.includes('97 项成就'));
-ok('README 成就计数双处口径 96 项（全部 97 项进度 + **97 项成就**，95 项清除）',
-  readme.includes('全部 97 项进度') && readme.includes('**97 项成就**') && !readme.includes('**95 项成就**'));
+ok('README 版本速览已为 v24.171 且成就计数 98', readme.includes('版本速览（v24.171）') && readme.includes('98 项成就'));
+ok('README 成就计数双处口径 96 项（全部 98 项进度 + **98 项成就**，95 项清除）',
+  readme.includes('全部 98 项进度') && readme.includes('**98 项成就**') && !readme.includes('**95 项成就**'));
 ok('README tests 树收录 smoke_v24169_unflswift（含 v24.169 守护子句 + 串尾）',
   readme.includes('v24.169 起含「长明疾行」新成就守护') && readme.includes('smoke_v24169_unflswift'));
 ok('README 含 smoke_v24169_unflswift 入库（380 份）', readme.includes('smoke_v24169_unflswift 入库（380 份）'));
 ok('package.json 已收录 smoke_v24169_unflswift.mjs 且位于串尾（在 lowlvnopo 之后）',
   pkg.includes('smoke_v24169_unflswift.mjs') &&
-  pkg.includes('node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs"'));
+  pkg.includes('node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 381 件套', testChain === 381, String(testChain));
-ok('CHANGELOG 含 v24.170 顶条目', changelog.startsWith('## v24.170'));
+ok('package.json test 串共 382 件套', testChain === 382, String(testChain));
+ok('CHANGELOG 含 v24.171 顶条目', changelog.startsWith('## v24.171'));
 
 // —— 哨兵链：README 已有 380 口径且尚无 381（前望 381 语义：下一版才写 381）——
-ok('README 已有三百八十件套口径且尚无 381（哨兵前望 382 语义：下一版才写 381）',
-  readme.includes('扩充为冒烟三百八十一件套（三百八十件套清除）') && !readme.includes('三百八十二件套'));
+ok('README 已有三百八十件套口径且尚无 381（哨兵前望 383 语义：下一版才写 381）',
+  readme.includes('扩充为冒烟三百八十二件套（三百八十一件套清除）') && !readme.includes('三百八十三件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 382（三百八十二件套否定式）',
-    s24143.includes('哨兵链前望 382') && s24143.includes('三百八十二件套否定式'));
+  ok('smoke_v24143 哨兵链前望 383（三百八十三件套否定式）',
+    s24143.includes('哨兵链前望 383') && s24143.includes('三百八十三件套否定式'));
 }
 {
   ok('smoke_v24168 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24168_lowlvnopo.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24168_lowlvnopo.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v24167 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24167_swiftnopo.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24167_swiftnopo.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v24166 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24166_unflskill.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24166_unflskill.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v24165 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24165_nopotskill.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24165_nopotskill.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v24164 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24164_swiftlv.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24164_swiftlv.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v24163 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24163_swiftskill.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24163_swiftskill.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v24162 姊妹件版本字面量 pin 已随新现实推进（v24.169）',
-    read('tests/smoke_v24162_lowskill.mjs').includes("const GAME_VERSION = 'v24.170';"));
+    read('tests/smoke_v24162_lowskill.mjs').includes("const GAME_VERSION = 'v24.171';"));
   ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.169）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.170'"));
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.171'"));
 }
 
 // —— 旧代 v24.168 字面量 / 379 件套口径 / 95 项 全库零残留扫描（豁免本套件 + 上一版 v24168 + 上上版 v24167）——
