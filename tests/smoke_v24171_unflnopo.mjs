@@ -125,7 +125,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.176', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 174)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.171（旧 v24.170 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.181';") && !dataSrc.includes("const GAME_VERSION = 'v24.170';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.182';") && !dataSrc.includes("const GAME_VERSION = 'v24.170';"));
 ok('data.js 含 v24.171 注释（长明未饮新成就说明）',
   dataSrc.includes('v24.171 新内容·新成就'));
 
@@ -347,7 +347,7 @@ ok('data.js POTION_USE_GOAL 常量仍为 15（单一数据源，与 nopotion/dry
 ok('README 件套口径为三百九十二件套（三百九十一件套清除）',
   readme.includes('扩充为冒烟三百九十二件套（三百九十一件套清除）') && !readme.includes('扩充为冒烟三百八十七件套（三百八十二件套清除）'));
 ok('README 含 v24.171 守护描述（长明未饮新成就守护）', readme.includes('v24.171 起含「长明未饮」新成就守护'));
-ok('README 版本速览已为 v24.178 且成就计数 100', readme.includes('版本速览（v24.181）') && readme.includes('107 项成就'));
+ok('README 版本速览已为 v24.178 且成就计数 100', readme.includes('版本速览（v24.182）') && readme.includes('107 项成就'));
 ok('README 成就计数双处口径 98 项（全部 107 项进度 + **107 项成就**，97 项清除）',
   readme.includes('全部 107 项进度') && readme.includes('**107 项成就**') && !readme.includes('**97 项成就**'));
 ok('README tests 树收录 smoke_v24171_unflnopo（含 v24.171 守护子句 + 串尾）',
@@ -358,7 +358,7 @@ ok('package.json 已收录 smoke_v24171_unflnopo.mjs 且位于串尾（在 unfll
   pkg.includes('node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs && node tests/smoke_v24172_unflpenny.mjs && node tests/smoke_v24173_pennyswift.mjs && node tests/smoke_v24174_pennylowlv.mjs && node tests/smoke_v24175_pennynoskill.mjs && node tests/smoke_v24176_pennynopo.mjs && node tests/smoke_v24177_unflswift2.mjs && node tests/smoke_v24178_unflpenny2.mjs && node tests/smoke_v24179_unflnopo2.mjs && node tests/smoke_v24180_unflskill2.mjs && node tests/smoke_v24181_lampoilquest.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 384 件套', testChain === 392, String(testChain));
-ok('CHANGELOG 含 v24.178 顶条目', changelog.startsWith('## v24.181'));
+ok('CHANGELOG 含 v24.178 顶条目', changelog.startsWith('## v24.182'));
 
 // —— 哨兵链：README 已有 382 口径且尚无 383（前望 383 语义：下一版才写 383）——
 ok('README 已有三百八十二件套口径且尚无 383（哨兵前望 393 语义：下一版才写 383）',
@@ -370,19 +370,19 @@ ok('README 已有三百八十二件套口径且尚无 383（哨兵前望 393 语
 }
 {
   ok('smoke_v24170 姊妹件版本字面量 pin 已随新现实推进（v24.171）',
-    read('tests/smoke_v24170_unfllowlv.mjs').includes("const GAME_VERSION = 'v24.181';"));
+    read('tests/smoke_v24170_unfllowlv.mjs').includes("const GAME_VERSION = 'v24.182';"));
   ok('smoke_v24169 姊妹件版本字面量 pin 已随新现实推进（v24.171）',
-    read('tests/smoke_v24169_unflswift.mjs').includes("const GAME_VERSION = 'v24.181';"));
+    read('tests/smoke_v24169_unflswift.mjs').includes("const GAME_VERSION = 'v24.182';"));
   ok('smoke_v24168 姊妹件版本字面量 pin 已随新现实推进（v24.171）',
-    read('tests/smoke_v24168_lowlvnopo.mjs').includes("const GAME_VERSION = 'v24.181';"));
+    read('tests/smoke_v24168_lowlvnopo.mjs').includes("const GAME_VERSION = 'v24.182';"));
   ok('smoke_v24167 姊妹件版本字面量 pin 已随新现实推进（v24.171）',
-    read('tests/smoke_v24167_swiftnopo.mjs').includes("const GAME_VERSION = 'v24.181';"));
+    read('tests/smoke_v24167_swiftnopo.mjs').includes("const GAME_VERSION = 'v24.182';"));
   ok('smoke_v24166 姊妹件版本字面量 pin 已随新现实推进（v24.171）',
-    read('tests/smoke_v24166_unflskill.mjs').includes("const GAME_VERSION = 'v24.181';"));
+    read('tests/smoke_v24166_unflskill.mjs').includes("const GAME_VERSION = 'v24.182';"));
   ok('smoke_v24152 姊妹件版本字面量 pin 已随新现实推进（v24.171）',
-    read('tests/smoke_v24152_nopotion.mjs').includes("const GAME_VERSION = 'v24.181';"));
+    read('tests/smoke_v24152_nopotion.mjs').includes("const GAME_VERSION = 'v24.182';"));
   ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.171）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.181'"));
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.182'"));
 }
 
 // —— 旧代 v24.170 字面量 / 381 件套口径 / 97 项 全库零残留扫描（豁免本套件 + 上一版 v24170 + 上上版 v24169 + 上上上版 v24168）——

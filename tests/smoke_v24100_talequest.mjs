@@ -44,7 +44,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.99', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 99)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.100（旧 v24.99 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.181';") && !dSrc.includes("const GAME_VERSION = 'v24.99';"));
+  dSrc.includes("const GAME_VERSION = 'v24.182';") && !dSrc.includes("const GAME_VERSION = 'v24.99';"));
 ok('data.js 含 v24.100 注释（灯下新章新支线说明）',
   dSrc.includes('v24.100 新内容·新支线（第十八条）'));
 ok('data.js 仍保留 v22.13 历史注释（说书人三件套说明，零内容丢失）',
@@ -189,7 +189,7 @@ ok('package.json 实跑链共 322 份（smoke.mjs + 323 专项）', chain.length
 ok('package.json 链尾为 smoke_v24100_talequest（第 324 份）', chain[chain.length - 1] === 'smoke_v24181_lampoilquest', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24100_talequest.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v2499_goldcurve25.mjs && node tests/smoke_v24100_talequest.mjs && node tests/smoke_v24101_goldcurve26.mjs && node tests/smoke_v24102_goldcurve27.mjs && node tests/smoke_v24103_goldcurve28.mjs && node tests/smoke_v24104_goldcurve29.mjs && node tests/smoke_v24105_songquest.mjs && node tests/smoke_v24106_moonquest.mjs && node tests/smoke_v24107_peddlequest.mjs && node tests/smoke_v24108_shopquest.mjs && node tests/smoke_v24109_carvequest.mjs && node tests/smoke_v24110_vowquest.mjs && node tests/smoke_v24111_hearerquest.mjs && node tests/smoke_v24112_talkquest.mjs && node tests/smoke_v24113_walkquest.mjs && node tests/smoke_v24114_fleequest.mjs && node tests/smoke_v24115_achhud.mjs && node tests/smoke_v24116_guidequest.mjs && node tests/smoke_v24117_codexhud.mjs && node tests/smoke_v24118_wellquest.mjs && node tests/smoke_v24119_huntquest.mjs && node tests/smoke_v24120_chesthud.mjs && node tests/smoke_v24121_siftquest.mjs && node tests/smoke_v24122_crystalquest.mjs && node tests/smoke_v24123_fraghud.mjs && node tests/smoke_v24124_questshud.mjs && node tests/smoke_v24125_hunthud.mjs && node tests/smoke_v24126_waitquest.mjs && node tests/smoke_v24127_lampquest.mjs && node tests/smoke_v24128_stelequest.mjs && node tests/smoke_v24129_stele2quest.mjs && node tests/smoke_v24130_stele3quest.mjs && node tests/smoke_v24131_stele4quest.mjs && node tests/smoke_v24132_fallenquest.mjs && node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs && node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs && node tests/smoke_v24153_penny.mjs && node tests/smoke_v24154_steadfast.mjs && node tests/smoke_v24155_frugal.mjs && node tests/smoke_v24157_dry.mjs && node tests/smoke_v24158_swift2.mjs && node tests/smoke_v24159_lowlv2.mjs && node tests/smoke_v24160_noskill.mjs && node tests/smoke_v24161_noskill2.mjs && node tests/smoke_v24162_lowskill.mjs && node tests/smoke_v24163_swiftskill.mjs && node tests/smoke_v24164_swiftlv.mjs && node tests/smoke_v24165_nopotskill.mjs && node tests/smoke_v24166_unflskill.mjs && node tests/smoke_v24167_swiftnopo.mjs && node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs && node tests/smoke_v24172_unflpenny.mjs && node tests/smoke_v24173_pennyswift.mjs && node tests/smoke_v24174_pennylowlv.mjs && node tests/smoke_v24175_pennynoskill.mjs && node tests/smoke_v24176_pennynopo.mjs && node tests/smoke_v24177_unflswift2.mjs && node tests/smoke_v24178_unflpenny2.mjs && node tests/smoke_v24179_unflnopo2.mjs && node tests/smoke_v24180_unflskill2.mjs && node tests/smoke_v24181_lampoilquest.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.100（startsWith）', changelog.startsWith('## v24.181'));
+ok('CHANGELOG.md 顶部条目已为 v24.100（startsWith）', changelog.startsWith('## v24.182'));
 ok('CHANGELOG v24.100 条目含「灯下新章」与「TALE_GOAL」与「说书人」',
   changelog.includes('灯下新章') && changelog.includes('TALE_GOAL') && changelog.includes('说书人'));
 ok('CHANGELOG 仍保留 v24.99 条目（历史保留）', changelog.includes('## v24.99'));
@@ -206,8 +206,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 
 // —— 哨兵链：姊妹套件 pin 随新现实更新 + 旧代 v24.99 pin 零残留 ——
 const s2497 = read('smoke_v2499_goldcurve25.mjs');
-ok('smoke_v2497 的 GAME_VERSION 字面量 pin 已更新为 v24.100', s2497.includes("const GAME_VERSION = 'v24.181';"));
-ok('smoke_v2497 的 CHANGELOG 顶 pin 已更新为 ## v24.101', s2497.includes("startsWith('## v24.181 '"));
+ok('smoke_v2497 的 GAME_VERSION 字面量 pin 已更新为 v24.100', s2497.includes("const GAME_VERSION = 'v24.182';"));
+ok('smoke_v2497 的 CHANGELOG 顶 pin 已更新为 ## v24.101', s2497.includes("startsWith('## v24.182 '"));
 ok('smoke_v2497 的件套 pin 已更新为三百九十二件套（三百九十一件套清除）', s2497.includes('三百九十二件套（三百九十一件套清除）'));
 ok('smoke_v2497 的 README/链 tail pin 已随新现实延伸（含 smoke_v24100_talequest）',
   s2497.includes('smoke_v24102_goldcurve27'));

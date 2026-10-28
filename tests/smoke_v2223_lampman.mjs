@@ -91,9 +91,9 @@ ok('data.js 含 v22.23 注释（拾灯人说明）', dSrc.includes('v22.23 新 N
 ok('data.js 含 v24.127 升格注释（拾灯人升格为支线委托人）', dSrc.includes('v24.127 升格为支线委托人'));
 ok('data.js 仍保留 v22.22 历史注释（累积注释块，姊妹 pin 不失效）', dSrc.includes('v22.22 新 NPC·纯风味'));
 ok('data.js GAME_VERSION 字面量已随新现实更新（v24.127 家族）',
-  dSrc.includes("const GAME_VERSION = 'v24.181';") && !dSrc.includes("const GAME_VERSION = 'v22." + "22';"));
+  dSrc.includes("const GAME_VERSION = 'v24.182';") && !dSrc.includes("const GAME_VERSION = 'v22." + "22';"));
 ok('data.js GAME_VERSION 恒等值为 v24.127（=== 家族 pin 保留，姊妹件互查契约）',
-  GAME_VERSION === 'v24.181', GAME_VERSION);
+  GAME_VERSION === 'v24.182', GAME_VERSION);
 
 // —— 数据层：NPC_SPOTS 全局坐标键（跨地图共用，不得撞车）——
 ok('NPC_SPOTS[5,3]===lampman', NPC_SPOTS['5,3'] === 'lampman', NPC_SPOTS['5,3']);
@@ -202,18 +202,18 @@ const s2216 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2216_picker.mjs'), '
 const s2215 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2215_tutorvol.mjs'), 'utf8');
 const s2213 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2213_teller.mjs'), 'utf8');
 const s2211 = fs.readFileSync(path.join(ROOT, 'tests/smoke_v2211_lampkid.mjs'), 'utf8');
-ok('smoke_v2222 的 GAME_VERSION 字面量 pin 已随新现实更新', s2222.includes("const GAME_VERSION = 'v24.181';"));
+ok('smoke_v2222 的 GAME_VERSION 字面量 pin 已随新现实更新', s2222.includes("const GAME_VERSION = 'v24.182';"));
 ok('smoke_v2222 的 README 件套 pin 已随新现实更新', s2222.includes('三百九十二件套（三百九十一件套清除）'));
 ok('smoke_v2222 的 package.json 件套计数 pin 已随新现实更新', s2222.includes('testChain === 392'));
-ok('smoke_v2221 的 GAME_VERSION 字面量 pin 已随新现实更新', s2221.includes("const GAME_VERSION = 'v24.181';"));
+ok('smoke_v2221 的 GAME_VERSION 字面量 pin 已随新现实更新', s2221.includes("const GAME_VERSION = 'v24.182';"));
 ok('smoke_v2221 的 README 件套 pin 已随新现实更新', s2221.includes('三百九十二件套（三百九十一件套清除）'));
 ok('smoke_v2221 的 package.json 件套计数 pin 已随新现实更新', s2221.includes('testChain === 392'));
-ok('smoke_v2220 的 GAME_VERSION 字面量 pin 已随新现实更新', s2220.includes("const GAME_VERSION = 'v24.181';"));
+ok('smoke_v2220 的 GAME_VERSION 字面量 pin 已随新现实更新', s2220.includes("const GAME_VERSION = 'v24.182';"));
 ok('smoke_v2220 的 README 件套 pin 已随新现实更新', s2220.includes('三百九十二件套（三百九十一件套清除）'));
 ok('smoke_v2220 的 package.json 件套计数 pin 已随新现实更新', s2220.includes('testChain === 392'));
-ok('smoke_v2219 的 GAME_VERSION 字面量 pin 已随新现实更新', s2219.includes("const GAME_VERSION = 'v24.181';"));
+ok('smoke_v2219 的 GAME_VERSION 字面量 pin 已随新现实更新', s2219.includes("const GAME_VERSION = 'v24.182';"));
 ok('smoke_v2219 的 README 件套 pin 已随新现实更新', s2219.includes('三百九十二件套（三百九十一件套清除）'));
-ok('smoke_v2218 的 GAME_VERSION 字面量 pin 已随新现实更新', s2218.includes("const GAME_VERSION = 'v24.181';"));
+ok('smoke_v2218 的 GAME_VERSION 字面量 pin 已随新现实更新', s2218.includes("const GAME_VERSION = 'v24.182';"));
 ok('smoke_v2218 的 package.json 件套计数 pin 已随新现实更新', s2218.includes('testChain === 392'));
 ok('smoke_v2217 的 README 件套 pin 已随新现实更新', s2217.includes('三百九十二件套（三百九十一件套清除）'));
 ok('smoke_v2216 的 NPC 总数 pin 已随新现实更新', s2216.includes('总数 29'));

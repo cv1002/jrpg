@@ -4044,7 +4044,20 @@
 // 遇敌/掉落/战斗/升级/存档零影响。配套：全库 391 件套 GAME_VERSION 字面量 pin 级联（v24.180→v24.181，
 // 哨兵前望 393）+全库 件套口径 391→392 / 支线计数 45→46 / NPC 计数 45→46 pin 级联 + 新套件
 // smoke_v24181_lampoilquest 入库 392 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.181';
+// v24.182 修复收口·扩容复核（无新功能、零行为变化——承 v24.144 修复复核/v24.149 文档复核先例）：
+// 收口 v24.181 级联遗留 pin 数簇（v24.181 的「392 件套全绿」实为假象——npm test && 链在 v22.34
+// 处中断，其后 ~260 件套从未验证；本次全量并行回归暴露全部遗留）：① smoke_v2234/v2235..v2251/
+// v2471/v2477 等 18 文件 19 处「姊妹件 NPC_SPOTS 总数 pin」断言误写 `=== 46`（实为 47——v24.181
+// 级联误把 NPC 计数 46 当 NPC_SPOTS 计数 47，运行期真相 Object.keys(NPC_SPOTS).length===47 =
+// 43 处 extras NPC 坐标键 + 4 处名字石碑键）② smoke_v2471/v2477 两处 voiceList 全聊 pin 45→46
+// ③ smoke_v2300「还有 N 条」落画断言 43→44 ④ smoke_v2309 README 支线/奖励行 2 处（四十五→
+// 四十六条、脚注补 v24.181 补第四十六条）⑤ smoke_v2313 NPCS 总数 pin 45→46 + README 支线行
+// 四十五→四十六条 + export 顺序补 MUSH_HOLD_GOAL（四持有支线常量收口成组 MEDKIT/FURNACE/
+// MUSH_HOLD 末三位）⑥ smoke_v24134/135/136/143 README 常量行 4 处补 MUSH_HOLD_GOAL。
+// 只改 GAME_VERSION 与本簇 25 个测试文件的 pin 断言，battle/core/world/view/quests/hero/shop
+// 逐字未动，遇敌/掉落/战斗/升级/存档零影响。配套：全库 392 件套 GAME_VERSION 字面量 pin 级联
+// （v24.181→v24.182，哨兵前望 393 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.182';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
