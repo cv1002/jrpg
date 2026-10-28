@@ -4036,7 +4036,15 @@
 // 条目，battle/core/world/view 逐字未动，遇敌/掉落/战斗/升级/存档零影响。配套：全库 390 件套 GAME_VERSION 字面量
 // pin 级联（v24.179→v24.180，哨兵前望 392）+全库 件套口径 390→391 / 成就计数 106→107 pin 级联 + 新套件
 // smoke_v24180_unflskill2 入库 391 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.180';
+// v24.181 新内容·新支线（第四十六条）：潮灯镇新 NPC「熬灯婶」+「菌盖的灯油」——持有发光菌盖换谢礼
+// （承 v24.143 守炉翁「灵药照炉」/ v24.136 采药翁「药囊常满」/ v24.135 账房先生「灯油的账」同一「全新 NPC +
+// 持有类计数支线」先例系列（持有类第四例——四资源持有家族收官）：金币/药水/高级灵药/蘑菇——四种背包资源
+// 至此各有一枚持有类谢礼支线）。只改本常量与 MUSH_HOLD_GOAL 常量+export、QUESTS.side_lampoil 条目、
+// NPCS.lampoil、NPC_SPOTS '11,11'、village.extras (11,11)，battle/core/world/view/quests 逐字未动，
+// 遇敌/掉落/战斗/升级/存档零影响。配套：全库 391 件套 GAME_VERSION 字面量 pin 级联（v24.180→v24.181，
+// 哨兵前望 393）+全库 件套口径 391→392 / 支线计数 45→46 / NPC 计数 45→46 pin 级联 + 新套件
+// smoke_v24181_lampoilquest 入库 392 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.181';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -4516,6 +4524,11 @@ const MAPS={
       // (20,14)/(22,14)/(21,13)/(21,15) 皆可行走可面对面对话，立在粮田东南角不挡广场/城门/粮田
       // 任何动线，与粮铺掌柜 (15,12) 同看粮田南缘
       { x: 21, y: 14, ty: 'NPC' },
+      // 熬灯婶（v24.181 新 NPC·第四十六条支线「菌盖的灯油」委托人）：潮灯镇广场南 (11,11)——
+      // 坐标为可行走 '0' 格且未被他图占用（全图 extras 扫描 (11,11) 仅 village 一处），四邻
+      // (10,11)/(12,11)/(11,10)/(11,12) 皆 '.'/'0' 可行走可面对面对话，立在酿造/商业区北沿
+      // 不挡广场/商店/酿造/旅馆任何动线，与账房先生 (9,11) 同守镇子的「灯油」
+      { x: 11, y: 11, ty: 'NPC' },
     ],
   },
   // 雾语林（v13.5 重排）：西入口 → 蛇形主路 → 中段营地（泉水+猎手）→ 北环路蘑菇宝箱 → 东祭坛，裂洞在祭坛南
@@ -5180,6 +5193,11 @@ const NPC_SPOTS = {
   // (20,5)/(22,5)/(21,4)/(21,6) 皆 '0' 可行走可面对面对话，立在矿脉东北内室、远离祭坛/试炼碑/
   // 星砂车/宝箱任何动线；与失名的旅人 (21,2) 同处北段、互不占位）
   '21,5': 'furnace',
+  // 熬灯婶（v24.181 新 NPC·第四十六条支线「菌盖的灯油」委托人）：潮灯镇广场南 (11,11)——
+  // 全局坐标键未被他图占用（全图 extras 扫描 (11,11) 仅 village 一处；与既有 46 键零冲突，四邻
+  // (10,11)/(12,11)/(11,10)/(11,12) 皆 '.'/'0' 可行走可面对面对话，立在酿造/商业区北沿、远离
+  // 商店/旅馆/城门任何动线；与账房先生 (9,11) 同守镇子的「灯油」、互不占位）
+  '11,11': 'lampoil',
 };
 
 const NPCS={
@@ -5971,6 +5989,31 @@ const NPCS={
   ], after:[
     ['守炉翁：都亮回来了。','丹炉的火光','顺着矿道一直亮到了镇口。 [Enter] 继续'],
     ['守炉翁：往后你的灵药，我替你记着。','炉火不熄，灯就长明——','灯下的人，就都回得来。 [Enter] 结束'],
+  ]},
+  // v24.181 新内容·新支线（第四十六条「菌盖的灯油」委托人）：潮灯镇广场南 (11,11)「熬灯婶」——守着
+  // 镇子熬灯油那口锅的老熬油人：菌盖夜里发光，那是地底星砂留给蘑菇的一点光（v22.42 蘑菇田菌盖灯油/
+  // v22.50 酿药师「菌盖是星砂给蘑菇的光」同脉）；菌盖熬成油，灯才有得点——灯下人最要紧的两样，
+  // 一个是灯芯，一个就是这口油。玩家随身备下的每一株菌盖（QUESTS.side_lampoil：持有 MUSH_HOLD_GOAL(6) 株，
+  // 计数 hero.mushrooms 复用既有字段——world.js 宝箱 60% 蘑菇/战斗掉落/精英掉落写定、酿造 2 株/卖菇 10 金
+  // 双消耗扣减，与 ACH_LIST mush「菇香满仓」同读一份源、支线门槛 6 低于成就门槛 MUSH_GOAL(10)）；npcQuestPages
+  // 有任务后优先走任务页（talk.offer/active/turnin/done 四态），voiceList/灯下之声 N 由 Object.keys(NPCS)
+  // 派生自动跟随、有口皆碑分母自动跟随。
+  lampoil:{name:'熬灯婶', mark:'basket', linesByStage:[
+    { gate:null, lines:[
+      ['熬灯婶：镇子每一盏灯里的油，','都是菌盖熬出来的。','菌盖夜里发光——那是地底星砂，','留给蘑菇的一点光。 [Enter] 继续'],
+      ['熬灯婶：灯芯要紧，灯油也要紧。','你出门采到的发光菌盖，','就替我留着熬油。 [Enter] 结束'],
+    ]},
+    { gate:'bossDefeated', lines:[
+      ['熬灯婶：灯芯回来了，夜里的灯也亮了。','可灯要天天点，油要天天熬。','菌盖不能再断。 [Enter] 继续'],
+      ['熬灯婶：你带回来的每一株菌盖，','都在替镇子续着亮。','够亮堂了。 [Enter] 结束'],
+    ]},
+    { gate:'galleryOpen', lines:[
+      ['熬灯婶：回廊开了。','听说名字被忘掉的人，都在那暗处躺着。','那地方连灯都没有——','油再多也照不见。 [Enter] 继续'],
+      ['熬灯婶：去吧。菌盖带够——','名字要记得，路也得看得清。','[Enter] 结束'],
+    ]},
+  ], after:[
+    ['熬灯婶：都亮回来了。','熬油的灶火','映得整条街都暖融融的。 [Enter] 继续'],
+    ['熬灯婶：往后你的菌盖我替你记着。','菌盖是灯油，火要有人续——','灯下的人，就都回得来。 [Enter] 结束'],
   ]},
 };
 
@@ -6788,6 +6831,11 @@ const MEDKIT_GOAL = 15;
 // 同读此源，与 ACH_LIST elixir「灵药盈囊」ELIXIR_STOCK_GOAL(3) 同一「灵药持有」家族——支线门槛 2 低于成就
 // 门槛 3，顺路先完成支线再解锁成就，调门槛只改本行一处全端自动跟随。
 const FURNACE_GOAL = 2;
+// 第四十六条支线「菌盖的灯油」持有发光菌盖阈值（单一数据源）：QUESTS.side_lampoil 的 cond/condProg/obj/turnin
+// 同读此源，与 ACH_LIST mush「菇香满仓」MUSH_GOAL(10) 同一「蘑菇持有」家族——支线门槛 6 低于成就门槛 10，
+// 顺路先完成支线再解锁成就（承 LEDGER_GOAL/MEDKIT_GOAL/FURNACE_GOAL 同款先例：持有类 cond 状态判定、交付后
+// done 粘性不受酿造/卖菇消耗回落影响），调门槛只改本行一处全端自动跟随。
+const MUSH_HOLD_GOAL = 6;
 
 // 成就「有备无患」药水持有阈值（单一数据源，v22.0 新成就·药水线首枚里程碑，承 v21.91 长明不熄 /
 // v21.93 驱雾百战 / v21.95 彻夜长明 / v21.97 鸿运当头 / v21.99 金玉满堂 单成就先例）：药水是全程陪伴的
@@ -9610,6 +9658,67 @@ const QUESTS={
       ]])),
     },
   },
+  // 第四十六条支线「菌盖的灯油」（v24.181 新内容·新支线·持有类：潮灯镇广场南 (11,11) 新 NPC「熬灯婶」
+  // 承 v24.135 账房先生「灯油的账」/ v24.136 采药翁「药囊常满」/ v24.143 守炉翁「灵药照炉」同一「全新 NPC +
+  // 持有类计数支线」先例系列（持有类第四例）：金币/药水/高级灵药三枚谢礼支线各自入列后，背包四资源里唯一
+  // 没有持有类支线的就剩蘑菇菌盖——「菌盖是灯油」（v22.42 蘑菇田菌盖灯油/v22.14 菇香满仓同一「蘑菇=灯油」
+  // 主题）：熬灯婶守着镇子熬灯油的那口锅，玩家随身带着的每一株发光菌盖，都算替她把灯油续上一笔——替她
+  // 持有 MUSH_HOLD_GOAL(6) 株。
+  // 计数 hero.mushrooms 复用既有字段（world.js 宝箱 60% 蘑菇/战斗掉落/精英掉落三处唯一产生点写定、酿造
+  // 2 株与卖菇 10 金双消耗扣减，随 snapshotHero 全量快照自动持久化、防御式 (g.mushrooms||0) 旧档零迁移，
+  // 与 ACH_LIST mush「菇香满仓」同读一份源——持有类 cond 状态判定、交付后 done 粘性不受酿造/卖菇消耗回落
+  // 影响，支线门槛 6 低于成就门槛 MUSH_GOAL(10)、顺路先完成支线再解锁成就）；零新计数零新状态零新存档、
+  // QUESTS 表驱动（弹窗对话/任务日志/顶标/交付/灯火同心分母全端自动跟随 45→46、voiceList/有口皆碑分母
+  // Object.keys(NPCS) 45→46 自动跟随）；无 unlockOn（熬灯婶在潮灯镇，开局即可接，承 side_wait/side_ledger
+  // 同款）；active 页函数型实时报进度、done 页按 hero.trueBoss/caveBoss/bossDefeated 三档分档（熬灯婶
+  // 原有 linesByStage 叙事与 after 彩蛋并入零内容丢失）。奖励 80 金 + 1 高级灵药（承 side_bell/side_watch/
+  // side_kindle/side_ledger/side_herb/side_furnace 80 档——「备油」自开局第一只宝箱蘑菇起持续累计、全程伴随）。
+  side_lampoil:{
+    id:'side_lampoil', kind:'side', store:true, npc:'lampoil', giver:'lampoil',
+    cond:(g)=>((g.mushrooms||0))>=MUSH_HOLD_GOAL,
+    condProg:(g)=>`${Math.floor(g.mushrooms||0)}/${MUSH_HOLD_GOAL} 株`,
+    name:'菌盖的灯油', where:'潮灯镇·熬灯婶（持有发光菌盖）',
+    obj:`随身备下 ${MUSH_HOLD_GOAL} 株发光菌盖——菌盖是灯油，火要有人续着`,
+    offer:'去潮灯镇找熬灯婶，接下「菌盖的灯油」的委托',
+    turnin:`替熬灯婶备足 ${MUSH_HOLD_GOAL} 株发光菌盖！回潮灯镇找熬灯婶`,
+    done:'熬灯婶接过菌盖，说灶上正缺这一捧油——你带的每一株，都是一夜的亮。',
+    reward:{ gold:80, potion2:1 },
+    talk:{
+      offer:[[
+        '熬灯婶：镇子的灯，是拿油点亮的。',
+        '油是菌盖熬的——菌盖夜里发光，',
+        '那是地底星砂留给蘑菇的一点光。',
+        `你若随身备下 ${MUSH_HOLD_GOAL} 株发光菌盖——`,
+        '灶上这一锅油，就不愁续不上了。 [Enter] 接下委托   [Esc] 离开',
+      ]],
+      active:(hero)=>[[
+        '熬灯婶：油要一勺一勺续，灯要一盏一盏点。',
+        `（你身上现有 ${Math.floor((hero.mushrooms||0))}/${MUSH_HOLD_GOAL} 株发光菌盖——还差一些）`,
+        '[Enter] 继续',
+      ]],
+      turnin:[
+        '熬灯婶：够亮了。你带来的菌盖，',
+        '灶上熬得出整整一季的灯油。',
+        `备足 ${MUSH_HOLD_GOAL} 株仍肯随身带着，这份谢礼拿去吧。 [Enter] 领取谢礼`,
+      ],
+      done:(hero)=>hero && hero.trueBoss ? [
+        ['熬灯婶：灯都亮回来了。','菌盖的油香','顺着夜风散进了每一盏灯里。 [Enter] 继续'],
+        ['熬灯婶：往后你的菌盖我替你记着。','你只管往前走——','灯要亮着，油要有人熬。 [Enter] 结束'],
+      ] : (hero && hero.caveBoss ? [[
+        '熬灯婶：领主散了，矿脉也敞亮了。',
+        '熬油的灶火旺了不少，',
+        '灯油也该满缸了。 [Enter] 结束',
+      ]] : (hero && hero.bossDefeated ? [[
+        '熬灯婶：灯芯回来了，夜也没那么长了。',
+        '你带回来的那些菌盖，',
+        '都熬成了亮堂堂的灯。 [Enter] 结束',
+      ]] : [[
+        '熬灯婶：这捧菌盖替你留着。',
+        '往后每一株发光的菌盖，',
+        '都是在给灯下的夜路续油。 [Enter] 结束',
+      ]])),
+    },
+  },
 };
 
 const ACH_LIST=[
@@ -11494,5 +11603,5 @@ export {
   SPECIES, MON_BASE, ELITE_GOLEM, BOSS, CAVE_BOSS, TRUE_BOSS, TRUE_BONUS_GOLD, EMBER_GOLEM, RUSH_BOSSES, RUSH_REC_LV, BESTIARY_TARGET,
   QUESTS, ACH_LIST, FRAGMENTS, STORY, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, HERO_NAMES, NAME_FLAVOR, DEFAULT_NAME, DIFFS, KEY,
   baseStats, learnsAt, LEARN_AT, MAX_LEARN_LV, withSpecies, codexTag, LEVEL_GROWTH, TREASURE_GOAL, TREASURE2_GOAL, chestCount, chestTotal, trialSteleHint,
-  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, FURNACE_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL, SPEED_GOAL, LOWLV_GOAL,
+  SND_KEY, sndPrefToState, sndPrefToString, VOL_KEY, VOL_STEP, volPrefToState, volPrefToString, MAP_POTION_GOAL, INN_REST_GOAL, SPEND_GOAL, TRAVEL_GOAL, STEP_GOAL, BATTLE_GOAL, SELL_GOAL, DEATH_GOAL, FALLEN_GOAL, KINDLE_GOAL, INN_GOAL, LEDGER_GOAL, MEDKIT_GOAL, FURNACE_GOAL, MUSH_HOLD_GOAL, NIGHT_WIN_GOAL, BELL_GOAL, FISH_GOAL, WATCH_GOAL, TALE_GOAL, SONG_GOAL, MOON_GOAL, PEDDLE_GOAL, SHOP_GOAL, CARVE_GOAL, VOW_GOAL, BESTIARY_GOAL, TALK_GOAL, WALK_GOAL, RETREAT_GOAL, GUIDE_GOAL, WELL_GOAL, HUNT_TALLY_GOAL, SIFT_GOAL, CRYSTAL_GOAL, WAIT_GOAL, LAMP_GOAL, STELE_GOAL, SPEED_GOAL, LOWLV_GOAL,
 };
