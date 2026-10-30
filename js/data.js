@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/115）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/116）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/115）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/116）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4213,6 +4213,41 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 397 件套 GAME_VERSION 字面量 pin 级联（v24.187→v24.188）+ 件套口径 397→398 / 成就计数 112→113 pin 级联
 // + 哨兵前望 398→399 + 新套件 smoke_v24188_swiftlv2 入库 398 份 + README/CHANGELOG 同步。
+// v24.191 新内容·新成就（第一百一十六项）「逆风素手青灯」（lowskill2）——「困难 × 低等级」三克制挑战向交叉区首角开垦：
+// 困难模式 × 未及十级 × 零用技击败终焉之神（hardtrue×lowskill 三重克制，首开「困难×低等级」交叉区——lowlv「未及十级」在困难档的
+// ×{noskill, nopotion} 姿态交叉区自此开垦首角，同档剩余交叉口 hardtrue×lowlv×nopotion（低等级×零战斗用药）与 hardtrue×noskill×nopotion
+// （零用技×零战斗用药）留待后续）——承 v24.190 逆风不饮疾行（swiftnopo2，「困难×疾行」交叉区第三角收官）/ v24.188-190 把 hardtrue×swift
+// 交叉区三姿态收口 / v24.184-187 把 hardtrue×penny 交叉区四角收口 / v24.177-183 把 hardtrue×unfl 交叉区五姿态收口 / v24.162 素手青灯
+// （lowskill，未及十级×零用技）/ v24.159 逆风青芽（lowlv2，困难×未及十级）/ v24.161 逆风守拙（noskill2，困难×零用技）先例：v24.162 已把
+// 「素手青灯」（未及十级×零用技）双克制交叉档开拓，困难系单克制与「困难×unfl」「困难×penny」「困难×疾行」三大交叉区也已全部就位——
+// 本枚把既有双克制档「素手青灯」再叠上困难模式（diff===1），开垦「困难×低等级」交叉区首角。判定读既有 hero.trueBoss（终焉之神，与
+// trueboss/hardtrue/unflicker/swift/lowlv/nopotion/penny/steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/
+// nopotskill/unflskill/swiftnopo/lowlvnopo/unflswift/unfllowlv/unflnopo/unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/
+// unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2 同读一份源）、
+// 既有 hero.diff（(g.diff===1) 即 DIFFS[1]「困难」档，与 hardtrue/steadfast/frugal/dry/swift2/lowlv2/noskill2/unflswift2/unflpenny2/unflnopo2/
+// unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2 同读一份源）、既有 hero.level
+// （hero.js grantXp 升级唯一产生点 hero.level++、只增不减、随 snapshotHero 全量快照自动持久化、防御式 (g.level||1) 旧档零迁移，与 lowlv/lowlv2/
+// lowskill/swiftlv/lowlvnopo/unfllowlv/pennylowlv/unfllowlv2/pennylowlv2/swiftlv2 系同读一份源）与既有 hero.casts（battle.doSkill 战斗释放技能
+// 成功唯一产生点——「释放」即成功出手、治疗与伤害两分支都计入、只增不减、防御式 (g.casts||0) 旧档零迁移，与 noskill「大巧不工」/noskill2「逆风守拙」/
+// cast「熟能生巧」/lowskill/swiftskill/nopotskill/unflskill/pennynoskill/unflskill2/pennynoskill2/swiftskill2 系同读一份源），
+// (g.trueBoss && g.diff===1 && (g.level||1)<LOWLV_GOAL(10) && !(g.casts||0)) 即「困难 · 未及十级 · 零用技通关」达成——diff/level/casts 三端口
+// 都只增不减，换过难度、升过十级或放过一次技就永久无缘此档；是 hardtrue、lowlv 与 noskill 三枚的严格交叠（困难未及十级零用技通关必同时
+// 满足三者，也必满足 lowlv2 与 noskill2 与 lowskill），本枚是这一三重交叉区的唯一纪念；与既有正向里程碑 cast「熟能生巧」（战斗释放技能达
+// CAST_GOAL(30) 次）/ lvl10「守灯者」（等级达 LVL10_GOAL(10) 级）成镜面对、互不重叠——一个纪念「熟能生巧」、一个纪念「练到十级」、一个纪念
+// 「逆风的素手青灯」。可行性：困难档魔物全面加强下未满十级（九级封顶血蓝更薄、经验获取只嫌多不嫌少——支线经验/宝箱经验都得掂量着吃）且
+// [2] 技能键零按下（连治疗/伤害技都封印，血蓝全靠 [4]防御回蓝（v19.96）/[5]蓄力/喷泉/旅馆与药水硬撑——本档不禁药不禁消费不禁超场），
+// 装备靠开箱/支线/掉落换，吃满「别自降难度 + 别练级 + 别用技」三克制的一场逆风素手青灯。零新计数零新状态零新写点零新存档（trueBoss/diff/
+// level/casts 皆既有字段）、无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift/lowlv/nopotion/penny/steadfast/frugal/dry/swift2/lowlv2/
+// noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/lowlvnopo/unflswift/unfllowlv/unflnopo/unflpenny/pennyswift/
+// pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/
+// swiftlv2/swiftskill2/swiftnopo2 同款——困难里不练级又不放技本身就是奖励、硬核才是）、解锁走 winBattle → applyAchievements 既有通路
+// （终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/penny/steadfast/frugal/
+// dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/lowlvnopo/unflswift/unfllowlv/unflnopo/
+// unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/
+// pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2 同路径零新增依赖），反馈不迟到。只改本常量与 ACH_LIST 末尾 lowskill2 条目，
+// battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 400 件套 GAME_VERSION 字面量 pin 级联（v24.190→v24.191）+ 件套口径 400→401 / 成就计数 115→116 pin 级联
+// + 哨兵前望 401→402 + 新套件 smoke_v24191_lowskill2 入库 401 份 + README/CHANGELOG 同步。
 // v24.190 新内容·新成就（第一百一十五项）「逆风不饮疾行」（swiftnopo2）——「困难 × 疾行」三克制挑战向交叉区第三角收官：
 // 困难模式 × 七十场内 × 零战斗用药击败终焉之神（hardtrue×swiftnopo 三重克制，收官「困难×疾行」交叉区——swift「速战速决」在困难档的
 // ×{lowlv, noskill, nopotion} 三姿态交叉区至此全部开垦完毕）——承 v24.189 逆风踏雪无痕（swiftskill2，「困难×疾行」交叉区第二角·困难×
@@ -4285,7 +4320,7 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 398 件套 GAME_VERSION 字面量 pin 级联（v24.188→v24.189）+ 件套口径 398→399 / 成就计数 113→114 pin 级联
 // + 哨兵前望 399→400 + 新套件 smoke_v24189_swiftskill2 入库 399 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.190';
+const GAME_VERSION = 'v24.191';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -11488,6 +11523,29 @@ const ACH_LIST=[
   // 既有通路（终焉之神击败当场 trueBoss 落账后枚举即解锁）反馈不迟到。
   // ACH_LIST 114→115 项（末尾追加，既有 114 项 id/序位零回归）。
   {id:'swiftnopo2', name:'逆风不饮疾行', d:`以困难模式、${SPEED_GOAL} 场战斗内且未在战斗中使用药水/灵药击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && (g.battles||0)<=SPEED_GOAL && !(g.potionUses||0))},
+  // v24.191 挑战向·「困难×低等级」三克制交叉区首角（第一百一十六项）「逆风素手青灯」（lowskill2）——承 v24.190 逆风不饮疾行
+  // （swiftnopo2，「困难×疾行」交叉区第三角收官）/ v24.188-190 hardtrue×swift 三姿态收口 / v24.184-187 hardtrue×penny 四角收口 / v24.177-183
+  // hardtrue×unfl 五姿态收口 / v24.162 素手青灯（lowskill，未及十级×零用技）/ v24.159 逆风青芽（lowlv2，困难×未及十级）/ v24.161 逆风守拙
+  // （noskill2，困难×零用技）先例：把既有双克制档「素手青灯」（未及十级×零用技）再叠上困难模式（diff===1），首开「困难×低等级」交叉区
+  // （lowlv「未及十级」在困难档的 ×{noskill, nopotion} 姿态交叉区第一角——同档剩余交叉口 hardtrue×lowlv×nopotion（低等级×零战斗用药）与
+  // hardtrue×noskill×nopotion（零用技×零战斗用药）留待后续）。判定读既有 hero.trueBoss（与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/
+  // penny/steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/lowlvnopo/unflswift/
+  // unfllowlv/unflnopo/unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/
+  // pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2 同源）、既有 hero.diff（(g.diff===1) 即 DIFFS[1]「困难」档，
+  // 与 hardtrue/steadfast/frugal/dry/swift2/lowlv2/noskill2/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/
+  // pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2 同读一份源）、既有 hero.level（hero.js grantXp 升级唯一产生点、只增不减，
+  // 与 lowlv/lowlv2/lowskill/swiftlv/lowlvnopo/unfllowlv/pennylowlv/unfllowlv2/pennylowlv2/swiftlv2 系同读一份源）与既有 hero.casts
+  // （battle.doSkill 战斗释放技能成功唯一产生点——「释放」即成功出手、治疗与伤害两分支都计入、只增不减，与 noskill/noskill2/cast/lowskill/
+  // swiftskill/nopotskill/unflskill/pennynoskill/unflskill2/pennynoskill2/swiftskill2 系同读一份源），(g.trueBoss && g.diff===1 &&
+  // (g.level||1)<LOWLV_GOAL && !(g.casts||0)) 即「困难 · 未及十级 · 零用技通关」达成——diff/level/casts 三端口只增不减，换过难度、升过十级
+  // 或放过一次技就永久无缘此档；是 hardtrue、lowlv 与 noskill 三枚的严格交叠（困难未及十级零用技通关必同时满足三者，也必满足 lowlv2 与
+  // noskill2 与 lowskill），本枚是这一三重交叉区的唯一纪念；与既有正向里程碑 cast「熟能生巧」（CAST_GOAL(30)）/ lvl10「守灯者」
+  // （LVL10_GOAL(10)）成镜面对、互不重叠。可行性：困难档魔物全面加强下未满十级只靠 [1]普攻/[4]防御回蓝（v19.96）/[5]蓄力通关（[2] 技能键
+  // 零按下——血蓝全靠防御/蓄力/喷泉/旅馆与药水硬撑，本档不禁药不禁消费不禁超场），装备靠开箱/支线/掉落换，吃满「别自降难度 + 别练级 +
+  // 别用技」三克制的一场逆风素手青灯。零新计数零新状态零新写点零新存档、无 r 无 prog 纯里程碑、winBattle → applyAchievements
+  // 既有通路（终焉之神击败当场 trueBoss 落账后枚举即解锁）反馈不迟到。
+  // ACH_LIST 115→116 项（末尾追加，既有 115 项 id/序位零回归）。
+  {id:'lowskill2', name:'逆风素手青灯', d:`以困难模式、等级未满 ${LOWLV_GOAL} 且未使用任何技能（战斗指令 [2]）击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && (g.level||1)<LOWLV_GOAL && !(g.casts||0))},
 ];
 
 function codexTag(name) {
