@@ -88,7 +88,7 @@ const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v23.96', !!_gv && (_gv[0] > 23 || (_gv[0] === 23 && _gv[1] > 96)), GAME_VERSION);
 ok('data.js 含 v23.97 注释（基础属性速查行说明）', dSrc.includes('// v23.97 文档整理·数值说明·同源口径'));
 ok('data.js GAME_VERSION 字面量已为 v23.97（旧 v23.96 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.194';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "6';"));
+  dSrc.includes("const GAME_VERSION = 'v24.195';") && !dSrc.includes("const GAME_VERSION = 'v23.9" + "6';"));
 ok('data.js 仍保留 v23.96 历史注释（精钢甲装备曲线说明，累积注释块）',
   dSrc.includes('v23.96 数值平衡·装备曲线补全'));
 
@@ -139,7 +139,7 @@ ok('README 每级成长行零回归（速查表第二行逐字未动）',
   readme.includes('| 每级成长 | HP+7 · MP+4 · 攻+2 · 防+2 | `baseStats` 一阶差分 `LEVEL_GROWTH` |'));
 ok('README 升级经验行零回归（XP_INIT 20 链式口径）',
   readme.includes('| 升级经验 | `XP_INIT`(20) 起**链式**逐级 `round(上一级 × 1.42)`'));
-ok('CHANGELOG 顶部已追加 v23.97 条目（基础属性速查行）', changelog.startsWith('## v24.194 '));
+ok('CHANGELOG 顶部已追加 v23.97 条目（基础属性速查行）', changelog.startsWith('## v24.195 '));
 ok('CHANGELOG 顶部条目含基础属性说明', changelog.includes('补「基础属性」行'));
 ok('CHANGELOG 仍保留 v23.96 条目标题（历史口径）', changelog.includes('## v23.96 新防具「精钢甲」'));
 

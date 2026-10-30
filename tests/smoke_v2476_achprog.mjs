@@ -92,7 +92,7 @@ const hSrc = fs.readFileSync(path.join(ROOT, 'js/hero.js'), 'utf8');
 
 // —— data.js 版本与注释 ——
 ok('data.js GAME_VERSION 字面量已为 v24.76（旧 v24.75 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.194';") && !dSrc.includes("const GAME_VERSION = 'v24.75';"));
+  dSrc.includes("const GAME_VERSION = 'v24.195';") && !dSrc.includes("const GAME_VERSION = 'v24.75';"));
 ok('data.js 含 v24.76 注释（成就解锁横幅「（成就 N/119）」进度后缀说明）',
   dSrc.includes('// v24.76 体验打磨·信息透明·计数现场') && dSrc.includes('成就解锁横幅补「（成就 N/119）」进度后缀'));
 ok('data.js 保留 v24.73/v24.75 历史注释（经验曲线方法论零丢失）',
@@ -231,7 +231,7 @@ ok('package.json test 串收录 smoke_v2476_achprog.mjs（node tests/ 前缀形�
 
 // —— CHANGELOG ——
 const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
-ok('CHANGELOG 顶部条目已为 v24.76（startsWith）', changelog.startsWith('## v24.194 '));
+ok('CHANGELOG 顶部条目已为 v24.76（startsWith）', changelog.startsWith('## v24.195 '));
 ok('CHANGELOG v24.76 条目含「计数现场」「成就 N/94」「hero.ach」「ACH_LIST.length」',
   changelog.includes('计数现场') && changelog.includes('成就 N/94') && changelog.includes('hero.ach') && changelog.includes('ACH_LIST.length'));
 ok('CHANGELOG 仍保留 v24.75/v24.72 经验曲线条目标题（历史零丢失）',

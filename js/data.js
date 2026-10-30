@@ -4230,6 +4230,15 @@
 // 无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路（终焉之神击败当场 trueBoss 落账后枚举即解锁）。
 // 配套：全库 403 件套 GAME_VERSION 字面量 pin 级联（v24.193→v24.194）+ 件套口径 403→404 / 成就计数 118→119 pin 级联
 // + 哨兵前望 404→405 + 新套件 smoke_v24194_lowskillnopo2 入库 404 份 + README/CHANGELOG 同步。
+// v24.195 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.156/v24.149 文档复核先例）：
+// 版本速览与 data.js 实核对账全部吻合——119 项成就（ACH_LIST.length）/46 名 NPC（NPCS）·47 处 NPC_SPOTS
+// /46 条支线（QUESTS kind==='side'）·4 条主线 /13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/
+// 4 图（MAPS）/404 件套冒烟（tests/ 文件数），哨兵前望 405、链尾 smoke_v24194_lowskillnopo2 逐处一致
+// （v24.151-194 四十四个成就版本推进 78→119、件套 362→404，战报与维护者速查尾条随版更新——文档侧统一
+// 复核收口，账目与 README「版本速览」零漂移）；battle/core/world/view/quests/hero/shop 逐字未动，
+// 遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 404 件套 GAME_VERSION 字面量 pin 级联（v24.194→v24.195，哨兵前望 405 不变——本轮无新
+// 套件无计数变化）。
 // v24.193 新内容·新成就（第一百一十八项）「逆风素手不沾」（nopotskill2）——「零用技 × 零战斗用药」三克制挑战向困难档交叉口收官：
 // 困难模式 × 零用技 × 零战斗用药击败终焉之神（hardtrue×noskill×nopotion 三重克制，收官「困难×低等级」交叉区开垦中最后一块
 // 剩余交叉口——v24.191/192 相继开垦 lowlv×{noskill,nopotion} 两角后，同簇姿态三角 hardtrue×{lowlv, noskill, nopotion} 中唯一
@@ -4388,7 +4397,7 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 398 件套 GAME_VERSION 字面量 pin 级联（v24.188→v24.189）+ 件套口径 398→399 / 成就计数 113→114 pin 级联
 // + 哨兵前望 399→400 + 新套件 smoke_v24189_swiftskill2 入库 399 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.194';
+const GAME_VERSION = 'v24.195';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367

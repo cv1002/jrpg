@@ -47,7 +47,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.133', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 133)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.134（旧 v24.133 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.194';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
+  dSrc.includes("const GAME_VERSION = 'v24.195';") && !dSrc.includes("const GAME_VERSION = 'v24.136';"));
 ok('data.js 含 v24.134 注释（薪火的气新支线说明）',
   dSrc.includes('v24.134 新内容·新支线（第四十二条）'));
 ok('data.js 仍保留 v24.133 打更人历史注释（一夜好眠支线说明，零内容丢失）',
@@ -201,7 +201,7 @@ ok('package.json 实跑链共 356 份（smoke.mjs + 356 专项）', chain.length
 ok('package.json 链尾为 smoke_v24134_kindleq（第 363 份）', chain[chain.length - 1] === 'smoke_v24194_lowskillnopo2', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24133_inquest.mjs && smoke_v24134_kindleq.mjs（node tests/ 链尾形态）',
   pkgRaw.includes('node tests/smoke_v24133_inquest.mjs && node tests/smoke_v24134_kindleq.mjs && node tests/smoke_v24135_ledgerquest.mjs && node tests/smoke_v24136_herbquest.mjs && node tests/smoke_v24143_furnacequest.mjs && node tests/smoke_v24147_unflicker.mjs && node tests/smoke_v24148_swift.mjs && node tests/smoke_v24151_lowlv.mjs && node tests/smoke_v24152_nopotion.mjs && node tests/smoke_v24153_penny.mjs && node tests/smoke_v24154_steadfast.mjs && node tests/smoke_v24155_frugal.mjs && node tests/smoke_v24157_dry.mjs && node tests/smoke_v24158_swift2.mjs && node tests/smoke_v24159_lowlv2.mjs && node tests/smoke_v24160_noskill.mjs && node tests/smoke_v24161_noskill2.mjs && node tests/smoke_v24162_lowskill.mjs && node tests/smoke_v24163_swiftskill.mjs && node tests/smoke_v24164_swiftlv.mjs && node tests/smoke_v24165_nopotskill.mjs && node tests/smoke_v24166_unflskill.mjs && node tests/smoke_v24167_swiftnopo.mjs && node tests/smoke_v24168_lowlvnopo.mjs && node tests/smoke_v24169_unflswift.mjs && node tests/smoke_v24170_unfllowlv.mjs && node tests/smoke_v24171_unflnopo.mjs && node tests/smoke_v24172_unflpenny.mjs && node tests/smoke_v24173_pennyswift.mjs && node tests/smoke_v24174_pennylowlv.mjs && node tests/smoke_v24175_pennynoskill.mjs && node tests/smoke_v24176_pennynopo.mjs && node tests/smoke_v24177_unflswift2.mjs && node tests/smoke_v24178_unflpenny2.mjs && node tests/smoke_v24179_unflnopo2.mjs && node tests/smoke_v24180_unflskill2.mjs && node tests/smoke_v24181_lampoilquest.mjs && node tests/smoke_v24183_unfllowlv2.mjs && node tests/smoke_v24184_pennyswift2.mjs && node tests/smoke_v24185_pennylowlv2.mjs && node tests/smoke_v24186_pennynoskill2.mjs && node tests/smoke_v24187_pennynopo2.mjs && node tests/smoke_v24188_swiftlv2.mjs && node tests/smoke_v24189_swiftskill2.mjs && node tests/smoke_v24190_swiftnopo2.mjs && node tests/smoke_v24191_lowskill2.mjs && node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.134（startsWith）', changelog.startsWith('## v24.194'));
+ok('CHANGELOG.md 顶部条目已为 v24.134（startsWith）', changelog.startsWith('## v24.195'));
 ok('CHANGELOG v24.134 条目含「薪火的气」与「KINDLE_GOAL」与「守火翁」',
   changelog.includes('薪火的气') && changelog.includes('KINDLE_GOAL') && changelog.includes('守火翁'));
 ok('CHANGELOG 仍保留 v24.133 条目（历史保留）', changelog.includes('## v24.133 '));
@@ -219,8 +219,8 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 const s24132 = read('smoke_v24132_fallenquest.mjs');
 const s24133 = read('smoke_v24133_inquest.mjs');
 const s2415 = read('smoke_v2415_treepin.mjs');
-ok('smoke_v24133 的 GAME_VERSION 字面量 pin 已更新为 v24.134', s24133.includes("const GAME_VERSION = 'v24.194';"));
-ok('smoke_v24133 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24133.includes("startsWith('## v24.194'"));
+ok('smoke_v24133 的 GAME_VERSION 字面量 pin 已更新为 v24.134', s24133.includes("const GAME_VERSION = 'v24.195';"));
+ok('smoke_v24133 的 CHANGELOG 顶 pin 已更新为 ## v24.137 ', s24133.includes("startsWith('## v24.195'"));
 ok('smoke_v24133 的件套 pin 已更新为四百零四件套（四百零三件套清除）', s24133.includes('四百零四件套（四百零三件套清除）'));
 ok('smoke_v24133 的 README/链 tail pin 已随新现实延伸（含 smoke_v24134_kindleq）',
   s24133.includes('smoke_v24134_kindleq'));
