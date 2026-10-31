@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/121）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/122）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/121）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/122）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4213,6 +4213,24 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 397 件套 GAME_VERSION 字面量 pin 级联（v24.187→v24.188）+ 件套口径 397→398 / 成就计数 112→113 pin 级联
 // + 哨兵前望 398→399 + 新套件 smoke_v24188_swiftlv2 入库 398 份 + README/CHANGELOG 同步。
+// v24.198 新内容·新成就（第一百二十二项）「逆风白手素手青芽」（pennylowskill2）——「困难 × 零消费 × 未及十级 × 零用技」四重克制挑战向第四枚：
+// 困难模式 × 未花费 1 金币 × 未及十级 × 未使用任何技能击败终焉之神（hardtrue×penny×lowlv×noskill 四重克制——承 v24.196 pennylowlvnopo2
+// （逆风白手不饮青芽，hardtrue×penny×lowlv×nopotion 四重第二枚）/ v24.197 pennynoskillnopo2（逆风白手素手不沾，hardtrue×penny×noskill×nopotion
+// 四重第三枚）/ v24.194 lowskillnopo2（逆风素手不饮青灯，hardtrue×lowlv×noskill×nopotion 四重首枚）先例：「hardtrue+姿态」四重克制维度下，本枚把
+// 「零消费」姿态（penny）叠上 lowlv×noskill 双克（v24.191 lowskill2 逆风素手青灯 困难档低等级×零用技 / v24.174 pennylowlv 白手青芽 普通档
+// 零消费×未及十级 / v24.175 pennynoskill 白手素手 普通档零消费×零用技），把既有的「困难×白手」三克（v24.185 pennylowlv2 / v24.186 pennynoskill2）
+// 与「困难×低等级」三克（v24.191 lowskill2）的公共交集——「既零消费、又未及十级、又零用技且困难通关」——收为一枚，开垦「hardtrue+姿态」四重
+// 交叉区第四角（与 v24.194 分源：读 spent 不读 potionUses——战斗里喝过药照常解锁、花过 1 金或升过十级或放过一次技即永久无缘此档）——
+// 判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss）+ hero.diff（(g.diff===1) 即 DIFFS[1]「困难」档）+ hero.spent（消费线五端口——商店
+// 购买×3/住店/酿造——金币扣减唯一产生点共享累计、只增不减、防御式 (g.spent||0) 旧档零迁移）+ hero.level（hero.js grantXp 唯一升级点
+// hero.level++、只增不减、防御式 (g.level||1) 旧档零迁移）+ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点——治疗与伤害两分支都计入、
+// 只增不减、防御式 (g.casts||0) 旧档零迁移）零新写点（trueBoss/diff/spent/level/casts 皆既有字段）、无 r 无 prog 纯里程碑、winBattle →
+// applyAchievements 既有通路（终焉之神击败当场 trueBoss 落账后枚举即解锁）。
+// 可行性：困难档魔物全面加强下分文不花（商店/旅馆/酿造全封、装备靠开箱/支线/掉落换）且未满十级（九级封顶血蓝更薄、经验只嫌多不嫌少）、战斗
+// [2] 技能键零按下（连治疗/伤害技都封印，血蓝全靠 [1]普攻/[4]防御回蓝（v19.96）/[5]蓄力/喷泉/大地图 F 喝药硬撑——本档不禁药不禁大地图喝药
+// 不禁阵亡）通关终焉之神（Lv.12 Boss），一场「别自降难度 + 别花钱 + 别练级 + 别用技」四克制的逆风白手素手青芽。
+// 配套：全库 406 件套 GAME_VERSION 字面量 pin 级联（v24.197→v24.198）+ 件套口径 406→407 / 成就计数 121→122 pin 级联
+// + 哨兵前望 407→408 + 新套件 smoke_v24198_pennylowskill2 入库 407 份 + README/CHANGELOG 同步。
 // v24.197 新内容·新成就（第一百二十一项）「逆风白手素手不沾」（pennynoskillnopo2）——「困难 × 零消费 × 零用技 × 零战斗用药」四重克制挑战向第三枚：
 // 困难模式 × 未花费 1 金币 × 未使用任何技能 × 零战斗用药击败终焉之神（hardtrue×penny×noskill×nopotion 四重克制——承 v24.196 pennylowlvnopo2
 // （逆风白手不饮青芽，hardtrue×penny×lowlv×nopotion 四重第二枚）/ v24.194 lowskillnopo2（逆风素手不饮青灯，hardtrue×lowlv×noskill×nopotion
@@ -4431,7 +4449,7 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 398 件套 GAME_VERSION 字面量 pin 级联（v24.188→v24.189）+ 件套口径 398→399 / 成就计数 113→114 pin 级联
 // + 哨兵前望 399→400 + 新套件 smoke_v24189_swiftskill2 入库 399 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.197';
+const GAME_VERSION = 'v24.198';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -11756,6 +11774,20 @@ const ACH_LIST=[
   // 产生点）/ hero.potionUses（battle.doItem 战斗用药成功唯一产生点，大地图 F 喝药/旅馆/篝火不计入）零新写点，无 r 无 prog 纯里程碑、
   // winBattle → applyAchievements 既有通路。ACH_LIST 120→121 项（末尾追加，既有 120 项 id/序位零回归）。
   {id:'pennynoskillnopo2', name:'逆风白手素手不沾', d:`以困难模式、未花费 1 金币、未使用任何技能（战斗指令 [2]）且未在战斗中使用药水/灵药击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.spent||0) && !(g.casts||0) && !(g.potionUses||0))},
+  // v24.198 挑战向·「困难×零消费×未及十级×零用技」四重克制第四枚（第一百二十二项）「逆风白手素手青芽」（pennylowskill2）——承 v24.196 逆风白手不饮青芽
+  // （pennylowlvnopo2，「hardtrue+姿态」四重克制第二枚·困难×零消费×未及十级×零战斗用药）/ v24.197 逆风白手素手不沾（pennynoskillnopo2，「hardtrue+
+  // 姿态」四重克制第三枚·困难×零消费×零用技×零战斗用药）/ v24.194 逆风素手不饮青灯（lowskillnopo2，「hardtrue+三姿态」四重克制首枚·困难×未及十级×
+  // 零用技×零战斗用药）/ v24.185 逆风白手青芽（pennylowlv2，困难×零消费×未及十级）/ v24.186 逆风白手素手（pennynoskill2，困难×零消费×零用技）/
+  // v24.191 逆风素手青灯（lowskill2，困难×未及十级×零用技）/ v24.174 白手青芽（pennylowlv，零消费×未及十级）/ v24.175 白手素手（pennynoskill，
+  // 零消费×零用技）先例：本枚把「零消费」姿态（penny）叠上 lowlv×noskill 双克（v24.191 lowskill2 困难档低等级×零用技 / v24.174 pennylowlv 普通档
+  // 零消费×未及十级 / v24.175 pennynoskill 普通档零消费×零用技），把既有的「困难×白手」三克（v24.185 pennylowlv2 / v24.186 pennynoskill2）与
+  // 「困难×低等级」三克（v24.191 lowskill2）的公共交集——「既零消费、又未及十级、又零用技且困难通关」——收为一枚，开垦「hardtrue+姿态」四重克制
+  // 维度第四枚（hardtrue×penny×lowlv×noskill 四重交叉区；与 v24.194 分源：读 spent 不读 potionUses——战斗里喝过药照常解锁、花过 1 金或升过十级
+  // 或放过一次技即永久无缘此档）。
+  // 判定读既有 hero.trueBoss / hero.diff（DIFFS[1]）/ hero.spent（消费线五端口扣款唯一来源、只增不减）/ hero.level（grantXp 升级唯一产生点、只增不减、
+  // 防御式 (g.level||1)）/ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点、只增不减、防御式 (g.casts||0)）零新写点，无 r 无 prog 纯里程碑、
+  // winBattle → applyAchievements 既有通路。ACH_LIST 121→122 项（末尾追加，既有 121 项 id/序位零回归）。
+  {id:'pennylowskill2', name:'逆风白手素手青芽', d:`以困难模式、未花费 1 金币、等级未满 ${LOWLV_GOAL} 且未使用任何技能（战斗指令 [2]）击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.spent||0) && (g.level||1)<LOWLV_GOAL && !(g.casts||0))},
 ];
 
 function codexTag(name) {
