@@ -50,8 +50,8 @@ const changelog = fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.180', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 180)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已为 v24.195（旧 v24.180 字面量零残留）',
-  dSrc.includes("const GAME_VERSION = 'v24.195';") && !dSrc.includes("const GAME_VERSION = 'v24.180';"));
+ok('data.js GAME_VERSION 字面量已为 v24.196（旧 v24.180 字面量零残留）',
+  dSrc.includes("const GAME_VERSION = 'v24.196';") && !dSrc.includes("const GAME_VERSION = 'v24.180';"));
 ok('data.js 含 v24.181 注释（熬灯婶「菌盖的灯油」新支线说明）',
   dSrc.includes('v24.181 新内容·新支线（第四十六条）'));
 ok('data.js 仍保留 v24.180 历史注释（零内容丢失）',
@@ -187,16 +187,16 @@ ok('姊妹件 smoke_v2235_minimapquest 已随新现实更新（lampoil 入任务
   read('smoke_v2235_minimapquest.mjs').includes('goldAt(capA, 11, 11)'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径已为四百零四件套（四百零三件套清除）',
-  readme.includes('冒烟四百零四件套（四百零三件套清除）'));
+ok('README 件套口径已为四百零五件套（四百零四件套清除）',
+  readme.includes('冒烟四百零五件套（四百零四件套清除）'));
 ok('README tests 含 v24.181 守护描述与 smoke_v24181_lampoilquest 入库（392 份）',
   readme.includes('v24.181 起含「熬灯婶「菌盖的灯油」新支线」守护') &&
   readme.includes('smoke_v24181_lampoilquest 入库（392 份）'));
 ok('README 仍保留 v24.180 守护描述（历史保留）', readme.includes('v24.180 起含「逆风素手」新成就守护'));
-ok('README 已有四百零四件套口径且尚无 393（哨兵前望 405 语义：下一版才写 393）',
-  readme.includes('冒烟四百零四件套（四百零三件套清除）') && !readme.includes('冒烟四百零五件套') && !readme.includes('（405 份）'));
-ok('README 版本速览已为 v24.195 且四十六条支线 · 46 名 NPC · 392 件套',
-  readme.includes('版本速览（v24.195）') && readme.includes('四十六条支线（`QUESTS`）') &&
+ok('README 已有四百零五件套口径且尚无 393（哨兵前望 406 语义：下一版才写 393）',
+  readme.includes('冒烟四百零五件套（四百零四件套清除）') && !readme.includes('冒烟四百零六件套') && !readme.includes('（406 份）'));
+ok('README 版本速览已为 v24.196 且四十六条支线 · 46 名 NPC · 392 件套',
+  readme.includes('版本速览（v24.196）') && readme.includes('四十六条支线（`QUESTS`）') &&
   readme.includes('46 名 NPC') && readme.includes('392 件套冒烟'));
 ok('README 支线/奖励行随新现实（四十六条 · 菌盖的灯油 · MUSH_HOLD_GOAL · 有口皆碑 X/46）',
   readme.includes('四十六条支线目标/奖励全部由') &&
@@ -204,18 +204,18 @@ ok('README 支线/奖励行随新现实（四十六条 · 菌盖的灯油 · MUS
   readme.includes('`MUSH_HOLD_GOAL`') && readme.includes('有口皆碑 X/46 处'));
 const pkg = JSON.parse(pkgRaw).scripts.test;
 const chain = [...pkgRaw.matchAll(/node tests\/(smoke_v\d+_\w+\.mjs)/g)].map((m) => m[1].replace(/\.mjs$/, ''));
-ok('package.json 实跑链共 391 份（smoke.mjs + 391 专项）', chain.length === 403 && ['smoke.mjs', ...chain].length === 404, String(chain.length));
-ok('package.json 链尾为 smoke_v24181_lampoilquest（第 392 份）', chain[chain.length - 1] === 'smoke_v24194_lowskillnopo2', chain[chain.length - 1]);
+ok('package.json 实跑链共 391 份（smoke.mjs + 391 专项）', chain.length === 404 && ['smoke.mjs', ...chain].length === 405, String(chain.length));
+ok('package.json 链尾为 smoke_v24181_lampoilquest（第 392 份）', chain[chain.length - 1] === 'smoke_v24196_pennylowlvnopo2', chain[chain.length - 1]);
 ok('package.json test 串收录 smoke_v24180_unflskill2.mjs && smoke_v24181_lampoilquest.mjs（node tests/ 链尾形态）',
-  pkgRaw.includes('node tests/smoke_v24180_unflskill2.mjs && node tests/smoke_v24181_lampoilquest.mjs && node tests/smoke_v24183_unfllowlv2.mjs && node tests/smoke_v24184_pennyswift2.mjs && node tests/smoke_v24185_pennylowlv2.mjs && node tests/smoke_v24186_pennynoskill2.mjs && node tests/smoke_v24187_pennynopo2.mjs && node tests/smoke_v24188_swiftlv2.mjs && node tests/smoke_v24189_swiftskill2.mjs && node tests/smoke_v24190_swiftnopo2.mjs && node tests/smoke_v24191_lowskill2.mjs && node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs"'));
-ok('CHANGELOG.md 顶部条目已为 v24.195（startsWith）', changelog.startsWith('## v24.195'));
+  pkgRaw.includes('node tests/smoke_v24180_unflskill2.mjs && node tests/smoke_v24181_lampoilquest.mjs && node tests/smoke_v24183_unfllowlv2.mjs && node tests/smoke_v24184_pennyswift2.mjs && node tests/smoke_v24185_pennylowlv2.mjs && node tests/smoke_v24186_pennynoskill2.mjs && node tests/smoke_v24187_pennynopo2.mjs && node tests/smoke_v24188_swiftlv2.mjs && node tests/smoke_v24189_swiftskill2.mjs && node tests/smoke_v24190_swiftnopo2.mjs && node tests/smoke_v24191_lowskill2.mjs && node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs && node tests/smoke_v24196_pennylowlvnopo2.mjs"'));
+ok('CHANGELOG.md 顶部条目已为 v24.196（startsWith）', changelog.startsWith('## v24.196'));
 ok('CHANGELOG v24.181 条目含「菌盖的灯油」与「MUSH_HOLD_GOAL」与「熬灯婶」',
   changelog.includes('菌盖的灯油') && changelog.includes('MUSH_HOLD_GOAL') && changelog.includes('熬灯婶'));
 ok('CHANGELOG 仍保留 v24.180 条目（历史保留）', changelog.includes('## v24.180 '));
 
 const testsDir = new URL('../tests/', import.meta.url);
 const files = fs.readdirSync(testsDir).filter((f) => f.endsWith('.mjs')).sort((a, b) => a.localeCompare(b));
-ok('tests 目录件套 = 392（391 + smoke_v24181_lampoilquest）', files.length === 404, String(files.length));
+ok('tests 目录件套 = 392（391 + smoke_v24181_lampoilquest）', files.length === 405, String(files.length));
 const chainSet = new Set(['smoke.mjs', ...chain.map((f) => f + '.mjs')]);
 const orphans = files.filter((f) => !chainSet.has(f));
 const missed = [...chainSet].filter((f) => !files.includes(f));
@@ -226,18 +226,18 @@ ok('实跑链与 tests 目录零漏跑（链上每件都存在于 tests/）', mi
 const s24180 = read('smoke_v24180_unflskill2.mjs');
 const s24179 = read('smoke_v24179_unflnopo2.mjs');
 const s24178 = read('smoke_v24178_unflpenny2.mjs');
-ok('smoke_v24180 的 GAME_VERSION 字面量 pin 已更新为 v24.195', s24180.includes("const GAME_VERSION = 'v24.195';"));
-ok('smoke_v24180 的 CHANGELOG 顶 pin 已更新为 ## v24.195 ', s24180.includes("startsWith('## v24.195'"));
-ok('smoke_v24180 的件套 pin 已更新为四百零四件套（四百零三件套清除）', s24180.includes('四百零四件套（四百零三件套清除）'));
+ok('smoke_v24180 的 GAME_VERSION 字面量 pin 已更新为 v24.196', s24180.includes("const GAME_VERSION = 'v24.196';"));
+ok('smoke_v24180 的 CHANGELOG 顶 pin 已更新为 ## v24.196 ', s24180.includes("startsWith('## v24.196'"));
+ok('smoke_v24180 的件套 pin 已更新为四百零五件套（四百零四件套清除）', s24180.includes('四百零五件套（四百零四件套清除）'));
 ok('smoke_v24180 的 README/链 tail pin 已随新现实延伸（含 smoke_v24181_lampoilquest）',
   s24180.includes('smoke_v24181_lampoilquest'));
-ok('smoke_v24180 的链尾 pin 已推进至 smoke_v24194_lowskillnopo2（第 404 份）',
-  s24180.includes("node tests/smoke_v24181_lampoilquest.mjs && node tests/smoke_v24183_unfllowlv2.mjs && node tests/smoke_v24184_pennyswift2.mjs && node tests/smoke_v24185_pennylowlv2.mjs && node tests/smoke_v24186_pennynoskill2.mjs && node tests/smoke_v24187_pennynopo2.mjs && node tests/smoke_v24188_swiftlv2.mjs && node tests/smoke_v24189_swiftskill2.mjs && node tests/smoke_v24190_swiftnopo2.mjs && node tests/smoke_v24191_lowskill2.mjs && node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs\""));
-ok('smoke_v24179 的 GAME_VERSION 字面量 pin 已更新为 v24.195（随新现实推进）', s24179.includes("const GAME_VERSION = 'v24.195';"));
-ok('smoke_v24178 的 GAME_VERSION 字面量 pin 已更新为 v24.195（随新现实推进）', s24178.includes("const GAME_VERSION = 'v24.195';"));
+ok('smoke_v24180 的链尾 pin 已推进至（第 405 份，含 smoke_v24194_lowskillnopo2 && smoke_v24196_pennylowlvnopo2）',
+  s24180.includes("node tests/smoke_v24181_lampoilquest.mjs && node tests/smoke_v24183_unfllowlv2.mjs && node tests/smoke_v24184_pennyswift2.mjs && node tests/smoke_v24185_pennylowlv2.mjs && node tests/smoke_v24186_pennynoskill2.mjs && node tests/smoke_v24187_pennynopo2.mjs && node tests/smoke_v24188_swiftlv2.mjs && node tests/smoke_v24189_swiftskill2.mjs && node tests/smoke_v24190_swiftnopo2.mjs && node tests/smoke_v24191_lowskill2.mjs && node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs && node tests/smoke_v24196_pennylowlvnopo2.mjs\""));
+ok('smoke_v24179 的 GAME_VERSION 字面量 pin 已更新为 v24.196（随新现实推进）', s24179.includes("const GAME_VERSION = 'v24.196';"));
+ok('smoke_v24178 的 GAME_VERSION 字面量 pin 已更新为 v24.196（随新现实推进）', s24178.includes("const GAME_VERSION = 'v24.196';"));
 const s2429 = read('smoke_v2429_xpcurve3.mjs');
-ok('smoke_v2429 哨兵链前望 405（四百零五件套否定式）',
-  s2429.includes("!readme.includes('冒烟四百零五件套'"));
+ok('smoke_v2429 哨兵链前望 406（四百零六件套否定式）',
+  s2429.includes("!readme.includes('冒烟四百零六件套'"));
 
 // 旧代 v24.180 pin 零残留扫描（豁免本套件与上一版 unflskill2、上上版 unflnopo2、上上上版 unflpenny2——
 // v24180 负向 `!dSrc.includes("const GAME_VERSION = 'v24.180';")` 是合法前望 pin，同 v24143 轮豁免先例）

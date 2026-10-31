@@ -1,3 +1,9 @@
+## v24.196 新内容·单成就（第一百二十项）「逆风白手不饮青芽」——困难模式 × 未花费 1 金币 × 未及十级 × 零战斗用药击败终焉之神的「困难×零消费×未及十级×零战斗用药」四重克制挑战向第二枚
+
+- 【内容】承 v24.194 逆风素手不饮青灯（lowskillnopo2，「hardtrue+三姿态」四重克制首枚）/ v24.185 逆风白手青芽（pennylowlv2）/ v24.187 逆风白手不沾（pennynopo2）/ v24.192 逆风不饮青芽（lowlvnopo2）：本枚把 penny×lowlv×nopotion 三条三克线的公共交集——「既零消费、又未及十级、又零战斗用药且困难通关」——收为一枚，开垦「hardtrue+姿态」四重克制维度第二枚（hardtrue×penny×lowlv×nopotion；与 v24.194 分源：读 spent 不读 casts——放过技能照常解锁、花过 1 金即永久无缘此档）。判定读既有 hero.trueBoss / hero.diff（DIFFS[1]）/ hero.spent（消费线五端口扣款唯一来源、只增不减）/ hero.level（grantXp 唯一升级点）/ hero.potionUses（battle.doItem 战斗用药成功唯一产生点，大地图 F 喝药/旅馆/篝火不计入）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 119→120 项（末尾追加，既有 119 项 id/序位零回归）。
+- 【数据】js/data.js（GAME_VERSION v24.195→v24.196 + v24.196 版本注释块 + ACH_LIST 末尾 pennylowlvnopo2 条目 + 活计数 N/119→N/120 注释 2 处）；js/hero.js（横幅活计数注释 N/119→N/120 1 处）；battle/core/world/view/quests/shop 逻辑逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 405 件套 npm test 端到端全绿 → 全库 404 件套 GAME_VERSION 字面量 pin 级联（v24.195→v24.196，哨兵前望 405→406）+ 件套口径 404→405 / 成就计数 119→120 pin 级联 + 新套件 smoke_v24196_pennylowlvnopo2 入库 405 份 + README/CHANGELOG 同步。
+
 ## v24.195 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.156/v24.149 文档复核先例）
 
 - 【复核】版本速览与 data.js 实核对账全部吻合：119 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线 / 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 404 件套冒烟（tests/ 文件数），哨兵前望 405、链尾 smoke_v24194_lowskillnopo2 逐处一致——v24.151-194 连续四十四个成就版本推进 78→119、件套 362→404，文档侧统一复核收口，账目与 README「版本速览」零漂移。
