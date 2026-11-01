@@ -1,4 +1,4 @@
-// smoke_v24196_pennylowlvnopo2.mjs —— v24.203 专项冒烟：新成就「逆风白手不饮青芽」（挑战向·「hardtrue+姿态」四重克制第二枚·第一百二十项·困难模式×零消费×未及十级×零战斗用药）
+// smoke_v24196_pennylowlvnopo2.mjs —— v24.204 专项冒烟：新成就「逆风白手不饮青芽」（挑战向·「hardtrue+姿态」四重克制第二枚·第一百二十项·困难模式×零消费×未及十级×零战斗用药）
 // （新内容·单成就·第一百二十项——承 v24.194 逆风素手不饮青灯（lowskillnopo2，「hardtrue+三姿态」四重克制首枚·困难×未及十级×零用技×零战斗用药）/
 // v24.185 逆风白手青芽（pennylowlv2，「困难×白手」三克制第二角·困难×零消费×未及十级）/ v24.187 逆风白手不沾（pennynopo2，「困难×白手」三克制
 // 第四角·困难×零消费×零战斗用药）/ v24.192 逆风不饮青芽（lowlvnopo2，「困难×低等级」三克制第二角·困难×未及十级×零战斗用药）/ v24.174 白手青芽
@@ -121,7 +121,7 @@ function ok(name, cond, extra) {
   else { failed++; console.log('  ✗', name, extra || ''); }
 }
 
-console.log('— v24.203 挑战向·四重克制成就「逆风白手不饮青芽」（困难×未及十级×零用技×零战斗用药） 冒烟 —');
+console.log('— v24.204 挑战向·四重克制成就「逆风白手不饮青芽」（困难×未及十级×零用技×零战斗用药） 冒烟 —');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -138,10 +138,10 @@ const changelog = read('CHANGELOG.md');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.195', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 193)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已为 v24.203（旧 v24.195 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.203';") && !dataSrc.includes("const GAME_VERSION = 'v24.195';"));
-ok('data.js 含 v24.203 注释（逆风白手不饮青芽新成就说明）',
-  dataSrc.includes('v24.203 文档整理·版本锚点推进'));
+ok('data.js GAME_VERSION 字面量已为 v24.204（旧 v24.195 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v24.204';") && !dataSrc.includes("const GAME_VERSION = 'v24.195';"));
+ok('data.js 含 v24.204 注释（逆风白手不饮青芽新成就说明）',
+  dataSrc.includes('v24.204 文档整理·版本锚点推进'));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'pennylowlvnopo2');
@@ -509,7 +509,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/120（119→120）', heroS
 ok('README 件套口径为四百一十件套（四百零九件套清除）',
   readme.includes('扩充为冒烟四百一十件套（四百零九件套清除）') && !readme.includes('扩充为冒烟四百零三件套（四百零二件套清除）'));
 ok('README 含 v24.196 守护描述（逆风白手不饮青芽新成就守护）', readme.includes('v24.196 起含「逆风白手不饮青芽」新成就守护'));
-ok('README 版本速览已为 v24.203 且成就计数 121', readme.includes('版本速览（v24.203）') && readme.includes('125 项成就'));
+ok('README 版本速览已为 v24.204 且成就计数 121', readme.includes('版本速览（v24.204）') && readme.includes('125 项成就'));
 ok('README 成就计数双处口径 120 项（全部 125 项进度 + **125 项成就**，118 项清除）',
   readme.includes('全部 125 项进度') && readme.includes('**125 项成就**') && !readme.includes('**118 项成就**'));
 ok('README tests 树收录 smoke_v24196_pennylowlvnopo2（含 v24.197 守护子句 + 串尾）',
@@ -520,7 +520,7 @@ ok('package.json 已收录 smoke_v24196_pennylowlvnopo2.mjs 且位于串尾（�
   pkg.includes('node tests/smoke_v24194_lowskillnopo2.mjs && node tests/smoke_v24196_pennylowlvnopo2.mjs && node tests/smoke_v24197_pennynoskillnopo2.mjs && node tests/smoke_v24198_pennylowskill2.mjs && node tests/smoke_v24199_pennylownoskillnopo2.mjs && node tests/smoke_v24201_swiftlowskill2.mjs && node tests/smoke_v24202_swiftlowlvnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 405 件套', testChain === 410, String(testChain));
-ok('CHANGELOG 含 v24.203 顶条目', changelog.startsWith('## v24.203'));
+ok('CHANGELOG 含 v24.204 顶条目', changelog.startsWith('## v24.204'));
 
 // —— 哨兵链：README 已有 405 口径且尚无 406（前望 407 语义：下一版才写 406）——
 ok('README 已有四百一十件套口径且尚无 411（哨兵前望 407 语义：下一版才写 406）',
@@ -556,5 +556,5 @@ ok('旧代 404 件套口径/计数/119 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':403') || x.endsWith(':count') || x.endsWith(':118')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.203 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.203 冒烟完成：${n} 项断言，失败 0 —`);
+if (failed) { console.log(`— v24.204 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.204 冒烟完成：${n} 项断言，失败 0 —`);

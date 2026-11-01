@@ -1,3 +1,9 @@
+## v24.204 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.203/v24.200/v24.195/v24.156/v24.149 文档复核先例）
+
+- 【复核】版本速览与 data.js 实核对账全部吻合：125 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 410 件套冒烟（tests/ 文件数），哨兵前望 411、链尾 smoke_v24202_swiftlowlvnopo2 逐处一致——v24.203 复核收口后账目保持零漂移，与 README「版本速览」同一「版本速览与 data.js 实核」复核口径。
+- 【数据】js/data.js 仅 GAME_VERSION v24.203→v24.204 + v24.204 版本注释块；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 410 件套 npm test 端到端全绿 → 全库 410 件套 GAME_VERSION 字面量 pin 级联（v24.203→v24.204，主/配推进排除「v24.20X 起含」时代锚点，哨兵前望 411 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+
 ## v24.203 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.200/v24.195/v24.156/v24.149 文档复核先例）
 
 - 【复核】版本速览与 data.js 实核对账全部吻合：125 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 410 件套冒烟（tests/ 文件数），哨兵前望 411、链尾 smoke_v24202_swiftlowlvnopo2 逐处一致——v24.201-202 两个成就版本推进 123→125 项成就、408→410 件套（真实项目两轮直写完成），文档侧统一复核收口，账目与 README「版本速览」零漂移，与 v24.200 同一「版本速览与 data.js 实核」复核口径。
