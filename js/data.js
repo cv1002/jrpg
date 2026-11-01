@@ -4550,16 +4550,16 @@
 // 只改本常量与 ACH_LIST 末尾 swiftlowlvnopo2 条目，battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 409 件套 GAME_VERSION 字面量 pin 级联（v24.201→v24.202）+ 件套口径 409→410 / 成就计数 124→125 pin 级联
 // + 哨兵前望 410→411 + 新套件 smoke_v24202_swiftlowlvnopo2 入库 410 份 + README/CHANGELOG 同步。
-// v24.204 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.203/v24.200/v24.195/v24.156/v24.149 文档复核先例）：
+// v24.205 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.204/v24.203/v24.200/v24.195/v24.156/v24.149 文档复核先例）：
 // 版本速览与 data.js 实核对账全部吻合——125 项成就（ACH_LIST.length）/46 名 NPC（NPCS）·47 处 NPC_SPOTS
 // /46 条支线（QUESTS kind==='side'）·4 条主线（QUESTS kind==='main'）/13 种图鉴（BESTIARY_TARGET）
 // /8 招技能（SKILL_DATA）/4 图（MAPS）/410 件套冒烟（tests/ 文件数），哨兵前望 411、
-// 链尾 smoke_v24202_swiftlowlvnopo2 逐处一致（v24.202 成就版本推进 124→125 项成就、件套 409→410 落账后
-// 文档侧统一复核收口，账目与 README「版本速览」零漂移）；
+// 链尾 smoke_v24202_swiftlowlvnopo2 逐处一致（v24.204 文档复核收口后账目保持零漂移，与 README「版本速览」
+// 同一「版本速览与 data.js 实核」复核口径，v24.205 复核收口）；
 // battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
-// 配套：全库 410 件套 GAME_VERSION 字面量 pin 级联（v24.203→v24.204，哨兵前望 411 不变——本轮无新
-// 套件无计数变化）+ 18 处 dataSrc「新内容·新成就」pin 转「文档整理·版本锚点推进」文档口径 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.204';
+// 配套：全库 410 件套 GAME_VERSION 字面量 pin 级联（v24.204→v24.205，哨兵前望 411 不变——本轮无新
+// 套件无计数变化，v24.204 文档口径延续无 dataSrc 口径切换）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.205';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
