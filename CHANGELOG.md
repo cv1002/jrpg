@@ -1,3 +1,9 @@
+## v24.201 新内容·单成就（第一百二十四项）「逆风疾行素手青灯」——困难模式 × 七十场战斗内 × 未及十级 × 未使用任何技能击败终焉之神的「困难×疾行×未及十级×零用技」四重克制挑战首开
+
+- 【内容】承 v24.191 逆风素手青灯（lowskill2，「困难×低等级」三克制交叉区首角·困难×未及十级×零用技）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」首角·困难×七十场内×未及十级）/ v24.189 逆风踏雪无痕（swiftskill2，「困难×疾行」第二角·困难×七十场内×零用技）先例：swift「速战速决」在困难档的 ×{lowlv, noskill} 两姿态交叉之后，本枚把「未及十级 × 零用技」再叠上「七十场内」——是 swiftlv2 / swiftskill2 / lowskill2 三枚三克制的严格公共交集，开垦「困难×疾行」四重克制维度首角（swift×{lowlv, noskill} 交叉区，70 场/10 级/零技能三线同时收紧）。判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss）/ hero.diff（DIFFS[1]）/ hero.battles（battle.startBattle 进战即记唯一产生点——胜/败/逃都算、只增不减）/ hero.level（hero.js grantXp 升级唯一产生点 hero.level++、只增不减）/ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点——治疗与伤害两分支都计入、只增不减）零新写点（五端口皆既有字段、全防御式旧档零迁移）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁（终焉之神击败当场 trueBoss 落账后枚举即解锁）。ACH_LIST 123→124 项（末尾追加，既有 123 项 id/序位零回归）。
+- 【数据】js/data.js（GAME_VERSION v24.200→v24.201 + v24.201 版本注释块 + ACH_LIST 末尾 swiftlowskill2 条目 + 活计数 N/123→N/124 注释 2 处）；js/hero.js（横幅活计数注释 N/123→N/124 1 处）；battle/core/world/view/quests/shop/encounter/enemyAI 逻辑逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 409 件套 npm test 端到端全绿（新套件 smoke_v24201_swiftlowskill2 断言）→ 全库 408 件套 GAME_VERSION 字面量 pin 级联（v24.200→v24.201，哨兵前望 410）+ 件套口径 408→409 / 成就计数 123→124 pin 级联 + 新套件 smoke_v24201_swiftlowskill2 入库 409 份 + 16 处 dataSrc「文档整理·版本锚点推进」pin 转「新内容·新成就」成就口径 + EXEMPT 集合注入（新套件豁免集并入全公式链）+ README/CHANGELOG 同步。
+
 ## v24.200 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.195/v24.156/v24.149 文档复核先例）
 
 - 【复核】版本速览与 data.js 实核对账全部吻合：123 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线 / 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 408 件套冒烟（tests/ 文件数），哨兵前望 409、链尾 smoke_v24199_pennylownoskillnopo2 逐处一致——v24.151-199 连续四十九个成就版本推进 78→123 项成就、362→408 件套，文档侧统一复核收口，账目与 README「版本速览」零漂移，与 v24.195 同一「版本速览与 data.js 实核」复核口径。
