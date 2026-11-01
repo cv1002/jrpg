@@ -1,4 +1,4 @@
-// smoke_v24189_swiftskill2.mjs —— v24.199 专项冒烟：新成就「逆风踏雪无痕」（挑战向·「困难×疾行」三克制交叉区第二角·困难×七十场内×零用技）
+// smoke_v24189_swiftskill2.mjs —— v24.200 专项冒烟：新成就「逆风踏雪无痕」（挑战向·「困难×疾行」三克制交叉区第二角·困难×七十场内×零用技）
 // （新内容·单成就·第一百一十四项——承 v24.195 逆风速成青芽（swiftlv2，「困难×疾行」交叉区首角·困难×七十场内×未及十级）/ v24.187 逆风白手不沾
 // （pennynopo2，「困难×白手」第四角收官）/ v24.184-187 把 hardtrue×penny 交叉区四角收口 / v24.177-183 把 hardtrue×unfl 交叉区五姿态收口 /
 // v24.163 踏雪无痕（swiftskill，七十场内×零用技）/ v24.161 逆风守拙（noskill2，困难×零用技）/ v24.158 逆风疾行（swift2，困难×七十场内）先例：
@@ -116,7 +116,7 @@ function ok(name, cond, extra) {
   else { failed++; console.log('  ✗', name, extra || ''); }
 }
 
-console.log('— v24.199 挑战向·「困难×疾行」三克制交叉区成就「逆风踏雪无痕」 冒烟 —');
+console.log('— v24.200 挑战向·「困难×疾行」三克制交叉区成就「逆风踏雪无痕」 冒烟 —');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -131,10 +131,10 @@ const changelog = read('CHANGELOG.md');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.195', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 188)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已为 v24.199（旧 v24.195 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.199';") && !dataSrc.includes("const GAME_VERSION = 'v24.195';"));
-ok('data.js 含 v24.199 注释（逆风踏雪无痕新成就说明）',
-  dataSrc.includes('v24.199 新内容·新成就'));
+ok('data.js GAME_VERSION 字面量已为 v24.200（旧 v24.195 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v24.200';") && !dataSrc.includes("const GAME_VERSION = 'v24.195';"));
+ok('data.js 含 v24.200 注释（逆风踏雪无痕新成就说明）',
+  dataSrc.includes('v24.200 文档整理·版本锚点推进'));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'swiftskill2');
@@ -437,7 +437,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/114（113→114）', heroS
 ok('README 件套口径为四百零八件套（四百零七件套清除）',
   readme.includes('扩充为冒烟四百零八件套（四百零七件套清除）') && !readme.includes('扩充为冒烟三百九十四件套（三百九十三件套清除）'));
 ok('README 含 v24.189 守护描述（逆风踏雪无痕新成就守护）', readme.includes('v24.189 起含「逆风踏雪无痕」新成就守护'));
-ok('README 版本速览已为 v24.199 且成就计数 115', readme.includes('版本速览（v24.199）') && readme.includes('123 项成就'));
+ok('README 版本速览已为 v24.200 且成就计数 115', readme.includes('版本速览（v24.200）') && readme.includes('123 项成就'));
 ok('README 成就计数双处口径 115 项（全部 123 项进度 + **123 项成就**，113 项清除）',
   readme.includes('全部 123 项进度') && readme.includes('**123 项成就**') && !readme.includes('**113 项成就**'));
 ok('README tests 树收录 smoke_v24189_swiftskill2（含 v24.195 守护子句 + 串尾）',
@@ -448,7 +448,7 @@ ok('package.json 已收录 smoke_v24189_swiftskill2.mjs 且位于串尾（在 sw
   pkg.includes('node tests/smoke_v24188_swiftlv2.mjs && node tests/smoke_v24189_swiftskill2.mjs && node tests/smoke_v24190_swiftnopo2.mjs && node tests/smoke_v24191_lowskill2.mjs && node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs && node tests/smoke_v24196_pennylowlvnopo2.mjs && node tests/smoke_v24197_pennynoskillnopo2.mjs && node tests/smoke_v24198_pennylowskill2.mjs && node tests/smoke_v24199_pennylownoskillnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 399 件套', testChain === 408, String(testChain));
-ok('CHANGELOG 含 v24.199 顶条目', changelog.startsWith('## v24.199'));
+ok('CHANGELOG 含 v24.200 顶条目', changelog.startsWith('## v24.200'));
 
 // —— 哨兵链：README 已有 399 口径且尚无 400（前望 407 语义：下一版才写 400）——
 ok('README 已有四百零五件套口径且尚无 400（哨兵前望 407 语义：下一版才写 400）',
@@ -459,38 +459,38 @@ ok('README 已有四百零五件套口径且尚无 400（哨兵前望 407 语义
     s24143.includes('哨兵链前望 409') && s24143.includes('四百零九件套否定式'));
 }
 {
-  ok('smoke_v24188 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24188_swiftlv2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24187 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24187_pennynopo2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24186 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24186_pennynoskill2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24185 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24185_pennylowlv2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24184 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24184_pennyswift2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24183 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24183_unfllowlv2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24181 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24181_lampoilquest.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24180 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24180_unflskill2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24179 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24179_unflnopo2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24178 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24178_unflpenny2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24177 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24177_unflswift2.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24176 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24176_pennynopo.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24175 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24175_pennynoskill.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24174 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24174_pennylowlv.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v24173 姊妹件版本字面量 pin 已随新现实推进（v24.199）',
-    read('tests/smoke_v24173_pennyswift.mjs').includes("const GAME_VERSION = 'v24.199';"));
-  ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.198）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.199'"));
+  ok('smoke_v24188 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24188_swiftlv2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24187 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24187_pennynopo2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24186 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24186_pennynoskill2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24185 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24185_pennylowlv2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24184 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24184_pennyswift2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24183 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24183_unfllowlv2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24181 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24181_lampoilquest.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24180 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24180_unflskill2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24179 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24179_unflnopo2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24178 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24178_unflpenny2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24177 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24177_unflswift2.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24176 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24176_pennynopo.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24175 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24175_pennynoskill.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24174 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24174_pennylowlv.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v24173 姊妹件版本字面量 pin 已随新现实推进（v24.200）',
+    read('tests/smoke_v24173_pennyswift.mjs').includes("const GAME_VERSION = 'v24.200';"));
+  ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.199）',
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.200'"));
 }
 
 // —— 旧代 v24.195 字面量 / 398 件套口径 / 113 项 全库零残留扫描（豁免本套件 + 前代 v24188 + v24187 + v24186 + v24185 + v24184 + v24183 + v24182 + v24181 + v24180 + v24179 + v24178 + v24177 + v24176 + v24175 + v24174 + v24173）——
@@ -521,5 +521,5 @@ ok('旧代 398 件套口径/计数/113 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':398') || x.endsWith(':count') || x.endsWith(':113')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.199 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.199 冒烟完成：${n} 项断言，失败 0 —`);
+if (failed) { console.log(`— v24.200 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.200 冒烟完成：${n} 项断言，失败 0 —`);

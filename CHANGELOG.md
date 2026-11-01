@@ -1,3 +1,9 @@
+## v24.200 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.195/v24.156/v24.149 文档复核先例）
+
+- 【复核】版本速览与 data.js 实核对账全部吻合：123 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线 / 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 408 件套冒烟（tests/ 文件数），哨兵前望 409、链尾 smoke_v24199_pennylownoskillnopo2 逐处一致——v24.151-199 连续四十九个成就版本推进 78→123 项成就、362→408 件套，文档侧统一复核收口，账目与 README「版本速览」零漂移，与 v24.195 同一「版本速览与 data.js 实核」复核口径。
+- 【数据】js/data.js 仅 GAME_VERSION v24.199→v24.200 + v24.200 版本注释块；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 408 件套 npm test 端到端全绿 → 全库 408 件套 GAME_VERSION 字面量 pin 级联（v24.199→v24.200，主/pair 推进排除「v24.19X 起含」时代锚点，哨兵前望 409 不变——本轮无新套件无计数变化 + 16 处 dataSrc「新内容·新成就」pin 转「文档整理·版本锚点推进」文档口径）+ README/CHANGELOG 同步。
+
 ## v24.199 新内容·单成就（第一百二十三项）「逆风白手素手不饮青芽」——困难模式 × 未花费 1 金币 × 未及十级 × 未使用任何技能 × 未在战斗中使用药水/灵药击败终焉之神的「困难×零消费×未及十级×零用技×零战斗用药」五维全克挑战收官
 
 - 【内容】承 v24.198 逆风白手素手青芽（pennylowskill2，「hardtrue+姿态」四重克制第四枚·困难×零消费×未及十级×零用技）/ v24.196 逆风白手不饮青芽（pennylowlvnopo2，「hardtrue+姿态」四重克制第二枚·困难×零消费×未及十级×零战斗用药）/ v24.197 逆风白手素手不沾（pennynoskillnopo2，「hardtrue+姿态」四重克制第三枚·困难×零消费×零用技×零战斗用药）/ v24.194 逆风素手不饮青灯（lowskillnopo2，「hardtrue+三姿态」四重克制首枚·困难×未及十级×零用技×零战斗用药）先例：v24.194-198 已把「hardtrue+姿态」四重克制四角尽数开垦，本枚把「零消费」姿态（penny）叠上 lowlv×noskill×nopotion 三克，把四个四克档的公共交集——「既零消费、又未及十级、又零用技、又零战斗用药且困难通关」——收为一枚，开垦「hardtrue+姿态」五维全克维度收官枚（hardtrue×penny×lowlv×noskill×nopotion 五重交叉区；一条线读满 trueBoss/diff/spent/level/casts/potionUses 六端口，与前四枚任一皆二维以上分源——升过十级、花过 1 金、放过一次技或战斗里喝过一口药即永久无缘此档）。判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss）/ hero.diff（DIFFS[1]）/ hero.spent（消费线五端口扣款唯一来源、只增不减）/ hero.level（grantXp 唯一升级点、只增不减）/ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点、只增不减）/ hero.potionUses（battle.doItem 战斗用药成功唯一产生点、大地图 F 喝药/旅馆/篝火不计入、只增不减）零新写点（六端口皆既有字段、全防御式旧档零迁移）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁（终焉之神击败当场 trueBoss 落账后枚举即解锁）。ACH_LIST 122→123 项（末尾追加，既有 122 项 id/序位零回归）。

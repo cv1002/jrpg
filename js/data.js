@@ -4213,6 +4213,15 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 397 件套 GAME_VERSION 字面量 pin 级联（v24.187→v24.188）+ 件套口径 397→398 / 成就计数 112→113 pin 级联
 // + 哨兵前望 398→399 + 新套件 smoke_v24188_swiftlv2 入库 398 份 + README/CHANGELOG 同步。
+// v24.200 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.195/v24.156/v24.149 文档复核先例）：
+// 版本速览与 data.js 实核对账全部吻合——123 项成就（ACH_LIST.length）/46 名 NPC（NPCS）·47 处 NPC_SPOTS
+// /46 条支线（QUESTS kind==='side'）·4 条主线（QUESTS kind==='main'）/13 种图鉴（BESTIARY_TARGET）
+// /8 招技能（SKILL_DATA）/4 图（MAPS）/408 件套冒烟（tests/ 文件数），哨兵前望 409、
+// 链尾 smoke_v24199_pennylownoskillnopo2 逐处一致（v24.151-199 连续四十九个成就版本推进 78→123
+// 项成就、件套 362→408，战报与维护者速查尾条随版更新——文档侧统一复核收口，账目与 README「版本速览」
+// 零漂移）；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 408 件套 GAME_VERSION 字面量 pin 级联（v24.199→v24.200，哨兵前望 409 不变——本轮无新
+// 套件无计数变化）+ README/CHANGELOG 同步。
 // v24.199 新内容·新成就（第一百二十三项）「逆风白手素手不饮青芽」（pennylownoskillnopo2）——「困难 × 零消费 × 未及十级 × 零用技 × 零战斗用药」五维全克挑战向收官：
 // 困难模式 × 未花费 1 金币 × 未及十级 × 未使用任何技能 × 未在战斗中使用药水/灵药击败终焉之神（hardtrue×penny×lowlv×noskill×nopotion
 // 五重克制——承 v24.198 pennylowskill2（逆风白手素手青芽，hardtrue×penny×lowlv×noskill 四重第四枚）/ v24.196 pennylowlvnopo2（逆风白手不饮青芽，
@@ -4469,7 +4478,7 @@
 // battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 398 件套 GAME_VERSION 字面量 pin 级联（v24.188→v24.189）+ 件套口径 398→399 / 成就计数 113→114 pin 级联
 // + 哨兵前望 399→400 + 新套件 smoke_v24189_swiftskill2 入库 399 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.199';
+const GAME_VERSION = 'v24.200';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
