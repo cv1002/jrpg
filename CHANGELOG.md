@@ -1,3 +1,9 @@
+## v24.203 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.200/v24.195/v24.156/v24.149 文档复核先例）
+
+- 【复核】版本速览与 data.js 实核对账全部吻合：125 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 410 件套冒烟（tests/ 文件数），哨兵前望 411、链尾 smoke_v24202_swiftlowlvnopo2 逐处一致——v24.201-202 两个成就版本推进 123→125 项成就、408→410 件套（真实项目两轮直写完成），文档侧统一复核收口，账目与 README「版本速览」零漂移，与 v24.200 同一「版本速览与 data.js 实核」复核口径。
+- 【数据】js/data.js 仅 GAME_VERSION v24.202→v24.203 + v24.203 版本注释块；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 410 件套 npm test 端到端全绿 → 全库 410 件套 GAME_VERSION 字面量 pin 级联（v24.202→v24.203，主/pair 推进排除「v24.20X 起含」时代锚点，哨兵前望 411 不变——本轮无新套件无计数变化 + 18 处 dataSrc「新内容·新成就」pin 转「文档整理·版本锚点推进」文档口径）+ README/CHANGELOG 同步。
+
 ## v24.202 新内容·单成就（第一百二十五项）「逆风疾行不饮青芽」——困难模式 × 七十场战斗内 × 未及十级 × 未在战斗中使用药水/灵药击败终焉之神的「困难×疾行」四重克制维度第二角
 
 - 【内容】承 v24.201 逆风疾行素手青灯（swiftlowskill2，「困难×疾行」四重克制交叉区首角·困难×七十场内×未及十级×零用技）/ v24.192 逆风不饮青芽（lowlvnopo2，「困难×低等级」三克制交叉区第二角·困难×未及十级×零战斗用药）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」首角·困难×七十场内×未及十级）/ v24.190 逆风不饮疾行（swiftnopo2，「困难×疾行」第三角·困难×七十场内×零战斗用药）先例：swift「速战速决」在困难档的 ×{lowlv, nopotion} 两姿态交叉之后，本枚把「未及十级 × 零战斗用药」再叠上「七十场内」——是 swiftlv2 / swiftnopo2 / lowlvnopo2 三枚三克制的严格公共交集，开垦「困难×疾行」四重克制维度第二角（hardtrue×swift×lowlv×nopotion 四重交叉区，70 场/10 级/零战斗用药三线同时收紧）。判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss）/ hero.diff（DIFFS[1]）/ hero.battles（battle.startBattle 进战即记唯一产生点——胜/败/逃都算、只增不减）/ hero.level（hero.js grantXp 升级唯一产生点 hero.level++、只增不减）/ hero.potionUses（battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入、只增不减）零新写点（五端口皆既有字段、全防御式旧档零迁移）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁（终焉之神击败当场 trueBoss 落账后枚举即解锁）。ACH_LIST 124→125 项（末尾追加，既有 124 项 id/序位零回归）。
