@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/124）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/125）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/124）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/125）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4512,7 +4512,45 @@
 // 只改本常量与 ACH_LIST 末尾 swiftlowskill2 条目，battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 // 配套：全库 408 件套 GAME_VERSION 字面量 pin 级联（v24.200→v24.201）+ 件套口径 408→409 / 成就计数 123→124 pin 级联
 // + 哨兵前望 409→410 + 新套件 smoke_v24201_swiftlowskill2 入库 409 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.201';
+// v24.202 新内容·新成就（第一百二十五项）「逆风疾行不饮青芽」（swiftlowlvnopo2）——「困难×疾行」四重克制交叉区第二角开垦：
+// 困难模式 × 七十场战斗内（SPEED_GOAL） × 未及十级（LOWLV_GOAL） × 零战斗用药击败终焉之神（hardtrue×swift×lowlv×nopotion 四重克制，
+// 承 v24.201 逆风疾行素手青灯（swiftlowskill2，「困难×疾行」四重克制交叉区首角·困难×七十场内×未及十级×零用技）/ v24.192 逆风不饮青芽（lowlvnopo2，
+// 「困难×低等级」三克制交叉区第二角·困难×未及十级×零战斗用药）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」首角·困难×七十场内×未及十级）/
+// v24.190 逆风不饮疾行（swiftnopo2，「困难×疾行」第三角·困难×七十场内×零战斗用药）先例：swift「速战速决」在困难档的 ×{lowlv, nopotion} 两姿态
+// 交叉之后，把「未及十级 × 零战斗用药」再叠上「七十场内」——本枚是 swiftlv2（困难×疾行×未及十级）/ swiftnopo2（困难×疾行×零战斗用药）/
+// lowlvnopo2（困难×未及十级×零战斗用药）三枚三克制的严格公共交集，开垦「困难×疾行」四重克制维度第二角（swift×{lowlv, nopotion} 交叉区，
+// 70 场/10 级/零战斗用药三线同时收紧）。判定读既有 hero.trueBoss（终焉之神，与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/penny/
+// steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/lowlvnopo/unflswift/
+// unfllowlv/unflnopo/unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/
+// pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2/nopotskill2/lowskillnopo2/
+// pennylowlvnopo2/pennynoskillnopo2/pennylowskill2/pennylownoskillnopo2/swiftlowskill2 同读一份源）、既有 hero.diff（(g.diff===1) 即 DIFFS[1]
+// 「困难」档，与 hardtrue/steadfast/frugal/dry/swift2/lowlv2/noskill2/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/
+// pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2 同读一份源）、既有 hero.battles（battle.startBattle
+// 进战即记唯一产生点——胜/败/逃都算、只增不减、随 snapshotHero 全量快照自动持久化、防御式 (g.battles||0) 旧档零迁移，与 swift/swift2/
+// swiftskill/swiftlv/swiftnopo/unflswift/pennyswift/unflswift2/pennyswift2/swiftlv2/swiftskill2 系同读一份源）、既有 hero.level（hero.js
+// grantXp 升级唯一产生点 hero.level++、只增不减、防御式 (g.level||1) 旧档零迁移，与 lowlv/lowlv2/lowskill/swiftlv/lowlvnopo/unfllowlv/
+// pennylowlv/unfllowlv2/pennylowlv2/swiftlv2/lowskill2/lowlvnopo2 系同读一份源）与既有 hero.potionUses（battle.doItem 战斗用药成功唯一产生点——
+// 大地图 F 喝药/旅馆/篝火不计入、只增不减、防御式 (g.potionUses||0) 旧档零迁移，与 nopotion/nopotskill/swiftnopo/lowlvnopo/unflnopo/pennynopo/
+// unflnopo2/pennynopo2/swiftnopo2/lowlvnopo2 系同读一份源），
+// (g.trueBoss && g.diff===1 && (g.battles||0)<=SPEED_GOAL && (g.level||1)<LOWLV_GOAL && !(g.potionUses||0)) 即「困难 · 七十场内 · 未及十级 ·
+// 零战斗用药通关」达成——diff/battles/level/potionUses 四端口都只增不减，换过难度、超场、升过十级或战斗里喝过一口药就永久无缘此档（与 hardtrue
+// 换难度 / swift 超场 / lowlv 升十级 / nopotion 战斗喝药 同属「重新来过才拿得到」的挑战品类）；是 hardtrue、swift、lowlv 与 nopotion 四枚的
+// 严格交叠——困难七十场内未及十级零战斗用药通关必同时满足四者（也必满足 swiftlv2 与 swiftnopo2 与 lowlvnopo2 与 swiftlv 与 swiftnopo 与
+// lowlvnopo），本枚是这一四重交叉区的唯一纪念；与既有正向里程碑 battles「身经百战」（BATTLE_GOAL 100 场）与 lvl10「守灯者」（LVL10_GOAL 10 级）
+// 与 potionuses「药到病除」（POTION_USE_GOAL 15 次）成镜面对、互不重叠。可行性：困难档魔物全面加强下七十场红线内不练过十级（九级封顶血蓝更薄）
+// 且战斗指令 [3] 药水键零按下（连战斗用药都封印，大地图 F 喝药/旅馆/篝火照常补给——本档不禁技不禁消费不禁阵亡），只靠 [1]普攻/[2]技能/[4]防御
+// 回蓝（v19.96）/[5]蓄力通关，装备靠开箱/支线/掉落换，吃满「别自降难度 + 别拖沓 + 别练级 + 别嗑药」四克制的一场逆风疾行不饮青芽。零新计数零新
+// 状态零新写点零新存档（trueBoss/diff/battles/level/potionUses 皆既有字段）、无 r 无 prog 纯里程碑（与 swiftlv2/swiftskill2/lowskill2/
+// swiftnopo2/lowlvnopo2 同款——困难里不拖沓又不练级又不嗑药本身就是奖励、硬核才是）、解锁走 winBattle → applyAchievements 既有通路（终焉之神
+// 击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，与 trueboss/hardtrue/unflicker/swift/lowlv/nopotion/penny/steadfast/frugal/dry/
+// swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/swiftnopo/lowlvnopo/unflswift/unfllowlv/unflnopo/unflpenny/
+// pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/
+// pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2/nopotskill2/lowskillnopo2/pennylowlvnopo2/pennynoskillnopo2/pennylowskill2/
+// pennylownoskillnopo2/swiftlowskill2 同路径零新增依赖），反馈不迟到。
+// 只改本常量与 ACH_LIST 末尾 swiftlowlvnopo2 条目，battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 409 件套 GAME_VERSION 字面量 pin 级联（v24.201→v24.202）+ 件套口径 409→410 / 成就计数 124→125 pin 级联
+// + 哨兵前望 410→411 + 新套件 smoke_v24202_swiftlowlvnopo2 入库 410 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.202';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -11874,6 +11912,16 @@ const ACH_LIST=[
   // hero.diff（DIFFS[1]）+ hero.battles（battle.startBattle 进战即记唯一产生点）+ hero.level（hero.js grantXp 升级唯一产生点）+
   // hero.casts（battle.doSkill 战斗释放技能成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
   {id:'swiftlowskill2', name:'逆风疾行素手青灯', d:`以困难模式、${SPEED_GOAL} 场战斗内、等级未满 ${LOWLV_GOAL} 且未使用任何技能（战斗指令 [2]）击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && (g.battles||0)<=SPEED_GOAL && (g.level||1)<LOWLV_GOAL && !(g.casts||0))},
+  // v24.202 新内容·新成就（第一百二十五项）「逆风疾行不饮青芽」（swiftlowlvnopo2）——「困难×疾行」四重克制交叉区第二角：
+  // 困难模式 × 七十场战斗内（SPEED_GOAL）× 未及十级（LOWLV_GOAL）× 零战斗用药击败终焉之神——承 v24.201 逆风疾行素手青灯（swiftlowskill2，
+  // 困难×七十场内×未及十级×零用技）/ v24.192 逆风不饮青芽（lowlvnopo2，困难×未及十级×零战斗用药）/ v24.188 逆风速成青芽（swiftlv2，
+  // 困难×七十场内×未及十级）/ v24.190 逆风不饮疾行（swiftnopo2，困难×七十场内×零战斗用药）先例：swift「速战速决」在困难档的 ×{lowlv, nopotion}
+  // 交叉之后，本枚是 swiftlv2/swiftnopo2/lowlvnopo2 三枚三克制的严格公共交集——「既七十场内、又未及十级、又零战斗用药且困难通关」——收为一枚，
+  // 开垦「困难×疾行」四重克制维度第二角（读满 trueBoss/diff/battles/level/potionUses 五端口——换过难度、超场、升过十级或战斗里喝过一口药即永久
+  // 无缘此档）；判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+ hero.battles（battle.startBattle 进战即记唯一产生点）+ hero.level（hero.js
+  // grantXp 升级唯一产生点）+ hero.potionUses（battle.doItem 战斗用药成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle →
+  // applyAchievements 既有通路当场解锁。
+  {id:'swiftlowlvnopo2', name:'逆风疾行不饮青芽', d:`以困难模式、${SPEED_GOAL} 场战斗内、等级未满 ${LOWLV_GOAL} 且未在战斗中使用药水/灵药击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && (g.battles||0)<=SPEED_GOAL && (g.level||1)<LOWLV_GOAL && !(g.potionUses||0))},
 ];
 
 function codexTag(name) {
