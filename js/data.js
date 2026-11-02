@@ -4561,7 +4561,15 @@
 // hero.potionUses（battle.doItem 战斗用药成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
 // 配套：全库 410 件套 GAME_VERSION 字面量 pin 级联（v24.205→v24.206，哨兵前望 412）+ 件套口径 410→411 / 成就计数 125→126 pin 级联 +
 // 新套件 smoke_v24206_swiftnoskillnopo2 入库 411 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.206';
+// v24.207 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.205/v24.204/v24.203/v24.200 文档复核先例）：版本速览
+// 与 data.js 实核对账全部吻合——126 项成就（ACH_LIST）/46 名 NPC（NPCS）→ 47 处 NPC_SPOTS /46 条
+// 支线（QUESTS kind==='side'）· 4 主线 /13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/
+// 411 件套冒烟（tests/ 文件数），哨兵前望 412、链尾 smoke_v24206_swiftnoskillnopo2 逐处一致（v24.206 成就
+// 版本 125→126、件套 410→411 后文档侧统一复核收口，账目五数与 README 版本速览零漂移）；battle/core/
+// world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 411 件套 GAME_VERSION 字面量 pin 级联（v24.206→v24.207，哨兵前望 412 不变 —— 本轮无新
+// 套件无计数变化）。
+const GAME_VERSION = 'v24.207';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
