@@ -1,3 +1,9 @@
+## v24.210 新内容·单成就（第一百二十八项）「逆风白手疾行素手」——困难模式 × 未花费 1 金币 × 七十场战斗内 × 未使用任何技能击败终焉之神的「困难×白手×疾行」三重克制交叉区第二角
+
+- 【新成就】`pennyswiftskill2`（ACH_LIST 第 128 项·append 入列）「逆风白手疾行素手」：困难模式（`g.diff===1`，DIFFS[1]）× 未花费 1 金币（`!g.spent`，shop.doBuy 购物记账唯一产生点）× 七十场战斗内（`(g.battles||0)<=SPEED_GOAL`，battle.startBattle 进战即记唯一产生点）× 未使用任何技能（`!g.casts`，battle.doSkill 释放成功唯一产生点——治愈/伤害两分支都计入）击败终焉之神（`!!g.trueBoss`）——「困难×白手×疾行」三重克制交叉区第二角：承 v24.209 逆风白手疾行青芽（pennyswiftlv2，首角·困难×零消费×七十场内×未及十级）/ v24.184 逆风白手疾行（pennyswift2，「困难×白手」首角）/ v24.189 逆风踏雪无痕（swiftskill2，「困难×疾行」第二角·困难×七十场内×零用技）/ v24.186 逆风白手素手（pennynoskill2，「困难×白手」第三角·困难×零消费×零用技）/ v24.198 逆风白手素手青芽（pennylowskill2，困难×零消费×未及十级×零用技）先例：本枚把 penny×swift×noskill 交叉——「困难模式、又零消费、又七十场内、又零用技」收为一枚（与 pennyswift2/swiftskill2/pennynoskill2 二维以上分源——花过 1 金币、超场或放过一次技即永久无缘此档），pennyswift×{lowlv,noskill,nopotion} 三重交叉区第二角落地；判定读既有 hero.trueBoss + hero.diff + hero.spent + hero.battles + hero.casts 零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
+- 【数据】js/data.js：GAME_VERSION v24.209→v24.210 + v24.210 版本注释块 + ACH_LIST 127→128（append 入列，前 127 项零位移）；hero.js 仅成就横幅活计数注释（成就 N/127）→（成就 N/128）同步；battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 413 件套 npm test 端到端全绿（全量独立 runner 逐套件实跑全绿 + npm test 官链落尾 v24.210）—— v24.210 冒烟完成；全库 412 件套 GAME_VERSION 字面量 pin 级联（v24.209→v24.210，主/配推进排除「v24.20X 起含」时代锚点，哨兵前望 413→414，套件 412→413、成就 127→128 同步）+ smoke_v24210_pennyswiftskill2 入库 + README/CHANGELOG 同步。
+
 ## v24.209 新内容·单成就（第一百二十七项）「逆风白手疾行青芽」——困难模式 × 未花费 1 金币 × 七十场战斗内 × 等级未满十级击败终焉之神的「困难×白手×疾行」三重克制交叉区首角
 
 - 【修订·级联收口】v24.209 pin 级联残留修复（前轮中断遗留）：链尾检查值 122 处推进至 smoke_v24209_pennyswiftlv2（105 个文件，零残留扫描上下文豁免的 EXEMPT/历史记录逐字未动）+ 19 个挑战系套件「data.js 含 v24.209 注释」pin 由「文档整理·版本锚点推进」修正为实际轮次「新内容·新成就」（v24.209 为内容轮非文档轮）+ smoke_v24181 链式 pin 检查子串补回链上既有 smoke_v24206 段（级联误丢 `&& node tests/` 前缀）；全库 412 件套独立串行逐套件实跑 0 失败（非短路全量核对）+ npm run check 25 模块 EXIT=0。

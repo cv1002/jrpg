@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/127）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/128）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/127）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/128）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4573,7 +4573,21 @@
 // （hero.js grantXp 升级唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
 // 配套：全库 411 件套 GAME_VERSION 字面量 pin 级联（v24.208→v24.209，哨兵前望 413）+ 件套口径 411→412 / 成就计数 126→127 pin 级联 +
 // 新套件 smoke_v24209_pennyswiftlv2 入库 412 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.209';
+// v24.210 新内容·新成就（第一百二十八项）「逆风白手疾行素手」（pennyswiftskill2）——「困难×白手×疾行」三重克制交叉区第二角：
+// 困难模式 × 未花费 1 金币（spent=0）× 七十场战斗内（SPEED_GOAL）× 零用技（casts=0）击败终焉之神——承 v24.209 逆风白手疾行青芽
+// （pennyswiftlv2，「困难×白手×疾行」三重克制交叉区首角·困难×零消费×七十场内×未及十级）/ v24.184 逆风白手疾行
+// （pennyswift2，困难×零消费×七十场内）/ v24.189 逆风踏雪无痕（swiftskill2，困难×七十场内×零用技）/ v24.186 逆风白手素手
+// （pennynoskill2，困难×零消费×零用技）/ v24.198 逆风白手素手青芽（pennylowskill2，困难×零消费×未及十级×零用技）先例：
+// pennyswift「白手×疾行」在困难档的 ×{lowlv, noskill, nopotion} 三姿态交叉区经 v24.209 开垦首角后，本枚是
+// pennyswift2/swiftskill2/pennynoskill2 三枚三克制的严格公共交集——「既零消费、又七十场内、又零用技且困难通关」——收为一枚，
+// 开垦「困难×白手×疾行」三重克制交叉区第二角（读满 trueBoss/diff/spent/battles/casts 五端口——换过难度、花过 1 金、
+// 超场或放过一次技即永久无缘此档）；判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss）+ hero.diff（DIFFS[1]）+
+// hero.spent（消费线五端口扣款唯一产生点）+ hero.battles（battle.startBattle 进战即记唯一产生点）+ hero.casts
+// （battle.doSkill 战斗释放技能成功唯一产生点——治愈/伤害两分支都计入）零新写点、无 r 无 prog 纯里程碑、
+// winBattle → applyAchievements 既有通路当场解锁。
+// 配套：全库 412 件套 GAME_VERSION 字面量 pin 级联（v24.209→v24.210，哨兵前望 414）+ 件套口径 412→413 / 成就计数 127→128 pin 级联 +
+// 新套件 smoke_v24210_pennyswiftskill2 入库 413 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.210';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -11972,6 +11986,17 @@ const ACH_LIST=[
   // (g.level||1) 旧档零迁移）零新写点（五端口皆既有字段）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
   // ACH_LIST 126→127 项（末尾追加，既有 126 项 id/序位零回归）。
   {id:'pennyswiftlv2', name:'逆风白手疾行青芽', d:`以困难模式、未花费 1 金币、${SPEED_GOAL} 场战斗内且等级未满 ${LOWLV_GOAL} 击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.spent||0) && (g.battles||0)<=SPEED_GOAL && (g.level||1)<LOWLV_GOAL)},
+  // v24.210 新内容·新成就（第一百二十八项）「逆风白手疾行素手」（pennyswiftskill2）——「困难×白手×疾行」三重克制交叉区第二角：
+  // 困难模式 × 未花费 1 金币（spent=0）× 七十场战斗内（SPEED_GOAL）× 零用技（casts=0）击败终焉之神——承 v24.209 逆风白手疾行青芽
+  // （pennyswiftlv2，「困难×白手×疾行」交叉区首角·困难×零消费×七十场内×未及十级）/ v24.184 逆风白手疾行（pennyswift2，
+  // 困难×零消费×七十场内）/ v24.189 逆风踏雪无痕（swiftskill2，困难×七十场内×零用技）/ v24.186 逆风白手素手（pennynoskill2，
+  // 困难×零消费×零用技）先例：本枚是 pennyswift2/swiftskill2/pennynoskill2 三枚三克制的严格公共交集——「既零消费、
+  // 又七十场内、又零用技且困难通关」——收为一枚，开垦「困难×白手×疾行」三重克制交叉区第二角（与 pennyswift2/swiftskill2/
+  // pennynoskill2 二维以上分源——花过 1 金、超场或放过一次技即永久无缘此档）；判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+
+  // hero.spent（消费线五端口扣款唯一来源）+ hero.battles（battle.startBattle 进战即记唯一产生点——胜/败/逃都算）+ hero.casts
+  // （battle.doSkill 战斗释放技能成功唯一产生点——治愈/伤害两分支都计入）零新写点、无 r 无 prog 纯里程碑、
+  // winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 127→128 项（末尾追加，既有 127 项 id/序位零回归）。
+  {id:'pennyswiftskill2', name:'逆风白手疾行素手', d:`以困难模式、未花费 1 金币、${SPEED_GOAL} 场战斗内且未使用任何技能（战斗指令 [2]）击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.spent||0) && (g.battles||0)<=SPEED_GOAL && !(g.casts||0))},
 ];
 
 function codexTag(name) {
