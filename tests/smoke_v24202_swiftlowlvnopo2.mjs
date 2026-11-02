@@ -1,4 +1,4 @@
-// smoke_v24202_swiftlowlvnopo2.mjs —— v24.210 专项冒烟：新成就「逆风疾行不饮青芽」（挑战向·「困难×疾行」四重克制维度第二角·困难模式×七十场战斗内×未及十级×零战斗用药）
+// smoke_v24202_swiftlowlvnopo2.mjs —— v24.211 专项冒烟：新成就「逆风疾行不饮青芽」（挑战向·「困难×疾行」四重克制维度第二角·困难模式×七十场战斗内×未及十级×零战斗用药）
 // （新内容·单成就·第一百二十五项——承 v24.204 逆风疾行素手青灯（swiftlowskill2，「困难×疾行」四重克制交叉区首角·困难×七十场内×未及十级×零用技）/
 // v24.192 逆风不饮青芽（lowlvnopo2，「困难×低等级」三克制交叉区第二角·困难×未及十级×零战斗用药）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」
 // 三克制交叉区首角·困难×七十场内×未及十级）/ v24.190 逆风不饮疾行（swiftnopo2，「困难×疾行」三克制交叉区第三角·困难×七十场内×零战斗用药）先例：
@@ -37,7 +37,7 @@
 // unflskill/swiftnopo/lowlvnopo/unflswift/unfllowlv/unflnopo/unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/
 // unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2 同路径零新增依赖），
 // 反馈不迟到。
-// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.207 + data.js 字面量 v24.210 + 旧 v24.207 字面量零残留）、
+// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.207 + data.js 字面量 v24.211 + 旧 v24.207 字面量零残留）、
 // ACH_LIST 125 项精确与末尾序位（unflicker 76 / swift 77 / lowlv 78 / nopotion 79 / penny 80 / steadfast 81 /
 // frugal 82 / dry 83 / swift2 84 / lowlv2 85 / noskill 86 / noskill2 87 / lowskill 88 / swiftskill 89 /
 // swiftlv 90 / nopotskill 91 / unflskill 92 / swiftnopo 93 / lowlvnopo 94 / unflswift 95 / unfllowlv 96 /
@@ -49,11 +49,11 @@
 // 四克制必同时满足 hardtrue/swift/lowlv/nopotion 且满足 swiftlv2/swiftnopo2/lowlvnopo2 与 swiftlv/swiftnopo/lowlvnopo 与 swift2/lowlv2/dry）、
 // unlockedAchievements/applyAchievements 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 / 换难度不解锁 / 超场不解锁 / 升过十级不解锁 /
 // 喝过药不解锁 / 未通关不解锁）、既有 124 成就 id 零回归、battle.js battles/potionUses 写入点与 hero.js level 写入点与 data.js SPEED_GOAL/
-// LOWLV_GOAL/POTION_USE_GOAL/DIFFS 常量源级零变化、README/package.json/CHANGELOG 同步（件套口径 410 + v24.210 守护描述 + 入库 410 +
+// LOWLV_GOAL/POTION_USE_GOAL/DIFFS 常量源级零变化、README/package.json/CHANGELOG 同步（件套口径 410 + v24.211 守护描述 + 入库 410 +
 // 版本速览 125 项 + tests 树串尾 + package 串尾 409→410）、哨兵链（前望 411 且 README 尚无 411 口径）、旧代 v24.204 字面量/恒等/顶 pin/
 // 409 口径/126 项全库零残留扫描（豁免本套件 + v24201 + v24199 + v24198 + v24197 + v24196 + v24194 + v24193 + v24192 + v24191 + v24190 + v24189 +
 // v24188 + v24187 + v24186 + v24185 + v24184 + v24183 + v24181 + v24180 + v24179 + v24178 + v24177 + v24176 + v24175 + v24174 + v24173。
-// 注：成就计数 124→125 的零残留扫描只认「成就 N/127」/「**125 项成就**」/「全部 125 项进度」三形态，「⚔️ 身经百战 N/100」「⚔️ 驱雾百战 N/100」
+// 注：成就计数 124→125 的零残留扫描只认「成就 N/128」/「**125 项成就**」/「全部 125 项进度」三形态，「⚔️ 身经百战 N/100」「⚔️ 驱雾百战 N/100」
 // 是 BATTLE_GOAL/HUNT2_GOAL 讨伐进度分母非成就计数，不在扫描目标内）。
 import { S } from '../js/state.js';
 import { GAME_VERSION, ACH_LIST, LOWLV_GOAL, SPEED_GOAL, POTION_USE_GOAL, LVL10_GOAL } from '../js/data.js';
@@ -122,7 +122,7 @@ function ok(name, cond, extra) {
   else { failed++; console.log('  ✗', name, extra || ''); }
 }
 
-console.log('— v24.210 挑战向·「困难×疾行」四重克制维度第二角成就「逆风疾行不饮青芽」（困难×七十场内×未及十级×零战斗用药） 冒烟 —');
+console.log('— v24.211 挑战向·「困难×疾行」四重克制维度第二角成就「逆风疾行不饮青芽」（困难×七十场内×未及十级×零战斗用药） 冒烟 —');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -137,16 +137,16 @@ const changelog = read('CHANGELOG.md');
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.207', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 201)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已为 v24.210（旧 v24.207 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.210';") && !dataSrc.includes("const GAME_VERSION = 'v24.207';"));
-ok('data.js 含 v24.210 注释（逆风疾行不饮青芽新成就说明）',
-  dataSrc.includes('v24.210 新内容·新成就'));
+ok('data.js GAME_VERSION 字面量已为 v24.211（旧 v24.207 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v24.211';") && !dataSrc.includes("const GAME_VERSION = 'v24.207';"));
+ok('data.js 含 v24.211 注释（逆风疾行不饮青芽新成就说明）',
+  dataSrc.includes('v24.211 新内容·新成就'));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'swiftlowlvnopo2');
 ok('ACH_LIST 含 swiftlowlvnopo2「逆风疾行不饮青芽」且 id 唯一',
   !!ach && ach.name === '逆风疾行不饮青芽' && ACH_LIST.filter((a) => a.id === 'swiftlowlvnopo2').length === 1);
-ok('ACH_LIST 精确总数 125 项（124→125 末尾追加）', ACH_LIST.length === 128, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 125 项（124→125 末尾追加）', ACH_LIST.length === 129, String(ACH_LIST.length));
 ok('swiftlowlvnopo2 描述文案（困难七十场内未及十级零战斗用药真结局四克档）',
   ach.d === `以困难模式、${SPEED_GOAL} 场战斗内、等级未满 ${LOWLV_GOAL} 且未在战斗中使用药水/灵药击败终焉之神（真结局）`, ach.d);
 ok('swiftlowlvnopo2 判定源级（读既有 g.trueBoss / g.diff===1 / (g.battles||0)<=SPEED_GOAL / (g.level||1)<LOWLV_GOAL / !(g.potionUses||0)，不含 spent/casts/deaths）',
@@ -490,38 +490,38 @@ ok('data.js POTION_USE_GOAL 常量仍为 15（单一数据源，与 nopotion/dry
   dataSrc.includes('const POTION_USE_GOAL = 15;'));
 ok('data.js DIFFS 仍含「困难」档（难度单一数据源，与 hardtrue/frugal/dry/lowlv2/lowlvnopo2 同读一份源）',
   dataSrc.includes("const DIFFS=['普通','困难'];"));
-ok('hero.js 成就横幅活计数注释已推进至 N/126（124→125）', heroSrc.includes('（成就 N/128）'));
+ok('hero.js 成就横幅活计数注释已推进至 N/126（124→125）', heroSrc.includes('（成就 N/129）'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为四百一十三件套（四百一十二件套清除）',
-  readme.includes('扩充为冒烟四百一十三件套（四百一十二件套清除）') && !readme.includes('扩充为冒烟四百一十件套（四百零九件套清除）'));
-ok('README 含 v24.210 守护描述（逆风疾行不饮青芽新成就守护）', readme.includes('v24.202 起含「逆风疾行不饮青芽」新成就守护'));
-ok('README 版本速览已为 v24.210 且成就计数 125', readme.includes('版本速览（v24.210）') && readme.includes('127 项成就'));
-ok('README 成就计数双处口径 125 项（全部 128 项进度 + **128 项成就**，**120 项成就**清除）',
-  readme.includes('全部 128 项进度') && readme.includes('**128 项成就**') && !readme.includes('**120 项成就**'));
-ok('README tests 树收录 smoke_v24206_swiftnoskillnopo2（含 v24.210 守护子句 + 串尾）',
+ok('README 件套口径为四百一十四件套（四百一十三件套清除）',
+  readme.includes('扩充为冒烟四百一十四件套（四百一十三件套清除）') && !readme.includes('扩充为冒烟四百一十件套（四百零九件套清除）'));
+ok('README 含 v24.211 守护描述（逆风疾行不饮青芽新成就守护）', readme.includes('v24.202 起含「逆风疾行不饮青芽」新成就守护'));
+ok('README 版本速览已为 v24.211 且成就计数 125', readme.includes('版本速览（v24.211）') && readme.includes('128 项成就'));
+ok('README 成就计数双处口径 125 项（全部 129 项进度 + **129 项成就**，**120 项成就**清除）',
+  readme.includes('全部 129 项进度') && readme.includes('**129 项成就**') && !readme.includes('**120 项成就**'));
+ok('README tests 树收录 smoke_v24206_swiftnoskillnopo2（含 v24.211 守护子句 + 串尾）',
   readme.includes('v24.202 起含「逆风疾行不饮青芽」新成就守护') && readme.includes('smoke_v24206_swiftnoskillnopo2'));
 ok('README 含 smoke_v24206_swiftnoskillnopo2 入库（411 份）', readme.includes('smoke_v24206_swiftnoskillnopo2 入库（411 份）'));
 ok('package.json 已收录 smoke_v24202_swiftlowlvnopo2.mjs 且位于串尾（在 smoke_v24201_swiftlowskill2 之后）',
   pkg.includes('smoke_v24202_swiftlowlvnopo2.mjs') &&
-  pkg.includes('node tests/smoke_v24201_swiftlowskill2.mjs && node tests/smoke_v24202_swiftlowlvnopo2.mjs && node tests/smoke_v24206_swiftnoskillnopo2.mjs && node tests/smoke_v24209_pennyswiftlv2.mjs && node tests/smoke_v24210_pennyswiftskill2.mjs"'));
+  pkg.includes('node tests/smoke_v24201_swiftlowskill2.mjs && node tests/smoke_v24202_swiftlowlvnopo2.mjs && node tests/smoke_v24206_swiftnoskillnopo2.mjs && node tests/smoke_v24209_pennyswiftlv2.mjs && node tests/smoke_v24210_pennyswiftskill2.mjs && node tests/smoke_v24211_pennyswiftnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 410 件套', testChain === 413, String(testChain));
-ok('CHANGELOG 含 v24.210 顶条目', changelog.startsWith('## v24.210'));
+ok('package.json test 串共 410 件套', testChain === 414, String(testChain));
+ok('CHANGELOG 含 v24.211 顶条目', changelog.startsWith('## v24.211'));
 
 // —— 哨兵链：README 已有 410 口径且尚无 411（前望 411 语义：下一版才写 411）——
 ok('README 已有四百一十一件套口径且尚无 413（哨兵前望 411 语义：下一版才写 411）',
-  readme.includes('扩充为冒烟四百一十三件套（四百一十二件套清除）') && !readme.includes('四百一十四件套'));
+  readme.includes('扩充为冒烟四百一十四件套（四百一十三件套清除）') && !readme.includes('四百一十五件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 414（四百一十四件套否定式）',
-    s24143.includes('哨兵链前望 414') && s24143.includes('四百一十四件套否定式'));
+  ok('smoke_v24143 哨兵链前望 415（四百一十五件套否定式）',
+    s24143.includes('哨兵链前望 415') && s24143.includes('四百一十五件套否定式'));
 }
 
 // —— 旧代 v24.204 字面量 / 409 件套口径 / 124 项 全库零残留扫描（豁免本套件 + v24201 + v24199 + v24198 + v24197 + v24196 + v24194 + v24193 + v24192 + v24191 + v24190 + v24189 + v24188 + v24187 + v24186 + v24185 + v24184 + v24183 + v24181 + v24180 + v24179 + v24178 + v24177 + v24176 + v24175 + v24174 + v24173）——
 // v24173-24201 是前代公式链载体，其 README 件套负向断言/版本锚点逐代 pin 由历史级联平移而成（v24202 自身
 // 自带同款负向与扫描目标）。成就计数 124→125 扫描只认三形态。
-const EXEMPT = new Set(['smoke_v24210_pennyswiftskill2.mjs', 'smoke_v24206_swiftnoskillnopo2.mjs', 'smoke_v24202_swiftlowlvnopo2.mjs', 'smoke_v24201_swiftlowskill2.mjs', 'smoke_v24199_pennylownoskillnopo2.mjs', 'smoke_v24198_pennylowskill2.mjs', 'smoke_v24197_pennynoskillnopo2.mjs', 'smoke_v24196_pennylowlvnopo2.mjs', 'smoke_v24194_lowskillnopo2.mjs', 'smoke_v24193_nopotskill2.mjs', 'smoke_v24192_lowlvnopo2.mjs', 'smoke_v24191_lowskill2.mjs', 'smoke_v24190_swiftnopo2.mjs', 'smoke_v24189_swiftskill2.mjs', 'smoke_v24188_swiftlv2.mjs', 'smoke_v24187_pennynopo2.mjs', 'smoke_v24186_pennynoskill2.mjs', 'smoke_v24185_pennylowlv2.mjs', 'smoke_v24184_pennyswift2.mjs', 'smoke_v24183_unfllowlv2.mjs', 'smoke_v24181_lampoilquest.mjs', 'smoke_v24180_unflskill2.mjs', 'smoke_v24179_unflnopo2.mjs', 'smoke_v24178_unflpenny2.mjs', 'smoke_v24177_unflswift2.mjs', 'smoke_v24176_pennynopo.mjs', 'smoke_v24175_pennynoskill.mjs', 'smoke_v24174_pennylowlv.mjs', 'smoke_v24173_pennyswift.mjs']);
+const EXEMPT = new Set(['smoke_v24211_pennyswiftnopo2.mjs', 'smoke_v24210_pennyswiftskill2.mjs', 'smoke_v24206_swiftnoskillnopo2.mjs', 'smoke_v24202_swiftlowlvnopo2.mjs', 'smoke_v24201_swiftlowskill2.mjs', 'smoke_v24199_pennylownoskillnopo2.mjs', 'smoke_v24198_pennylowskill2.mjs', 'smoke_v24197_pennynoskillnopo2.mjs', 'smoke_v24196_pennylowlvnopo2.mjs', 'smoke_v24194_lowskillnopo2.mjs', 'smoke_v24193_nopotskill2.mjs', 'smoke_v24192_lowlvnopo2.mjs', 'smoke_v24191_lowskill2.mjs', 'smoke_v24190_swiftnopo2.mjs', 'smoke_v24189_swiftskill2.mjs', 'smoke_v24188_swiftlv2.mjs', 'smoke_v24187_pennynopo2.mjs', 'smoke_v24186_pennynoskill2.mjs', 'smoke_v24185_pennylowlv2.mjs', 'smoke_v24184_pennyswift2.mjs', 'smoke_v24183_unfllowlv2.mjs', 'smoke_v24181_lampoilquest.mjs', 'smoke_v24180_unflskill2.mjs', 'smoke_v24179_unflnopo2.mjs', 'smoke_v24178_unflpenny2.mjs', 'smoke_v24177_unflswift2.mjs', 'smoke_v24176_pennynopo.mjs', 'smoke_v24175_pennynoskill.mjs', 'smoke_v24174_pennylowlv.mjs', 'smoke_v24173_pennyswift.mjs']);
 const leftovers = [];
 for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWith('.mjs') && !EXEMPT.has(x))) {
   const s = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
@@ -534,7 +534,7 @@ for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWit
       code.includes('treeTok.length === 407') || code.includes('chainAll.length === 407') ||
       code.includes('fileCount === 407'))
     leftovers.push(f + ':count');
-  // 成就计数 124→125 零残留：只认「成就 N/127」/「**125 项成就**」/「全部 125 项进度」三形态
+  // 成就计数 124→125 零残留：只认「成就 N/128」/「**125 项成就**」/「全部 125 项进度」三形态
   if (code.includes('成就 N/124') || code.includes('**124 项成就**') || code.includes('全部 124 项进度'))
     leftovers.push(f + ':124');
 }
@@ -545,5 +545,5 @@ ok('旧代 409 件套口径/计数/126 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':409') || x.endsWith(':count') || x.endsWith(':124')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.210 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.210 冒烟完成：${n} 项断言，失败 0 —`);
+if (failed) { console.log(`— v24.211 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.211 冒烟完成：${n} 项断言，失败 0 —`);
