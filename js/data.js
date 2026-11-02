@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/126）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/127）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/126）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/127）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4561,15 +4561,19 @@
 // hero.potionUses（battle.doItem 战斗用药成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
 // 配套：全库 410 件套 GAME_VERSION 字面量 pin 级联（v24.205→v24.206，哨兵前望 412）+ 件套口径 410→411 / 成就计数 125→126 pin 级联 +
 // 新套件 smoke_v24206_swiftnoskillnopo2 入库 411 份 + README/CHANGELOG 同步。
-// v24.208 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.207/v24.205/v24.204/v24.203/v24.200 文档复核先例）：
-// 版本速览与 data.js 实核对账全部吻合——126 项成就（ACH_LIST）/46 名 NPC（NPCS）→ 47 处 NPC_SPOTS /46 条
-// 支线（QUESTS kind==='side'）· 4 主线 /13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/
-// 411 件套冒烟（tests/ 文件数），哨兵前望 412、链尾 smoke_v24206_swiftnoskillnopo2 逐处一致（v24.207 文档
-// 复核收口后账目与 README「版本速览」保持零漂移）；battle/core/
-// world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
-// 配套：全库 411 件套 GAME_VERSION 字面量 pin 级联（v24.207→v24.208，哨兵前望 412 不变 —— 本轮无新
-// 套件无计数变化）。
-const GAME_VERSION = 'v24.208';
+// v24.209 新内容·新成就（第一百二十七项）「逆风白手疾行青芽」（pennyswiftlv2）——「困难×白手×疾行」三重克制交叉区首角：
+// 困难模式 × 未花费 1 金币（spent=0）× 七十场战斗内（SPEED_GOAL）× 等级未满十级（LOWLV_GOAL）击败终焉之神——承 v24.206 逆风疾行素手不沾
+// （swiftnoskillnopo2，「困难×疾行」四重克制维度第三角收官·困难×七十场内×零用技×零战斗用药）/ v24.184 逆风白手疾行
+// （pennyswift2，困难×零消费×七十场内）/ v24.188 逆风速成青芽（swiftlv2，困难×七十场内×未及十级）/ v24.185 逆风白手青芽
+// （pennylowlv2，困难×零消费×未及十级）先例：pennyswift「白手×疾行」在困难档的 ×{lowlv, noskill, nopotion} 三姿态交叉区此前
+// 空白，本枚是 pennyswift2/swiftlv2/pennylowlv2 三枚三克制的严格公共交集——「既零消费、又七十场内、又未及十级且困难通关」——
+// 收为一枚，开垦「困难×白手×疾行」三重克制交叉区首角（读满 trueBoss/diff/spent/battles/level 五端口——换过难度、花过 1 金、
+// 超场或升过十级即永久无缘此档）；判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss）+ hero.diff（DIFFS[1]）+
+// hero.spent（消费线五端口扣款唯一产生点）+ hero.battles（battle.startBattle 进战即记唯一产生点）+ hero.level
+// （hero.js grantXp 升级唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
+// 配套：全库 411 件套 GAME_VERSION 字面量 pin 级联（v24.208→v24.209，哨兵前望 413）+ 件套口径 411→412 / 成就计数 126→127 pin 级联 +
+// 新套件 smoke_v24209_pennyswiftlv2 入库 412 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.209';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -11951,6 +11955,23 @@ const ACH_LIST=[
   // hero.casts（battle.doSkill 战斗释放技能成功唯一产生点）+ hero.potionUses（battle.doItem 战斗用药成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、
   // winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 125→126 项（末尾追加，既有 125 项 id/序位零回归）。
   {id:'swiftnoskillnopo2', name:'逆风疾行素手不沾', d:`以困难模式、${SPEED_GOAL} 场战斗内、未使用任何技能（战斗指令 [2]）且未在战斗中使用药水/灵药击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && (g.battles||0)<=SPEED_GOAL && !(g.casts||0) && !(g.potionUses||0))},
+  // v24.209 新内容·新成就（第一百二十七项）「逆风白手疾行青芽」（pennyswiftlv2）——「困难×白手×疾行」三重克制交叉区首角：
+  // 困难模式 × 未花费 1 金币（spent=0）× 七十场战斗内（SPEED_GOAL）× 等级未满十级（LOWLV_GOAL）击败终焉之神——承 v24.206 逆风疾行素手不沾
+  // （swiftnoskillnopo2，「困难×疾行」四重克制维度第三角收官·困难×七十场内×零用技×零战斗用药）/ v24.184 逆风白手疾行（pennyswift2，
+  // 困难×零消费×七十场内）/ v24.188 逆风速成青芽（swiftlv2，困难×七十场内×未及十级）/ v24.185 逆风白手青芽（pennylowlv2，
+  // 困难×零消费×未及十级）先例：pennyswift「白手×疾行」在困难档的 ×{lowlv, noskill, nopotion} 三姿态交叉区此前空白，本枚是
+  // pennyswift2/swiftlv2/pennylowlv2 三枚三克制的严格公共交集——「既零消费、又七十场内、又未及十级且困难通关」——收为一枚，开垦
+  // 「困难×白手×疾行」三重克制交叉区首角（hardtrue×penny×swift×lowlv 四重交叉区，读满 trueBoss/diff/spent/battles/level 五端口——
+  // 换过难度、花过 1 金、超场或升过十级即永久无缘此档）；判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss，与 trueboss/hardtrue/
+  // unflicker/swift/lowlv/nopotion/penny/steadfast/frugal/dry/swift2/lowlv2/noskill/noskill2/lowskill/swiftskill/swiftlv/nopotskill/unflskill/
+  // swiftnopo/lowlvnopo/unflswift/unfllowlv/unflnopo/unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/
+  // unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2/nopotskill2/
+  // lowskillnopo2/pennylowlvnopo2/pennynoskillnopo2/pennylowskill2/pennylownoskillnopo2/swiftlowskill2/swiftlowlvnopo2/swiftnoskillnopo2 同源）、
+  // 既有 hero.diff（DIFFS[1]）/ hero.spent（消费线五端口扣款唯一来源、只增不减、防御式 (g.spent||0) 旧档零迁移）/
+  // hero.battles（battle.startBattle 进战即记唯一产生点、只增不减）/ hero.level（grantXp 升级唯一产生点、只增不减、防御式
+  // (g.level||1) 旧档零迁移）零新写点（五端口皆既有字段）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
+  // ACH_LIST 126→127 项（末尾追加，既有 126 项 id/序位零回归）。
+  {id:'pennyswiftlv2', name:'逆风白手疾行青芽', d:`以困难模式、未花费 1 金币、${SPEED_GOAL} 场战斗内且等级未满 ${LOWLV_GOAL} 击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.spent||0) && (g.battles||0)<=SPEED_GOAL && (g.level||1)<LOWLV_GOAL)},
 ];
 
 function codexTag(name) {

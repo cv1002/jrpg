@@ -1,3 +1,11 @@
+## v24.209 新内容·单成就（第一百二十七项）「逆风白手疾行青芽」——困难模式 × 未花费 1 金币 × 七十场战斗内 × 等级未满十级击败终焉之神的「困难×白手×疾行」三重克制交叉区首角
+
+- 【修订·级联收口】v24.209 pin 级联残留修复（前轮中断遗留）：链尾检查值 122 处推进至 smoke_v24209_pennyswiftlv2（105 个文件，零残留扫描上下文豁免的 EXEMPT/历史记录逐字未动）+ 19 个挑战系套件「data.js 含 v24.209 注释」pin 由「文档整理·版本锚点推进」修正为实际轮次「新内容·新成就」（v24.209 为内容轮非文档轮）+ smoke_v24181 链式 pin 检查子串补回链上既有 smoke_v24206 段（级联误丢 `&& node tests/` 前缀）；全库 412 件套独立串行逐套件实跑 0 失败（非短路全量核对）+ npm run check 25 模块 EXIT=0。
+
+- 【新成就】`pennyswiftlv2`（ACH_LIST 第 127 项·append 入列）「逆风白手疾行青芽」：困难模式（`g.diff===1`，DIFFS[1]）× 未花费 1 金币（`!g.spent`，shop.doBuy 购物记账唯一产生点）× 七十场战斗内（`(g.battles||0)<=SPEED_GOAL`，battle.startBattle 进战即记唯一产生点）× 等级未满十级（`(g.level||1)<LOWLV_GOAL`，hero.js grantXp 升级唯一产生点）击败终焉之神（`!!g.trueBoss`）——「困难×白手×疾行」三重克制交叉区首角：承 v24.206 逆风疾行素手不沾（swiftnoskillnopo2，「困难×疾行」四重克制第三角收官）/ v24.202 逆风疾行不饮青芽（swiftlowlvnopo2）/ v24.201 逆风疾行素手青灯（swiftlowskill2）/ v24.184 逆风白手疾行（pennyswift2，「困难×白手」首角）/ v24.185 逆风白手青芽（pennylowlv2）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」首角）先例：本枚把 penny×swift×lowlv 交叉——「困难模式、又零消费、又七十场内、又未及十级」收为一枚（与 pennyswift2/swiftlv2/pennylowlv2 二维以上分源——超场、花过 1 金币或升过十级即永久无缘此档），pennyswift×{lowlv,noskill,nopotion} 三重交叉区首角落地；判定读既有 hero.trueBoss + hero.diff + hero.spent + hero.battles + hero.level 零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
+- 【数据】js/data.js：GAME_VERSION v24.208→v24.209 + v24.209 版本注释块 + ACH_LIST 126→127（append 入列，前 126 项零位移）；hero.js 仅成就横幅活计数注释（成就 N/126）→（成就 N/127）同步；battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 412 件套 npm test 端到端全绿（全量独立 runner 逐套件实跑全绿 + npm test 官链落尾 v24.209）—— v24.209 冒烟完成；全库 411 件套 GAME_VERSION 字面量 pin 级联（v24.208→v24.209，主/配推进排除「v24.20X 起含」时代锚点，哨兵前望 412→413，套件 411→412、成就 126→127 同步）+ smoke_v24209_pennyswiftlv2 入库 + README/CHANGELOG 同步。
+
 ## v24.208 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.207/v24.205/v24.204/v24.203/v24.200 文档复核先例）
 
 - 【复核】版本速览与 data.js 实核对账全部吻合：126 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 411 件套冒烟（tests/ 文件数），哨兵前望 412、链尾 smoke_v24206_swiftnoskillnopo2 逐处一致——v24.207 文档复核收口后账目保持零漂移，与 README「版本速览」同一「版本速览与 data.js 实核」复核口径。
