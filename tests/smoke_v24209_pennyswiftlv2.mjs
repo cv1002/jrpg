@@ -1,4 +1,4 @@
-// smoke_v24209_pennyswiftlv2.mjs —— v24.212 专项冒烟：新成就「逆风白手疾行青芽」（挑战向·「困难×白手×疾行」三重克制交叉区首角·困难模式×未花费 1 金币×七十场战斗内×等级未满十级）
+// smoke_v24209_pennyswiftlv2.mjs —— v24.213 专项冒烟：新成就「逆风白手疾行青芽」（挑战向·「困难×白手×疾行」三重克制交叉区首角·困难模式×未花费 1 金币×七十场战斗内×等级未满十级）
 // （新内容·单成就·第一百二十七项——承 v24.206 逆风疾行素手不沾（swiftnoskillnopo2，「困难×疾行」四重克制维度第三角收官·困难×七十场内×零用技×零战斗用药）/
 // v24.184 逆风白手疾行（pennyswift2，困难×零消费×七十场内）/ v24.188 逆风速成青芽（swiftlv2，困难×七十场内×未及十级）/
 // v24.185 逆风白手青芽（pennylowlv2，困难×零消费×未及十级）先例：
@@ -36,13 +36,13 @@
 // unflpenny/pennyswift/pennylowlv/pennynoskill/pennynopo/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/
 // pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2/nopotskill2/lowskillnopo2/pennylowlvnopo2/pennynoskillnopo2/pennylowskill2/
 // pennylownoskillnopo2/swiftlowskill2/swiftlowlvnopo2/swiftnoskillnopo2 同路径零新增依赖），反馈不迟到。
-// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.211 + data.js 字面量 v24.212 + 旧 v24.211 字面量零残留）、
+// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.212 + data.js 字面量 v24.213 + 旧 v24.212 字面量零残留）、
 // ACH_LIST 127 项精确与末尾序位（pennyswiftlv2 落位 126——前 126 项 id/序位零回归）、pennyswiftlv2 数据契约（d 文案、ok 防御式逐值、
 // 无 r 无 prog 且与 battles/lvl10 正向里程碑镜面对、四克制必同时满足 hardtrue/penny/swift/lowlv 且满足 pennyswift2/swiftlv2/pennylowlv2 与
 // pennyswift/swiftlv/pennylowlv）、unlockedAchievements/applyAchievements 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 /
 // 换难度不解锁 / 花过金不解锁 / 超场不解锁 / 升过十级不解锁 / 未通关不解锁）、既有 126 成就 id 零回归、battle.js 无 spent 新增写点与
 // battle.js battles 写入点与 data.js SPEED_GOAL/SPEND_GOAL/BATTLE_GOAL/LOWLV_GOAL/DIFFS 常量源级零变化、README/package.json/CHANGELOG
-// 同步（件套口径 412 + v24.212 守护描述 + 入库 412 + 版本速览 127 项 + tests 树串尾 + package 串尾 411→412）、哨兵链（前望 413 且
+// 同步（件套口径 412 + v24.213 守护描述 + 入库 412 + 版本速览 127 项 + tests 树串尾 + package 串尾 411→412）、哨兵链（前望 413 且
 // README 尚无 413 口径）、旧代 v24.208 字面量/恒等/顶 pin/411 口径/126 项全库零残留扫描（豁免本套件 + v24206 + v24202 + v24201 +
 // v24199 + v24198 + v24197 + v24196 + v24194 + v24193 + v24192 + v24191 + v24190 + v24189 + v24188 + v24187 + v24186 + v24185 + v24184 +
 // v24183 + v24181 + v24180 + v24179 + v24178 + v24177 + v24176 + v24175 + v24174 + v24173。
@@ -115,7 +115,7 @@ function ok(name, cond, extra) {
   else { failed++; console.log('  ✗', name, extra || ''); }
 }
 
-console.log('— v24.212 挑战向·「困难×白手×疾行」三重克制交叉区首角成就「逆风白手疾行青芽」（困难×零消费×七十场内×未及十级） 冒烟 —');
+console.log('— v24.213 挑战向·「困难×白手×疾行」三重克制交叉区首角成就「逆风白手疾行青芽」（困难×零消费×七十场内×未及十级） 冒烟 —');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -126,14 +126,14 @@ const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
 
-// —— 版本锚点（格式合法 + 已越过 v24.211 + 精确值由本版守护）——
+// —— 版本锚点（格式合法 + 已越过 v24.212 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.211', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 208)), GAME_VERSION);
-ok('data.js GAME_VERSION 字面量已为 v24.212（旧 v24.211 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.212';") && !dataSrc.includes("const GAME_VERSION = 'v24.211';"));
-ok('data.js 含 v24.212 注释（逆风白手疾行青芽新成就说明）',
-  dataSrc.includes('v24.212 新内容·新成就'));
+ok('GAME_VERSION 格式合法且已越过 v24.212', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 208)), GAME_VERSION);
+ok('data.js GAME_VERSION 字面量已为 v24.213（旧 v24.212 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v24.213';") && !dataSrc.includes("const GAME_VERSION = 'v24.212';"));
+ok('data.js 含 v24.213 注释（逆风白手疾行青芽新成就说明）',
+  dataSrc.includes('v24.213 文档整理·版本锚点推进'));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'pennyswiftlv2');
@@ -347,11 +347,11 @@ ok('hero.js 成就横幅活计数注释已推进至 N/127（126→127）', heroS
 // —— README / package.json / CHANGELOG 同步 ——
 ok('README 件套口径为四百一十五件套（四百一十四件套清除）',
   readme.includes('扩充为冒烟四百一十五件套（四百一十四件套清除）') && !readme.includes('扩充为冒烟四百一十件套（四百零九件套清除）'));
-ok('README 含 v24.212 守护描述（逆风白手疾行青芽新成就守护）', readme.includes('v24.209 起含「逆风白手疾行青芽」新成就守护'));
-ok('README 版本速览已为 v24.212 且成就计数 127', readme.includes('版本速览（v24.212）') && readme.includes('130 项成就'));
+ok('README 含 v24.213 守护描述（逆风白手疾行青芽新成就守护）', readme.includes('v24.209 起含「逆风白手疾行青芽」新成就守护'));
+ok('README 版本速览已为 v24.213 且成就计数 127', readme.includes('版本速览（v24.213）') && readme.includes('130 项成就'));
 ok('README 成就计数双处口径 127 项（全部 130 项进度 + **130 项成就**，**12'+'6 项成就**清除）',
   readme.includes('全部 130 项进度') && readme.includes('**130 项成就**') && !readme.includes('**12' + '6 项成就**'));
-ok('README tests 树收录 smoke_v24212_swiftlowskillnopo2（含 v24.212 守护子句 + 串尾）',
+ok('README tests 树收录 smoke_v24212_swiftlowskillnopo2（含 v24.213 守护子句 + 串尾）',
   readme.includes('v24.209 起含「逆风白手疾行青芽」新成就守护') && readme.includes('smoke_v24212_swiftlowskillnopo2'));
 ok('README 含 smoke_v24212_swiftlowskillnopo2 入库（415 份）', readme.includes('smoke_v24212_swiftlowskillnopo2 入库（415 份）'));
 ok('package.json 已收录 smoke_v24209_pennyswiftlv2.mjs 且位于串尾（在 smoke_v24206_swiftnoskillnopo2 之后）',
@@ -359,7 +359,7 @@ ok('package.json 已收录 smoke_v24209_pennyswiftlv2.mjs 且位于串尾（在 
   pkg.includes('node tests/smoke_v24206_swiftnoskillnopo2.mjs && node tests/smoke_v24209_pennyswiftlv2.mjs && node tests/smoke_v24210_pennyswiftskill2.mjs && node tests/smoke_v24211_pennyswiftnopo2.mjs && node tests/smoke_v24212_swiftlowskillnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 412 件套', testChain === 415, String(testChain));
-ok('CHANGELOG 含 v24.212 顶条目', changelog.startsWith('## v24.212'));
+ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.213'));
 
 // —— 哨兵链：README 已有 412 口径且尚无 413（前望 413 语义：下一版才写 413）——
 ok('README 已有四百一十五件套口径且尚无 416（哨兵前望 413 语义：下一版才写 413）',
@@ -396,5 +396,5 @@ ok('旧代 411 件套口径/计数/127 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':411') || x.endsWith(':count') || x.endsWith(':126')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.212 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.212 冒烟完成：${n} 项断言，失败 0 —`);
+if (failed) { console.log(`— v24.213 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.213 冒烟完成：${n} 项断言，失败 0 —`);
