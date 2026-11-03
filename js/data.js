@@ -4639,7 +4639,16 @@
 // winBattle 胜利结算零影响）。
 // 配套：全库 416 件套 GAME_VERSION 字面量 pin 级联（v24.214→v24.215，主/配推进排除「v24.21X 起含」时代锚点，
 // 哨兵前望 417 不变 —— 本轮无新套件无计数变化）。
-const GAME_VERSION = 'v24.215';
+// v24.216 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.213/v24.208/v24.207/v24.205/v24.204/
+// v24.203/v24.200 文档复核先例）：版本速览与 data.js 实核对账全部吻合——131 项成就（ACH_LIST.length）/46 名 NPC
+// （NPCS）·47 处 NPC_SPOTS/46 条支线（QUESTS kind==='side'）·4 条主线（QUESTS kind==='main'）/13 种图鉴
+// （BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/416 件套冒烟（tests/ 文件数），哨兵前望 417、链尾
+// smoke_v24214_unflswiftlowlv2 逐处一致——v24.214 成就版本推进 130→131 项成就、415→416 件套，v24.215 体验打磨
+// （胜利画面「距升级还差 N 经验」）后文档侧统一复核收口，账目与 README「版本速览」零漂移；
+// battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+// 配套：全库 416 件套 GAME_VERSION 字面量 pin 级联（v24.215→v24.216，主/配推进排除「v24.21X 起含」时代锚点，
+// 哨兵前望 417 不变 —— 本轮无新套件无计数变化）。
+const GAME_VERSION = 'v24.216';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
