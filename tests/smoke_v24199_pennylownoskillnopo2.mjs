@@ -144,7 +144,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.207', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 197)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.213（旧 v24.197 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.214';") && !dataSrc.includes("const GAME_VERSION = 'v24.207';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.215';") && !dataSrc.includes("const GAME_VERSION = 'v24.207';"));
 ok('data.js 含 v24.213 注释（逆风白手素手不饮青芽新成就说明）',
   dataSrc.includes('v24.213 文档整理·版本锚点推进'));
 
@@ -630,7 +630,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/123（122→123）', heroS
 ok('README 件套口径为四百一十六件套（四百一十五件套清除）',
   readme.includes('扩充为冒烟四百一十六件套（四百一十五件套清除）') && !readme.includes('扩充为冒烟四百零三件套（四百零二件套清除）'));
 ok('README 含 v24.213 守护描述（逆风疾行素手青灯新成就守护）', readme.includes('v24.201 起含「逆风疾行素手青灯」新成就守护'));
-ok('README 版本速览已为 v24.213 且成就计数 123', readme.includes('版本速览（v24.214）') && readme.includes('129 项成就'));
+ok('README 版本速览已为 v24.213 且成就计数 123', readme.includes('版本速览（v24.215）') && readme.includes('129 项成就'));
 ok('README 成就计数双处口径 122 项（全部 131 项进度 + **131 项成就**，118 项清除）',
   readme.includes('全部 131 项进度') && readme.includes('**131 项成就**') && !readme.includes('**118 项成就**'));
 ok('README tests 树收录 smoke_v24206_swiftnoskillnopo2（含 v24.213 守护子句 + 串尾）',
@@ -641,7 +641,7 @@ ok('package.json 已收录 smoke_v24199_pennylownoskillnopo2.mjs 且位于串尾
   pkg.includes('node tests/smoke_v24198_pennylowskill2.mjs && node tests/smoke_v24199_pennylownoskillnopo2.mjs && node tests/smoke_v24201_swiftlowskill2.mjs && node tests/smoke_v24202_swiftlowlvnopo2.mjs && node tests/smoke_v24206_swiftnoskillnopo2.mjs && node tests/smoke_v24209_pennyswiftlv2.mjs && node tests/smoke_v24210_pennyswiftskill2.mjs && node tests/smoke_v24211_pennyswiftnopo2.mjs && node tests/smoke_v24212_swiftlowskillnopo2.mjs && node tests/smoke_v24214_unflswiftlowlv2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 407 件套', testChain === 416, String(testChain));
-ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.214'));
+ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.215'));
 
 // —— 哨兵链：README 已有 408 口径且尚无 409（前望 409 语义：下一版才写 409）——
 ok('README 已有四百一十一件套口径且尚无 413（哨兵前望 409 语义：下一版才写 409）',

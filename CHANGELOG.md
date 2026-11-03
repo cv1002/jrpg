@@ -1,3 +1,10 @@
+## v24.215 体验打磨·信息透明·纯显示——胜利画面战绩行补「距升级还差 N 经验」（「升级需求可见」家族的胜利屏收口）
+
+- 【背景】v24.146 阵亡复盘屏（drawDead）战绩行已带「距升级还差 N 经验」，同属 run 总结屏的胜利画面（drawWin「灯芯回来了」）却仍查无一眼之数——Boss 战取胜后还要继续星井矿脉/无字回廊/试炼之旅，drawWin 正是「继续收集还是 R 重开/看尾声」的决策现场：想确认「还差几经验就能升级、值不值得再练两级」仍要开 I 状态页；与 v21.61 状态页「距升级还差 N 经验」/ v24.18 胜利战报「距 Lv.N 升级还需 M 经验」/ v24.141 战斗画布「⭐ 战后升级预览」同族，唯胜利总结屏缺席（与 v24.146 成对——倒下能看到，凯旋也能看到）。
+- 【修正】`js/view/menus.js` drawWin 战绩行在 📍 后缀之后追加「 · 距升级还差 N 经验」（与 v24.146 逐字同式：公式 `Math.max(0,(xpNext||0)-(xp||0))`、防御式 `(S.G.xpNext||0)>0` 才标——xpNext 缺失/旧档零噪音、无硬等级上限无需封顶判定），与状态页同读 S.G.xp/S.G.xpNext 一份单一数据源；最长档「累计讨伐 300 只 · 成就 131/131 · ⏱️240:00 · 困难 · 📍无字回廊 · 距升级还差 1200 经验」bold 14px estW ≈505 ≤ 640 画布，行内其余字段/其余各行 y 位逐字零位移。
+- 【零回归面】未动升级/经验结算（battle.js winBattle · hero.js grantXp 逐字未动）；未动战绩行其余字段（累计讨伐/成就/时长/难度/📍）与收集行/页脚/未存档行/冒险进度行/身经百战行；未动 drawDead/drawStatus/drawEnding。只改 2 个游戏文件（`data.js`：GAME_VERSION v24.214→v24.215 + 版本注释块；`menus.js`：drawWin 战绩行 1 条行内后缀 + 注释）。
+- 【验证】node --check js/data.js js/view/menus.js 与 npm run check（25 模块）全部通过；全库 416 件套 GAME_VERSION 字面量 pin 级联（v24.214→v24.215，主/配推进排除「v24.21X 起含」时代锚点，哨兵前望 417 不变——本轮无新套件无计数变化）+ README 版本速览/复核链同步 + 全量冒烟见下。
+
 ## v24.214 新内容·单成就（第一百三十一项）「逆风长明疾行青芽」——困难模式 × 零阵亡 × 七十场战斗内 × 等级未满十级击败终焉之神的「困难×长明」四重克制维度首角
 
 - 【新成就】`unflswiftlowlv2`（ACH_LIST 第 131 项·append 入列）「逆风长明疾行青芽」：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点）× 七十场战斗内（`(g.battles||0)<=SPEED_GOAL`，battle.startBattle 进战即记唯一产生点）× 等级未满十级（`(g.level||1)<LOWLV_GOAL`，hero.js grantXp 升级唯一产生点）击败终焉之神（`!!g.trueBoss`）——「困难×长明」四重克制维度首角：承 v24.177 逆风长明（unflswift2，「困难×长明」三克制首角·困难×零阵亡×七十场内）/ v24.183 逆风青苗（unfllowlv2，「困难×长明」三克制第二角·困难×零阵亡×未及十级）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」三克制首角·困难×七十场内×未及十级）先例：本枚把 unflswift2/unfllowlv2/swiftlv2 三枚三克档的严格公共交集——「困难模式、又零阵亡、又七十场内、又未及十级」收为一枚（与三枚三克档二维以上分源——死过一次、超场或升过十级即永久无缘此档），开垦「hardtrue×长明」四重克制维度首角（deaths×{swift,lowlv} 两两交叉在四维层次的唯一纪念）；判定读既有 hero.trueBoss + hero.diff + hero.deaths + hero.battles + hero.level 五端口零新写点（deaths=battle.loseBattle 全游唯一产生点、battles=startBattle 进战即记、level=grantXp 升级唯一产生点，皆只增不减、防御式旧档零迁移）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
