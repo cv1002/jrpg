@@ -1,4 +1,10 @@
-## v24.213 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.208/v24.207/v24.205/v24.204/v24.203/v24.200 文档复核先例）
+## v24.214 新内容·单成就（第一百三十一项）「逆风长明疾行青芽」——困难模式 × 零阵亡 × 七十场战斗内 × 等级未满十级击败终焉之神的「困难×长明」四重克制维度首角
+
+- 【新成就】`unflswiftlowlv2`（ACH_LIST 第 131 项·append 入列）「逆风长明疾行青芽」：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点）× 七十场战斗内（`(g.battles||0)<=SPEED_GOAL`，battle.startBattle 进战即记唯一产生点）× 等级未满十级（`(g.level||1)<LOWLV_GOAL`，hero.js grantXp 升级唯一产生点）击败终焉之神（`!!g.trueBoss`）——「困难×长明」四重克制维度首角：承 v24.177 逆风长明（unflswift2，「困难×长明」三克制首角·困难×零阵亡×七十场内）/ v24.183 逆风青苗（unfllowlv2，「困难×长明」三克制第二角·困难×零阵亡×未及十级）/ v24.188 逆风速成青芽（swiftlv2，「困难×疾行」三克制首角·困难×七十场内×未及十级）先例：本枚把 unflswift2/unfllowlv2/swiftlv2 三枚三克档的严格公共交集——「困难模式、又零阵亡、又七十场内、又未及十级」收为一枚（与三枚三克档二维以上分源——死过一次、超场或升过十级即永久无缘此档），开垦「hardtrue×长明」四重克制维度首角（deaths×{swift,lowlv} 两两交叉在四维层次的唯一纪念）；判定读既有 hero.trueBoss + hero.diff + hero.deaths + hero.battles + hero.level 五端口零新写点（deaths=battle.loseBattle 全游唯一产生点、battles=startBattle 进战即记、level=grantXp 升级唯一产生点，皆只增不减、防御式旧档零迁移）、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
+- 【数据】js/data.js：GAME_VERSION v24.213→v24.214 + v24.214 版本注释块 + ACH_LIST 130→131（append 入列，前 130 项零位移）+ 活计数注释（成就 N/130）→（成就 N/131）2 处；js/hero.js 横幅活计数注释（成就 N/130）→（成就 N/131）1 处；battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 416 件套 npm test 端到端全绿（全量独立 runner 逐套件实跑全绿 + npm test 官链落尾 v24.214）—— v24.214 冒烟完成；全库 415 件套 GAME_VERSION 字面量 pin 级联（v24.213→v24.214，主/配推进排除「v24.21X 起含」时代锚点，哨兵前望 416→417，套件 415→416、成就 130→131 同步）+ smoke_v24214_unflswiftlowlv2 入库 + README/CHANGELOG 同步。
+
+
 
 - 【复核】版本速览与 data.js 实核对账全部吻合：130 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 415 件套冒烟（tests/ 文件数），哨兵前望 416、链尾 smoke_v24212_swiftlowskillnopo2 逐处一致——v24.209-212 四个成就版本推进 126→130 项成就、411→415 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
 - 【数据】js/data.js 仅 GAME_VERSION v24.212→v24.213 + v24.213 版本注释块；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
@@ -7,7 +13,7 @@
 ## v24.212 新内容·单成就（第一百三十项）「逆风疾行素手不饮青芽」——困难模式 × 七十场战斗内 × 等级未满十级 × 未使用任何技能 × 未在战斗中使用药水/灵药击败终焉之神的「困难×疾行」五重克制收官
 
 - 【新成就】`swiftlowskillnopo2`（ACH_LIST 第 130 项·append 入列）「逆风疾行素手不饮青芽」：困难模式（`g.diff===1`，DIFFS[1]）× 七十场战斗内（`(g.battles||0)<=SPEED_GOAL`，battle.startBattle 进战即记唯一产生点）× 等级未满十级（`(g.level||1)<LOWLV_GOAL`，hero.js grantXp 升级唯一产生点）× 未使用任何技能（`!g.casts`，battle.doSkill 战斗释放技能成功唯一产生点——治愈/伤害两分支都计入）× 未在战斗中使用药水/灵药（`!g.potionUses`，battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入）击败终焉之神（`!!g.trueBoss`）——「困难×疾行」五重克制收官：承 v24.206 逆风疾行素手不沾（swiftnoskillnopo2，「困难×疾行」四重克制维度第三角收官）/ v24.201 逆风疾行素手青灯（swiftlowskill2，四重首角·困难×七十场内×未及十级×零用技）/ v24.202 逆风疾行不饮青芽（swiftlowlvnopo2，四重第二角·困难×七十场内×未及十级×零战斗用药）/ v24.194 逆风素手不饮青灯（lowskillnopo2，「hardtrue+三姿态」四重首枚）先例：本枚把 swift×{lowlv,noskill,nopotion} 交叉——「既七十场内、又未及十级、又零用技、又零战斗用药且困难通关」收为一枚（与 swiftlowskill2/swiftlowlvnopo2/swiftnoskillnopo2/lowskillnopo2 二维以上分源——超场、升过十级、放过一次技或战斗里喝过一口药即永久无缘此档），hardtrue×swift×{lowlv,noskill,nopotion} 五重交叉区收官；判定读既有 hero.trueBoss + hero.diff + hero.battles + hero.level + hero.casts + hero.potionUses 零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
-- 【数据】js/data.js：GAME_VERSION v24.211→v24.212 + v24.212 版本注释块 + ACH_LIST 129→130（append 入列，前 129 项零位移）；hero.js 仅成就横幅活计数注释（成就 N/129）→（成就 N/130）同步；battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【数据】js/data.js：GAME_VERSION v24.211→v24.212 + v24.212 版本注释块 + ACH_LIST 129→130（append 入列，前 129 项零位移）；hero.js 仅成就横幅活计数注释（成就 N/129）→（成就 N/131）同步；battle/core/world/view/quests/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
 - 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 415 件套 npm test 端到端全绿（全量独立 runner 逐套件实跑全绿 + npm test 官链落尾 v24.212）—— v24.212 冒烟完成；全库 414 件套 GAME_VERSION 字面量 pin 级联（v24.211→v24.212，主/配推进排除「v24.21X 起含」时代锚点，哨兵前望 415→416，套件 414→415、成就 129→130 同步）+ smoke_v24212_swiftlowskillnopo2 入库 + README/CHANGELOG 同步。
 
 ## v24.211 新内容·单成就（第一百二十九项）「逆风白手疾行不饮」——困难模式 × 未花费 1 金币 × 七十场战斗内 × 未在战斗中使用药水/灵药击败终焉之神的「困难×白手×疾行」三重克制交叉区第三角收官
