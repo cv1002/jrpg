@@ -133,7 +133,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.212', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 210)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.213（旧 v24.212 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.220';") && !dataSrc.includes("const GAME_VERSION = 'v24.212';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.221';") && !dataSrc.includes("const GAME_VERSION = 'v24.212';"));
 ok('data.js 含 v24.213 注释（逆风白手疾行不饮新成就说明）',
   dataSrc.includes('v24.213 文档整理·版本锚点推进'));
 
@@ -359,7 +359,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/129（128→129）', heroS
 ok('README 件套口径为四百二十件套（四百一十九件套清除）',
   readme.includes('扩充为冒烟四百二十件套（四百一十九件套清除）') && !readme.includes('扩充为冒烟四百一十二件套（四百一十一件套清除）'));
 ok('README 含 v24.213 守护描述（逆风白手疾行不饮新成就守护）', readme.includes('v24.211 起含「逆风白手疾行不饮」新成就守护'));
-ok('README 版本速览已为 v24.213 且成就计数 129', readme.includes('版本速览（v24.220）') && readme.includes('135 项成就'));
+ok('README 版本速览已为 v24.213 且成就计数 129', readme.includes('版本速览（v24.221）') && readme.includes('135 项成就'));
 ok('README 成就计数双处口径 129 项（全部 135 项进度 + **135 项成就**，**12'+'8 项成就**清除）',
   readme.includes('全部 135 项进度') && readme.includes('**135 项成就**') && !readme.includes('**12' + '8 项成就**'));
 ok('README tests 树收录 smoke_v24212_swiftlowskillnopo2（含 v24.213 守护子句 + 串尾）',
@@ -370,7 +370,7 @@ ok('package.json 已收录 smoke_v24211_pennyswiftnopo2.mjs 且位于串尾（�
   pkg.includes('node tests/smoke_v24210_pennyswiftskill2.mjs && node tests/smoke_v24211_pennyswiftnopo2.mjs && node tests/smoke_v24212_swiftlowskillnopo2.mjs && node tests/smoke_v24214_unflswiftlowlv2.mjs && node tests/smoke_v24217_unflswiftnopo2.mjs && node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 414 件套', testChain === 420, String(testChain));
-ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.220'));
+ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.221'));
 
 // —— 哨兵链：README 已有 414 口径且尚无 415（前望 415 语义：下一版才写 415）——
 ok('README 已有四百一十五件套口径且尚无 416（哨兵前望 415 语义：下一版才写 415）',

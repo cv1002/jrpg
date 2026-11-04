@@ -106,7 +106,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.219', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 219)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.220（旧 v24.219 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.220';") && !dataSrc.includes("const GAME_VERSION = 'v24.219';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.221';") && !dataSrc.includes("const GAME_VERSION = 'v24.219';"));
 ok('data.js 含 v24.220 注释（逆风长明白手不饮新成就说明）',
   dataSrc.includes('v24.220 新内容·新成就（第一百三十五项）'));
 
@@ -392,7 +392,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/135（134→135）', heroS
 ok('README 件套口径为四百二十件套（四百一十九件套清除）',
   readme.includes('扩充为冒烟四百二十件套（四百一十九件套清除）') && !readme.includes('扩充为冒烟四百一十九件套（四百一十八件套清除）'));
 ok('README 含 v24.220 守护描述（逆风长明白手不饮新成就守护）', readme.includes('v24.220 起含「逆风长明白手不饮」新成就守护'));
-ok('README 版本速览已为 v24.220 且成就计数 135', readme.includes('版本速览（v24.220）') && readme.includes('135 项成就'));
+ok('README 版本速览已为 v24.220 且成就计数 135', readme.includes('版本速览（v24.221）') && readme.includes('135 项成就'));
 ok('README 成就计数双处口径 135 项（全部 135 项进度 + **135 项成就**，**134 项成就**清除）',
   readme.includes('全部 135 项进度') && readme.includes('**135 项成就**') && !readme.includes('**13' + '4 项成就**'));
 ok('README tests 树收录 smoke_v24220_unflpennynopo2（含 v24.220 守护子句 + 串尾）',
@@ -403,7 +403,7 @@ ok('package.json 已收录 smoke_v24220_unflpennynopo2.mjs 且位于串尾（在
   pkg.includes('node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 420 件套', testChain === 420, String(testChain));
-ok('CHANGELOG 含 v24.220 顶条目', changelog.startsWith('## v24.220'));
+ok('CHANGELOG 含 v24.220 顶条目', changelog.startsWith('## v24.221'));
 
 // —— 哨兵链：README 已有 420 口径且尚无 421（前望 421 语义：下一版才写 421）——
 ok('README 已有四百二十件套口径且尚无 421（哨兵前望 421 语义：下一版才写 421）',
@@ -440,5 +440,5 @@ ok('旧代 419 件套口径/计数/134 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':419') || x.endsWith(':count') || x.endsWith(':134')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.220 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.220 冒烟完成：${n} 项断言，失败 0 —`);
+if (failed) { console.log(`— v24.221 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.221 冒烟完成：${n} 项断言，失败 0 —`);

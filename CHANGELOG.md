@@ -1,3 +1,9 @@
+## v24.221 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.216/v24.213/v24.208/v24.200 文档复核先例）
+
+- 【复核】版本速览与 data.js 实核对账全部吻合：135 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 420 件套冒烟（tests/ 文件数），哨兵前望 421、链尾 smoke_v24220_unflpennynopo2 逐处一致——v24.217-220 四个成就版本推进 131→135 项成就、416→420 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
+- 【数据】js/data.js 仅 GAME_VERSION v24.220→v24.221 + v24.221 版本注释块；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 420 件套 npm test 端到端全绿 → 全库 420 件套 GAME_VERSION 字面量 pin 级联（v24.220→v24.221，推进排除「v24.22X 起含」时代锚点，哨兵前望 421 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+
 ## v24.220 新内容·单成就（第一百三十五项）「逆风长明白手不饮」——困难模式 × 零阵亡 × 未花费 1 金币 × 未在战斗中使用药水/灵药击败终焉之神的「困难×长明×白手」四重克制维度第三角收官
 
 - 【新成就】`unflpennynopo2`（ACH_LIST 第 135 项·append 入列）「逆风长明白手不饮」：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点）× 未花费 1 金币（`!(g.spent||0)`，消费线五端口——商店购买×3/住店/酿造——扣款唯一来源只增不减）× 未在战斗中使用药水/灵药（`!(g.potionUses||0)`，battle.doItem `hero.potionUses = useN` 唯一产生点——大地图 F 喝药/旅馆/篝火不计入）击败终焉之神（`!!g.trueBoss`）——「困难×长明×白手」四重克制维度第三角收官：承 v24.178 逆风白手（unflpenny2，「困难×白手」三克制首角·困难×零阵亡×零消费）/ v24.179 逆风未饮（unflnopo2，「困难×不饮」三克制首角·困难×零阵亡×零战斗用药）/ v24.187 逆风白手不沾（pennynopo2，「困难×白手」三克制第四角·困难×零消费×零战斗用药）先例：本枚把 unflpenny2/unflnopo2/pennynopo2 三枚三克档的严格公共交集——「既零阵亡、又零消费、又零战斗用药且困难通关」——收为一枚（与三枚三克档二维以上分源——死过一次、花过 1 金币或战斗里喝过一口药即永久无缘此档），开垦「hardtrue×白手」四重克制维度第三角收官（deaths×{swift,lowlv,nopotion} 三姿态进入四维层次，与 v24.218 疾行角/v24.219 青芽角成三枚并立）；判定读既有 hero.trueBoss + hero.diff + hero.deaths + hero.spent + hero.potionUses 五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。

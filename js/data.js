@@ -4688,7 +4688,11 @@
 // hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.spent（消费线五端口扣款唯一来源）+ hero.potionUses（battle.doItem
 // 战斗用药唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。配套：全库 420 件套 GAME_VERSION 字面量 pin 级联
 // （v24.219→v24.220，主/配推进排除「v24.21X 起含」时代锚点，哨兵前望 420→421）+ 新套件 smoke_v24220_unflpennynopo2 入库 420 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.220';
+// v24.221 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.216/v24.213 文档复核先例）：版本速览与 data.js 实核对账全部吻合——135 项成就（ACH_LIST）/ 46 名 NPC（NPCS）
+// · 47 处 NPC_SPOTS / 46 条支线（QUESTS side）· 4 条主线（QUESTS main）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 420 件套冒烟（tests/ 文件数），
+// 哨兵前望 421、链尾 smoke_v24220_unflpennynopo2 逐处一致——v24.217-220 四个成就版本推进 131→135 项成就、416→420 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
+// 配套：全库 420 件套 GAME_VERSION 字面量 pin 级联（v24.220→v24.221，推进排除「v24.22X 起含」时代锚点，哨兵前望 421 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.221';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
