@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/134）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/135）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/134）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/135）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4678,7 +4678,17 @@
 // （battle.loseBattle 全游唯一产生点）+ hero.spent（消费线五端口扣款唯一来源）+ hero.level（hero.js grantXp 升级唯一产生点——只增不减、防御式 (g.level||1) 旧档零迁移）零新写点、无 r 无 prog
 // 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。配套：全库 419 件套 GAME_VERSION 字面量 pin 级联（v24.218→v24.219，主/配推进排除「v24.21X 起含」时代锚点，哨兵前望 419→420）+
 // 新套件 smoke_v24219_unflpennylowlv2 入库 419 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.219';
+// v24.220 新内容·新成就（第一百三十五项）「逆风长明白手不饮」（unflpennynopo2）——「困难×长明×白手」四重克制维度第三角收官（hardtrue×deaths×spent×nopotion
+// 四维交叉点）：困难模式 × 零阵亡（deaths=0，battle.loseBattle 全游唯一产生点——只增不减、防御式 (g.deaths||0) 旧档零迁移）× 未花费 1 金币（spent=0，消费线五端口——
+// 商店购买×3/住店/酿造——扣款唯一来源只增不减、防御式 (g.spent||0) 旧档零迁移）× 未在战斗中使用药水/灵药（potionUses=0，battle.doItem 战斗用药成功唯一产生点——
+// 大地图 F 喝药/旅馆/篝火不计入、防御式 (g.potionUses||0) 旧档零迁移）击败终焉之神（真结局）——承 v24.178 逆风白手（unflpenny2，「困难×白手」三克制首角·困难×零阵亡×零消费）/
+// v24.179 逆风未饮（unflnopo2，「困难×不饮」三克制首角·困难×零阵亡×零战斗用药）/ v24.187 逆风白手不沾（pennynopo2，「困难×白手」三克制第四角·困难×零消费×零战斗用药）先例：
+// 本枚是 unflpenny2/unflnopo2/pennynopo2 三枚三克档的严格公共交集——「既零阵亡、又零消费、又零战斗用药且困难通关」——收为一枚，开垦「hardtrue×白手」四重克制维度第三角
+// 收官（deaths×{swift,lowlv,nopotion} 三姿态进入四维层次的第三枚纪念；与三枚三克档二维以上分源——死过一次、花过 1 金币或战斗里喝过一口药即永久无缘此档）；判定读既有
+// hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.spent（消费线五端口扣款唯一来源）+ hero.potionUses（battle.doItem
+// 战斗用药唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。配套：全库 420 件套 GAME_VERSION 字面量 pin 级联
+// （v24.219→v24.220，主/配推进排除「v24.21X 起含」时代锚点，哨兵前望 420→421）+ 新套件 smoke_v24220_unflpennynopo2 入库 420 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.220';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -12152,6 +12162,16 @@ const ACH_LIST=[
   // （battle.loseBattle 全游唯一产生点）+ hero.spent（消费线五端口扣款唯一来源）+ hero.level（hero.js grantXp 升级唯一产生点）零新写点、无 r 无 prog
   // 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 133→134 项（末尾追加，既有 133 项 id/序位零回归）。
   {id:'unflpennylowlv2', name:'逆风长明白手青芽', d:`以困难模式、零阵亡、未花费 1 金币且等级未满 ${LOWLV_GOAL} 时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && !(g.spent||0) && (g.level||1)<LOWLV_GOAL)},
+  // v24.220 新内容·新成就（第一百三十五项）「逆风长明白手不饮」（unflpennynopo2）——「困难×长明×白手」四重克制维度第三角收官（hardtrue×deaths×spent×nopotion 四维交叉点）：
+  // 困难模式 × 零阵亡（deaths=0，battle.loseBattle 全游唯一产生点——只增不减、防御式 (g.deaths||0) 旧档零迁移）× 未花费 1 金币（spent=0，消费线五端口——商店购买×3/住店/酿造——
+  // 扣款唯一来源只增不减、防御式 (g.spent||0) 旧档零迁移）× 未在战斗中使用药水/灵药（potionUses=0，battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入）
+  // 击败终焉之神（真结局）——承 v24.178 逆风白手（unflpenny2，「困难×白手」三克制首角·困难×零阵亡×零消费）/ v24.179 逆风未饮（unflnopo2，「困难×不饮」三克制首角·
+  // 困难×零阵亡×零战斗用药）/ v24.187 逆风白手不沾（pennynopo2，「困难×白手」三克制第四角·困难×零消费×零战斗用药）先例：本枚是 unflpenny2/unflnopo2/pennynopo2
+  // 三枚三克档的严格公共交集——「既零阵亡、又零消费、又零战斗用药且困难通关」——收为一枚，开垦「hardtrue×白手」四重克制维度第三角收官（deaths×{swift,lowlv,nopotion}
+  // 三姿态进入四维层次的第三枚纪念；与三枚三克档二维以上分源——死过一次、花过 1 金币或战斗里喝过一口药即永久无缘此档）；判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）
+  // + hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.spent（消费线五端口扣款唯一来源）+ hero.potionUses（battle.doItem 战斗用药唯一产生点）零新写点、无 r 无 prog
+  // 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 134→135 项（末尾追加，既有 134 项 id/序位零回归）。
+  {id:'unflpennynopo2', name:'逆风长明白手不饮', d:'以困难模式、零阵亡、未花费 1 金币且未在战斗中使用药水/灵药时击败终焉之神（真结局）', ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && !(g.spent||0) && !(g.potionUses||0))},
 ];
 
 function codexTag(name) {
