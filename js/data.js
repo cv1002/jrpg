@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/137）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/138）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/137）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/138）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4712,7 +4712,17 @@
 // 产生点）+ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 136→137 项（末尾追加，
 // 既有 136 项 id/序位零回归）。配套：全库 421 件套 GAME_VERSION 字面量 pin 级联（v24.222→v24.223，主/配推进排除「v24.22X 起含」时代锚点，哨兵前望 422→423）+ 新套件
 // smoke_v24222_unflswiftskill2 入库 422 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.223';
+// v24.224 新内容·新成就（第一百三十八项）「逆风长明不饮青芽」（unfllowlvnopo2）——「困难×长明×青芽×不饮」四重克制维度首角（hardtrue×deaths×level×potionUses 四维交叉点）：困难模式（`g.diff===1`，
+// DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点——只增不减、防御式旧档零迁移）× 等级未满十级（`(g.level||1)<LOWLV_GOAL`，hero.js grantXp 升级唯一产生点——只增不减）
+// × 未在战斗中使用药水/灵药（`!(g.potionUses||0)`，battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入、只增不减、防御式旧档零迁移）击败终焉之神
+// （`!!g.trueBoss`）——承 v24.183 逆风青苗（unfllowlv2，「困难×长明」三克制第二角·困难×零阵亡×未及十级）/ v24.179 逆风未饮（unflnopo2，「困难×长明」三克制第三角·困难×零阵亡×零战斗用药）/
+// v24.192 逆风不饮青芽（lowlvnopo2，「困难×低等级」三克制交叉区第二角·困难×未及十级×零战斗用药）先例：本枚是 unfllowlv2/unflnopo2/lowlvnopo2 三枚三克档的严格公共交集——
+// 「既零阵亡、又未及十级、又零战斗用药且困难通关」——收为一枚，开垦「hardtrue×长明×青芽×不饮」四重克制维度首角（deaths×{level,potionUses} 两两交叉在四维层次的唯一纪念；与三枚三克档二维以上分源——
+// 死过一次、升过十级或战斗里喝过一口药即永久无缘此档）；判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.level
+// （hero.js grantXp 升级唯一产生点）+ hero.potionUses（battle.doItem 战斗用药成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。ACH_LIST 137→138 项（末尾追加，
+// 既有 137 项 id/序位零回归）。配套：全库 422 件套 GAME_VERSION 字面量 pin 级联（v24.223→v24.224，主/配推进排除「v24.22X 起含」时代锚点，哨兵前望 423→424）+ 新套件
+// smoke_v24223_unfllowlvnopo2 入库 423 份 + README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.224';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -12216,6 +12226,16 @@ const ACH_LIST=[
   // （battle.startBattle 进战即记唯一产生点）+ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
   // ACH_LIST 136→137 项（末尾追加，既有 136 项 id/序位零回归）。
   {id:'unflswiftskill2', name:'逆风长明疾行素手', d:`以困难模式、零阵亡、${SPEED_GOAL} 场战斗内且未使用任何技能（战斗指令 [2]）时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL && !(g.casts||0))},
+  // v24.224 新内容·新成就（第一百三十八项）「逆风长明不饮青芽」（unfllowlvnopo2）——「困难×长明×青芽×不饮」四重克制维度首角（hardtrue×deaths×level×potionUses 四维交叉点）：困难模式 × 零阵亡
+  // （deaths=0，battle.loseBattle 全游唯一产生点——只增不减、防御式 (g.deaths||0) 旧档零迁移）× 等级未满十级（(g.level||1)<LOWLV_GOAL，hero.js grantXp 升级唯一产生点——只增不减）
+  // × 未在战斗中使用药水/灵药（potionUses=0，battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入、只增不减、防御式 (g.potionUses||0) 旧档零迁移）击败终焉之神（真结局）
+  // ——承 v24.183 逆风青苗（unfllowlv2，「困难×长明」三克制第二角·困难×零阵亡×未及十级）/ v24.179 逆风未饮（unflnopo2，「困难×长明」三克制第三角·困难×零阵亡×零战斗用药）/
+  // v24.192 逆风不饮青芽（lowlvnopo2，「困难×低等级」三克制交叉区第二角·困难×未及十级×零战斗用药）先例：本枚是 unfllowlv2/unflnopo2/lowlvnopo2 三枚三克档的严格公共交集——
+  // 「既零阵亡、又未及十级、又零战斗用药且困难通关」——收为一枚，开垦「hardtrue×长明×青芽×不饮」四重克制维度首角（deaths×{level,potionUses} 两两交叉在四维层次的唯一纪念；与三枚三克档二维以上
+  // 分源——死过一次、升过十级或战斗里喝过一口药即永久无缘此档）；判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.level
+  // （hero.js grantXp 升级唯一产生点）+ hero.potionUses（battle.doItem 战斗用药成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁。
+  // ACH_LIST 137→138 项（末尾追加，既有 137 项 id/序位零回归）。
+  {id:'unfllowlvnopo2', name:'逆风长明不饮青芽', d:`以困难模式、零阵亡、等级未满 ${LOWLV_GOAL} 且未在战斗中使用药水/灵药（战斗指令 [3]）时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && (g.level||1)<LOWLV_GOAL && !(g.potionUses||0))},
 ];
 
 function codexTag(name) {
