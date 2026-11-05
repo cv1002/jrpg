@@ -1,3 +1,9 @@
+## v24.222 新内容·单成就（第一百三十六项）「逆风长明素手青灯」——困难模式 × 零阵亡 × 等级未满十级 × 未使用任何技能击败终焉之神的「困难×长明×素手」四重克制维度首角
+
+- 【新成就】`unfllowskill2`（ACH_LIST 第 136 项·append 入列）「逆风长明素手青灯」：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点）× 等级未满十级（`(g.level||1)<LOWLV_GOAL`，hero.js grantXp 升级唯一产生点——只增不减）× 未使用任何技能（`!(g.casts||0)`，battle.doSkill 战斗释放技能成功唯一产生点——「释放」即成功出手、治愈与伤害两分支都计入、只增不减、防御式 (g.casts||0) 旧档零迁移）击败终焉之神（`!!g.trueBoss`）——「困难×长明×素手」四重克制维度首角：承 v24.180 逆风素手（unflskill2，「困难×长明」三克制第四角·困难×零阵亡×零用技）/ v24.183 逆风青苗（unfllowlv2，「困难×长明」三克制第二角·困难×零阵亡×未及十级）/ v24.191 逆风素手青灯（lowskill2，「困难×低等级」三克制交叉区首角·困难×未及十级×零用技）先例：本枚把 unflskill2/unfllowlv2/lowskill2 三枚三克档的严格公共交集——「既零阵亡、又未及十级、又零用技且困难通关」——收为一枚（与三枚三克档二维以上分源——死过一次、升过十级或放过一次技即永久无缘此档），开垦「hardtrue×长明×素手」四重克制维度首角（deaths×{lowlv,casts} 两两交叉在四维层次的唯一纪念）；判定读既有 hero.trueBoss + hero.diff + hero.deaths + hero.level + hero.casts 五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
+- 【数据】js/data.js：GAME_VERSION v24.221→v24.222 + v24.222 版本注释块 + ACH_LIST 135→136（append 入列，前 135 项零位移）+ 活计数注释（成就 N/135）→（成就 N/136）2 处；js/hero.js 横幅活计数注释（成就 N/135）→（成就 N/136）1 处；battle/core/world/view/quests/hero/shop 逻辑逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 421 件套 npm test 端到端全绿（全量独立 runner 逐套件实跑全绿 + npm test 官链落尾 v24.222）—— v24.222 冒烟完成；全库 420 件套 GAME_VERSION 字面量 pin 级联（v24.221→v24.222，主/配推进排除「v24.22X 起含」时代锚点，哨兵前望 421→422，套件 420→421、成就 135→136 同步）+ smoke_v24221_unfllowskill2 入库 + README/CHANGELOG 同步。
+
 ## v24.221 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.216/v24.213/v24.208/v24.200 文档复核先例）
 
 - 【复核】版本速览与 data.js 实核对账全部吻合：135 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 420 件套冒烟（tests/ 文件数），哨兵前望 421、链尾 smoke_v24220_unflpennynopo2 逐处一致——v24.217-220 四个成就版本推进 131→135 项成就、416→420 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
