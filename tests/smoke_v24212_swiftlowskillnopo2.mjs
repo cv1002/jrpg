@@ -135,7 +135,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.212', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 212)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.213（旧 v24.212 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.226';") && !dataSrc.includes("const GAME_VERSION = 'v24.212';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.227';") && !dataSrc.includes("const GAME_VERSION = 'v24.212';"));
 ok('data.js 含 v24.213 注释（逆风疾行素手不饮青芽新成就说明）',
   dataSrc.includes('v24.213 文档整理·版本锚点推进'));
 
@@ -365,7 +365,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/130（129→130）', heroS
 ok('README 件套口径为四百二十五件套（四百二十四件套清除）',
   readme.includes('扩充为冒烟四百二十五件套（四百二十四件套清除）') && !readme.includes('扩充为冒烟四百一十三件套（四百一十二件套清除）'));
 ok('README 含 v24.213 守护描述（逆风疾行素手不饮青芽新成就守护）', readme.includes('v24.212 起含「逆风疾行素手不饮青芽」新成就守护'));
-ok('README 版本速览已为 v24.213 且成就计数 130', readme.includes('版本速览（v24.226）') && readme.includes('140 项成就'));
+ok('README 版本速览已为 v24.213 且成就计数 130', readme.includes('版本速览（v24.227）') && readme.includes('140 项成就'));
 ok('README 成就计数双处口径 130 项（全部 140 项进度 + **140 项成就**，**12'+'9 项成就**清除）',
   readme.includes('全部 140 项进度') && readme.includes('**140 项成就**') && !readme.includes('**12' + '9 项成就**'));
 ok('README tests 树收录 smoke_v24212_swiftlowskillnopo2（含 v24.213 守护子句 + 串尾）',
@@ -376,7 +376,7 @@ ok('package.json 已收录 smoke_v24212_swiftlowskillnopo2.mjs 且位于串尾�
   pkg.includes('node tests/smoke_v24211_pennyswiftnopo2.mjs && node tests/smoke_v24212_swiftlowskillnopo2.mjs && node tests/smoke_v24214_unflswiftlowlv2.mjs && node tests/smoke_v24217_unflswiftnopo2.mjs && node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs && node tests/smoke_v24221_unfllowskill2.mjs && node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 415 件套', testChain === 425, String(testChain));
-ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.226'));
+ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.227'));
 
 // —— 哨兵链：README 已有 415 口径且尚无 416（前望 416 语义：下一版才写 416）——
 ok('README 已有四百一十五件套口径且尚无 416（哨兵前望 416 语义：下一版才写 416）',

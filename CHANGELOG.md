@@ -1,3 +1,9 @@
+## v24.227 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.221/v24.216/v24.213/v24.208/v24.200 文档复核先例）
+
+- 【复核】版本速览与 data.js 实核对账全部吻合：140 项成就（ACH_LIST）/ 46 名 NPC（NPCS）· 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 425 件套冒烟（tests/ 文件数），哨兵前望 426、链尾 smoke_v24225_unflpennynoskill2 逐处一致——v24.222-226 五个成就版本推进 135→140 项成就、420→425 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
+- 【数据】js/data.js 仅 GAME_VERSION v24.226→v24.227 + v24.227 版本注释块；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 425 件套 npm test 端到端全绿 → 全库 425 件套 GAME_VERSION 字面量 pin 级联（v24.226→v24.227，推进排除「v24.22X 起含」时代锚点，哨兵前望 426 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+
 ## v24.226 新内容·单成就（第一百四十项）「逆风长明白手素手」——困难模式 × 零阵亡 × 未花费 1 金币 × 未使用任何技能击败终焉之神的「困难×长明×白手×素手」四重克制维度收官（unfl 四克档 10/10 集齐）
 
 - 【新成就】`unflpennynoskill2`（ACH_LIST 第 140 项·append 入列）「逆风长明白手素手」：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点）× 未花费 1 金币（`!(g.spent||0)`，消费线五端口——商店购买×3/住店/酿造——扣款唯一来源只增不减）× 未使用任何技能（`!(g.casts||0)`，battle.doSkill 战斗释放技能成功唯一产生点——治愈/伤害两分支都计入、只增不减）击败终焉之神（`!!g.trueBoss`）——「困难×长明×白手×素手」四重克制维度收官：承 v24.178 逆风白手（unflpenny2，「困难×长明」三克制首角·困难×零阵亡×零消费）/ v24.180 逆风素手（unflskill2，「困难×长明」三克制第二角·困难×零阵亡×零用技）/ v24.186 逆风白手素手（pennynoskill2，「困难×白手」三克制交叉区第三角·困难×零消费×零用技）先例：本枚把 unflpenny2/unflskill2/pennynoskill2 三枚三克档的严格公共交集——「既零阵亡、又零消费、又零用技且困难通关」——收为一枚（与三枚三克档二维以上分源——死过一次、花过 1 金币或放过一次技即永久无缘此档），开垦「hardtrue×长明×白手×素手」四重克制维度（deaths×{spent,casts} 两两交叉在四维层次的唯一纪念），unfl（困难×长明）双约束十格之家 C(5,2) 至此 10/10 全数集齐：疾行青芽（v24.214）/疾行不饮（v24.217）/白手疾行（v24.218）/白手青芽（v24.219）/白手不饮（v24.220）/素手青灯（v24.222）/疾行素手（v24.223）/不饮青芽（v24.224）/素手不饮（v24.225）/白手素手（v24.226）；判定读既有 hero.trueBoss + hero.diff + hero.deaths + hero.spent + hero.casts 五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。

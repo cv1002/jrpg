@@ -4741,7 +4741,11 @@
 // hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.spent（消费线五端口扣款唯一来源）+ hero.casts（battle.doSkill 战斗释放技能成功唯一产生点）零新写点、无 r 无 prog 纯里程碑、winBattle →
 // applyAchievements 既有通路当场解锁。ACH_LIST 139→140 项（末尾追加，既有 139 项 id/序位零回归）。配套：全库 424 件套 GAME_VERSION 字面量 pin 级联（v24.225→v24.226，主/配推进排除「v24.22X 起含」时代锚点，哨兵前望 425→426）+
 // 新套件 smoke_v24225_unflpennynoskill2 入库 425 份 + README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.226';
+// v24.227 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.221/v24.216/v24.213 文档复核先例）：版本速览与 data.js 实核对账全部吻合——140 项成就（ACH_LIST）/ 46 名 NPC（NPCS）
+// · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 425 件套冒烟（tests/ 文件数），
+// 哨兵前望 426、链尾 smoke_v24225_unflpennynoskill2 逐处一致——v24.222-226 五个成就版本推进 135→140 项成就、420→425 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
+// 配套：全库 425 件套 GAME_VERSION 字面量 pin 级联（v24.226→v24.227，推进排除「v24.22X 起含」时代锚点，哨兵前望 426 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.227';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
