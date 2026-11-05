@@ -23,14 +23,14 @@
 // unflicker/lowlv/nopotion/unfllowlv2/unflnopo2/lowlvnopo2 同款——困难里不练级不嗑药又不死本身就是奖励、硬核才是）、
 // 解锁走 winBattle → applyAchievements 既有通路（终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），
 // 反馈不迟到。
-// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.226 + data.js 字面量 v24.226 + 旧 v24.225 字面量零残留）、
+// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.227 + data.js 字面量 v24.226 + 旧 v24.225 字面量零残留）、
 // ACH_LIST 138 项精确与末尾序位（unfllowlvnopo2 落位 137——前 137 项 id/序位零回归）、unfllowlvnopo2 数据契约（d 文案、ok 防御式逐值、
 // 无 r 无 prog 且与 lowlv/nopotion 正向里程碑镜面对、四克制必同时满足 hardtrue/unflicker/lowlv/nopotion 且满足
 // unfllowlv2/unflnopo2/lowlvnopo2 三枚三克档）、unlockedAchievements/applyAchievements 运行期全链路（真实解锁落 hero.ach +
 // 横幅 + 幂等去重 / 换难度不解锁 / 死过一次不解锁 / 升过十级不解锁 / 战斗用过药不解锁 / 未通关不解锁）、既有 137 成就 id
 // 零回归、battle.js 无 spent/level 新增写点与 deaths/battles/potionUses/casts 写入点与 data.js SPEED_GOAL/LOWLV_GOAL/
 // BATTLE_GOAL/POTION_USE_GOAL/DIFFS 常量源级零变化、README/package.json/CHANGELOG 同步（件套口径 423 + v24.226 守护描述 + 入库 423 +
-// 版本速览 138 项 + tests 树串尾 + package 串尾 422→423）、哨兵链（前望 426 且 README 尚无 424 口径）、旧代 v24.225 字面量/
+// 版本速览 138 项 + tests 树串尾 + package 串尾 422→423）、哨兵链（前望 427 且 README 尚无 424 口径）、旧代 v24.225 字面量/
 // 恒等/顶 pin/423 口径/137 项全库零残留扫描（豁免本套件与 v24222——两者含 v24.225 负向断言/扫描目标）。
 import { S } from '../js/state.js';
 import { GAME_VERSION, ACH_LIST, LOWLV_GOAL } from '../js/data.js';
@@ -107,20 +107,20 @@ const heroSrc = read('js/hero.js');
 const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
-// —— 版本锚点（格式合法 + 已越过 v24.226 + 精确值由本版守护）——
+// —— 版本锚点（格式合法 + 已越过 v24.227 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.226', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 223)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.227', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 223)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.226（旧 v24.225 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.227';") && !dataSrc.includes("const GAME_VERSION = 'v24.225';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.228';") && !dataSrc.includes("const GAME_VERSION = 'v24.225';"));
 ok('data.js 含 v24.226 注释（逆风长明不饮青芽新成就说明）',
-  dataSrc.includes('v24.227 文档整理·版本锚点推进'));
+  dataSrc.includes('v24.228 新内容·新成就（第一百四十一项）'));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'unfllowlvnopo2');
 ok('ACH_LIST 含 unfllowlvnopo2「逆风长明不饮青芽」且 id 唯一',
   !!ach && ach.name === '逆风长明不饮青芽' && ACH_LIST.filter((a) => a.id === 'unfllowlvnopo2').length === 1);
-ok('ACH_LIST 精确总数 138 项（137→138 末尾追加）', ACH_LIST.length === 140, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 138 项（137→138 末尾追加）', ACH_LIST.length === 141, String(ACH_LIST.length));
 ok('unfllowlvnopo2 描述文案（困难零阵亡未及十级零战斗用药真结局四克档）',
   ach.d === `以困难模式、零阵亡、等级未满 ${LOWLV_GOAL} 且未在战斗中使用药水/灵药（战斗指令 [3]）时击败终焉之神（真结局）`, ach.d);
 ok('unfllowlvnopo2 判定源级（读既有 g.trueBoss / g.diff===1 / !(g.deaths||0) / (g.level||1)<LOWLV_GOAL / !(g.potionUses||0)，不含 battles/spent/casts）',
@@ -428,36 +428,36 @@ ok('data.js POTION_USE_GOAL 常量仍为 15（单一数据源，与 nopotion/dry
   dataSrc.includes('const POTION_USE_GOAL = 15;'));
 ok('data.js DIFFS 仍含「困难」档（难度单一数据源，与 hardtrue/steadfast/unfllowlv2/unflnopo2/lowlvnopo2 同读一份源）',
   dataSrc.includes("const DIFFS=['普通','困难'];"));
-ok('hero.js 成就横幅活计数注释已推进至 N/138（137→138）', heroSrc.includes('（成就 N/140）'));
+ok('hero.js 成就横幅活计数注释已推进至 N/138（137→138）', heroSrc.includes('（成就 N/141）'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为四百二十五件套（四百二十四件套清除）',
-  readme.includes('扩充为冒烟四百二十五件套（四百二十四件套清除）') && !readme.includes('扩充为冒烟四百二十二件套（四百二十一件套清除）'));
+ok('README 件套口径为四百二十六件套（四百二十五件套清除）',
+  readme.includes('扩充为冒烟四百二十六件套（四百二十五件套清除）') && !readme.includes('扩充为冒烟四百二十二件套（四百二十一件套清除）'));
 ok('README 含 v24.226 守护描述（逆风长明不饮青芽新成就守护）', readme.includes('v24.224 起含「逆风长明不饮青芽」新成就守护'));
-ok('README 版本速览已为 v24.226 且成就计数 138', readme.includes('版本速览（v24.227）') && readme.includes('140 项成就'));
-ok('README 成就计数双处口径 138 项（全部 140 项进度 + **140 项成就**，**137 项成就**清除）',
-  readme.includes('全部 140 项进度') && readme.includes('**140 项成就**') && !readme.includes('**13' + '7 项成就**'));
+ok('README 版本速览已为 v24.226 且成就计数 138', readme.includes('版本速览（v24.228）') && readme.includes('141 项成就'));
+ok('README 成就计数双处口径 138 项（全部 141 项进度 + **141 项成就**，**137 项成就**清除）',
+  readme.includes('全部 141 项进度') && readme.includes('**141 项成就**') && !readme.includes('**13' + '7 项成就**'));
 ok('README tests 树收录 smoke_v24223_unfllowlvnopo2（含 v24.226 守护子句 + 串尾）',
   readme.includes('v24.224 起含「逆风长明不饮青芽」新成就守护') && readme.includes('smoke_v24223_unfllowlvnopo2'));
-ok('README 含 smoke_v24223_unfllowlvnopo2 入库（425 份）', readme.includes('smoke_v24223_unfllowlvnopo2 入库（425 份）'));
+ok('README 含 smoke_v24223_unfllowlvnopo2 入库（426 份）', readme.includes('smoke_v24223_unfllowlvnopo2 入库（426 份）'));
 ok('package.json 已收录 smoke_v24223_unfllowlvnopo2.mjs 且位于串尾（在 smoke_v24222_unflswiftskill2 之后）',
   pkg.includes('smoke_v24223_unfllowlvnopo2.mjs') &&
-  pkg.includes('node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs"'));
+  pkg.includes('node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs && node tests/smoke_v24226_unflpennylownoskillnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 423 件套', testChain === 425, String(testChain));
-ok('CHANGELOG 含 v24.226 顶条目', changelog.startsWith('## v24.227'));
+ok('package.json test 串共 423 件套', testChain === 426, String(testChain));
+ok('CHANGELOG 含 v24.226 顶条目', changelog.startsWith('## v24.228'));
 
-// —— 哨兵链：README 已有 423 口径且尚无 424（前望 426 语义：下一版才写 424）——
-ok('README 已有四百二十三件套口径且尚无 424（哨兵前望 426 语义：下一版才写 424）',
-  readme.includes('扩充为冒烟四百二十五件套（四百二十四件套清除）') && !readme.includes('四百二十六件套'));
+// —— 哨兵链：README 已有 423 口径且尚无 424（前望 427 语义：下一版才写 424）——
+ok('README 已有四百二十三件套口径且尚无 424（哨兵前望 427 语义：下一版才写 424）',
+  readme.includes('扩充为冒烟四百二十六件套（四百二十五件套清除）') && !readme.includes('四百二十七件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 426（四百二十六件套否定式）',
-    s24143.includes('哨兵链前望 426') && s24143.includes('四百二十六件套否定式'));
+  ok('smoke_v24143 哨兵链前望 427（四百二十七件套否定式）',
+    s24143.includes('哨兵链前望 427') && s24143.includes('四百二十七件套否定式'));
 }
 
 // —— 旧代 v24.225 字面量 / 422 件套口径 / 137 项 全库零残留扫描（豁免本套件与 v24222 与 v24221——三者含 v24.225 负向断言/扫描目标）——
-const EXEMPT = new Set(['smoke_v24223_unfllowlvnopo2.mjs', 'smoke_v24222_unflswiftskill2.mjs', 'smoke_v24221_unfllowskill2.mjs', 'smoke_v24224_unflnoskillnopo2.mjs', 'smoke_v24225_unflpennynoskill2.mjs']);
+const EXEMPT = new Set(['smoke_v24223_unfllowlvnopo2.mjs', 'smoke_v24222_unflswiftskill2.mjs', 'smoke_v24221_unfllowskill2.mjs', 'smoke_v24224_unflnoskillnopo2.mjs', 'smoke_v24225_unflpennynoskill2.mjs', 'smoke_v24226_unflpennylownoskillnopo2.mjs']);
 const leftovers = [];
 for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWith('.mjs') && !EXEMPT.has(x))) {
   const s = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
@@ -482,5 +482,5 @@ ok('旧代 422 件套口径/计数/137 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':422') || x.endsWith(':count') || x.endsWith(':137')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.227 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.227 冒烟完成：${n} 项断言，失败 0 —`);
+if (failed) { console.log(`— v24.228 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.228 冒烟完成：${n} 项断言，失败 0 —`);
