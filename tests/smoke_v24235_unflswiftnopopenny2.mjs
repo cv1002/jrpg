@@ -1,0 +1,500 @@
+// smoke_v24235_unflswiftnopopenny2.mjs —— v24.236 专项冒烟：新成就「逆风长明疾行不饮白手」（挑战向·「困难×长明×疾行×不饮×白手」五克档第七角·困难×零阵亡×七十场内×零战斗用药×零消费）
+// （新内容·单成就·第一百四十八项——承 v24.235 逆风长明疾行素手白手（unflswiftnoskillpenny2，「困难×长明×疾行×素手×白手」五克档第六角·困难×零阵亡×七十场内×零用技×零消费）/
+// v24.233 逆风长明疾行青芽白手（unflswiftlowlvpenny2，「困难×长明×疾行×青芽×白手」五克档第五角·困难×零阵亡×七十场内×未及十级×零消费）/
+// v24.232 逆风长明疾行素手不饮（unflswiftnoskillnopo2，「困难×长明×疾行×素手×不饮」五克档第四角·困难×零阵亡×七十场内×零用技×零战斗用药）/
+// v24.217 逆风长明疾行不饮（unflswiftnopo2，「困难×长明×疾行×不饮」四重克制维度首角·困难×零阵亡×七十场内×零战斗用药）/
+// v24.218 逆风长明白手疾行（unflpennyswift2，「困难×长明×白手×疾行」四重克制维度首角·困难×零阵亡×零消费×七十场内）/
+// v24.220 逆风长明白手不饮（unflpennynopo2，「困难×长明×白手×不饮」四重克制维度第三角收官·困难×零阵亡×零消费×零战斗用药）先例：本枚把
+// unflswiftnopo2（diff×deaths×battles×potionUses 四克档）与 unflpennyswift2（diff×deaths×battles×spent 四克档）与 unflpennynopo2（diff×deaths×potionUses×spent 四克档）
+// 的严格公共交集——「既零阵亡、又七十场内、又零战斗用药、又零消费且困难通关」——收为一枚，开垦
+// 「hardtrue×长明×疾行×不饮×白手」五克档第七角（unfl 五克档 C(5,3)=10，v24.229 已开 {lowlv,noskill,nopotion}、v24.230 已开 {swift,lowlv,noskill}、v24.231 已开
+// {swift,lowlv,nopotion}、v24.232 已开 {swift,noskill,nopotion}、v24.233 已开 {swift,lowlv,penny}、v24.235 已开 {swift,noskill,penny}，本枚开 {swift,nopotion,penny}；与各枚二维以上分源——死过一次、超过 70 场、战斗里喝过药或
+// 花过 1 金币即永久无缘此档）。
+// 判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss，与 trueboss/hardtrue/unflicker 同源）、既有 hero.diff（DIFFS 下标：建档 createDiff 写定、`(g.diff===1)` 即 DIFFS[1]「困难」档）、
+// 既有 hero.deaths（battle.loseBattle 全游唯一产生点——只增不减、防御式 (g.deaths||0) 旧档零迁移）、既有 hero.battles（battle.startBattle 进战即记唯一产生点——胜/败/逃都算、
+// 防御式 (g.battles||0) 旧档零迁移）、既有 hero.potionUses（battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入、防御式 !(g.potionUses||0) 旧档零迁移）、既有 hero.spent（shop.doBuy
+// 购物记账唯一产生点——消费线五端口同源、防御式 !(g.spent||0) 旧档零迁移），
+// (g.trueBoss && g.diff===1 && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL && !(g.potionUses||0) && !(g.spent||0)) 即「困难 · 零阵亡 · 七十场内 · 零战斗用药 · 零消费通关」达成——六端口只增不减语义下，
+// 换过难度、死过一次、超场、战斗里喝过药或花过 1 金币就永久无缘此档（与 hardtrue 换难度 / unflicker 死过一次 / swift 超场 / nopotion 战斗嗑药 / penny 花过金
+// 同属「重新来过才拿得到」的挑战品类）；是 hardtrue、unflicker（零阵亡）、swift（七十场内）、nopotion（零战斗用药）、penny（零消费）五枚的严格交叠——困难零阵亡七十场内零战斗用药
+// 零消费通关必同时满足五者（也必满足 unflswiftnopo2 / unflpennyswift2 / unflpennynopo2 / unflswift2 / unflpenny2 / unflnopo2 / pennyswiftnopo2 等组合档），本枚是这一五重交叉区
+// 「hardtrue×长明×疾行×不饮×白手」维度的第七角（unfl 五克档 C(5,3)=10 剩 3 枚）；与既有正向里程碑 nopotion「药囊未启」/ penny「白手成灯」/ swift「速战速决」成镜面对、互不重叠；
+// 与 v24.229-235 五克档六枚互不干扰（v24.229 读 level 不读 battles/spent、v24.230 读 level 不读 spent、v24.231 读 level/potionUses 不读 spent、v24.232 读 potionUses 不读 spent、v24.233 读 level 不读 potionUses、
+// v24.235 读 casts 不读 potionUses——本枚读 potionUses/spent 不读 level/casts）。
+// 可行性：困难档魔物全面加强下零阵亡推进（level 可以照升——本档不读 level，与青芽系分源，升过十级只灭青芽档不灭本档）、消费线五端口（商店购买×3/住店/酿造）零记账（spent 只增不减）、
+// [4] 防御/逃跑、[5] 蓄力照常可用（都不碰 diff/deaths/battles/potionUses/spent 五端口）、[2] 技能键照常可用（casts 不在本档读口——与素手系分源，放过技只灭 noskill 档不灭本档）且
+// [3] 药键不可用（potionUses 在本档读口——战斗里喝过一口药即永久无缘此档，与不饮系五克档同源）且战斗场次不破七十（battles 胜/败/逃都算，startBattle 进战即记）——「困难 ×
+// 别自降难度 + 别死 + 别恋战 + 别喝药 + 别花一分钱」的五重克制一场逆风长明疾行不饮白手。
+// 零新计数零新状态零新写点零新存档（trueBoss/diff/deaths/battles/potionUses/spent 皆既有字段）、无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift/nopotion/penny/unflswiftnopo2 同款——困难里不恋战不喝药不花钱又不死本身就是奖励、硬核才是）、
+// 解锁走 winBattle → applyAchievements 既有通路（终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），反馈不迟到。
+// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.235 + data.js 字面量 v24.236 + 旧 v24.234 字面量零残留）、ACH_LIST 148 项精确与末尾序位（unflswiftnopopenny2 落位 147——
+// 前 147 项 id/序位零回归）、unflswiftnopopenny2 数据契约（d 文案、ok 防御式逐值、无 r 无 prog 且与 nopotion/penny/swift 正向里程碑镜面对、五克档必同时满足
+// hardtrue/unflicker/swift/nopotion/penny 且满足 unflswiftnopo2/unflpennyswift2/unflpennynopo2 三枚四克档与 pennyswiftnopo2 等组合档）、unlockedAchievements/applyAchievements
+// 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 / 换难度不解锁 / 死过一次不解锁 / 超场不解锁 / 战斗喝过一次药不解锁 / 花过 1 金币不解锁 / 未通关不解锁 / 空档不解锁 /
+// 放过技·大地图 F 喝药·快速旅行·升过十级皆照常解锁反例——本枚不读 casts/level/mapPotions/travels）、既有 147 成就 id 零回归、battle.js 无 potionUses/spent 新增写点与 deaths/battles/potionUses/casts 各 1 处既有写入点与
+// hero.js level++ 唯一写入点与 data.js CAST_GOAL/SPEED_GOAL/BATTLE_GOAL/POTION_USE_GOAL/LOWLV_GOAL/DIFFS 常量源级零变化、README/package.json/CHANGELOG 同步（件套口径 433 + v24.236 守护描述 + 入库 433 + 版本速览 148 项 + tests 树串尾 + package 串尾 433 + CHANGELOG 顶条 v24.236）、
+// 哨兵链（前望 434 且 README 尚无 434 口径）、旧代 v24.235 字面量/恒等/顶 pin/432 口径/147 项全库零残留扫描（豁免本套件与 v24233 与 v24231 与 v24230 与 v24229——五者含 v24.235 负向断言/扫描目标）。
+import { S } from '../js/state.js';
+import { GAME_VERSION, ACH_LIST } from '../js/data.js';
+import { unlockedAchievements } from '../js/rules.js';
+import { applyAchievements } from '../js/hero.js';
+import { bind } from '../js/bind.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const noop = () => {};
+function makeCtx() {
+  const grad = { addColorStop: noop };
+  return {
+    canvas: { width: 640, height: 480 },
+    measureText: (t) => ({ width: String(t).length * 8 }),
+    createLinearGradient: () => grad, createRadialGradient: () => grad, createConicGradient: () => grad, createPattern: () => ({}),
+    beginPath: noop, closePath: noop, moveTo: noop, lineTo: noop, arc: noop, arcTo: noop, ellipse: noop,
+    quadraticCurveTo: noop, bezierCurveTo: noop, fill: noop, stroke: noop, fillRect: noop, strokeRect: noop,
+    clearRect: noop, drawImage: noop, save: noop, restore: noop, translate: noop, rotate: noop, scale: noop,
+    transform: noop, setTransform: noop, clip: noop, rect: noop, setLineDash: noop, getLineDash: () => [],
+    isPointInPath: () => false,
+    globalAlpha: 1, strokeStyle: '#000', fillStyle: '#000', font: '', textAlign: 'left', textBaseline: 'alphabetic',
+    lineWidth: 1, imageSmoothingEnabled: false,
+    fillText: (t) => { drawn.push(String(t)); },
+  };
+}
+function mkEl(id) {
+  const cl = { add: noop, remove: noop, contains: () => false, toggle: noop };
+  return { textContent: '', style: {}, className: '', id, width: 640, height: 480,
+    getContext: () => makeCtx(), classList: cl, parentElement: { classList: cl }, addEventListener: noop };
+}
+const els = {};
+const drawn = [];
+globalThis.document = {
+  getElementById: (id) => { if (!els[id]) els[id] = mkEl(id); return els[id]; },
+  createElement: (tag) => tag === 'canvas'
+    ? { width: 32, height: 32, getContext: () => makeCtx(), style: {}, classList: { add: noop, remove: noop } }
+    : { style: {}, classList: { add: noop, remove: noop } },
+  addEventListener: noop,
+  documentElement: { style: {} },
+};
+function FakeAudio() { return { currentTime: 0, destination: {},
+  createOscillator: () => ({ connect: noop, start: noop, stop: noop, type: '',
+    frequency: { setValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
+  createGain: () => ({ connect: noop,
+    gain: { value: 1, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop } }),
+  createBuffer: () => ({}), createBufferSource: () => ({ connect: noop, start: noop }),
+  createPeriodicWave: () => ({}), resume: noop }; }
+globalThis.window = { addEventListener: noop, AudioContext: FakeAudio, webkitAudioContext: FakeAudio };
+const mem = {};
+globalThis.localStorage = {
+  getItem: (k) => Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null,
+  setItem: (k, v) => { mem[k] = String(v); },
+  removeItem: (k) => { delete mem[k]; },
+};
+globalThis.setInterval = () => 0;
+globalThis.clearInterval = () => {};
+
+await import('../js/main.js');
+
+let n = 0, failed = 0;
+function ok(name, cond, extra) {
+  n++;
+  if (cond) console.log('  ✓', name);
+  else { failed++; console.log('  ✗', name, extra || ''); }
+}
+console.log('— v24.236 挑战向·「困难×长明×疾行×不饮×白手」五克档第七角成就「逆风长明疾行不饮白手」（困难×零阵亡×七十场内×零战斗用药×零消费） 冒烟 —');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
+const dataSrc = read('js/data.js');
+const battleSrc = read('js/battle.js');
+const heroSrc = read('js/hero.js');
+const readme = read('README.md');
+const pkg = read('package.json');
+const changelog = read('CHANGELOG.md');
+// —— 版本锚点（格式合法 + 已越过 v24.235 + 精确值由本版守护）——
+const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
+const _gv = _vm(GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.235', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 235)), GAME_VERSION);
+ok('data.js GAME_VERSION 字面量已为 v24.236（旧 v24.234 字面量零残留）',
+  dataSrc.includes("const GAME_VERSION = 'v24.236';") && !dataSrc.includes("const GAME_VERSION = 'v24.234';"));
+ok('data.js 含 v24.236 注释（逆风长明疾行不饮白手五克档第七角说明）',
+  dataSrc.includes('v24.236 新内容·新成就'));
+
+// —— ACH_LIST 契约 ——
+const ach = ACH_LIST.find((a) => a.id === 'unflswiftnopopenny2');
+ok('ACH_LIST 含 unflswiftnopopenny2「逆风长明疾行不饮白手」且 id 唯一',
+  !!ach && ach.name === '逆风长明疾行不饮白手' && ACH_LIST.filter((a) => a.id === 'unflswiftnopopenny2').length === 1);
+ok('ACH_LIST 精确总数 148 项（147→148 末尾追加）', ACH_LIST.length === 148, String(ACH_LIST.length));
+ok('unflswiftnopopenny2 描述文案（困难零阵亡七十场内零战斗用药零消费真结局五克档第七角）',
+  ach.d === `以困难模式、零阵亡、${70} 场战斗内、未在战斗中使用药水/灵药（战斗指令 [3]）且未花费 1 金币时击败终焉之神（真结局）`, ach.d);
+ok('unflswiftnopopenny2 判定源级（读既有 g.trueBoss / g.diff===1 / !(g.deaths||0) / (g.battles||0)<=SPEED_GOAL / !(g.potionUses||0) / !(g.spent||0)，不含 level 不含 casts）',
+  String(ach.ok).includes('g.trueBoss') && String(ach.ok).includes('g.diff===1') && String(ach.ok).includes('g.deaths') &&
+  String(ach.ok).includes('SPEED_GOAL') && String(ach.ok).includes('g.battles') && String(ach.ok).includes('g.potionUses') &&
+  String(ach.ok).includes('g.spent') && !String(ach.ok).includes('LOWLV_GOAL') && !String(ach.ok).includes('g.casts') && !String(ach.ok).includes('g.level'));
+ok('unflswiftnopopenny2 无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift/nopotion/penny/unflswiftnopo2 同款）',
+  !('r' in ach) && !('prog' in ach));
+
+// —— ok 防御式逐值 ——
+ok('困难 + 零阵亡 + 七十场内 + 零战斗用药 + 零消费 + 真结局 → 解锁', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 70, level: 5, casts: 0, potionUses: 0, spent: 0 }) === true);
+ok('困难 + 零阵亡 + 真结局 + 缺 deaths/battles/potionUses/spent 字段 → (g.deaths||0)/(g.battles||0)/(g.potionUses||0)/(g.spent||0) 防御式解码解锁（旧档零迁移）', ach.ok({ trueBoss: true, diff: 1 }) === true);
+ok('缺 diff 字段（普通档）+ 全克制 → 不解锁（diff 维严格）', ach.ok({ trueBoss: true, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === false);
+ok('困难 + 死过一次（deaths 1）→ 不解锁（阵亡即永久无缘此档）', ach.ok({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 0, spent: 0 }) === false);
+ok('困难 + 超场（battles 71）→ 不解锁（超过七十场即永久无缘此档，swift 维严格）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 71, potionUses: 0, spent: 0 }) === false);
+ok('困难 + 恰好七十场（battles 70）→ 照常解锁（七十场内含边界的严格界）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 70, potionUses: 0, spent: 0 }) === true);
+ok('困难 + 战斗喝过一次药（potionUses 1）→ 不解锁（战斗里喝过药即永久无缘此档，不饮维严格）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 1, spent: 0 }) === false);
+ok('困难 + 战斗喝过多次药（potionUses 9）→ 不解锁（超过零次永久无缘此档）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 9, spent: 0 }) === false);
+ok('困难 + 恰好零次药（potionUses 0）→ 照常解锁（零战斗用药含边界的严格界）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === true);
+ok('困难 + 花过 1 金币（spent 1）→ 不解锁（消费即永久无缘此档，白手维严格）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 }) === false);
+ok('困难 + 全克制但未通关 → 不解锁', ach.ok({ diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === false);
+ok('空档/缺字段 → 不解锁（五端口防御式零迁移）', ach.ok({}) === false);
+ok('困难 + 全克制 + 升过十级（level 12）→ 照常解锁（本档不读 level，与青芽系分源——升级只灭 lowlv 档不灭本档）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0, level: 12 }) === true);
+ok('困难 + 全克制 + 放过技（casts 9）→ 照常解锁（本档不读 casts，与素手系分源——放过技只灭 noskill 档不灭本档）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0, casts: 9 }) === true);
+ok('困难 + 全克制 + 大地图 F 喝过药（mapPotions 9）→ 照常解锁（本档只认战斗内 potionUses 端口，大地图喝药与不饮系分源）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0, mapPotions: 9 }) === true);
+ok('困难 + 全克制 + 快速旅行过（travels 3）→ 照常解锁（本档不读 travels，与旅行探索系分源）', ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0, travels: 3 }) === true);
+
+const EXPECTED = ['firstblood', 'hunt10', 'lucky', 'lvl5', 'lvl10', 'lvl12', 'rich', 'scholar', 'quest',
+  'boss', 'cave', 'trueboss', 'rush', 'perfection', 'legend', 'cartman', 'names', 'mist', 'stone',
+  'ember', 'bone', 'chests', 'allquests', 'memoir', 'skills', 'hardtrue', 'aegis', 'allchests',
+  'elites', 'grain', 'brew', 'wander', 'ptime', 'hunt100', 'ptime2', 'lucky2', 'rich2', 'stock',
+  'brew2', 'stock2', 'elixir', 'mush', 'elixir2', 'mush2', 'metall', 'rich3', 'ptime3', 'hunt3',
+  'lucky3', 'stock3', 'elixir3', 'brew3', 'mush3', 'outstep', 'outstep2', 'scholar2', 'seen', 'seen2',
+  'chests2', 'talkall', 'deflect', 'charge', 'crit', 'cast', 'flee', 'potionuses', 'rushs', 'mapdrink',
+  'innrest', 'spend', 'travels', 'steps', 'battles', 'sell', 'deaths', 'nightwins', 'unflicker', 'swift',
+  'lowlv', 'nopotion', 'penny', 'steadfast', 'frugal', 'dry', 'swift2', 'lowlv2', 'noskill', 'noskill2',
+  'lowskill', 'swiftskill', 'swiftlv', 'nopotskill', 'unflskill', 'swiftnopo', 'lowlvnopo', 'unflswift',
+  'unfllowlv', 'unflnopo', 'unflpenny', 'pennyswift', 'pennylowlv', 'pennynoskill', 'pennynopo', 'unflswift2', 'unflpenny2',
+  'unflnopo2', 'unflskill2', 'unfllowlv2', 'pennyswift2', 'pennylowlv2', 'pennynoskill2', 'pennynopo2',
+  'swiftlv2', 'swiftskill2', 'swiftnopo2', 'lowskill2', 'lowlvnopo2', 'nopotskill2', 'lowskillnopo2',
+  'pennylowlvnopo2', 'pennynoskillnopo2', 'pennylowskill2', 'pennylownoskillnopo2', 'swiftlowskill2',
+  'swiftlowlvnopo2', 'swiftnoskillnopo2', 'pennyswiftlv2', 'pennyswiftskill2', 'pennyswiftnopo2', 'unflswiftlowlv2', 'unflswiftnopo2', 'unflpennyswift2', 'unflpennylowlv2', 'unflpennynopo2', 'unfllowskill2', 'unflswiftskill2', 'unfllowlvnopo2', 'unflnoskillnopo2', 'unflpennynoskill2', 'unflpennylownoskillnopo2', 'unfllowlvnoskillnopo2', 'unflswiftlowlvnoskill2', 'unflswiftlowlvnopo2', 'unflswiftnoskillnopo2', 'unflswiftlowlvpenny2', 'unflswiftnoskillpenny2'];
+ok('既有 147 成就 id 零回归（核心抽样全覆盖末期正位）',
+  EXPECTED.every((id) => ACH_LIST.some((a) => a.id === id)));
+ok('unflswiftnopopenny2 落位 index 147（末尾追加，既有 0..146 序位零位移）',
+  ACH_LIST.findIndex((a) => a.id === 'unflswiftnopopenny2') === 147 &&
+  ACH_LIST.findIndex((a) => a.id === 'unflswiftnoskillpenny2') === 146 &&
+  ACH_LIST.findIndex((a) => a.id === 'unflswiftlowlvpenny2') === 145 &&
+  ACH_LIST.findIndex((a) => a.id === 'unflswiftnoskillnopo2') === 144 &&
+  ACH_LIST.findIndex((a) => a.id === 'unflswiftlowlvnopo2') === 143 &&
+  ACH_LIST.findIndex((a) => a.id === 'unflswiftlowlvnoskill2') === 142 &&
+  ACH_LIST.findIndex((a) => a.id === 'unfllowlvnoskillnopo2') === 141);
+
+// —— 既有组合档家族对照（五克档 = 各组合档严格公共交集，互不干扰）——
+const _a = (id) => ACH_LIST.find((x) => x.id === id);
+ok('五克档必同时满足 unflswiftnopo2（四克档）与 unflpennyswift2（四克档）与 unflpennynopo2（四克档）三枚（deaths/battles/potionUses/spent 四源同判）',
+  _a('unflswiftnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === true &&
+  _a('unflpennyswift2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === true &&
+  _a('unflpennynopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === true);
+ok('组合档互检：unflswiftnopo2 不读 spent（花过金照亮 unflswiftnopo2 但照灭本枚）/ unflpennyswift2 不读 potionUses（战斗嗑药照亮 unflpennyswift2 但照灭本枚）/ unflpennynopo2 不读 battles（超场照亮 unflpennynopo2 但照灭本枚）',
+  _a('unflswiftnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 }) === false &&
+  _a('unflpennyswift2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 9, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 9, spent: 0 }) === false &&
+  _a('unflpennynopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 100, potionUses: 0, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 100, potionUses: 0, spent: 0 }) === false);
+ok('换过难度（diff 0）→ 本枚与组合档同不解锁（diff 严格分区——普通档单克档如 unflicker/swift/nopotion/penny 照常各自解锁，不读本枚）',
+  _a('unflpennyswift2').ok({ trueBoss: true, diff: 0, deaths: 0, battles: 42, spent: 0 }) === false &&
+  _a('unflicker').ok({ trueBoss: true, deaths: 0 }) === true &&
+  _a('swift').ok({ trueBoss: true, battles: 42 }) === true &&
+  _a('nopotion').ok({ trueBoss: true, potionUses: 0 }) === true &&
+  _a('penny').ok({ trueBoss: true, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 0, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === false);
+ok('与五克档 unflswiftnoskillpenny2（v24.235）互不干扰——v24.235 读 casts 不读 potionUses、本枚读 potionUses 不读 casts：战斗嗑药照亮 v24.235 但照灭本枚，放过技照亮本枚但照灭 v24.235',
+  _a('unflswiftnoskillpenny2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 0, potionUses: 1, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 0, potionUses: 1, spent: 0 }) === false &&
+  _a('unflswiftnoskillpenny2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 1, potionUses: 0, spent: 0 }) === false &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 1, potionUses: 0, spent: 0 }) === true);
+ok('与五克档 unflswiftlowlvpenny2（v24.233）互不干扰——v24.233 读 level 不读 potionUses、本枚读 potionUses 不读 level：升过十级照亮本枚但照灭 v24.233，战斗嗑药照亮 v24.233 但照灭本枚',
+  _a('unflswiftlowlvpenny2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, potionUses: 0, spent: 0 }) === false &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, potionUses: 0, spent: 0 }) === true &&
+  _a('unflswiftlowlvpenny2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 5, potionUses: 1, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 5, potionUses: 1, spent: 0 }) === false);
+ok('与五克档 unflswiftnoskillnopo2（v24.232）互不干扰——v24.232 读 casts/potionUses 不读 spent、本枚读 spent/potionUses 不读 casts：花过金照亮 v24.232 但照灭本枚，放过技照亮本枚但照灭 v24.232',
+  _a('unflswiftnoskillnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 0, potionUses: 0, spent: 1 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 0, potionUses: 0, spent: 1 }) === false &&
+  _a('unflswiftnoskillnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 1, potionUses: 0, spent: 0 }) === false &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, casts: 1, potionUses: 0, spent: 0 }) === true);
+ok('与五克档 unflswiftlowlvnopo2（v24.231）互不干扰——v24.231 读 level/potionUses 不读 spent/casts、本枚读 spent/potionUses 不读 level/casts：花过金或放过技照亮 v24.231 但照灭本枚，升过十级照灭 v24.231 但照亮本枚（战斗嗑药双灭）',
+  _a('unflswiftlowlvnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 5, casts: 1, spent: 1, potionUses: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 5, casts: 1, spent: 1, potionUses: 0 }) === false &&
+  _a('unflswiftlowlvnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, casts: 0, spent: 0, potionUses: 0 }) === false &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, casts: 0, spent: 0, potionUses: 0 }) === true);
+ok('与五克档 unflswiftlowlvnoskill2（v24.230）互不干扰——v24.230 读 level/casts 不读 potionUses/spent、本枚读 potionUses/spent 不读 level/casts：战斗嗑药或花过金照亮 v24.230 但照灭本枚，放过技照亮本枚但照灭 v24.230，升过十级照灭 v24.230 但照亮本枚',
+  _a('unflswiftlowlvnoskill2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 5, casts: 0, spent: 1, potionUses: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 5, casts: 0, spent: 1, potionUses: 0 }) === false &&
+  _a('unflswiftlowlvnoskill2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, casts: 0, spent: 0, potionUses: 0 }) === false &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, casts: 0, spent: 0, potionUses: 0 }) === true);
+ok('与五克档 unfllowlvnoskillnopo2（v24.229）互不干扰——v24.229 读 level/casts/potionUses 不读 battles/spent、本枚读 battles/spent 不读 level/potionUses：超场或花过金照亮 v24.229 但照灭本枚，升过十级或放过技照灭 v24.229 但照亮本枚',
+  _a('unfllowlvnoskillnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 100, level: 5, casts: 0, spent: 1, potionUses: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 100, level: 5, casts: 0, spent: 1, potionUses: 0 }) === false &&
+  _a('unfllowlvnoskillnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, casts: 1, spent: 0, potionUses: 0 }) === false &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, level: 12, casts: 1, spent: 0, potionUses: 0 }) === true);
+ok('与四克档 unflswiftnopo2（v24.217）互不干扰——unflswiftnopo2 读 potionUses 不读 spent、本枚读 potionUses/spent：花过金照亮 unflswiftnopo2 但照灭本枚',
+  _a('unflswiftnopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 }) === false);
+ok('与四克档 unflpennyswift2（v24.218）互不干扰——unflpennyswift2 读 spent 不读 potionUses、本枚读 potionUses/spent：战斗嗑药照亮 unflpennyswift2 但照灭本枚',
+  _a('unflpennyswift2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 9, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 9, spent: 0 }) === false);
+ok('与四克档 unflpennynopo2（v24.220）互不干扰——unflpennynopo2 读 potionUses/spent 不读 battles、本枚读 battles/potionUses/spent：超场照亮 unflpennynopo2 但照灭本枚',
+  _a('unflpennynopo2').ok({ trueBoss: true, diff: 1, deaths: 0, battles: 100, potionUses: 0, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 100, potionUses: 0, spent: 0 }) === false);
+ok('与三克档 pennyswiftnopo2（v24.211）互不干扰——pennyswiftnopo2 不读 deaths、本枚读 deaths：死过一次照亮 pennyswiftnopo2 但照灭本枚',
+  _a('pennyswiftnopo2').ok({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 0, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 0, spent: 0 }) === false);
+ok('与三克档 pennyswift2（v24.184）互不干扰——pennyswift2 不读 deaths/potionUses、本枚读 deaths/potionUses：死过一次或战斗嗑药照亮 pennyswift2 但照灭本枚',
+  _a('pennyswift2').ok({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 9, spent: 0 }) === true &&
+  ach.ok({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 9, spent: 0 }) === false);
+ok('nopotion/penny/swift 正向里程碑档不解锁本枚（普通档场内各自解锁自己的正向里程碑，本枚只认五克档困难通关）',
+  ach.ok({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 }) === true && _a('nopotion').ok({ trueBoss: true, potionUses: 0 }) === true && _a('penny').ok({ trueBoss: true, spent: 0 }) === true && _a('swift').ok({ trueBoss: true, battles: 42 }) === true);
+
+// —— unlockedAchievements 集成 ——
+function freshHero(extra) {
+  return Object.assign({ name: '余烬', level: 9, gold: 123, xp: 0, xpNext: 20, hp: 50, hpMax: 50, mp: 20, mpMax: 20,
+    item: 3, potion2: 1, mushrooms: 2, weapon: '铁剑', armor: '皮甲', atkMax: 12, defMax: 6,
+    map: 'village', x: 8, y: 8, time: 0, ach: [], bestiary: {}, seen: {}, fragments: [], visited: ['village'],
+    quests: {}, totalWins: 3, drops: 0, steps: 0, travels: 0, spent: 0, battles: 3, skills: [], talked: [],
+    checks: 0, crits: 0, casts: 0, flees: 0, potionUses: 0, deflects: 0, charges: 0, sleep: 0,
+    sold: 0, dealt: 0, mapPotions: 0, innRests: 0, nightWins: 0, rushClears: 0, brews: 0, chests: [],
+    deaths: 0, diff: 0 }, extra);
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 五克档真结局档 newly 含 unflswiftnopopenny2（既有通路自动跟随）',
+    newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+  ok('unlockedAchievements 同档 newly 含三枚组合档 unflswiftnopo2/unflpennyswift2/unflpennynopo2（子集自动跟随）',
+    newly.includes('unflswiftnopo2') && newly.includes('unflpennyswift2') && newly.includes('unflpennynopo2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 0, deaths: 0, battles: 42, potionUses: 0, spent: 0 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 普通档 newly 不含 unflswiftnopopenny2（不误解锁，diff 维严格）',
+    !newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 0, spent: 0 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 死过一次档 newly 不含 unflswiftnopopenny2（不误解锁，deaths 维严格）',
+    !newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 100, potionUses: 0, spent: 0 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 超场档 newly 不含 unflswiftnopopenny2（不误解锁，battles 维严格）',
+    !newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 1, spent: 0 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 战斗喝过一次药档 newly 不含 unflswiftnopopenny2（不误解锁，potionUses 维严格）',
+    !newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 花过 1 金币档 newly 不含 unflswiftnopopenny2（不误解锁，spent 维严格）',
+    !newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 未通关档 newly 不含 unflswiftnopopenny2（不误解锁）',
+    !newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+{
+  const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0, level: 12, casts: 9, mapPotions: 9, travels: 3 });
+  const newly = unlockedAchievements(h);
+  ok('unlockedAchievements 升过十级且放过技且大地图喝过药且旅行过档 newly 含 unflswiftnopopenny2（本档不读 level/casts/mapPotions/travels，与青芽/素手系分源）',
+    newly.includes('unflswiftnopopenny2'), JSON.stringify(newly));
+}
+
+// —— applyAchievements 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等）——
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0 });
+    S.G = h;
+    applyAchievements();
+    ok('applyAchievements 真实解锁落 hero.ach（含 unflswiftnopopenny2）', h.ach.includes('unflswiftnopopenny2'), JSON.stringify(h.ach));
+    ok('解锁横幅报成就名【逆风长明疾行不饮白手】', msgs.some((m) => m.includes('🔓 成就解锁：') && m.includes('【逆风长明疾行不饮白手】')), msgs.join(' | '));
+    const len1 = msgs.length;
+    applyAchievements();
+    ok('幂等：重复调用不再报（已解锁去重）', msgs.length === len1 && msgs.filter((m) => m.includes('【逆风长明疾行不饮白手】')).length === 1, String(msgs.length));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 1, deaths: 1, battles: 42, potionUses: 0, spent: 0 });
+    S.G = h;
+    applyAchievements();
+    ok('死过一次 applyAchievements 零 unflswiftnopopenny2 解锁零「逆风长明疾行不饮白手」横幅（不误解锁，deaths 维严格）',
+      !h.ach.includes('unflswiftnopopenny2') && !msgs.some((m) => m.includes('【逆风长明疾行不饮白手】')), JSON.stringify({ ach: h.ach, msgs }));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 100, potionUses: 0, spent: 0 });
+    S.G = h;
+    applyAchievements();
+    ok('超场 applyAchievements 零 unflswiftnopopenny2 解锁零「逆风长明疾行不饮白手」横幅（不误解锁，battles 维严格）',
+      !h.ach.includes('unflswiftnopopenny2') && !msgs.some((m) => m.includes('【逆风长明疾行不饮白手】')), JSON.stringify({ ach: h.ach, msgs }));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 1, spent: 0 });
+    S.G = h;
+    applyAchievements();
+    ok('战斗喝过一次药 applyAchievements 零 unflswiftnopopenny2 解锁零「逆风长明疾行不饮白手」横幅（不误解锁，potionUses 维严格）',
+      !h.ach.includes('unflswiftnopopenny2') && !msgs.some((m) => m.includes('【逆风长明疾行不饮白手】')), JSON.stringify({ ach: h.ach, msgs }));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 1 });
+    S.G = h;
+    applyAchievements();
+    ok('花过 1 金币 applyAchievements 零 unflswiftnopopenny2 解锁零「逆风长明疾行不饮白手」横幅（不误解锁，spent 维严格）',
+      !h.ach.includes('unflswiftnopopenny2') && !msgs.some((m) => m.includes('【逆风长明疾行不饮白手】')), JSON.stringify({ ach: h.ach, msgs }));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 0, deaths: 0, battles: 42, potionUses: 0, spent: 0 });
+    S.G = h;
+    applyAchievements();
+    ok('普通档 applyAchievements 零 unflswiftnopopenny2 解锁零「逆风长明疾行不饮白手」横幅（不误解锁，diff 维严格）',
+      !h.ach.includes('unflswiftnopopenny2') && !msgs.some((m) => m.includes('【逆风长明疾行不饮白手】')), JSON.stringify({ ach: h.ach, msgs }));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+{
+  const msgs = [];
+  const origBox = bind.boxMsg;
+  bind.boxMsg = (t) => { msgs.push(String(t)); };
+  try {
+    const h = freshHero({ trueBoss: true, diff: 1, deaths: 0, battles: 42, potionUses: 0, spent: 0, level: 12, casts: 9, mapPotions: 9 });
+    S.G = h;
+    applyAchievements();
+    ok('升过十级且放过技且大地图喝过药 applyAchievements 照常解锁 unflswiftnopopenny2 并报「逆风长明疾行不饮白手」横幅（本档不读 level/casts/mapPotions，与青芽/素手系分源）',
+      h.ach.includes('unflswiftnopopenny2') && msgs.some((m) => m.includes('【逆风长明疾行不饮白手】')), JSON.stringify({ ach: h.ach, msgs }));
+  } finally {
+    bind.boxMsg = origBox;
+    S.G = null;
+  }
+}
+
+// —— 源级零变化：battle.js 无 potionUses/spent 新增写点 + battle.js deaths/battles/potionUses/casts 写入点 + data.js 常量（既有，本版未动）——
+ok('battle.js 未新增任何 spent 计数写点（消费线五端口都在 shop/core、本版零改动）',
+  (battleSrc.match(/\.spent = /g) || []).length === 0, String((battleSrc.match(/\.spent = /g) || []).length));
+ok('battle.js 具 1 处 S.G.deaths = (S.G.deaths || 0) + 1; 写入点（loseBattle 阵亡唯一产生点）',
+  (battleSrc.match(/S\.G\.deaths = \(S\.G\.deaths \|\| 0\) \+ 1;/g) || []).length === 1, String((battleSrc.match(/S\.G\.deaths = \(S\.G\.deaths \|\| 0\) \+ 1;/g) || []).length));
+ok('battle.js 具 1 处 S.G.battles = (S.G.battles || 0) + 1; 写入点（startBattle 进战即记唯一产生点）',
+  (battleSrc.match(/S\.G\.battles = \(S\.G\.battles \|\| 0\) \+ 1;/g) || []).length === 1, String((battleSrc.match(/S\.G\.battles = \(S\.G\.battles \|\| 0\) \+ 1;/g) || []).length));
+ok('battle.js 具 1 处 hero.potionUses = useN; 写入点（doItem 战斗用药成功唯一产生点——大地图 F/旅馆/篝火不计入，与 casts 系同读一份源，本版未动）',
+  (battleSrc.match(/hero\.potionUses = useN;/g) || []).length === 1 && battleSrc.includes('const useN = (hero.potionUses || 0) + 1;'), String((battleSrc.match(/hero\.potionUses = useN;/g) || []).length));
+ok('battle.js 具 1 处 hero.casts = castN; 写入点（doSkill 战斗释放技能成功唯一产生点——治愈与伤害两分支都计入，与 potionUses 系同读一份源，本版未动）',
+  (battleSrc.match(/hero\.casts = castN;/g) || []).length === 1 && battleSrc.includes('const castN = (hero.casts || 0) + 1;'), String((battleSrc.match(/hero\.casts = castN;/g) || []).length));
+ok('hero.js 具 1 处 hero.level++ 写入点（grantXp 升级唯一产生点）',
+  (heroSrc.match(/hero\.level\+\+;/g) || []).length === 1, String((heroSrc.match(/hero\.level\+\+;/g) || []).length));
+ok('data.js CAST_GOAL 常量仍为 30（零用技里程碑单一数据源，与 noskill/noskill2/lowskill/swiftskill/nopotskill/unflskill/unflswiftskill2 系同读一份源，本版未动）',
+  dataSrc.includes('const CAST_GOAL = 30;'));
+ok('data.js SPEED_GOAL 常量仍为 70（单一数据源，与 swift/swift2/unflswift/unflswift2/swiftskill2 系同读一份源）',
+  dataSrc.includes('const SPEED_GOAL = 70;'));
+ok('data.js BATTLE_GOAL 常量仍为 100（遭遇线里程碑唯一数据源，与 battles「身经百战」系同读一份源）',
+  dataSrc.includes('const BATTLE_GOAL = 100;'));
+ok('data.js POTION_USE_GOAL 常量仍为 15（单一数据源，与 nopotion/dry/nopotskill/swiftnopo/lowlvnopo2/unflnoskillnopo2 系同读一份源，本版未动）',
+  dataSrc.includes('const POTION_USE_GOAL = 15;'));
+ok('data.js LOWLV_GOAL 常量仍为 10（单一数据源，与 lowlv/lowlv2/lowskill/unfllowlv/unfllowlv2/unflswiftlowlvpenny2 系同读一份源）',
+  dataSrc.includes('const LOWLV_GOAL = 10;'));
+ok('data.js DIFFS 仍含「困难」档（难度单一数据源，与 hardtrue/steadfast/unflpenny2/unflnopo2/pennynopo2/unflswiftnopopenny2 同读一份源）',
+  dataSrc.includes("const DIFFS=['普通','困难'];"));
+ok('hero.js 成就横幅活计数注释已推进至 N/148（147→148）', heroSrc.includes('（成就 N/148）'));
+ok('data.js 成就横幅活计数注释已推进至 N/148（147→148，两处恒等）', (dataSrc.match(/（成就 N\/148）/g) || []).length === 2, String((dataSrc.match(/（成就 N\/148）/g) || []).length));
+
+// —— README / package.json / CHANGELOG 同步 ——
+ok('README 件套口径为四百三十三件套（四百三十二件套清除）',
+  readme.includes('扩充为冒烟四百三十三件套（四百三十二件套清除）') && !readme.includes('扩充为冒烟四百三十二件套（四百三十一件套清除）'));
+ok('README 含 v24.236 守护描述（逆风长明疾行不饮白手五克档第七角守护）', readme.includes('v24.236 起含「逆风长明疾行不饮白手」新成就守护'));
+ok('README 版本速览已为 v24.236 且成就计数 148', readme.includes('版本速览（v24.236）') && readme.includes('148 项成就'));
+ok('README 成就计数双处口径 148 项（全部 148 项进度 + **148 项成就**，**147 项成就**清除）',
+  readme.includes('全部 148 项进度') && readme.includes('**148 项成就**') && !readme.includes('**14' + '7 项成就**'));
+ok('README tests 树收录 smoke_v24235_unflswiftnopopenny2（含 v24.236 守护子句 + 串尾）',
+  readme.includes('v24.236 起含「逆风长明疾行不饮白手」新成就守护') && readme.includes('smoke_v24235_unflswiftnopopenny2'));
+ok('README 含 smoke_v24235_unflswiftnopopenny2 入库（433 份）', readme.includes('smoke_v24235_unflswiftnopopenny2 入库（433 份）'));
+ok('package.json 已收录 smoke_v24235_unflswiftnopopenny2.mjs 且位于串尾（在 smoke_v24233_unflswiftnoskillpenny2 之后）',
+  pkg.includes('smoke_v24235_unflswiftnopopenny2.mjs') &&
+  pkg.includes('node tests/smoke_v24233_unflswiftnoskillpenny2.mjs && node tests/smoke_v24235_unflswiftnopopenny2.mjs"'));
+const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
+ok('package.json test 串共 433 件套', testChain === 433, String(testChain));
+ok('CHANGELOG 含 v24.236 顶条目', changelog.startsWith('## v24.236'));
+
+// —— 哨兵链：README 已有 433 口径且尚无 434（前望 434 语义：下一版才写 434）——
+ok('README 已有四百三十三件套口径且尚无 434（哨兵前望 434 语义：下一版才写 434）',
+  readme.includes('扩充为冒烟四百三十三件套（四百三十二件套清除）') && !readme.includes('四百三十四件套'));
+{
+  const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
+  ok('smoke_v24143 哨兵链前望 434（四百三十四件套否定式）',
+    s24143.includes('哨兵链前望 434') && s24143.includes('四百三十四件套否定式'));
+}
+
+// —— 旧代 v24.235 字面量 / 432 件套口径 / 147 项 全库零残留扫描（豁免本套件与 v24233 与 v24231 与 v24230 与 v24229——五者含 v24.235 负向断言/扫描目标）——
+const EXEMPT = new Set(['smoke_v24235_unflswiftnopopenny2.mjs', 'smoke_v24233_unflswiftnoskillpenny2.mjs', 'smoke_v24231_unflswiftlowlvpenny2.mjs', 'smoke_v24230_unflswiftnoskillnopo2.mjs', 'smoke_v24229_unflswiftlowlvnopo2.mjs']);
+const leftovers = [];
+for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWith('.mjs') && !EXEMPT.has(x))) {
+  const s = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
+  const code = s.split('\n').filter((l) => !l.trimStart().startsWith('//')).join('\n');
+  if (code.includes("const GAME_VERSION = 'v24.235'")) leftovers.push(f + ':gv');
+  if (code.includes("GAME_VERSION === 'v24.235'")) leftovers.push(f + ':eq');
+  if (code.includes("startsWith('## v24.235")) leftovers.push(f + ':st');
+  if (code.includes('四百三十二件套（四百三十一件套清除）')) leftovers.push(f + ':432');
+  if (code.includes('testChain === 432') || code.includes('files.length === 432') ||
+      code.includes('treeTok.length === 432') || code.includes('chainAll.length === 432') ||
+      code.includes('fileCount === 432'))
+    leftovers.push(f + ':count');
+  if (code.includes('版本速览（v24.235）')) leftovers.push(f + ':ver');
+  // 成就计数 147→148 零残留：只认「**14'+'7 项成就**」/「全部 14'+'7 项进度」两形态（「成就 N/147」是 v24.76 HUD 口径稳定常驻 pin 家族，不在扫描目标内）
+  if (code.includes('**14' + '7 项成就**') || code.includes('全部 14' + '7 项进度'))
+    leftovers.push(f + ':147');
+}
+ok('旧代 v24.235 GAME_VERSION 字面量/恒等/顶 pin/版本速览 全库零残留（哨兵链，豁免本套件与 v24233 与 v24231 与 v24230 与 v24229）',
+  leftovers.filter((x) => x.endsWith(':gv') || x.endsWith(':eq') || x.endsWith(':st') || x.endsWith(':ver')).length === 0,
+  JSON.stringify(leftovers));
+ok('旧代 432 件套口径/计数/147 项 pin 全库零残留（哨兵链，豁免本套件与 v24233 与 v24231 与 v24230 与 v24229）',
+  leftovers.filter((x) => x.endsWith(':432') || x.endsWith(':count') || x.endsWith(':147')).length === 0,
+  JSON.stringify(leftovers));
+
+if (failed) { console.log(`— v24.236 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.236 冒烟完成：${n} 项断言全绿 —`);

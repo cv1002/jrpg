@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/147）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/148）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/147）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/148）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4803,6 +4803,17 @@
 // + hero.battles（battle.startBattle 进战即记唯一产生点——胜/败/逃都算）+ hero.level（hero.js grantXp 升级唯一产生点——只增不减）+ hero.spent（shop.doBuy 购物记账唯一产生点——
 // 消费线五端口同源，core.brewNow 酿造记账同源）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到；
 // 与 casts 系（技能）/ potionUses 系（战斗用药）分源——放过技/战斗里喝过药只灭对应档不灭本枚。
+// v24.236 新内容·新成就（第一百四十八项）「逆风长明疾行不饮白手」（unflswiftnopopenny2）——「困难×长明×疾行×不饮×白手」五克档第七角（hardtrue×deaths×battles×potionUses×spent
+// 五维交叉点·解锁写点零）：困难模式 × 零阵亡 × 七十场内 × 零战斗用药 × 零消费击败终焉之神（真结局）——承 v24.235 逆风长明疾行素手白手（unflswiftnoskillpenny2，「困难×长明×疾行×素手×白手」五克档第六角·
+// 困难×零阵亡×七十场内×零用技×零消费）/ v24.233 逆风长明疾行青芽白手（unflswiftlowlvpenny2，「困难×长明×疾行×青芽×白手」五克档第五角·困难×零阵亡×七十场内×未及十级×零消费）/
+// v24.232 逆风长明疾行素手不饮（unflswiftnoskillnopo2，「困难×长明×疾行×素手×不饮」五克档第四角·困难×零阵亡×七十场内×零用技×零战斗用药）先例：本枚是
+// unflswiftnopo2（v24.217，困难×长明×疾行×不饮）/unflpennyswift2（v24.218，困难×长明×白手×疾行）/unflpennynopo2（v24.220，困难×长明×白手×不饮）三枚四克档的严格公共交集——
+// 「既零阵亡、又七十场内、又零战斗用药、又零消费且困难通关」——收为一枚，开垦「hardtrue×长明×疾行×不饮×白手」五克档第七角（unfl 五克档 C(5,3)=10，
+// v24.229 已开 {lowlv,noskill,nopotion}、v24.230 已开 {swift,lowlv,noskill}、v24.231 已开 {swift,lowlv,nopotion}、v24.232 已开 {swift,noskill,nopotion}、v24.233 已开 {swift,lowlv,penny}、
+// v24.235 已开 {swift,noskill,penny}，本枚开 {swift,nopotion,penny}；与各枚二维以上分源——死过一次、超过 70 场、战斗里喝过药或花过 1 金币即永久无缘此档）；判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）
+// + hero.battles（battle.startBattle 进战即记唯一产生点——胜/败/逃都算）+ hero.potionUses（battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入）+ hero.spent（shop.doBuy 购物记账唯一产生点——
+// 消费线五端口同源，core.brewNow 酿造记账同源）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到；
+// 与 lowlv 系（level）/ casts 系（技能）分源——升过十级/放过技只灭对应档不灭本枚。
 // v24.235 新内容·新成就（第一百四十七项）「逆风长明疾行素手白手」（unflswiftnoskillpenny2）——「困难×长明×疾行×素手×白手」五克档第六角（hardtrue×deaths×battles×casts×spent
 // 五维交叉点·解锁写点零）：困难模式 × 零阵亡 × 七十场内 × 零用技 × 零消费击败终焉之神（真结局）——承 v24.233 逆风长明疾行青芽白手（unflswiftlowlvpenny2，「困难×长明×疾行×青芽×白手」五克档第五角·
 // 困难×零阵亡×七十场内×未及十级×零消费）/ v24.232 逆风长明疾行素手不饮（unflswiftnoskillnopo2，「困难×长明×疾行×素手×不饮」五克档第四角·困难×零阵亡×七十场内×零用技×零战斗用药）/
@@ -4818,7 +4829,7 @@
 // · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 431 件套冒烟（tests/ 文件数），
 // 哨兵前望 432、链尾 smoke_v24231_unflswiftlowlvpenny2 逐处一致——v24.228-233 六个成就版本推进 140→146 项成就、425→431 件套后文档侧统一复核收口，账目与 README「版本速览」零漂移。
 // 配套：全库 431 件套 GAME_VERSION 字面量 pin 级联（v24.233→v24.234，推进排除「v24.23X 起含」时代锚点，哨兵前望 432 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.235';
+const GAME_VERSION = 'v24.236';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -12408,6 +12419,13 @@ const ACH_LIST=[
   // 满足三者与 unflswift2/unflpenny2/unflskill2/pennyswiftskill2/unflicker/hardtrue/swift/noskill/penny 等组合档）；与 lowlv 系（level）/ potionUses 系（战斗用药）分源——升过十级/战斗里喝过药只灭对应档不灭本枚；读既有
   // 五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到（与 hardtrue/unflicker/swift/noskill/penny 同属「重新来过才拿得到」的挑战品类）。
   {id:'unflswiftnoskillpenny2', name:'逆风长明疾行素手白手', d:`以困难模式、零阵亡、${SPEED_GOAL} 场战斗内、未使用任何技能（战斗指令 [2]）且未花费 1 金币时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL && !(g.casts||0) && !(g.spent||0))},
+  // v24.236 新内容·新成就（第一百四十八项）「逆风长明疾行不饮白手」（unflswiftnopopenny2）——「困难×长明×疾行×不饮×白手」五克档第七角（hardtrue×deaths×battles×potionUses×spent
+  // 五维交叉点）：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点）× 七十场内（`(g.battles||0)<=SPEED_GOAL`，battle.startBattle 进战即记唯一产生点——
+  // 胜/败/逃都算）× 零战斗用药（`!(g.potionUses||0)`，battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入）× 零消费（`!(g.spent||0)`，shop.doBuy 购物记账唯一产生点——消费线五端口同源）击败终焉之神
+  // （`!!g.trueBoss`，真结局最终 Boss 与 trueboss/hardtrue/unflicker 同源）；是 unflswiftnopo2（v24.217）/unflpennyswift2（v24.218）/unflpennynopo2（v24.220）三枚四克档的严格公共交集（本枚达成必同时
+  // 满足三者与 unflswift2/unflpenny2/unflnopo2/pennyswiftnopo2/unflicker/hardtrue/swift/nopotion/penny 等组合档）；与 casts 系（技能）/ lowlv 系（level）分源——放过技/升过十级只灭对应档不灭本枚；读既有
+  // 五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到（与 hardtrue/unflicker/swift/nopotion/penny 同属「重新来过才拿得到」的挑战品类）。
+  {id:'unflswiftnopopenny2', name:'逆风长明疾行不饮白手', d:`以困难模式、零阵亡、${SPEED_GOAL} 场战斗内、未在战斗中使用药水/灵药（战斗指令 [3]）且未花费 1 金币时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && (g.battles||0)<=SPEED_GOAL && !(g.potionUses||0) && !(g.spent||0))},
   ];
 
 function codexTag(name) {
