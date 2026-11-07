@@ -26,7 +26,7 @@
 // 别自降难度 + 别死 + 别恋战 + 别升太猛 + 别花一分钱」的五重克制一场逆风长明疾行青芽白手。
 // 零新计数零新状态零新写点零新存档（trueBoss/diff/deaths/battles/level/spent 皆既有字段）、无 r 无 prog 纯里程碑（与 hardtrue/unflicker/swift/lowlv/penny/unflswiftlowlv2 同款——困难里不恋战不花钱又不升级还不死本身就是奖励、硬核才是）、
 // 解锁走 winBattle → applyAchievements 既有通路（终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），反馈不迟到。
-// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.232 + data.js 字面量 v24.233 + 旧 v24.232 字面量零残留）、ACH_LIST 146 项精确与末尾序位（unflswiftlowlvpenny2 落位 145——
+// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.233 + data.js 字面量 v24.233 + 旧 v24.232 字面量零残留）、ACH_LIST 146 项精确与末尾序位（unflswiftlowlvpenny2 落位 145——
 // 前 145 项 id/序位零回归）、unflswiftlowlvpenny2 数据契约（d 文案、ok 防御式逐值、无 r 无 prog 且与 lowlv/penny/swift 正向里程碑镜面对、五克档必同时满足
 // hardtrue/unflicker/swift/lowlv/penny 且满足 unflswiftlowlv2/unflpennyswift2/unflpennylowlv2 三枚四克档与 pennyswift2/pennylowlv2 等组合档）、unlockedAchievements/applyAchievements
 // 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 / 换难度不解锁 / 死过一次不解锁 / 超场不解锁 / 升到十级不解锁 / 花过 1 金币不解锁 / 未通关不解锁 / 空档不解锁 /
@@ -111,11 +111,11 @@ const changelog = read('CHANGELOG.md');
 // —— 版本锚点（格式合法 + 已越过 v24.231 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.232', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 232)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.233', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 233)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.233（旧 v24.232 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.233';") && !dataSrc.includes("const GAME_VERSION = 'v24.232';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.234';") && !dataSrc.includes("const GAME_VERSION = 'v24.232';"));
 ok('data.js 含 v24.233 注释（逆风长明疾行青芽白手五克档第五角说明）',
-  dataSrc.includes('v24.233 新内容·新成就（第一百四十六项）'));
+  dataSrc.includes('v24.234 文档整理·版本锚点推进'));
 
 // —— ACH_LIST 契约 ——
 const ach = ACH_LIST.find((a) => a.id === 'unflswiftlowlvpenny2');
@@ -442,7 +442,7 @@ ok('data.js 成就横幅活计数注释已推进至 N/146（145→146，两处�
 ok('README 件套口径为四百三十一件套（四百三十件套清除）',
   readme.includes('扩充为冒烟四百三十一件套（四百三十件套清除）') && !readme.includes('扩充为冒烟四百三十件套（四百二十九件套清除）'));
 ok('README 含 v24.233 守护描述（逆风长明疾行青芽白手五克档第五角守护）', readme.includes('v24.233 起含「逆风长明疾行青芽白手」新成就守护'));
-ok('README 版本速览已为 v24.233 且成就计数 146', readme.includes('版本速览（v24.233）') && readme.includes('146 项成就'));
+ok('README 版本速览已为 v24.233 且成就计数 146', readme.includes('版本速览（v24.234）') && readme.includes('146 项成就'));
 ok('README 成就计数双处口径 146 项（全部 146 项进度 + **146 项成就**，**145 项成就**清除）',
   readme.includes('全部 146 项进度') && readme.includes('**146 项成就**') && !readme.includes('**14' + '5 项成就**'));
 ok('README tests 树收录 smoke_v24231_unflswiftlowlvpenny2（含 v24.233 守护子句 + 串尾）',
@@ -453,7 +453,7 @@ ok('package.json 已收录 smoke_v24231_unflswiftlowlvpenny2.mjs 且位于串尾
   pkg.includes('node tests/smoke_v24230_unflswiftnoskillnopo2.mjs && node tests/smoke_v24231_unflswiftlowlvpenny2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 431 件套', testChain === 431, String(testChain));
-ok('CHANGELOG 含 v24.233 顶条目', changelog.startsWith('## v24.233'));
+ok('CHANGELOG 含 v24.233 顶条目', changelog.startsWith('## v24.234'));
 
 // —— 哨兵链：README 已有 431 口径且尚无 432（前望 432 语义：下一版才写 432）——
 ok('README 已有四百三十一件套口径且尚无 432（哨兵前望 432 语义：下一版才写 432）',
@@ -490,5 +490,5 @@ ok('旧代 430 件套口径/计数/145 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':429') || x.endsWith(':count') || x.endsWith(':145')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.233 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.233 冒烟完成：${n} 项断言全绿 —`);
+if (failed) { console.log(`— v24.234 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.234 冒烟完成：${n} 项断言全绿 —`);
