@@ -4865,7 +4865,11 @@
 // + hero.level（hero.js grantXp 升级唯一产生点——只增不减）+ hero.potionUses（battle.doItem 战斗用药成功唯一产生点——大地图 F 喝药/旅馆/篝火不计入）+ hero.spent（shop.doBuy 购物记账唯一产生点——
 // 消费线五端口同源，core.brewNow 酿造记账同源）零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到；
 // 与 swift 系（battles）/ casts 系（技能）分源——超场/放过技只灭对应档不灭本枚。
-const GAME_VERSION = 'v24.239';
+// v24.240 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.234/v24.227/v24.221/v24.216/v24.213/v24.208/v24.200 文档复核先例）：版本速览与 data.js 实核对账全部吻合——151 项成就（ACH_LIST）/ 46 名 NPC（NPCS）
+// · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 436 件套冒烟（tests/ 文件数），
+// 哨兵前望 437、链尾 smoke_v24239_unflpennylowlvnopo2 逐处一致——v24.235-239 五个成就版本推进 146→151 项成就、431→436 件套（unfl 五克档 C(5,3)=10 十角收官）后文档侧统一复核收口，账目与 README「版本速览」零漂移。
+// 配套：全库 436 件套 GAME_VERSION 字面量 pin 级联（v24.239→v24.240，推进排除「v24.23X 起含」时代锚点，哨兵前望 437 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.240';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
