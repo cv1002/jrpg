@@ -105,7 +105,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.218', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 218)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.219（旧 v24.218 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.241';") && !dataSrc.includes("const GAME_VERSION = 'v24.218';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.242';") && !dataSrc.includes("const GAME_VERSION = 'v24.218';"));
 ok('data.js 含 v24.219 注释（逆风长明白手青芽新成就说明）',
   dataSrc.includes('v24.219 新内容·新成就（第一百三十四项）'));
 
@@ -113,7 +113,7 @@ ok('data.js 含 v24.219 注释（逆风长明白手青芽新成就说明）',
 const ach = ACH_LIST.find((a) => a.id === 'unflpennylowlv2');
 ok('ACH_LIST 含 unflpennylowlv2「逆风长明白手青芽」且 id 唯一',
   !!ach && ach.name === '逆风长明白手青芽' && ACH_LIST.filter((a) => a.id === 'unflpennylowlv2').length === 1);
-ok('ACH_LIST 精确总数 134 项（133→134 末尾追加）', ACH_LIST.length === 152, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 134 项（133→134 末尾追加）', ACH_LIST.length === 153, String(ACH_LIST.length));
 ok('unflpennylowlv2 描述文案（困难零阵亡零消费未及十级真结局四克档）',
   ach.d === `以困难模式、零阵亡、未花费 1 金币且等级未满 ${LOWLV_GOAL} 时击败终焉之神（真结局）`, ach.d);
 ok('unflpennylowlv2 判定源级（读既有 g.trueBoss / g.diff===1 / !(g.deaths||0) / !(g.spent||0) / (g.level||1)<LOWLV_GOAL，不含 battles/casts/potionUses）',
@@ -365,32 +365,32 @@ ok('data.js BATTLE_GOAL 常量仍为 100（遭遇线里程碑唯一数据源，�
   dataSrc.includes('const BATTLE_GOAL = 100;'));
 ok('data.js DIFFS 仍含「困难」档（难度单一数据源，与 hardtrue/steadfast/unflpenny2/unfllowlv2 同读一份源）',
   dataSrc.includes("const DIFFS=['普通','困难'];"));
-ok('hero.js 成就横幅活计数注释已推进至 N/135（134→135）', heroSrc.includes('（成就 N/152）'));
+ok('hero.js 成就横幅活计数注释已推进至 N/135（134→135）', heroSrc.includes('（成就 N/153）'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为四百三十七件套（四百三十六件套清除）',
-  readme.includes('扩充为冒烟四百三十七件套（四百三十六件套清除）') && !readme.includes('扩充为冒烟四百一十八件套（四百一十七件套清除）'));
+ok('README 件套口径为四百三十八件套（四百三十七件套清除）',
+  readme.includes('扩充为冒烟四百三十八件套（四百三十七件套清除）') && !readme.includes('扩充为冒烟四百一十八件套（四百一十七件套清除）'));
 ok('README 含 v24.219 守护描述（逆风长明白手青芽新成就守护）', readme.includes('v24.219 起含「逆风长明白手青芽」新成就守护'));
-ok('README 版本速览已为 v24.219 且成就计数 134', readme.includes('版本速览（v24.241）') && readme.includes('152 项成就'));
-ok('README 成就计数双处口径 134 项（全部 152 项进度 + **152 项成就**，**133 项成就**清除）',
-  readme.includes('全部 152 项进度') && readme.includes('**152 项成就**') && !readme.includes('**13' + '3 项成就**'));
+ok('README 版本速览已为 v24.219 且成就计数 134', readme.includes('版本速览（v24.242）') && readme.includes('153 项成就'));
+ok('README 成就计数双处口径 134 项（全部 153 项进度 + **153 项成就**，**133 项成就**清除）',
+  readme.includes('全部 153 项进度') && readme.includes('**153 项成就**') && !readme.includes('**13' + '3 项成就**'));
 ok('README tests 树收录 smoke_v24219_unflpennylowlv2（含 v24.219 守护子句 + 串尾）',
   readme.includes('v24.219 起含「逆风长明白手青芽」新成就守护') && readme.includes('smoke_v24219_unflpennylowlv2'));
 ok('README 含 smoke_v24219_unflpennylowlv2 入库（437 份）', readme.includes('smoke_v24219_unflpennylowlv2 入库（437 份）'));
 ok('package.json 已收录 smoke_v24219_unflpennylowlv2.mjs 且位于串尾（在 smoke_v24218_unflpennyswift2 之后）',
   pkg.includes('smoke_v24219_unflpennylowlv2.mjs') &&
-  pkg.includes('node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs && node tests/smoke_v24221_unfllowskill2.mjs && node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs && node tests/smoke_v24226_unflpennylownoskillnopo2.mjs && node tests/smoke_v24227_unfllowlvnoskillnopo2.mjs && node tests/smoke_v24228_unflswiftlowlvnoskill2.mjs && node tests/smoke_v24229_unflswiftlowlvnopo2.mjs && node tests/smoke_v24230_unflswiftnoskillnopo2.mjs && node tests/smoke_v24231_unflswiftlowlvpenny2.mjs && node tests/smoke_v24233_unflswiftnoskillpenny2.mjs && node tests/smoke_v24235_unflswiftnopopenny2.mjs && node tests/smoke_v24237_unfllowskillpenny2.mjs && node tests/smoke_v24238_unflpennynoskillnopo2.mjs && node tests/smoke_v24239_unflpennylowlvnopo2.mjs && node tests/smoke_v24241_unflswiftlowlvpennynoskill2.mjs"'));
+  pkg.includes('node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs && node tests/smoke_v24221_unfllowskill2.mjs && node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs && node tests/smoke_v24226_unflpennylownoskillnopo2.mjs && node tests/smoke_v24227_unfllowlvnoskillnopo2.mjs && node tests/smoke_v24228_unflswiftlowlvnoskill2.mjs && node tests/smoke_v24229_unflswiftlowlvnopo2.mjs && node tests/smoke_v24230_unflswiftnoskillnopo2.mjs && node tests/smoke_v24231_unflswiftlowlvpenny2.mjs && node tests/smoke_v24233_unflswiftnoskillpenny2.mjs && node tests/smoke_v24235_unflswiftnopopenny2.mjs && node tests/smoke_v24237_unfllowskillpenny2.mjs && node tests/smoke_v24238_unflpennynoskillnopo2.mjs && node tests/smoke_v24239_unflpennylowlvnopo2.mjs && node tests/smoke_v24241_unflswiftlowlvpennynoskill2.mjs && node tests/smoke_v24242_unflswiftlowlvpennynopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 419 件套', testChain === 437, String(testChain));
-ok('CHANGELOG 含 v24.219 顶条目', changelog.startsWith('## v24.241'));
+ok('package.json test 串共 419 件套', testChain === 438, String(testChain));
+ok('CHANGELOG 含 v24.219 顶条目', changelog.startsWith('## v24.242'));
 
 // —— 哨兵链：README 已有 419 口径且尚无 420（前望 420 语义：下一版才写 420）——
 ok('README 已有四百一十九件套口径且尚无 420（哨兵前望 420 语义：下一版才写 420）',
-  readme.includes('扩充为冒烟四百三十七件套（四百三十六件套清除）') && !readme.includes('四百三十八件套'));
+  readme.includes('扩充为冒烟四百三十八件套（四百三十七件套清除）') && !readme.includes('四百三十九件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 438（四百三十八件套否定式）',
-    s24143.includes('哨兵链前望 438') && s24143.includes('四百三十八件套否定式'));
+  ok('smoke_v24143 哨兵链前望 439（四百三十九件套否定式）',
+    s24143.includes('哨兵链前望 439') && s24143.includes('四百三十九件套否定式'));
 }
 
 // —— 旧代 v24.218 字面量 / 418 件套口径 / 133 项 全库零残留扫描（豁免本套件——本套件含 v24.218 负向断言）——
