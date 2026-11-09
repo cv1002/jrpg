@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/161）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/162）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/161）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/162）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -4985,7 +4985,18 @@
 // 全游唯一产生点）+ hero.travels（core.doTravel 成功旅行唯一产生点）+ hero.casts（battle.doSkill 战斗释放技能唯一产生点）五端口零新写点、无 r 无 prog
 // 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到；特性同 v24.246/v24.247/v24.248/v24.249 先行验证（hardtrue×deaths×travels 域内
 // 各四维交叉已证可行，本枚只加「零用技」——与 v24.180 unflskill2 同域验证过零用技困难零阵亡可行，且零旅行不拖慢节奏：地图间靠出口/传送门步行连通即可）。
-const GAME_VERSION = 'v24.250';
+// v24.251 新内容·新成就（第一百六十二项）「逆风长明徒步不饮」（unfltravelnopo2）——「困难×长明×徒步×不饮」四维交叉首角（hardtrue×deaths×travels×potionUses
+// 交叉点·解锁写点零）：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点——只增不减）× 从未使用快速旅行（`!(g.travels||0)`，
+// core.doTravel 成功旅行唯一产生点——未探索/已在原地早退零计数、只增不减）× 未在战斗中使用药水/灵药（`!(g.potionUses||0)`，battle.doItem 战斗用药成功唯一产生点——
+// 大地图 F 喝药/旅馆/篝火不计入、只增不减）击败终焉之神（`!!g.trueBoss`）——承 v24.246 逆风长明徒步（unfltravel2，「困难×长明×徒步」三维交叉首角·困难×零阵亡×从未
+// 快速旅行）/v24.179 逆风未饮（unflnopo2，「困难×长明×不饮」三克制首角·困难×零阵亡×零战斗用药）先例：本枚为 unfltravel2 与 unflnopo2 的严格公共交集——「既零阵亡、
+// 又从未快速旅行、又零战斗用药且困难通关」——收为一枚，开垦「徒步×不饮」双姿态组合第五角收官（travels×potionUses 双端口同框进挑战向交叉面——hardtrue×unfl×travels
+// 五姿态组合至此全部开垦完毕：疾行/青芽/白手/素手/不饮）；与 unfltravel2 互分源——战斗嗑药（potionUses≥1）照亮其照灭本枚（唯一分源端口 potionUses）；与 unflnopo2
+// 互分源——旅行过一次照亮其照灭本枚（唯一分源端口 travels）；与 unfl 五克档十枚二维以上分源——旅行过一次即永久无缘此档（本枚读 travels 端口，unfl 家族全部不读
+// travels，与各枚互不干扰零冲突——unfl 档可旅行、本枚不可旅行）；与「行者无疆」成镜面对（正向 15 次 vs 逆向零次，互不重叠）。判定读既有 hero.trueBoss +
+// hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.travels（core.doTravel 成功旅行唯一产生点）+ hero.potionUses（battle.doItem
+// 战斗用药成功唯一产生点）五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
+const GAME_VERSION = 'v24.251';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -12695,6 +12706,18 @@ const ACH_LIST=[
   // 全游唯一产生点）+ hero.travels（core.doTravel 成功旅行唯一产生点）+ hero.casts（battle.doSkill 战斗释放技能唯一产生点）五端口零新写点、无 r 无 prog
   // 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
   {id:'unfltravelnoskill2', name:'逆风长明徒步素手', d:`以困难模式、零阵亡、未使用任何技能（战斗指令 [2]）且从未使用快速旅行（旅行面板）时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && !(g.casts||0) && !(g.travels||0))},
+  // v24.251 新内容·新成就（第一百六十二项）「逆风长明徒步不饮」（unfltravelnopo2）——「困难×长明×徒步×不饮」四维交叉首角（hardtrue×deaths×travels×potionUses
+  // 交叉点·解锁写点零）：困难模式（`g.diff===1`，DIFFS[1]）× 零阵亡（`!(g.deaths||0)`，battle.loseBattle 全游唯一产生点——只增不减）× 从未使用快速旅行（`!(g.travels||0)`，
+  // core.doTravel 成功旅行唯一产生点——未探索/已在原地早退零计数、只增不减）× 未在战斗中使用药水/灵药（`!(g.potionUses||0)`，battle.doItem 战斗用药成功唯一产生点——
+  // 大地图 F 喝药/旅馆/篝火不计入、只增不减）击败终焉之神（`!!g.trueBoss`）——承 v24.246 逆风长明徒步（unfltravel2，「困难×长明×徒步」三维交叉首角）/v24.179 逆风未饮
+  // （unflnopo2，「困难×长明×不饮」三克制首角·困难×零阵亡×零战斗用药）先例：本枚为 unfltravel2 与 unflnopo2 的严格公共交集——「既零阵亡、又从未快速旅行、
+  // 又零战斗用药且困难通关」——收为一枚，开垦「徒步×不饮」双姿态组合第五角收官（travels×potionUses 双端口同框进挑战向交叉面——hardtrue×unfl×travels
+  // 五姿态组合至此全部开垦完毕：疾行/青芽/白手/素手/不饮）；与 unfltravel2 互分源——战斗嗑药（potionUses≥1）照亮其照灭本枚（唯一分源端口 potionUses）；
+  // 与 unflnopo2 互分源——旅行过一次照亮其照灭本枚（唯一分源端口 travels）；与 unfl 五克档十枚二维以上分源——旅行过一次即永久无缘此档（本枚读 travels 端口，
+  // unfl 家族全部不读 travels，与各枚互不干扰零冲突——unfl 档可旅行、本枚不可旅行）；与「行者无疆」成镜面对（正向 15 次 vs 逆向零次，互不重叠）。
+  // 判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.travels（core.doTravel 成功旅行唯一产生点）+
+  // hero.potionUses（battle.doItem 战斗用药成功唯一产生点）五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
+  {id:'unfltravelnopo2', name:'逆风长明徒步不饮', d:`以困难模式、零阵亡、未在战斗中使用药水/灵药且从未使用快速旅行（旅行面板）时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && !(g.potionUses||0) && !(g.travels||0))},
 ];
 
 function codexTag(name) {

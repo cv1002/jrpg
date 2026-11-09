@@ -139,7 +139,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.195', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 192)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.213（旧 v24.195 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.250';") && !dataSrc.includes("const GAME_VERSION = 'v24.195';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.251';") && !dataSrc.includes("const GAME_VERSION = 'v24.195';"));
 ok('data.js 含 v24.213 注释（逆风素手不饮青灯新成就说明）',
   dataSrc.includes('v24.213 文档整理·版本锚点推进'));
 
@@ -147,7 +147,7 @@ ok('data.js 含 v24.213 注释（逆风素手不饮青灯新成就说明）',
 const ach = ACH_LIST.find((a) => a.id === 'lowskillnopo2');
 ok('ACH_LIST 含 lowskillnopo2「逆风素手不饮青灯」且 id 唯一',
   !!ach && ach.name === '逆风素手不饮青灯' && ACH_LIST.filter((a) => a.id === 'lowskillnopo2').length === 1);
-ok('ACH_LIST 精确总数 119 项（118→119 末尾追加）', ACH_LIST.length === 161, String(ACH_LIST.length));
+ok('ACH_LIST 精确总数 119 项（118→119 末尾追加）', ACH_LIST.length === 162, String(ACH_LIST.length));
 ok('lowskillnopo2 描述文案（困难未及十级零用技零战斗用药真结局四克制档）',
   ach.d === `以困难模式、等级未满 ${LOWLV_GOAL}、未使用任何技能（战斗指令 [2]）且未在战斗中使用药水/灵药击败终焉之神（真结局）`, ach.d);
 ok('lowskillnopo2 判定源级（读既有 g.trueBoss / g.diff===1 / (g.level||1)<LOWLV_GOAL / !(g.casts||0) / !(g.potionUses||0)，不含 SPEED_GOAL）',
@@ -507,82 +507,82 @@ ok('data.js LOWLV_GOAL 常量仍为 10（单一数据源，与 lowlv/lowlv2/lows
   dataSrc.includes('const LOWLV_GOAL = 10;'));
 ok('data.js DIFFS 仍含「困难」档（难度单一数据源，与 hardtrue/steadfast/frugal/dry/swift2/lowlv2/noskill2/unflswift2/unflpenny2/unflnopo2/unflskill2/unfllowlv2/pennyswift2/pennylowlv2/pennynoskill2/pennynopo2/swiftlv2/swiftskill2/swiftnopo2/lowskill2/lowlvnopo2/nopotskill2 同读一份源）',
   dataSrc.includes("const DIFFS=['普通','困难'];"));
-ok('hero.js 成就横幅活计数注释已推进至 N/119（118→119）', heroSrc.includes('（成就 N/161）'));
+ok('hero.js 成就横幅活计数注释已推进至 N/119（118→119）', heroSrc.includes('（成就 N/162）'));
 
 // —— README / package.json / CHANGELOG 同步 ——
-ok('README 件套口径为四百四十六件套（四百四十五件套清除）',
-  readme.includes('扩充为冒烟四百四十六件套（四百四十五件套清除）') && !readme.includes('扩充为冒烟四百零三件套（四百零二件套清除）'));
+ok('README 件套口径为四百四十七件套（四百四十六件套清除）',
+  readme.includes('扩充为冒烟四百四十七件套（四百四十六件套清除）') && !readme.includes('扩充为冒烟四百零三件套（四百零二件套清除）'));
 ok('README 含 v24.197 守护描述（逆风素手不饮青灯新成就守护）', readme.includes('v24.194 起含「逆风素手不饮青灯」新成就守护'));
-ok('README 版本速览已为 v24.213 且成就计数 119', readme.includes('版本速览（v24.250）') && readme.includes('129 项成就'));
-ok('README 成就计数双处口径 119 项（全部 161 项进度 + **161 项成就**，117 项清除）',
-  readme.includes('全部 161 项进度') && readme.includes('**161 项成就**') && !readme.includes('**117 项成就**'));
+ok('README 版本速览已为 v24.213 且成就计数 119', readme.includes('版本速览（v24.251）') && readme.includes('129 项成就'));
+ok('README 成就计数双处口径 119 项（全部 162 项进度 + **162 项成就**，117 项清除）',
+  readme.includes('全部 162 项进度') && readme.includes('**162 项成就**') && !readme.includes('**117 项成就**'));
 ok('README tests 树收录 smoke_v24194_lowskillnopo2（含 v24.197 守护子句 + 串尾）',
   readme.includes('v24.194 起含「逆风素手不饮青灯」新成就守护') && readme.includes('smoke_v24194_lowskillnopo2'));
 ok('README 含 smoke_v24194_lowskillnopo2 入库（404 份）', readme.includes('smoke_v24194_lowskillnopo2 入库（404 份）'));
 ok('package.json 已收录 smoke_v24194_lowskillnopo2.mjs 且位于串尾（在 nopotskill2 之后）',
   pkg.includes('smoke_v24194_lowskillnopo2.mjs') &&
-  pkg.includes('node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs && node tests/smoke_v24196_pennylowlvnopo2.mjs && node tests/smoke_v24197_pennynoskillnopo2.mjs && node tests/smoke_v24198_pennylowskill2.mjs && node tests/smoke_v24199_pennylownoskillnopo2.mjs && node tests/smoke_v24201_swiftlowskill2.mjs && node tests/smoke_v24202_swiftlowlvnopo2.mjs && node tests/smoke_v24206_swiftnoskillnopo2.mjs && node tests/smoke_v24209_pennyswiftlv2.mjs && node tests/smoke_v24210_pennyswiftskill2.mjs && node tests/smoke_v24211_pennyswiftnopo2.mjs && node tests/smoke_v24212_swiftlowskillnopo2.mjs && node tests/smoke_v24214_unflswiftlowlv2.mjs && node tests/smoke_v24217_unflswiftnopo2.mjs && node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs && node tests/smoke_v24221_unfllowskill2.mjs && node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs && node tests/smoke_v24226_unflpennylownoskillnopo2.mjs && node tests/smoke_v24227_unfllowlvnoskillnopo2.mjs && node tests/smoke_v24228_unflswiftlowlvnoskill2.mjs && node tests/smoke_v24229_unflswiftlowlvnopo2.mjs && node tests/smoke_v24230_unflswiftnoskillnopo2.mjs && node tests/smoke_v24231_unflswiftlowlvpenny2.mjs && node tests/smoke_v24233_unflswiftnoskillpenny2.mjs && node tests/smoke_v24235_unflswiftnopopenny2.mjs && node tests/smoke_v24237_unfllowskillpenny2.mjs && node tests/smoke_v24238_unflpennynoskillnopo2.mjs && node tests/smoke_v24239_unflpennylowlvnopo2.mjs && node tests/smoke_v24241_unflswiftlowlvpennynoskill2.mjs && node tests/smoke_v24242_unflswiftlowlvpennynopo2.mjs && node tests/smoke_v24243_unflswiftlowlvnoskillnopo2.mjs && node tests/smoke_v24244_unflswiftpennynoskillnopo2.mjs && node tests/smoke_v24245_unflswiftlowlvpennynoskillnopo2.mjs && node tests/smoke_v24246_unfltravel2.mjs && node tests/smoke_v24247_unfltravelswift2.mjs && node tests/smoke_v24248_unfltravellowlv2.mjs && node tests/smoke_v24249_unfltravelpenny2.mjs && node tests/smoke_v24250_unfltravelnoskill2.mjs"'));
+  pkg.includes('node tests/smoke_v24192_lowlvnopo2.mjs && node tests/smoke_v24193_nopotskill2.mjs && node tests/smoke_v24194_lowskillnopo2.mjs && node tests/smoke_v24196_pennylowlvnopo2.mjs && node tests/smoke_v24197_pennynoskillnopo2.mjs && node tests/smoke_v24198_pennylowskill2.mjs && node tests/smoke_v24199_pennylownoskillnopo2.mjs && node tests/smoke_v24201_swiftlowskill2.mjs && node tests/smoke_v24202_swiftlowlvnopo2.mjs && node tests/smoke_v24206_swiftnoskillnopo2.mjs && node tests/smoke_v24209_pennyswiftlv2.mjs && node tests/smoke_v24210_pennyswiftskill2.mjs && node tests/smoke_v24211_pennyswiftnopo2.mjs && node tests/smoke_v24212_swiftlowskillnopo2.mjs && node tests/smoke_v24214_unflswiftlowlv2.mjs && node tests/smoke_v24217_unflswiftnopo2.mjs && node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs && node tests/smoke_v24221_unfllowskill2.mjs && node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs && node tests/smoke_v24226_unflpennylownoskillnopo2.mjs && node tests/smoke_v24227_unfllowlvnoskillnopo2.mjs && node tests/smoke_v24228_unflswiftlowlvnoskill2.mjs && node tests/smoke_v24229_unflswiftlowlvnopo2.mjs && node tests/smoke_v24230_unflswiftnoskillnopo2.mjs && node tests/smoke_v24231_unflswiftlowlvpenny2.mjs && node tests/smoke_v24233_unflswiftnoskillpenny2.mjs && node tests/smoke_v24235_unflswiftnopopenny2.mjs && node tests/smoke_v24237_unfllowskillpenny2.mjs && node tests/smoke_v24238_unflpennynoskillnopo2.mjs && node tests/smoke_v24239_unflpennylowlvnopo2.mjs && node tests/smoke_v24241_unflswiftlowlvpennynoskill2.mjs && node tests/smoke_v24242_unflswiftlowlvpennynopo2.mjs && node tests/smoke_v24243_unflswiftlowlvnoskillnopo2.mjs && node tests/smoke_v24244_unflswiftpennynoskillnopo2.mjs && node tests/smoke_v24245_unflswiftlowlvpennynoskillnopo2.mjs && node tests/smoke_v24246_unfltravel2.mjs && node tests/smoke_v24247_unfltravelswift2.mjs && node tests/smoke_v24248_unfltravellowlv2.mjs && node tests/smoke_v24249_unfltravelpenny2.mjs && node tests/smoke_v24250_unfltravelnoskill2.mjs && node tests/smoke_v24251_unfltravelnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
-ok('package.json test 串共 404 件套', testChain === 446, String(testChain));
-ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.250'));
+ok('package.json test 串共 404 件套', testChain === 447, String(testChain));
+ok('CHANGELOG 含 v24.213 顶条目', changelog.startsWith('## v24.251'));
 
 // —— 哨兵链：README 已有 404 口径且尚无 405（前望 407 语义：下一版才写 405）——
 ok('README 已有四百零五件套口径且尚无 405（哨兵前望 407 语义：下一版才写 405）',
-  readme.includes('扩充为冒烟四百四十六件套（四百四十五件套清除）') && !readme.includes('四百四十七件套'));
+  readme.includes('扩充为冒烟四百四十七件套（四百四十六件套清除）') && !readme.includes('四百四十八件套'));
 {
   const s24143 = read('tests/smoke_v24143_furnacequest.mjs');
-  ok('smoke_v24143 哨兵链前望 447（四百四十七件套否定式）',
-    s24143.includes('哨兵链前望 447') && s24143.includes('四百四十七件套否定式'));
+  ok('smoke_v24143 哨兵链前望 448（四百四十八件套否定式）',
+    s24143.includes('哨兵链前望 448') && s24143.includes('四百四十八件套否定式'));
 }
 {
   ok('smoke_v24193 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24193_nopotskill2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24193_nopotskill2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24192 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24192_lowlvnopo2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24192_lowlvnopo2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24191 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24191_lowskill2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24191_lowskill2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24190 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24190_swiftnopo2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24190_swiftnopo2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24189 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24189_swiftskill2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24189_swiftskill2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24188 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24188_swiftlv2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24188_swiftlv2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24187 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24187_pennynopo2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24187_pennynopo2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24186 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24186_pennynoskill2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24186_pennynoskill2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24185 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24185_pennylowlv2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24185_pennylowlv2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24184 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24184_pennyswift2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24184_pennyswift2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24183 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24183_unfllowlv2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24183_unfllowlv2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24181 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24181_lampoilquest.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24181_lampoilquest.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24180 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24180_unflskill2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24180_unflskill2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24179 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24179_unflnopo2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24179_unflnopo2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24178 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24178_unflpenny2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24178_unflpenny2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24177 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24177_unflswift2.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24177_unflswift2.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24176 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24176_pennynopo.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24176_pennynopo.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24175 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24175_pennynoskill.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24175_pennynoskill.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24174 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24174_pennylowlv.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24174_pennylowlv.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v24173 姊妹件版本字面量 pin 已随新现实推进（v24.213）',
-    read('tests/smoke_v24173_pennyswift.mjs').includes("const GAME_VERSION = 'v24.250';"));
+    read('tests/smoke_v24173_pennyswift.mjs').includes("const GAME_VERSION = 'v24.251';"));
   ok('smoke_v2229 姊妹件版本恒等 pin 已随新现实推进（=== v24.199）',
-    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.250'"));
+    read('tests/smoke_v2229_metall.mjs').includes("GAME_VERSION === 'v24.251'"));
 }
 
 // —— 旧代 v24.195 字面量 / 403 件套口径 / 118 项 全库零残留扫描（豁免本套件 + v24193 + 前代 v24192 + v24191 + v24190 + v24189 + v24188 + v24187 + v24186 + v24185 + v24184 + v24183 + v24181 + v24180 + v24179 + v24178 + v24177 + v24176 + v24175 + v24174 + v24173）——
 // v24173-24193 是前代公式链载体，其 README 件套负向断言/版本锚点逐代 pin 由历史级联平移而成（v24194 自身
 // 自带同款负向与扫描目标）。成就计数 118→119 扫描只认三形态。
-const EXEMPT = new Set(['smoke_v24250_unfltravelnoskill2.mjs', 'smoke_v24249_unfltravelpenny2.mjs', 'smoke_v24248_unfltravellowlv2.mjs', 'smoke_v24247_unfltravelswift2.mjs', 'smoke_v24246_unfltravel2.mjs', 'smoke_v24245_unflswiftlowlvpennynoskillnopo2.mjs', 'smoke_v24212_swiftlowskillnopo2.mjs', 'smoke_v24211_pennyswiftnopo2.mjs', 'smoke_v24210_pennyswiftskill2.mjs', 'smoke_v24206_swiftnoskillnopo2.mjs', 'smoke_v24202_swiftlowlvnopo2.mjs', 'smoke_v24201_swiftlowskill2.mjs', 'smoke_v24199_pennylownoskillnopo2.mjs', 'smoke_v24198_pennylowskill2.mjs', 'smoke_v24196_pennylowlvnopo2.mjs', 'smoke_v24197_pennynoskillnopo2.mjs', 'smoke_v24194_lowskillnopo2.mjs', 'smoke_v24193_nopotskill2.mjs', 'smoke_v24192_lowlvnopo2.mjs', 'smoke_v24191_lowskill2.mjs', 'smoke_v24190_swiftnopo2.mjs', 'smoke_v24189_swiftskill2.mjs', 'smoke_v24188_swiftlv2.mjs', 'smoke_v24187_pennynopo2.mjs', 'smoke_v24186_pennynoskill2.mjs', 'smoke_v24185_pennylowlv2.mjs', 'smoke_v24184_pennyswift2.mjs', 'smoke_v24183_unfllowlv2.mjs', 'smoke_v24181_lampoilquest.mjs', 'smoke_v24180_unflskill2.mjs', 'smoke_v24179_unflnopo2.mjs', 'smoke_v24178_unflpenny2.mjs', 'smoke_v24177_unflswift2.mjs', 'smoke_v24176_pennynopo.mjs', 'smoke_v24175_pennynoskill.mjs', 'smoke_v24174_pennylowlv.mjs', 'smoke_v24173_pennyswift.mjs']);
+const EXEMPT = new Set(['smoke_v24251_unfltravelnopo2.mjs', 'smoke_v24250_unfltravelnoskill2.mjs', 'smoke_v24249_unfltravelpenny2.mjs', 'smoke_v24248_unfltravellowlv2.mjs', 'smoke_v24247_unfltravelswift2.mjs', 'smoke_v24246_unfltravel2.mjs', 'smoke_v24245_unflswiftlowlvpennynoskillnopo2.mjs', 'smoke_v24212_swiftlowskillnopo2.mjs', 'smoke_v24211_pennyswiftnopo2.mjs', 'smoke_v24210_pennyswiftskill2.mjs', 'smoke_v24206_swiftnoskillnopo2.mjs', 'smoke_v24202_swiftlowlvnopo2.mjs', 'smoke_v24201_swiftlowskill2.mjs', 'smoke_v24199_pennylownoskillnopo2.mjs', 'smoke_v24198_pennylowskill2.mjs', 'smoke_v24196_pennylowlvnopo2.mjs', 'smoke_v24197_pennynoskillnopo2.mjs', 'smoke_v24194_lowskillnopo2.mjs', 'smoke_v24193_nopotskill2.mjs', 'smoke_v24192_lowlvnopo2.mjs', 'smoke_v24191_lowskill2.mjs', 'smoke_v24190_swiftnopo2.mjs', 'smoke_v24189_swiftskill2.mjs', 'smoke_v24188_swiftlv2.mjs', 'smoke_v24187_pennynopo2.mjs', 'smoke_v24186_pennynoskill2.mjs', 'smoke_v24185_pennylowlv2.mjs', 'smoke_v24184_pennyswift2.mjs', 'smoke_v24183_unfllowlv2.mjs', 'smoke_v24181_lampoilquest.mjs', 'smoke_v24180_unflskill2.mjs', 'smoke_v24179_unflnopo2.mjs', 'smoke_v24178_unflpenny2.mjs', 'smoke_v24177_unflswift2.mjs', 'smoke_v24176_pennynopo.mjs', 'smoke_v24175_pennynoskill.mjs', 'smoke_v24174_pennylowlv.mjs', 'smoke_v24173_pennyswift.mjs']);
 const leftovers = [];
 for (const f of fs.readdirSync(path.join(ROOT, 'tests')).filter((x) => x.endsWith('.mjs') && !EXEMPT.has(x))) {
   const s = fs.readFileSync(path.join(ROOT, 'tests', f), 'utf8');
