@@ -4996,7 +4996,11 @@
 // travels，与各枚互不干扰零冲突——unfl 档可旅行、本枚不可旅行）；与「行者无疆」成镜面对（正向 15 次 vs 逆向零次，互不重叠）。判定读既有 hero.trueBoss +
 // hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.travels（core.doTravel 成功旅行唯一产生点）+ hero.potionUses（battle.doItem
 // 战斗用药成功唯一产生点）五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
-const GAME_VERSION = 'v24.251';
+// v24.252 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.240/v24.234/v24.227/v24.221/v24.216/v24.213/v24.208/v24.200 文档复核先例）：版本速览与 data.js 实核对账全部吻合——162 项成就（ACH_LIST）/ 46 名 NPC（NPCS）
+// · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 447 件套冒烟（tests/ 文件数），
+// 哨兵前望 448、链尾 smoke_v24251_unfltravelnopo2 逐处一致——v24.241-251 十一个成就版本推进 156→162 项成就、441→447 件套（hardtrue×unfl×travels 五姿态组合收官）后文档侧统一复核收口，账目与 README「版本速览」零漂移。
+// 配套：全库 447 件套 GAME_VERSION 字面量 pin 级联（v24.251→v24.252，推进排除「v24.25X 起含」时代锚点，哨兵前望 448 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.252';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
