@@ -106,7 +106,7 @@ const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m
 const _gv = _vm(GAME_VERSION);
 ok('GAME_VERSION 格式合法且已越过 v24.214', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 214)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.217（旧 v24.216 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.253';") && !dataSrc.includes("const GAME_VERSION = 'v24.216';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.254';") && !dataSrc.includes("const GAME_VERSION = 'v24.216';"));
 ok('data.js 含 v24.217 注释（逆风长明疾行不饮新成就说明）',
   dataSrc.includes('v24.217 新内容·新成就（第一百三十二项）'));
 
@@ -312,7 +312,7 @@ ok('hero.js 成就横幅活计数注释已推进至 N/132（131→132）', heroS
 ok('README 件套口径为四百四十七件套（四百四十六件套清除）',
   readme.includes('扩充为冒烟四百四十七件套（四百四十六件套清除）') && !readme.includes('扩充为冒烟四百一十六件套（四百一十五件套清除）'));
 ok('README 含 v24.217 守护描述（逆风长明疾行不饮新成就守护）', readme.includes('v24.217 起含「逆风长明疾行不饮」新成就守护'));
-ok('README 版本速览已为 v24.217 且成就计数 132', readme.includes('版本速览（v24.253）') && readme.includes('162 项成就'));
+ok('README 版本速览已为 v24.217 且成就计数 132', readme.includes('版本速览（v24.254）') && readme.includes('162 项成就'));
 ok('README 成就计数双处口径 132 项（全部 162 项进度 + **162 项成就**，**131 项成就**清除）',
   readme.includes('全部 162 项进度') && readme.includes('**162 项成就**') && !readme.includes('**13' + '1 项成就**'));
 ok('README tests 树收录 smoke_v24217_unflswiftnopo2（含 v24.217 守护子句 + 串尾）',
@@ -323,7 +323,7 @@ ok('package.json 已收录 smoke_v24217_unflswiftnopo2.mjs 且位于串尾（在
   pkg.includes('node tests/smoke_v24214_unflswiftlowlv2.mjs && node tests/smoke_v24217_unflswiftnopo2.mjs && node tests/smoke_v24218_unflpennyswift2.mjs && node tests/smoke_v24219_unflpennylowlv2.mjs && node tests/smoke_v24220_unflpennynopo2.mjs && node tests/smoke_v24221_unfllowskill2.mjs && node tests/smoke_v24222_unflswiftskill2.mjs && node tests/smoke_v24223_unfllowlvnopo2.mjs && node tests/smoke_v24224_unflnoskillnopo2.mjs && node tests/smoke_v24225_unflpennynoskill2.mjs && node tests/smoke_v24226_unflpennylownoskillnopo2.mjs && node tests/smoke_v24227_unfllowlvnoskillnopo2.mjs && node tests/smoke_v24228_unflswiftlowlvnoskill2.mjs && node tests/smoke_v24229_unflswiftlowlvnopo2.mjs && node tests/smoke_v24230_unflswiftnoskillnopo2.mjs && node tests/smoke_v24231_unflswiftlowlvpenny2.mjs && node tests/smoke_v24233_unflswiftnoskillpenny2.mjs && node tests/smoke_v24235_unflswiftnopopenny2.mjs && node tests/smoke_v24237_unfllowskillpenny2.mjs && node tests/smoke_v24238_unflpennynoskillnopo2.mjs && node tests/smoke_v24239_unflpennylowlvnopo2.mjs && node tests/smoke_v24241_unflswiftlowlvpennynoskill2.mjs && node tests/smoke_v24242_unflswiftlowlvpennynopo2.mjs && node tests/smoke_v24243_unflswiftlowlvnoskillnopo2.mjs && node tests/smoke_v24244_unflswiftpennynoskillnopo2.mjs && node tests/smoke_v24245_unflswiftlowlvpennynoskillnopo2.mjs && node tests/smoke_v24246_unfltravel2.mjs && node tests/smoke_v24247_unfltravelswift2.mjs && node tests/smoke_v24248_unfltravellowlv2.mjs && node tests/smoke_v24249_unfltravelpenny2.mjs && node tests/smoke_v24250_unfltravelnoskill2.mjs && node tests/smoke_v24251_unfltravelnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 417 件套', testChain === 447, String(testChain));
-ok('CHANGELOG 含 v24.217 顶条目', changelog.startsWith('## v24.253'));
+ok('CHANGELOG 含 v24.217 顶条目', changelog.startsWith('## v24.254'));
 
 // —— 哨兵链：README 已有 417 口径且尚无 418（前望 418 语义：下一版才写 418）——
 ok('README 已有四百一十七件套口径且尚无 418（哨兵前望 418 语义：下一版才写 418）',
