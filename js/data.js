@@ -2255,7 +2255,7 @@
 // 彩蛋（「不响了……以后由我替它记着」）已并入 done 分档（零内容丢失）；奖励 80 金 + 1 高级灵药
 // （夜里刷怪是全程伴随的节奏、低于 side_golem 120 档、与 side_mist 60 档拉开一档）；纯内容扩充
 // 零新逻辑零结算零数值（QUESTS 表驱动：弹窗对话/任务日志/顶标/交付结算/灯火同心分母全端自动跟随）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/162）」进度后缀（详见 hero.js
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/163）」进度后缀（详见 hero.js
 // applyAchievements 通用分支行内注释——承 v24.55/v24.57「计数现场报进度」主线，分子 hero.ach 长度、
 // 分母 ACH_LIST.length 单一数据源，与 C 页/胜利/阵亡/尾声/状态页五端同读一份源），纯显示零结算
 // 零存档零数值变化（解锁判定/hero.ach 写入/铃声/奖励结算逐字未动）。
@@ -2564,7 +2564,7 @@
 // （village.extras / NPC_SPOTS / NPCS）+ view/sprites.js mark 分支，零任务零结算零存档零新计数；
 // voiceList/「灯下之声 N」由 Object.keys(NPCS) 派生自动跟随），件套 299→300（smoke_v2477_fisher
 // 入库，链尾 smoke_v2477_fisher）。
-// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/162）」进度后缀——成就解锁链路
+// v24.76 体验打磨·信息透明·计数现场：🔓 成就解锁横幅补「（成就 N/163）」进度后缀——成就解锁链路
 // （hero.applyAchievements 通用分支）自 v21.64 起只报「🔓 成就解锁：【名】+ 描述」，整条成就收集线的
 // 进度只藏在 C 成就页「已解锁 N/M」/ I 状态页「🏆:N/M」两处静态页；现按 v24.26 同款在通用分支句末补
 // 「（成就 N/112）」（N=本函数唯一产生点上方已 push 的 (hero.ach||[]).length——解锁即含本次、旧档零迁移、
@@ -5012,7 +5012,14 @@
 // · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 447 件套冒烟（tests/ 文件数），
 // 哨兵前望 448、链尾 smoke_v24251_unfltravelnopo2 逐处一致——v24.252 文档复核后 v24.253 体验打磨（酿造「🍄 卖价对照」行，零行为变化）补录，文档侧统一复核收口，账目与 README「版本速览」零漂移。
 // 配套：全库 447 件套 GAME_VERSION 字面量 pin 级联（v24.253→v24.254，推进排除「v24.25X 起含」时代锚点，哨兵前望 448 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.254';
+// v24.255 新内容·新成就（第一百六十三项）「从未言退」（unflee）——「姿态」通关家族第七维首角·从未逃跑成功击败终焉之神（真结局）：承 v24.153 白手成灯（penny，「零消费」姿态档·真结局）
+// / v24.155 两袖清风 / v24.173 白手疾行 先例——「以怎样的姿态通关」版图里「别逃跑」这一面查无一行：走为上计（flee）纪念的是逃跑成功累计（FLEE_GOAL 次），本枚纪念
+// 它的镜面对——全程一次都未成功逃跑便击败终焉之神（与一掷千金/白手成灯、行者无疆/徒步组合同一「正向里程碑 vs 逆向零次」镜面对先例）；判定读既有 hero.trueBoss
+// （真结局最终 Boss，与 trueboss/hardtrue/unflicker/swift/lowlv/penny 同源）+ 既有 hero.flees（battle.doFlee 逃跑成功唯一产生点——失败不计、只增不减、防御式
+// !(g.flees||0) 旧档零迁移），(g.trueBoss && !(g.flees||0)) 即达成：成功逃过一次就永久无缘此档（与 hardtrue 换难度 / unflicker 死过一次 / swift 超场 / lowlv
+// 升过十级 / penny 花过一金 同属「重新来过才拿得到」的挑战品类）；与既有正向里程碑 flee「走为上计」成镜面对、互不重叠；零新计数零新状态零新写点零新存档、无 r
+// 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁（终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），反馈不迟到。
+const GAME_VERSION = 'v24.255';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
@@ -12734,6 +12741,9 @@ const ACH_LIST=[
   // 判定读既有 hero.trueBoss + hero.diff（DIFFS[1]）+ hero.deaths（battle.loseBattle 全游唯一产生点）+ hero.travels（core.doTravel 成功旅行唯一产生点）+
   // hero.potionUses（battle.doItem 战斗用药成功唯一产生点）五端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
   {id:'unfltravelnopo2', name:'逆风长明徒步不饮', d:`以困难模式、零阵亡、未在战斗中使用药水/灵药且从未使用快速旅行（旅行面板）时击败终焉之神（真结局）`, ok:g=>!!(g.trueBoss && g.diff===1 && !(g.deaths||0) && !(g.potionUses||0) && !(g.travels||0))},
+  // v24.255 新内容·新成就（第一百六十三项）「从未言退」（unflee）——零逃跑姿态档：
+  // 」（镜面对拾遗：走为上计纪念逃跑成功累计，本枚纪念全程零逃跑成功即击败终焉之神——flees 只增不减、成功逃过一次即永久无缘此档）。
+  {id:'unflee', name:'从未言退', d:'从未逃跑成功击败终焉之神（真结局）', ok:g=>!!(g.trueBoss && !(g.flees||0))},
 ];
 
 function codexTag(name) {
