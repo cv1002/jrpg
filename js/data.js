@@ -5032,7 +5032,11 @@
 // hardtrue 换难度 / unflicker 死过一次 / swift 超场 / lowlv 升过十级 / penny 花过一金 同属「重新来过才拿得到」的挑战品类）；与 unflee 互分源——本枚读 diff
 // 端口、unflee 不读（普通档零逃跑照常解锁「从未言退」、困难档零逃跑双枚同解、成功逃过一次双枚同灭）；零新计数零新状态零新写点零新存档、无 r 无 prog 纯
 // 里程碑、winBattle → applyAchievements 既有通路当场解锁（终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），反馈不迟到。
-const GAME_VERSION = 'v24.257';
+// v24.258 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.256/v24.254/v24.252/v24.240/v24.234/v24.227/v24.221/v24.216/v24.213/v24.208/v24.200 文档复核先例）：版本速览与 data.js 实核对账全部吻合——164 项成就（ACH_LIST）/ 46 名 NPC（NPCS）
+// · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 449 件套冒烟（tests/ 文件数），
+// 哨兵前望 450、链尾 smoke_v24257_unflee2 逐处一致——v24.256 文档复核后 v24.257 成就版本（「逆风无逃」unflee2 第一百六十四项·163→164 项成就·448→449 件套）补录，文档侧统一复核收口，账目与 README「版本速览」零漂移。
+// 配套：全库 449 件套 GAME_VERSION 字面量 pin 级联（v24.257→v24.258，推进排除「v24.25X 起含」时代锚点，哨兵前望 450 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
+const GAME_VERSION = 'v24.258';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367
