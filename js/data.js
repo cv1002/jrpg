@@ -5000,7 +5000,15 @@
 // · 47 处 NPC_SPOTS / 46 条支线（QUESTS kind==='side'）· 4 条主线（QUESTS kind==='main'）/ 13 种图鉴（BESTIARY_TARGET）/ 8 招技能（SKILL_DATA）/ 4 图（MAPS）/ 447 件套冒烟（tests/ 文件数），
 // 哨兵前望 448、链尾 smoke_v24251_unfltravelnopo2 逐处一致——v24.241-251 十一个成就版本推进 156→162 项成就、441→447 件套（hardtrue×unfl×travels 五姿态组合收官）后文档侧统一复核收口，账目与 README「版本速览」零漂移。
 // 配套：全库 447 件套 GAME_VERSION 字面量 pin 级联（v24.251→v24.252，推进排除「v24.25X 起含」时代锚点，哨兵前望 448 不变——本轮无新套件无计数变化）+ README/CHANGELOG 同步。
-const GAME_VERSION = 'v24.252';
+// v24.253 体验打磨·信息透明·决策现场：酿造界面补「🍄 卖价对照」行（承 v24.10 妙手回春 / v24.09 蘑菇商路
+// 同一「成就进度与决策现场可见」主线）：站在酿造锅前「熬成灵药还是卖掉换钱」此前配方行只报成本
+// （BREW_MUSHROOMS 株+BREW_GOLD 金）、卖价（MUSHROOM_PRICE 金/株）只在商店可见——2 株蘑菇的两条出路
+// （2×MUSHROOM_PRICE 金 vs 1 瓶高级灵药）要跑两家店心算；现 view/menus.js drawBrew 与 shop.sellMushroom
+// 同读本文件 MUSHROOM_PRICE 单一数据源派生对照行（分子 BREW_MUSHROOMS×MUSHROOM_PRICE、分母 BREW_GOLD，
+// 零裸字面量、调价只改本文件一处买卖两端口自动跟随），y=336 与「灵药满柜」行（312，字底 ≈325.4）行间
+// 24、面板底 380 之内零越界；纯显示零结算零存档零数值变化（BREW_MUSHROOMS/BREW_GOLD/MUSHROOM_PRICE/
+// brewNow/sellMushroom/材料/配方/可酿/提示/角标逐字未动，战斗/掉落/成就/存档零影响）。
+const GAME_VERSION = 'v24.253';
 // v24.156 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.149 文档复核先例）：版本速览
 // 与 data.js 实核对账全部吻合——83 项成就（ACH_LIST.length）/45 名 NPC（NPCS）→ 46 处 NPC_SPOTS /45 条
 // 支线（QUESTS kind==='side'）/13 种图鉴（BESTIARY_TARGET）/8 招技能（SKILL_DATA）/4 图（MAPS）/367

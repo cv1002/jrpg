@@ -2,7 +2,7 @@
 // view/menus.js —— 商店 / 状态 / 标题等界面
 // ============================================================
 import { S, curMap } from '../state.js';
-import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, SPEND_GOAL, POTIONS2_GOAL, BREW2_GOAL, ELIXIR_STOCK2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
+import { GAME_VERSION, MAPS, SKILL_DATA, BESTIARY_TARGET, HELP_PAGES, HELP_TITLES, TRAVEL_LIST, ENDING, ENDING_TRUE, ENDING_TRUE_FRAG, STORY, HERO_NAMES, NAME_FLAVOR, DIFFS, WEAPONS, ARMORS, ACH_LIST, NPCS, BOSS, baseStats, CHARGE_MULT, codexTag, DIFF_SCALE, INN_PRICE, BREW_MUSHROOMS, BREW_GOLD, POTION_CAP, ELIXIR_HP_PCT, ELIXIR_MP_PCT, FRAGMENTS, LEVEL_GROWTH, CRIT_RATE, CRIT_MULT, ELITE_CHANCE, ELITE_GOLEM, SAVE_SLOTS, UI_PULSE_MS, TREASURE_GOAL, chestCount, chestTotal, hasRecoveryPoint, MUSHROOM_PRICE, INN_REST_GOAL, TRAVEL_GOAL, SELL_GOAL, SPEND_GOAL, POTIONS2_GOAL, BREW2_GOAL, ELIXIR_STOCK2_GOAL, BATTLE_GOAL, DEATH_GOAL } from '../data.js';
 import { monReward, skillEstimate, codexStats, spawnLv, pageShownAt, wrapTalkLine } from '../rules.js';
 import { hasSlot, hasSave, slotPreview, skillXpHint } from '../core.js';
 import { questLines, questJournal, questRewardPreview, adventureProgress, QUEST_TAG, questKillProg } from '../quests.js';
@@ -162,6 +162,14 @@ export function drawBrew(){
   // 行（288）行间 24、面板底 380 之内零越界（13px 字底 ≈325.4）；纯显示零结算零存档零数值变化
   // （ELIXIR_STOCK2_GOAL/brewNow 结算/材料/配方/可酿/提示/妙手回春行逐字未动）。
   text(`🧪 灵药满柜 ${(hero.potion2 || 0)}/${ELIXIR_STOCK2_GOAL}`, 320, 312, '13px', '#8ff0a0', 'center');
+  // v24.253 体验打磨·信息透明·决策现场：酿造界面补「🍄 卖价对照」行（承 v24.10 妙手回春 / v24.09 蘑菇商路
+  // 同一「决策现场信息透明」主线）：站在锅前「熬成灵药还是卖掉换钱」此前配方行只报成本（N 株+M 金）、
+  // 卖价（MUSHROOM_PRICE 金/株）只在商店可见——2 株蘑菇的两条出路（2×MUSHROOM_PRICE 金 vs 1 瓶高级灵药）
+  // 要跑两家店心算；现与 shop.sellMushroom 同读 data.js MUSHROOM_PRICE 单一数据源派生对照行（分子
+  // BREW_MUSHROOMS×MUSHROOM_PRICE、分母 BREW_GOLD，零裸字面量、调价只改 data.js 一处买卖两端口自动跟随），
+  // y=336 与「灵药满柜」行（312，字底 ≈325.4）行间 24、面板底 380 之内零越界；纯显示零结算零存档零数值
+  // 变化（BREW_MUSHROOMS/BREW_GOLD/MUSHROOM_PRICE/brewNow/sellMushroom/材料/配方/可酿/提示/角标逐字未动）。
+  text(`🍄 卖价对照：${BREW_MUSHROOMS} 株可卖 ${BREW_MUSHROOMS * MUSHROOM_PRICE} 金 · 或加 ${BREW_GOLD} 金熬成灵药`, 320, 336, '13px', '#7d93a3', 'center');
   if(hero.mushrooms>=BREW_MUSHROOMS&&hero.gold>=BREW_GOLD) text('按 Enter/E 酿造    按 Esc 离开',320,262,'14px','#62c6ff','center');
   else text(`材料不足（还差 ${Math.max(0,BREW_MUSHROOMS-hero.mushrooms)} 株蘑菇、${Math.max(0,BREW_GOLD-hero.gold)} 金币）    按 Esc 离开`,320,262,'13px','#e14b3f','center');
 }

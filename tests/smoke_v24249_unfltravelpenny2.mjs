@@ -105,9 +105,9 @@ const changelog = read('CHANGELOG.md');
 // —— 版本锚点（格式合法 + 已越过 v24.248 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.248', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 251)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.248', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 252)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.249（旧 v24.248 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.252';") && !dataSrc.includes("const GAME_VERSION = 'v24.248';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.253';") && !dataSrc.includes("const GAME_VERSION = 'v24.248';"));
 ok('data.js 含 v24.249 注释（逆风长明徒步白手四维交叉首角说明）',
   dataSrc.includes('v24.249 新内容·新成就（第一百六十项）'));
 
@@ -371,7 +371,7 @@ ok('data.js 成就横幅活计数注释已推进至 N/160（159→160，两处�
 ok('README 件套口径为四百四十七件套（四百四十六件套清除）',
   readme.includes('扩充为冒烟四百四十七件套（四百四十六件套清除）') && !readme.includes('扩充为冒烟四百四十四件套（四百四十三件套清除）'));
 ok('README 含 v24.249 守护描述（逆风长明徒步白手四维交叉首角守护）', readme.includes('v24.249 起含「逆风长明徒步白手」新成就守护'));
-ok('README 版本速览已为 v24.249 且成就计数 160', readme.includes('版本速览（v24.252）') && readme.includes('162 项成就'));
+ok('README 版本速览已为 v24.249 且成就计数 160', readme.includes('版本速览（v24.253）') && readme.includes('162 项成就'));
 ok('README 成就计数双处口径 160 项（全部 162 项进度 + **162 项成就**，**159 项成就**清除）',
   readme.includes('全部 162 项进度') && readme.includes('**16' + '2 项成就**') && !readme.includes('**15' + '9 项成就**'));
 ok('README tests 树收录 smoke_v24249_unfltravelpenny2（含 v24.249 守护子句 + 串尾）',
@@ -382,7 +382,7 @@ ok('package.json 已收录 smoke_v24249_unfltravelpenny2.mjs 且位于串尾（�
   pkg.includes('node tests/smoke_v24248_unfltravellowlv2.mjs && node tests/smoke_v24249_unfltravelpenny2.mjs && node tests/smoke_v24250_unfltravelnoskill2.mjs && node tests/smoke_v24251_unfltravelnopo2.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 445 件套', testChain === 447, String(testChain));
-ok('CHANGELOG 含 v24.249 顶条目', changelog.startsWith('## v24.252'));
+ok('CHANGELOG 含 v24.249 顶条目', changelog.startsWith('## v24.253'));
 
 // —— 哨兵链：README 已有 445 口径且尚无 446（前望 446 语义：下一版才写 446）——
 ok('README 已有四百四十五件套口径且尚无 446（哨兵前望 446 语义：下一版才写 446）',
@@ -420,5 +420,5 @@ ok('旧代 444 件套口径/计数/159 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':444') || x.endsWith(':count') || x.endsWith(':159')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.252 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.252 冒烟完成：${n} 项断言全绿 —`);
+if (failed) { console.log(`— v24.253 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.253 冒烟完成：${n} 项断言全绿 —`);

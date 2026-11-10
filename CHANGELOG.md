@@ -1,3 +1,9 @@
+## v24.253 体验打磨·信息透明·决策现场：酿造界面补「🍄 卖价对照」行（承 v24.10 酿造「🍶 妙手回春 N/5」/ v24.09 商店「🍄 蘑菇商路 N/30」同一「成就进度与决策现场信息透明」主线——「把 2 株蘑菇熬成高级灵药还是直接卖掉换钱」是酿造锅前每轮都有的选择，此前配方行只报成本（2 株+10 金）、卖价（MUSHROOM_PRICE=10 金/株）只在商店可见，「2 株=20 金 vs 1 瓶高级灵药」的机会成本要跑两家店心算；现 view/menus.js drawBrew 与 shop.sellMushroom 同读 data.js MUSHROOM_PRICE 单一数据源派生对照行「🍄 卖价对照：2 株可卖 20 金 · 或加 10 金熬成灵药」（分子 BREW_MUSHROOMS×MUSHROOM_PRICE、分母 BREW_GOLD，零裸字面量、调价只改 data.js 一处买卖两端口自动跟随），y=336 与「灵药满柜」行（312，字底 ≈325.4）行间 24、面板底 380 之内零越界；纯显示零结算零存档零数值变化（BREW_MUSHROOMS/BREW_GOLD/MUSHROOM_PRICE/brewNow/sellMushroom/材料/配方/可酿/提示/角标逐字未动，战斗/掉落/成就/存档零影响）。
+
+- 【数据】js/data.js：GAME_VERSION v24.252→v24.253 + v24.253 版本注释块（体验打磨口径，零行为变化；battle/core/world/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/旅行/存档零影响）。
+- 【界面】js/view/menus.js：drawBrew 补「🍄 卖价对照」行（import 补 MUSHROOM_PRICE 单一数据源，插在 hasRecoveryPoint 与 INN_REST_GOAL 之间——v2409/v2410/v2425/v2431 四姊妹件 import 尾串 pin 子串逐字保留）；材料/配方/恢复量/可酿瓶数/提示行/妙手回春/灵药满柜逐字未动。
+- 【验证】node --check 改文件 + npm run check 25 模块 EXIT=0 + 全库 447 件套 npm test 端到端全绿（v24.253 链尾 smoke_v24251_unfltravelnopo2）——v24.253 冒烟完成；全库 447 件套 GAME_VERSION 字面量 pin 级联（v24.252→v24.253，无新套件无计数变化，哨兵前望 448 不变）+ README/CHANGELOG 同步。
+
 ## v24.252 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.240/v24.234/v24.227/v24.221/v24.216/v24.213/v24.208/v24.200 文档复核先例）：版本速览与 data.js 实核全部吻合（162 项成就 · 46 名 NPC · 47 处 NPC_SPOTS · 46 条支线 · 4 主线 · 13 种图鉴 · 8 招技能 · 4 图 · 447 件套冒烟 · 哨兵前望 448 · 链尾 smoke_v24251_unfltravelnopo2），版本锚点推进（v24.241-251 十一个成就版本 156→162 项成就 · 441→447 件套逐项复核零漂移，hardtrue×unfl×travels 五姿态组合收官）。
 
 - 【数据】js/data.js：GAME_VERSION v24.251→v24.252 + v24.252 版本注释块（文档口径，零行为变化；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/旅行/存档零影响）。
