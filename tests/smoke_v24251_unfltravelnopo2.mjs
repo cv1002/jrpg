@@ -17,7 +17,7 @@
 // 零阵亡可行，且零旅行不拖慢节奏：地图间靠出口/传送门步行连通即可）。
 // 零新计数零新状态零新写点零新存档（trueBoss/diff/deaths/travels/potionUses 皆既有字段）、无 r 无 prog 纯里程碑、解锁走 winBattle → applyAchievements 既有通路
 // （终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），反馈不迟到。
-// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.254 + data.js 字面量 v24.251 + 旧 v24.251 字面量零残留）、ACH_LIST 162 项精确与末尾序位（unfltravelnopo2 落位 161——
+// 本冒烟守护：版本锚点（格式合法 + 已越过 v24.255 + data.js 字面量 v24.251 + 旧 v24.251 字面量零残留）、ACH_LIST 162 项精确与末尾序位（unfltravelnopo2 落位 161——
 // 前 161 项 id/序位零回归）、unfltravelnopo2 数据契约（d 文案、ok 防御式逐值、无 r 无 prog 且与 unfltravel2/unflnopo2 严格交叠与镜面对）、
 // unlockedAchievements/applyAchievements 运行期全链路（真实解锁落 hero.ach + 横幅 + 幂等去重 / 换难度不解锁 / 死过一次不解锁 / 旅行过一次不解锁 /
 // 战斗嗑药不解锁 / 未通关不解锁 / 空档不解锁 / 超场与升过十级与花过金与用技与大地图喝药住店照常解锁反例——本枚不读 battles/level/spent/potionUses/aux 端口）、
@@ -102,12 +102,12 @@ const shopSrc = read('js/shop.js');
 const readme = read('README.md');
 const pkg = read('package.json');
 const changelog = read('CHANGELOG.md');
-// —— 版本锚点（格式合法 + 已越过 v24.254 + 精确值由本版守护）——
+// —— 版本锚点（格式合法 + 已越过 v24.255 + 精确值由本版守护）——
 const _vm = (s) => { const m = /^v(\d+)\.(\d+)$/.exec(String(s || '')); return m ? [Number(m[1]), Number(m[2])] : null; };
 const _gv = _vm(GAME_VERSION);
-ok('GAME_VERSION 格式合法且已越过 v24.254', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 254)), GAME_VERSION);
+ok('GAME_VERSION 格式合法且已越过 v24.255', !!_gv && (_gv[0] > 24 || (_gv[0] === 24 && _gv[1] > 255)), GAME_VERSION);
 ok('data.js GAME_VERSION 字面量已为 v24.251（旧 v24.250 字面量零残留）',
-  dataSrc.includes("const GAME_VERSION = 'v24.255';") && !dataSrc.includes("const GAME_VERSION = 'v24.250';"));
+  dataSrc.includes("const GAME_VERSION = 'v24.256';") && !dataSrc.includes("const GAME_VERSION = 'v24.250';"));
 ok('data.js 含 v24.251 注释（逆风长明徒步不饮四维交叉首角说明）',
   dataSrc.includes('v24.252 文档整理·版本锚点推进'));
 
@@ -373,7 +373,7 @@ ok('data.js 成就横幅活计数注释已推进至 N/162（161→162，两处�
 ok('README 件套口径为四百四十八件套（四百四十七件套清除）',
   readme.includes('扩充为冒烟四百四十八件套（四百四十七件套清除）') && !readme.includes('扩充为冒烟四百四十九件套（四百四十七件套清除）'));
 ok('README 含 v24.251 守护描述（逆风长明徒步不饮四维交叉首角守护）', readme.includes('v24.251 起含「逆风长明徒步不饮」新成就守护'));
-ok('README 版本速览已为 v24.251 且成就计数 162', readme.includes('版本速览（v24.255）') && readme.includes('163 项成就'));
+ok('README 版本速览已为 v24.251 且成就计数 162', readme.includes('版本速览（v24.256）') && readme.includes('163 项成就'));
 ok('README 成就计数双处口径 162 项（全部 163 项进度 + **163 项成就**，**161 项成就**清除）',
   readme.includes('全部 163 项进度') && readme.includes('**16' + '3 项成就**') && !readme.includes('**16' + '1 项成就**'));
 ok('README tests 树收录 smoke_v24251_unfltravelnopo2（含 v24.251 守护子句 + 串尾）',
@@ -384,7 +384,7 @@ ok('package.json 已收录 smoke_v24251_unfltravelnopo2.mjs 且位于串尾（�
   pkg.includes('node tests/smoke_v24250_unfltravelnoskill2.mjs && node tests/smoke_v24251_unfltravelnopo2.mjs && node tests/smoke_v24255_unflee.mjs"'));
 const testChain = (pkg.match(/node tests\/smoke/g) || []).length;
 ok('package.json test 串共 447 件套', testChain === 448, String(testChain));
-ok('CHANGELOG 含 v24.251 顶条目', changelog.startsWith('## v24.255'));
+ok('CHANGELOG 含 v24.251 顶条目', changelog.startsWith('## v24.256'));
 
 // —— 哨兵链：README 已有 447 口径且尚无 448（前望 448 语义：下一版才写 448）——
 ok('README 已有四百四十八件套口径且尚无 448（哨兵前望 449 语义：下一版才写 448）',
@@ -422,5 +422,5 @@ ok('旧代 446 件套口径/计数/161 项 pin 全库零残留（哨兵链，豁
   leftovers.filter((x) => x.endsWith(':446') || x.endsWith(':count') || x.endsWith(':161')).length === 0,
   JSON.stringify(leftovers));
 
-if (failed) { console.log(`— v24.255 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
-console.log(`— v24.255 冒烟完成：${n} 项断言全绿 —`);
+if (failed) { console.log(`— v24.256 冒烟完成：${n} 项断言，失败 ${failed} —`); process.exit(1); }
+console.log(`— v24.256 冒烟完成：${n} 项断言全绿 —`);

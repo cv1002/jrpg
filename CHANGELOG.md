@@ -1,3 +1,8 @@
+## v24.256 文档整理·版本锚点推进·复核收口（无新功能、零行为变化——承 v24.254/v24.252/v24.240/v24.234/v24.227/v24.221/v24.216/v24.213/v24.208/v24.200 文档复核先例）：版本速览与 data.js 实核全部吻合（163 项成就 · 46 名 NPC · 47 处 NPC_SPOTS · 46 条支线 · 4 主线 · 13 种图鉴 · 8 招技能 · 4 图 · 448 件套 · 哨兵前望 449 · 链尾 smoke_v24255_unflee），版本锚点推进（v24.255 成就版本「从未言退」162→163 项成就 · 447→448 件套后文档侧统一复核收口，账目零漂移）。
+
+- 【数据】js/data.js：GAME_VERSION v24.255→v24.256 + v24.256 版本注释块（文档口径，零行为变化；battle/core/world/view/quests/hero/shop 逐字未动，遇敌/掉落/战斗/升级/存档零影响）。
+- 【验证】node --check + npm run check 25 模块 EXIT=0 + 全库 448 件套 npm test 端到端全绿（v24.256 链尾 smoke_v24255_unflee）—— v24.256 冒烟完成；全库 448 件套 GAME_VERSION 字面量 pin 级联（v24.255→v24.256，无新套件无计数变化，哨兵前望 449 不变）+ README/CHANGELOG 同步。
+
 ## v24.255 新内容·单成就（第一百六十三项）「从未言退」（unflee）——从未逃跑成功击败终焉之神的「姿态」通关家族第七维首角（trueBoss×flees 二维交叉点·解锁写点零）：承 v24.153 白手成灯（penny，「零消费」姿态档·真结局·零花费 1 金币）/v24.155 两袖清风（frugal）/v24.173 白手疾行（pennyswift）先例——「以怎样的姿态通关」版图里「别逃跑」这一面查无一行：走为上计（flee）纪念的是逃跑成功累计（FLEE_GOAL 次），本枚纪念它的镜面对——全程一次都未成功逃跑便击败终焉之神（与一掷千金/白手成灯、行者无疆/徒步组合同一「正向里程碑 vs 逆向零次」镜面对先例）；判定读既有 hero.trueBoss（终焉之神=真结局最终 Boss，与 trueboss/hardtrue/unflicker 同源）+ 既有 hero.flees（battle.doFlee 逃跑成功唯一产生点——失败不计、只增不减、防御式 !(g.flees||0) 旧档零迁移），(g.trueBoss && !(g.flees||0)) 即达成：成功逃过一次就永久无缘此档；与既有正向里程碑 flee「走为上计」成镜面对、互不重叠（10 次 vs 零次）；零新计数零新状态零新写点零新存档、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁（终焉之神击败当场 trueBoss 落账后 applyAchievements 枚举即解锁，零新增依赖），反馈不迟到。
 
 - 【新成就】`unflee`（ACH_LIST 第 163 项·append 入列）「从未言退」：从未逃跑成功（`!(g.flees||0)`，battle.doFlee 逃跑成功唯一产生点——失败不计、只增不减）击败终焉之神（`!!g.trueBoss`，真结局最终 Boss 与 trueboss/hardtrue/unflicker 同源）——「姿态」通关家族第七维首角（trueBoss×flees 二维交叉点）：承 v24.153 白手成灯（penny）先例（读单端口），本枚读 flees；与「走为上计」镜面对（正向 10 次 vs 逆向零次，互不重叠）；判定读既有 hero.trueBoss + hero.flees 两端口零新写点、无 r 无 prog 纯里程碑、winBattle → applyAchievements 既有通路当场解锁反馈不迟到。
